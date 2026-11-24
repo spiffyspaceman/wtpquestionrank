@@ -6,21 +6,24 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>WTP Question Rank</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/wtpqr-schola-regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <main class="narrow">
-      <h1>WTP Question Rank</h1>
-      <p>You will see two published We the People hearing questions at a time and pick the better one. It takes about a minute a pair, in batches of ten. Stop whenever you like.</p>
-      <p class="muted small">This site is invite-only. It stores no names or emails. Your code is your login on any device, so keep it somewhere safe.</p>
+      <header class="top"><span class="brand">WTP Question Rank</span></header>
+      <h1>Which hearing question is better?</h1>
+      <p class="intro">You will see two published We the People hearing questions at a time and pick the one that better separates a strong, well-prepared team from a weak one. Pairs come in batches of ten, about a minute each. Stop whenever you like.</p>
 
-      <form id="redeem" novalidate>
+      <form id="redeem" class="signin" novalidate>
         <label for="code">Your invite code</label>
         <input id="code" class="code" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40" placeholder="XXXX-XXXX-XXXX" required />
         <div id="turnstile" class="turnstile"></div>
         <p id="msg" class="notice" role="alert" hidden></p>
-        <p><button id="go" class="primary" type="submit">Start</button></p>
+        <button id="go" class="primary" type="submit">Start</button>
       </form>
+
+      <p class="fineprint">This site is by invitation only. It stores no names or email addresses, and it does no tracking. Your code is your login on any device, so keep it somewhere safe. The rankings are private to voters.</p>
     </main>
     <script type="module" src="./home.ts"></script>
   </body>

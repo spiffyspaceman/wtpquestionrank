@@ -6,6 +6,7 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>Leaderboard - WTP Question Rank</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/wtpqr-schola-regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -17,14 +18,18 @@
       <h1>Leaderboard</h1>
       <p id="msg" class="notice" role="alert" hidden></p>
       <div id="content" hidden>
-        <p class="muted small">
-          Ratings use a chess-style scale: the average question sits at 1000, and a 400-point gap means the higher
-          question wins about 10 times in 11. A question gets a rank after 10 comparisons.
-          <span id="intervals"></span>
+        <div class="tabs" id="tabs" role="group" aria-label="Whose votes"></div>
+        <p id="summary" class="scale-note" aria-live="polite"></p>
+        <p class="scale-note">
+          Ratings use a chess-style scale: the average question sits at 1000, and a 400-point gap means the higher one
+          wins about 10 times in 11. <span id="intervals"></span>
         </p>
-        <div class="tabs" id="tabs" role="group" aria-label="Which voters"></div>
-        <p id="summary" class="muted small" aria-live="polite"></p>
-        <ol class="board" id="rows"></ol>
+        <h2 id="rankedH">Ranked</h2>
+        <ol class="board" id="rows" aria-labelledby="rankedH"></ol>
+        <p id="noneRanked" class="muted" hidden>No question has 10 comparisons yet.</p>
+        <h2 id="unrankedH">Not ranked yet</h2>
+        <p class="scale-note">A question is ranked once it has been compared 10 times in this board.</p>
+        <ol class="board unranked" id="unrankedRows" aria-labelledby="unrankedH"></ol>
       </div>
     </main>
     <script type="module" src="./board.ts"></script>

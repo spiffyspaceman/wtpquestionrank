@@ -19,6 +19,28 @@ interface Board {
 }
 
 const msg = $("#msg");
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
+function item(r: Row): HTMLLIElement {
+  const range = r.lo !== null && r.hi !== null ? `${r.lo} to ${r.hi}` : "";
+  return el(
+    "li",
+    {},
+    r.rank === null ? null : el("div", { class: "rank" }, String(r.rank)),
+    el(
+      "details",
+      { class: "text" },
+      el("summary", {}, el("span", { class: "stem" }, r.stem), el("span", { class: "more" }, "Show the full question")),
+      el("ul", {}, ...r.bullets.map((x) => el("li", {}, x))),
+    ),
+    el(
+      "div",
+      { class: "score" },
+      el("strong", {}, String(r.rating)),
+      el("span", {}, [plural(r.games, "comparison", "comparisons"), range].filter(Boolean).join(" · ")),
+    ),
+  );
+}
 
 async function load(pool?: string): Promise<void> {
   let b: Board;
@@ -32,7 +54,7 @@ async function load(pool?: string): Promise<void> {
   }
   show($("#content"));
   $("#intervals").textContent = b.intervalsAsOf
-    ? `Ranges show 95% intervals as of ${fmtDate(b.intervalsAsOf)}; the ratings themselves are current.`
+    ? `Ranges are 95% intervals as of ${fmtDate(b.intervalsAsOf)}; the ratings themselves are current.`
     : "";
   $("#tabs").replaceChildren(
     ...b.pools.map((p) => {
@@ -41,24 +63,14 @@ async function load(pool?: string): Promise<void> {
       return btn;
     }),
   );
-  $("#summary").textContent = `${b.round.name}: ${b.votes} votes in this board.`;
-  $("#rows").replaceChildren(
-    ...b.rows.map((r) => {
-      const range = r.lo !== null && r.hi !== null ? ` (range ${r.lo} to ${r.hi})` : "";
-      return el(
-        "li",
-        {},
-        el("div", { class: r.rank === null ? "rank unranked" : "rank" }, r.rank === null ? "Unranked" : `#${r.rank}`),
-        el(
-          "div",
-          {},
-          el("p", {}, r.stem),
-          el("p", { class: "meta" }, `Rating ${r.rating}${range}, ${r.games} ${r.games === 1 ? "comparison" : "comparisons"}`),
-          el("details", {}, el("summary", {}, "Bullets"), el("ul", {}, ...r.bullets.map((x) => el("li", {}, x)))),
-        ),
-      );
-    }),
-  );
+  $("#summary").textContent = `${b.round.name}: ${plural(b.votes, "vote", "votes")} in this board.`;
+  const ranked = b.rows.filter((r) => r.rank !== null);
+  const unranked = b.rows.filter((r) => r.rank === null);
+  $("#rows").replaceChildren(...ranked.map(item));
+  show($("#noneRanked"), ranked.length === 0);
+  $("#unrankedRows").replaceChildren(...unranked.map(item));
+  show($("#unrankedH"), unranked.length > 0);
+  show($("#unrankedH").nextElementSibling as HTMLElement, unranked.length > 0);
 }
 
 void load();

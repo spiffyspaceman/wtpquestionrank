@@ -6,6 +6,7 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>Vote - WTP Question Rank</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/wtpqr-schola-regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -13,7 +14,7 @@
       <header class="top">
         <a class="brand" href="/vote">WTP Question Rank</a>
         <nav>
-          <span id="who" class="muted"></span>
+          <span id="who" class="who"></span>
           <a id="boardLink" href="/board" hidden>Leaderboard</a>
           <span id="lockNote" class="muted small" hidden></span>
         </nav>
@@ -22,30 +23,33 @@
       <p id="msg" class="notice" role="alert" hidden></p>
 
       <section id="judge" hidden aria-labelledby="criterion">
-        <p class="criterion"><strong id="criterion"></strong></p>
+        <p class="criterion"><span class="eyebrow">Your task</span><span id="criterion"></span></p>
         <div class="progress">
           <span id="position" aria-live="polite"></span>
-          <span id="saved" class="muted small" aria-live="polite"></span>
+          <progress id="bar" max="10" value="0" aria-hidden="true"></progress>
+          <span id="saved" aria-live="polite"></span>
         </div>
         <div class="pair">
           <article class="card" aria-labelledby="leftH">
-            <h2 id="leftH">Left</h2>
+            <h2 id="leftH">Question A</h2>
             <p class="stem" id="leftStem"></p>
             <ul id="leftBullets"></ul>
-            <button class="pick primary" id="pickL" type="button">Left is better</button>
           </article>
           <article class="card" aria-labelledby="rightH">
-            <h2 id="rightH">Right</h2>
+            <h2 id="rightH">Question B</h2>
             <p class="stem" id="rightStem"></p>
             <ul id="rightBullets"></ul>
-            <button class="pick primary" id="pickR" type="button">Right is better</button>
           </article>
         </div>
-        <div class="controls">
-          <label class="check"><input type="checkbox" id="close" /> It was a close call</label>
-          <button id="skip" type="button">Skip this pair</button>
+        <div class="decide">
+          <div class="close-row"><label class="check"><input type="checkbox" id="close" /> It was a close call</label></div>
+          <div class="picks">
+            <button class="primary" id="pickL" type="button">A is better</button>
+            <button class="primary" id="pickR" type="button">B is better</button>
+          </div>
+          <div class="skip-row"><button id="skip" class="link" type="button">Skip this pair</button></div>
+          <p class="keys"><kbd>Left arrow</kbd> picks A, <kbd>Right arrow</kbd> picks B, <kbd>C</kbd> marks a close call, <kbd>S</kbd> skips.</p>
         </div>
-        <p class="keys">Keys: <kbd>Left arrow</kbd> or <kbd>Right arrow</kbd> to pick, <kbd>C</kbd> for close call, <kbd>S</kbd> to skip.</p>
       </section>
 
       <section id="between" hidden>

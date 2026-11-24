@@ -64,7 +64,11 @@ function showPair(): void {
   fill("left", p.left);
   fill("right", p.right);
   closeBox.checked = false;
-  $("#position").textContent = `Pair ${size - queue.length + 1} of ${size}`;
+  const n = size - queue.length + 1;
+  $("#position").textContent = `Pair ${n} of ${size}`;
+  const bar = $<HTMLProgressElement>("#bar");
+  bar.max = size;
+  bar.value = n - 1;
   show(judge);
   show(between, false);
   show(stopped, false);

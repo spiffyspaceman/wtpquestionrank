@@ -44,7 +44,12 @@ TURNSTILE_SITEKEY=1x00000000000000000000AA
 TURNSTILE_SECRET=1x0000000000000000000000000000000AA
 CODE_PEPPER=<64 random hex characters>
 ADMIN_SECRET=<a long random string>
+ACCESS_TEAM_DOMAIN=
+ACCESS_AUD=
 ```
+
+The two empty `ACCESS_*` lines switch off Cloudflare Access locally so `ADMIN_SECRET` works; production keeps the values in
+`wrangler.jsonc`.
 
 The two Turnstile values are Cloudflare's always-pass test keys. Apply migrations locally with
 `npx wrangler d1 migrations apply wtpquestionrank --local`.

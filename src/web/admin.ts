@@ -90,23 +90,33 @@ async function act(fn: () => Promise<unknown>, okText?: string): Promise<void> {
 // ---------- rounds ----------
 
 function roundActions(r: Round): Node {
-  const span = el("span", { class: "row" });
+  const wrap = el("div");
+  const group = (label: string, ...items: Node[]) =>
+    el("div", { class: "btn-group" }, el("span", { class: "label" }, label), el("div", { class: "btns" }, ...items));
   const confirmAct = (verb: string, path: string, warn: string) =>
     button(verb, () => {
       if (confirm(`${verb} "${r.name}"? ${warn}`)) void act(() => api(path, { body: {} }), `${verb}: done.`);
     });
-  if (r.state === "draft") span.append(confirmAct("Open", `/admin/api/rounds/${r.id}/open`, "Voters can vote as soon as it opens, and its item set freezes."));
-  if (r.state === "open") span.append(confirmAct("Freeze", `/admin/api/rounds/${r.id}/freeze`, "No more votes will be accepted."));
-  if (r.state === "open" || r.state === "frozen") span.append(confirmAct("Close", `/admin/api/rounds/${r.id}/close`, "Voters will no longer see it."));
+  const state: Node[] = [];
+  if (r.state === "draft") state.push(confirmAct("Open", `/admin/api/rounds/${r.id}/open`, "Voters can vote as soon as it opens, and its item set freezes."));
+  if (r.state === "open") state.push(confirmAct("Freeze", `/admin/api/rounds/${r.id}/freeze`, "No more votes will be accepted."));
+  if (r.state === "open" || r.state === "frozen") state.push(confirmAct("Close", `/admin/api/rounds/${r.id}/close`, "Voters will no longer see it."));
+  if (state.length) wrap.append(group("Round", ...state));
   if (r.state !== "draft") {
-    span.append(
-      button("Refresh intervals", () => void refreshIntervals(r)),
-      button("Rebuild caches", () => void act(() => api(`/admin/api/rounds/${r.id}/rebuild`, { body: {} }), "Caches rebuilt from the vote log.")),
-      el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export.json` }, "JSON"),
-      ...["votes", "skips", "ratings", "voters"].map((k) => el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export/${k}.csv` }, `${k} CSV`)),
+    wrap.append(
+      group(
+        "Ratings",
+        button("Refresh intervals", () => void refreshIntervals(r)),
+        button("Rebuild caches", () => void act(() => api(`/admin/api/rounds/${r.id}/rebuild`, { body: {} }), "Caches rebuilt from the vote log.")),
+      ),
+      group(
+        "Export",
+        el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export.json` }, "JSON"),
+        ...["votes", "skips", "ratings", "voters"].map((k) => el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export/${k}.csv` }, `${k} CSV`)),
+      ),
     );
   }
-  return span;
+  return wrap;
 }
 
 /** 1,000-rep rater bootstrap per pool, in this browser, then saved as snapshots. */
@@ -275,7 +285,13 @@ async function refresh(): Promise<void> {
     status.itemSets.map((s) => [
       s.id,
       s.n_items,
-      el("span", { class: "mono" }, s.file_sha256 + (s.file_sha256 === PREREG_ITEM_SHA ? " (matches the pre-registration)" : "")),
+      el(
+        "span",
+        {},
+        el("span", { class: "mono" }, s.file_sha256),
+        el("br"),
+        el("span", { class: "muted" }, s.file_sha256 === PREREG_ITEM_SHA ? "Matches the pre-registered launch file." : "Not the pre-registered launch file."),
+      ),
       fmtDate(s.created_at),
       s.frozen_at ? fmtDate(s.frozen_at) : "",
     ]),
