@@ -99,12 +99,13 @@ batch. Each pair then gets its own time, which is what SPEC §2 ("time on pair")
 
 Each fact below comes from Cloudflare's docs, read that day.
 
-1. **Triggers and partial unique indexes: confirmed in local D1, UNVERIFIED in remote D1.**
+1. **Triggers and partial unique indexes: confirmed in remote D1.**
    - The docs say D1 "is compatible with most SQLite's SQL convention"
      ([SQL statements](https://developers.cloudflare.com/d1/sql-api/sql-statements/)). They do not mention triggers.
-   - `0001_init.sql` applies cleanly to the local D1 in wrangler 4.168.0 and in the Vitest Workers pool. All nine
-     triggers fire, and the partial index blocks a second open round.
-   - The first `migrations apply --remote` settles it. It runs before `wrangler deploy`, so a failure stops the deploy.
+   - On 24 November 2026, `wrangler d1 migrations apply --remote` ran all 32 statements of `0001_init.sql` on the
+     production database. `sqlite_schema` there lists every table, all nine triggers and
+     `CREATE UNIQUE INDEX rounds_one_open ON rounds(state) WHERE state = 'open'`.
+   - That the triggers fire is tested in local D1 (same SQLite engine): `test/worker/schema.test.ts`.
 2. **`db.batch()` is one transaction.** "Batched statements are SQL transactions. If a statement in the sequence fails,
    then an error is returned for that specific statement, and it aborts or rolls back the entire sequence."
    ([D1 Database](https://developers.cloudflare.com/d1/worker-api/d1-database/))
