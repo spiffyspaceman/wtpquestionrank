@@ -103,6 +103,14 @@ voterApi.get("/me", requireVoter(), async (c) => {
   return c.json(await meState(c.env.DB, c.get("voter"), await currentRound(c.env.DB)));
 });
 
+/** True when the voter (?3) has an issued pair in round ?2 with neither a vote nor a skip. */
+const UNANSWERED_SQL = `SELECT 1 FROM batch_pairs bp JOIN batches b ON b.id = bp.batch_id
+  WHERE b.round_id = ?2 AND b.voter_id = ?3
+    AND NOT EXISTS (SELECT 1 FROM votes v WHERE v.round_id = ?2 AND v.voter_id = ?3
+                    AND v.item_lo = MIN(bp.left_q, bp.right_q) AND v.item_hi = MAX(bp.left_q, bp.right_q) AND v.is_repeat = bp.is_repeat)
+    AND NOT EXISTS (SELECT 1 FROM skips s WHERE s.round_id = ?2 AND s.voter_id = ?3
+                    AND s.item_lo = MIN(bp.left_q, bp.right_q) AND s.item_hi = MAX(bp.left_q, bp.right_q) AND s.is_repeat = bp.is_repeat)`;
+
 /** Pairs of the voter's latest batch that have neither a vote nor a skip yet. */
 async function unfinishedPairs(db: D1Database, round: RoundRow, voterId: string) {
   const batch = await db
@@ -200,25 +208,28 @@ voterApi.get("/batch", requireVoter(), async (c) => {
     const batchId = randomId();
     const now = nowIso();
     const rows = issued.map((p) => ({ id: randomId(), left_q: p.left, right_q: p.right, p }));
-    await db.batch([
-      db.prepare("INSERT INTO batches (id, round_id, voter_id, seed, created_at) VALUES (?, ?, ?, ?, ?)").bind(
-        batchId,
-        round.id,
-        voter.id,
-        seed,
-        now,
-      ),
+    // Two requests at once (double tap, two devices) must not both create a batch. The insert happens only if the
+    // voter still has no unanswered pair; D1 runs each batch as one transaction, so the second request sees the first.
+    const res = await db.batch([
+      db
+        .prepare(
+          `INSERT INTO batches (id, round_id, voter_id, seed, created_at)
+           SELECT ?1, ?2, ?3, ?4, ?5 WHERE NOT EXISTS (${UNANSWERED_SQL})`,
+        )
+        .bind(batchId, round.id, voter.id, seed, now),
       ...rows.map((r, i) =>
         db
           .prepare(
             `INSERT INTO batch_pairs (id, batch_id, position, left_q, right_q, is_repeat, reason, issued_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+             SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8 WHERE EXISTS (SELECT 1 FROM batches WHERE id = ?2)`,
           )
           .bind(r.id, batchId, i, r.left_q, r.right_q, r.p.isRepeat ? 1 : 0, r.p.reason, now),
       ),
     ]);
-    size = rows.length;
-    pairs = rows;
+    if (res[0].meta.changes === 1) {
+      size = rows.length;
+      pairs = rows;
+    } else ({ size, pairs } = await unfinishedPairs(db, round, voter.id)); // another request won; serve its batch
   }
   const text = await questionTexts(db, pairs.flatMap((p) => [p.left_q, p.right_q]));
   return c.json({
@@ -326,7 +337,9 @@ voterApi.post("/vote", requireVoter(), async (c) => {
       .prepare(
         `INSERT INTO votes (batch_pair_id, round_id, item_set_id, voter_id, role, left_q, right_q, item_lo, item_hi,
                             winner_q, close_call, is_repeat, after_board, client_ms, server_ms, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16
+          WHERE EXISTS (SELECT 1 FROM rounds WHERE id = ?2 AND state = 'open')
+            AND EXISTS (SELECT 1 FROM voters WHERE id = ?4 AND revoked_at IS NULL)`,
       )
       .bind(
         p.id,
@@ -347,10 +360,12 @@ voterApi.post("/vote", requireVoter(), async (c) => {
         new Date(nowMs).toISOString(),
       ),
     // Repeats measure consistency only; they never feed the ratings.
-    ...(p.is_repeat ? [] : pairCountUpserts(db, p.round_id, voter.role, p.left_q, p.right_q, winner === p.left_q)),
+    ...(p.is_repeat ? [] : pairCountUpserts(db, p.round_id, voter.role, p.left_q, p.right_q, winner === p.left_q, p.id)),
   ];
   try {
-    await db.batch(stmts);
+    const res = await db.batch(stmts);
+    // The round froze or the code was revoked between the checks above and this write: nothing was written.
+    if (res[0].meta.changes === 0) return c.json({ error: "round_not_open" }, 409);
   } catch (e) {
     if (!isUniqueViolation(e)) throw e;
     // A double submit lost the race. Nothing was written; report the current state.
@@ -372,7 +387,9 @@ voterApi.post("/skip", requireVoter(), async (c) => {
       await db
         .prepare(
           `INSERT INTO skips (batch_pair_id, round_id, voter_id, item_lo, item_hi, is_repeat, client_ms, created_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+           SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8
+            WHERE EXISTS (SELECT 1 FROM rounds WHERE id = ?2 AND state = 'open')
+              AND EXISTS (SELECT 1 FROM voters WHERE id = ?3 AND revoked_at IS NULL)`,
         )
         .bind(p.id, p.round_id, voter.id, lo, hi, p.is_repeat, optInt(body.clientMs, 0, MAX_CLIENT_MS), nowIso())
         .run();

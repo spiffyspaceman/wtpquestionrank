@@ -71,15 +71,18 @@ export function pairCountUpserts(
   left: string,
   right: string,
   leftWon: boolean,
+  batchPairId: string,
 ): D1PreparedStatement[] {
+  // Counted only if the vote row for this pair was written in the same transaction.
   return poolsForRole(role).map((pool) =>
     db
       .prepare(
-        `INSERT INTO pair_counts (round_id, pool, left_q, right_q, left_wins, n) VALUES (?, ?, ?, ?, ?, 1)
+        `INSERT INTO pair_counts (round_id, pool, left_q, right_q, left_wins, n)
+         SELECT ?, ?, ?, ?, ?, 1 WHERE EXISTS (SELECT 1 FROM votes WHERE batch_pair_id = ?)
          ON CONFLICT (round_id, pool, left_q, right_q)
          DO UPDATE SET left_wins = left_wins + excluded.left_wins, n = n + 1`,
       )
-      .bind(roundId, pool, left, right, leftWon ? 1 : 0),
+      .bind(roundId, pool, left, right, leftWon ? 1 : 0, batchPairId),
   );
 }
 
@@ -87,33 +90,40 @@ export function pairCountUpserts(
  * Rebuild the round's pair_counts from the vote log, in one transaction: first presentations only,
  * revoked voters excluded, each vote counted under the role it was cast with.
  */
-export async function rebuildPairCounts(db: D1Database, roundId: string): Promise<void> {
+/** Returns the rows written (D1 meta), so callers and tests can see the cost. */
+export async function rebuildPairCounts(db: D1Database, roundId: string): Promise<number> {
+  // The true counts, grouped per pool. Written only where a row changed, so a rebuild with few differences (the
+  // usual case: one revoked voter) costs few row writes on the D1 free tier.
   const base = `FROM votes v JOIN voters u ON u.id = v.voter_id
                 WHERE v.round_id = ?1 AND v.is_repeat = 0 AND u.revoked_at IS NULL`;
-  const sums = "SUM(CASE WHEN v.winner_q = v.left_q THEN 1 ELSE 0 END), COUNT(*)";
+  const sums = "SUM(CASE WHEN v.winner_q = v.left_q THEN 1 ELSE 0 END) AS lw, COUNT(*) AS n";
   const adults = POOLED_ROLES.map((r) => `'${r}'`).join(",");
-  await db.batch([
-    db.prepare("DELETE FROM pair_counts WHERE round_id = ?1").bind(roundId),
+  const truth = [
+    `SELECT 'all' AS pool, v.left_q AS l, v.right_q AS r, ${sums} ${base} GROUP BY v.left_q, v.right_q`,
+    `SELECT v.role AS pool, v.left_q AS l, v.right_q AS r, ${sums} ${base} GROUP BY v.role, v.left_q, v.right_q`,
+    `SELECT 'adults' AS pool, v.left_q AS l, v.right_q AS r, ${sums} ${base} AND v.role IN (${adults}) GROUP BY v.left_q, v.right_q`,
+  ];
+  const res = await db.batch([
+    // Rows that no longer have any counted vote (for example, all from a revoked voter).
     db
       .prepare(
-        `INSERT INTO pair_counts (round_id, pool, left_q, right_q, left_wins, n)
-         SELECT v.round_id, 'all', v.left_q, v.right_q, ${sums} ${base} GROUP BY v.left_q, v.right_q ORDER BY MIN(v.id)`,
+        `DELETE FROM pair_counts WHERE round_id = ?1
+           AND (pool, left_q, right_q) NOT IN (SELECT pool, l, r FROM (${truth.join(" UNION ALL ")}))`,
       )
       .bind(roundId),
-    db
-      .prepare(
-        `INSERT INTO pair_counts (round_id, pool, left_q, right_q, left_wins, n)
-         SELECT v.round_id, v.role, v.left_q, v.right_q, ${sums} ${base} GROUP BY v.role, v.left_q, v.right_q ORDER BY MIN(v.id)`,
-      )
-      .bind(roundId),
-    db
-      .prepare(
-        `INSERT INTO pair_counts (round_id, pool, left_q, right_q, left_wins, n)
-         SELECT v.round_id, 'adults', v.left_q, v.right_q, ${sums} ${base} AND v.role IN (${adults})
-         GROUP BY v.left_q, v.right_q ORDER BY MIN(v.id)`,
-      )
-      .bind(roundId),
+    // New or changed rows. ON CONFLICT ... WHERE skips rows that already hold the right counts.
+    ...truth.map((sel) =>
+      db
+        .prepare(
+          `INSERT INTO pair_counts (round_id, pool, left_q, right_q, left_wins, n)
+           SELECT ?1, pool, l, r, lw, n FROM (${sel}) WHERE 1
+           ON CONFLICT (round_id, pool, left_q, right_q) DO UPDATE SET left_wins = excluded.left_wins, n = excluded.n
+           WHERE pair_counts.left_wins <> excluded.left_wins OR pair_counts.n <> excluded.n`,
+        )
+        .bind(roundId),
+    ),
   ]);
+  return res.reduce((sum, r) => sum + (r.meta.rows_written ?? r.meta.changes ?? 0), 0);
 }
 
 export interface SnapshotPayload {
@@ -144,6 +154,13 @@ export async function latestSnapshot(db: D1Database, roundId: string, pool: stri
     .first<SnapshotRow>();
 }
 
+/** FNV-1a of a salted id: a stable order with no relation to the id's own sort order. */
+function tieKey(id: string): number {
+  let h = 0x811c9dc5;
+  for (const ch of "wtpqr-tie:" + id) h = Math.imul(h ^ ch.charCodeAt(0), 0x01000193) >>> 0;
+  return h;
+}
+
 export interface BoardRow {
   id: string;
   rating: number;
@@ -161,7 +178,7 @@ export async function board(
 ): Promise<(pool: string) => Promise<{ fit: BTFit; rows: BoardRow[]; snapshot: SnapshotRow | null }>> {
   const items = await roundItems(db, round.item_set_id);
   return async (pool: string) => {
-    const fit = fitBTCounts(items, await pairCounts(db, round.id, pool));
+    const fit = fitBTCounts(items, await pairCounts(db, round.id, pool), { noCov: true });
     const snapshot = await latestSnapshot(db, round.id, pool);
     const snap = snapshot ? (JSON.parse(snapshot.payload_json) as SnapshotPayload) : null;
     const snapIx = new Map((snap?.ids ?? []).map((id, i) => [id, i]));
@@ -180,7 +197,8 @@ export async function board(
         hi: snap && k !== undefined ? snap.ratingHi[k] : null,
       };
     });
-    rows.sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity) || b.rating - a.rating);
+    // Ties (unplayed items all sit at 1000) must not fall back to question-id order, which encodes cycle and unit.
+    rows.sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity) || b.rating - a.rating || tieKey(a.id) - tieKey(b.id));
     return { fit, rows, snapshot };
   };
 }

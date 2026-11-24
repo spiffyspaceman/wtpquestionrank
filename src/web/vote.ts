@@ -76,7 +76,18 @@ function showPair(): void {
   window.scrollTo({ top: 0 });
 }
 
+let loading = false;
 async function loadBatch(): Promise<void> {
+  if (loading) return; // a double tap must not ask for two batches
+  loading = true;
+  try {
+    await fetchBatch();
+  } finally {
+    loading = false;
+  }
+}
+
+async function fetchBatch(): Promise<void> {
   say(msg, "");
   let b: Batch;
   try {

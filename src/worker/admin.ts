@@ -50,7 +50,7 @@ adminApi.get("/status", async (c) => {
     )
     .all();
   const lastExport = await db
-    .prepare("SELECT MAX(at) AS at FROM admin_audit WHERE action LIKE 'export%'")
+    .prepare("SELECT MAX(at) AS at FROM admin_audit WHERE action IN ('export_json', 'export_votes_csv')")
     .first<{ at: string | null }>();
   const anyVotes = await db.prepare("SELECT count(*) AS n FROM votes").first<{ n: number }>();
   const ageDays = lastExport?.at ? (Date.now() - Date.parse(lastExport.at)) / 86_400_000 : Infinity;
@@ -133,11 +133,12 @@ adminApi.post("/items", async (c) => {
   }
 
   const hashes = await Promise.all(items.map((i) => questionTextHash(i.stem, i.bullets)));
-  const conflicts: string[] = [];
-  for (let k = 0; k < items.length; k++) {
-    const q = await db.prepare("SELECT text_sha256 FROM questions WHERE id = ?").bind(items[k].id).first<{ text_sha256: string }>();
-    if (q && q.text_sha256 !== hashes[k]) conflicts.push(items[k].id);
-  }
+  const loaded = await db
+    .prepare(`SELECT id, text_sha256 FROM questions WHERE id IN (${items.map(() => "?").join(",")})`)
+    .bind(...items.map((i) => i.id))
+    .all<{ id: string; text_sha256: string }>();
+  const loadedHash = new Map(loaded.results.map((q) => [q.id, q.text_sha256]));
+  const conflicts = items.filter((i, k) => loadedHash.has(i.id) && loadedHash.get(i.id) !== hashes[k]).map((i) => i.id);
   if (conflicts.length)
     return c.json({ error: "text_conflict", message: "A loaded question has different text. Give the corrected text a new id.", ids: conflicts }, 409);
 
@@ -218,9 +219,9 @@ adminApi.post("/rounds/:id/:action{open|freeze|close}", async (c) => {
 adminApi.post("/rounds/:id/rebuild", async (c) => {
   const round = await getRound(c);
   if (!round) return c.json({ error: "unknown_round" }, 404);
-  await rebuildPairCounts(c.env.DB, round.id);
-  await audit(c, "rebuild_caches", { id: round.id });
-  return c.json({ ok: true });
+  const rowsWritten = await rebuildPairCounts(c.env.DB, round.id);
+  await audit(c, "rebuild_caches", { id: round.id, rowsWritten });
+  return c.json({ ok: true, rowsWritten });
 });
 
 adminApi.get("/rounds/:id/board", async (c) => {
@@ -293,9 +294,9 @@ adminApi.post("/rounds/:id/snapshots", async (c) => {
 
 adminApi.get("/codes", async (c) => {
   const r = await c.env.DB.prepare(
-    `SELECT u.label, u.role, u.is_owner, u.created_at, u.revoked_at, u.board_seen_at,
-            (SELECT count(*) FROM votes v WHERE v.voter_id = u.id) AS n_votes
-       FROM voters u ORDER BY u.role, u.label`,
+    `SELECT u.label, u.role, u.is_owner, u.created_at, u.revoked_at, u.board_seen_at, COALESCE(c.n, 0) AS n_votes
+       FROM voters u LEFT JOIN (SELECT voter_id, count(*) AS n FROM votes GROUP BY voter_id) c ON c.voter_id = u.id
+      ORDER BY u.role, u.label`,
   ).all();
   return c.json({ voters: r.results });
 });
@@ -383,7 +384,7 @@ adminApi.get("/votes", async (c) => {
 adminApi.get("/rounds/:id/export.json", async (c) => {
   const round = await getRound(c);
   if (!round) return c.json({ error: "unknown_round" }, 404);
-  const body = JSON.stringify(await roundExport(c.env.DB, round), null, 1);
+  const body = JSON.stringify(await roundExport(c.env.DB, round));
   await audit(c, "export_json", { id: round.id, sha256: await sha256Hex(body) });
   return new Response(body, {
     headers: {
