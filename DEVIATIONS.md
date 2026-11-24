@@ -8,3 +8,11 @@ Recorded for completeness (not deviations): after the pre-registration was hashe
 `llm-arm/MethodA36_Compact_2026-11-24.jsonl` (labels and picks only; SHA-256
 9689cda446ac3d86aa7279531cf19c53349e35f31f9049fc8473650bd4be217f). `llm-arm/summarize.ts` was added after
 registration to summarize the run; it is not part of the registered analysis.
+
+## Clarifications (not deviations)
+
+**24 November 2026: time on pair (`server_ms`).** Owner agreed. BUILD_STEPS §3 writes `server_ms = now - issued_at`,
+where `issued_at` is the time the whole batch was sent. SPEC §2 calls the measure "time on pair", and
+`analysis/analyze.ts` applies the pre-registered 20-second "too fast" flag to it. The Worker therefore measures each
+pair from the later of the batch's `issued_at` and the voter's previous answer (vote or skip) in the same batch.
+This changes no frozen file and no threshold. A batch resumed after a break carries the break on its next pair.
