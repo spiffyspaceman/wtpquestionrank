@@ -50,7 +50,13 @@ async function questionTexts(db: D1Database, ids: string[]): Promise<Map<string,
 
 // ---------- config and redeem (no session) ----------
 
-voterApi.get("/config", (c) => c.json({ turnstileSitekey: c.env.TURNSTILE_SITEKEY }));
+// Whether each secret is set (never its value), so the owner can tell why sign-in is closed.
+voterApi.get("/config", (c) =>
+  c.json({
+    turnstileSitekey: c.env.TURNSTILE_SITEKEY,
+    configured: { codePepper: Boolean(c.env.CODE_PEPPER), turnstileSecret: Boolean(c.env.TURNSTILE_SECRET) },
+  }),
+);
 
 voterApi.post("/redeem", async (c) => {
   const body = await readJsonObject(c.req.raw);
