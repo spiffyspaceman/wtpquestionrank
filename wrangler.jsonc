@@ -32,8 +32,8 @@
   "vars": {
     "PROD_HOST": "wtpquestionrank.spiffyspaceman.com",
     // Filled in at BUILD_STEPS §9 step 5, from the Access application.
-    "ACCESS_TEAM_DOMAIN": "",
-    "ACCESS_AUD": "",
+    "ACCESS_TEAM_DOMAIN": "falling-mouse-d5eb.cloudflareaccess.com",
+    "ACCESS_AUD": "a5fd1dc2760da4c1ecaee3136d0063fdfddca1274d040f223ed0db0d481af8cf",
     // Public site key of the Turnstile widget (§9 step 4). The secret key is a Worker secret.
     "TURNSTILE_SITEKEY": "0x4AAAAAAGRX_q6QWAvfeUgg"
   },
