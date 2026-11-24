@@ -35,7 +35,7 @@
     "ACCESS_TEAM_DOMAIN": "",
     "ACCESS_AUD": "",
     // Public site key of the Turnstile widget (§9 step 4). The secret key is a Worker secret.
-    "TURNSTILE_SITEKEY": ""
+    "TURNSTILE_SITEKEY": "0x4AAAAAAGRX_q6QWAvfeUgg"
   },
 
   // Branch previews get no bindings at all: no D1, no secrets. They can serve static pages only.
