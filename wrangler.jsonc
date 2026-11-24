@@ -24,7 +24,7 @@
     {
       "binding": "DB",
       "database_name": "wtpquestionrank",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "de56eb48-9566-4c23-ae18-ade6593e10dc",
       "migrations_dir": "migrations"
     }
   ],
