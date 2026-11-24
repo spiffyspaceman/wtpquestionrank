@@ -98,4 +98,21 @@ describe("leaderboard", () => {
     expect(b.intervalsAsOf).toBeTruthy();
     expect(b.rows.every((r: { lo: number; hi: number }) => r.lo === 900 && r.hi === 1100)).toBe(true);
   });
+
+  it("drops saved intervals when a voter in the round is revoked", async () => {
+    const id = await openNewRound();
+    const keep = await voter("judge");
+    const gone = await voter("judge");
+    await voteN(keep.cookie, 20);
+    await voteN(gone.cookie, 5);
+    const input = await json(admin(`/admin/api/rounds/${id}/bootstrap-input`));
+    const payload = { ids: input.items, rating: input.items.map(() => 1000), ratingLo: input.items.map(() => 900), ratingHi: input.items.map(() => 1100) };
+    await admin(`/admin/api/rounds/${id}/snapshots`, { body: { snapshots: [{ pool: "adults", n_votes: 25, n_raters: 2, last_vote_id: 1, config: {}, payload }] } });
+    expect((await json(call("/api/leaderboard", { cookie: keep.cookie }))).intervalsAsOf).toBeTruthy();
+    await admin("/admin/api/codes/revoke", { body: { label: gone.label } });
+    const b = await json(call("/api/leaderboard", { cookie: keep.cookie }));
+    expect(b.intervalsAsOf).toBeNull();
+    expect(b.rows.every((r: { lo: number | null }) => r.lo === null)).toBe(true);
+    expect(b.votes).toBe(20);
+  });
 });

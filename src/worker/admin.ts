@@ -343,7 +343,11 @@ adminApi.post("/codes/revoke", async (c) => {
   ]);
   // Take the revoked voter's votes out of the caches now, rather than waiting for a manual rebuild.
   const rounds = await db.prepare("SELECT DISTINCT round_id FROM votes WHERE voter_id = ?").bind(v.id).all<{ round_id: string }>();
-  for (const r of rounds.results) await rebuildPairCounts(db, r.round_id);
+  for (const r of rounds.results) {
+    await rebuildPairCounts(db, r.round_id);
+    // Saved intervals included this voter's votes. They are a cache: drop them until the next refresh.
+    await db.prepare("DELETE FROM rating_snapshots WHERE round_id = ?").bind(r.round_id).run();
+  }
   await audit(c, "revoke_code", { label, rebuilt: rounds.results.map((r) => r.round_id) });
   return c.json({ ok: true });
 });
