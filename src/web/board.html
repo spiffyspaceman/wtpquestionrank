@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Leaderboard - WTP Question Rank</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <header class="top">
+        <a class="brand" href="/vote">WTP Question Rank</a>
+        <nav><a href="/vote">Back to voting</a></nav>
+      </header>
+      <h1>Leaderboard</h1>
+      <p id="msg" class="notice" role="alert" hidden></p>
+      <div id="content" hidden>
+        <p class="muted small">
+          Ratings use a chess-style scale: the average question sits at 1000, and a 400-point gap means the higher
+          question wins about 10 times in 11. A question gets a rank after 10 comparisons.
+          <span id="intervals"></span>
+        </p>
+        <div class="tabs" id="tabs" role="group" aria-label="Which voters"></div>
+        <p id="summary" class="muted small" aria-live="polite"></p>
+        <ol class="board" id="rows"></ol>
+      </div>
+    </main>
+    <script type="module" src="./board.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Vote - WTP Question Rank</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <header class="top">
+        <a class="brand" href="/vote">WTP Question Rank</a>
+        <nav>
+          <span id="who" class="muted"></span>
+          <a id="boardLink" href="/board" hidden>Leaderboard</a>
+          <span id="lockNote" class="muted small" hidden></span>
+        </nav>
+      </header>
+
+      <p id="msg" class="notice" role="alert" hidden></p>
+
+      <section id="judge" hidden aria-labelledby="criterion">
+        <p class="criterion"><strong id="criterion"></strong></p>
+        <div class="progress">
+          <span id="position" aria-live="polite"></span>
+          <span id="saved" class="muted small" aria-live="polite"></span>
+        </div>
+        <div class="pair">
+          <article class="card" aria-labelledby="leftH">
+            <h2 id="leftH">Left</h2>
+            <p class="stem" id="leftStem"></p>
+            <ul id="leftBullets"></ul>
+            <button class="pick primary" id="pickL" type="button">Left is better</button>
+          </article>
+          <article class="card" aria-labelledby="rightH">
+            <h2 id="rightH">Right</h2>
+            <p class="stem" id="rightStem"></p>
+            <ul id="rightBullets"></ul>
+            <button class="pick primary" id="pickR" type="button">Right is better</button>
+          </article>
+        </div>
+        <div class="controls">
+          <label class="check"><input type="checkbox" id="close" /> It was a close call</label>
+          <button id="skip" type="button">Skip this pair</button>
+        </div>
+        <p class="keys">Keys: <kbd>Left arrow</kbd> or <kbd>Right arrow</kbd> to pick, <kbd>C</kbd> for close call, <kbd>S</kbd> to skip.</p>
+      </section>
+
+      <section id="between" hidden>
+        <h1 tabindex="-1" id="betweenH">Batch done</h1>
+        <p id="betweenText"></p>
+        <div class="actions">
+          <button id="more" class="primary" type="button">Keep going</button>
+          <button id="stop" type="button">Stop for now</button>
+        </div>
+      </section>
+
+      <section id="stopped" hidden>
+        <h1 tabindex="-1" id="stoppedH">Thank you</h1>
+        <p>Your votes are saved. Come back any time: your code works on any device.</p>
+        <p id="stoppedBoard" hidden><a href="/board">See the leaderboard</a></p>
+        <div class="actions"><button id="resume" type="button">Judge more pairs</button></div>
+      </section>
+    </main>
+    <script type="module" src="./vote.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,374 @@
+// Admin page. Runs the rater bootstrap in this browser with the same rating module the Worker uses.
+import { POOLED_ROLES, RATING } from "../rating/config";
+import { bootstrapBT, fitBT, type Vote } from "../rating/rating";
+import { $, api, ApiError, el, fmtDate, say, show } from "./common";
+
+const BOOT_SEED = 20261124; // PREREG_Human_vs_LLM.md §6
+const PREREG_ITEM_SHA = "8cb28a9e4f2ef1f5a4f687e6e25d78b1f7d95faf431ef04d240efb2fb53510d0";
+
+interface Round {
+  id: string;
+  name: string;
+  item_set_id: string;
+  state: string;
+  created_at: string;
+  opened_at: string | null;
+  frozen_at: string | null;
+  closed_at: string | null;
+  n_votes: number;
+  n_voters: number;
+}
+interface ItemSet {
+  id: string;
+  name: string;
+  version: number;
+  file_sha256: string;
+  created_at: string;
+  frozen_at: string | null;
+  n_items: number;
+}
+interface Status {
+  actor: string;
+  rounds: Round[];
+  itemSets: ItemSet[];
+  lastExportAt: string | null;
+  exportOverdue: boolean;
+  roles: { id: string; name: string }[];
+  pools: string[];
+}
+
+const msg = $("#msg");
+let status: Status;
+let votesPage = 0;
+let lastCodes: { label: string; role: string; code: string }[] = [];
+
+function options(select: HTMLSelectElement, opts: [string, string][], keep = true): void {
+  const prev = select.value;
+  select.replaceChildren(...opts.map(([v, t]) => el("option", { value: v }, t)));
+  if (keep && opts.some(([v]) => v === prev)) select.value = prev;
+}
+
+function table(t: HTMLTableElement, head: string[], rows: (string | number | Node | null)[][], numeric: number[] = []): void {
+  t.replaceChildren(
+    el("thead", {}, el("tr", {}, ...head.map((h, i) => el("th", numeric.includes(i) ? { class: "num" } : {}, h)))),
+    el(
+      "tbody",
+      {},
+      ...rows.map((r) =>
+        el("tr", {}, ...r.map((c, i) => el("td", numeric.includes(i) ? { class: "num" } : {}, c === null ? "" : c instanceof Node ? c : String(c)))),
+      ),
+    ),
+  );
+}
+
+function button(text: string, onClick: () => void, cls = ""): HTMLButtonElement {
+  const b = el("button", { type: "button", ...(cls ? { class: cls } : {}) }, text);
+  b.addEventListener("click", onClick);
+  return b;
+}
+
+function download(name: string, text: string, type: string): void {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const a = el("a", { href: url, download: name });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function act(fn: () => Promise<unknown>, okText?: string): Promise<void> {
+  say(msg, "");
+  try {
+    await fn();
+    if (okText) say(msg, okText, "ok");
+  } catch (err) {
+    say(msg, err instanceof ApiError ? err.message : String(err), "error");
+  }
+  await refresh();
+}
+
+// ---------- rounds ----------
+
+function roundActions(r: Round): Node {
+  const span = el("span", { class: "row" });
+  const confirmAct = (verb: string, path: string, warn: string) =>
+    button(verb, () => {
+      if (confirm(`${verb} "${r.name}"? ${warn}`)) void act(() => api(path, { body: {} }), `${verb}: done.`);
+    });
+  if (r.state === "draft") span.append(confirmAct("Open", `/admin/api/rounds/${r.id}/open`, "Voters can vote as soon as it opens, and its item set freezes."));
+  if (r.state === "open") span.append(confirmAct("Freeze", `/admin/api/rounds/${r.id}/freeze`, "No more votes will be accepted."));
+  if (r.state === "open" || r.state === "frozen") span.append(confirmAct("Close", `/admin/api/rounds/${r.id}/close`, "Voters will no longer see it."));
+  if (r.state !== "draft") {
+    span.append(
+      button("Refresh intervals", () => void refreshIntervals(r)),
+      button("Rebuild caches", () => void act(() => api(`/admin/api/rounds/${r.id}/rebuild`, { body: {} }), "Caches rebuilt from the vote log.")),
+      el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export.json` }, "JSON"),
+      ...["votes", "skips", "ratings", "voters"].map((k) => el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export/${k}.csv` }, `${k} CSV`)),
+    );
+  }
+  return span;
+}
+
+/** 1,000-rep rater bootstrap per pool, in this browser, then saved as snapshots. */
+async function refreshIntervals(r: Round): Promise<void> {
+  const out = $("#bootMsg");
+  say(out, "Downloading votes...");
+  try {
+    const input = await api<{ items: string[]; votes: { id: number; l: string; r: string; w: string; rater: string; role: string }[] }>(
+      `/admin/api/rounds/${r.id}/bootstrap-input`,
+    );
+    const all: (Vote & { id: number })[] = input.votes.map((v) => ({ id: v.id, left: v.l, right: v.r, winner: v.w, rater: v.rater, role: v.role }));
+    const adults = new Set<string>(POOLED_ROLES);
+    const pools: [string, (v: Vote) => boolean][] = [
+      ["all", () => true],
+      ["adults", (v) => adults.has(v.role!)],
+      ...status.roles.map((x) => [x.id, (v: Vote) => v.role === x.id] as [string, (v: Vote) => boolean]),
+    ];
+    const snapshots = [];
+    const t0 = performance.now();
+    for (const [pool, keep] of pools) {
+      const votes = all.filter(keep);
+      if (!votes.length) continue;
+      say(out, `Bootstrapping ${pool} (${votes.length} votes)...`);
+      await new Promise((res) => setTimeout(res, 0)); // let the message paint
+      const fit = fitBT(input.items, votes);
+      const boot = bootstrapBT(input.items, votes, { reps: RATING.BOOTSTRAP_REPS, seed: BOOT_SEED, unit: "rater" });
+      snapshots.push({
+        pool,
+        n_votes: votes.length,
+        n_raters: new Set(votes.map((v) => v.rater)).size,
+        last_vote_id: Math.max(...votes.map((v) => v.id)),
+        config: { RATING, reps: RATING.BOOTSTRAP_REPS, seed: BOOT_SEED, unit: "rater" },
+        payload: {
+          ids: input.items,
+          rating: fit.rating,
+          ratingLo: boot.ratingLo,
+          ratingHi: boot.ratingHi,
+          rankLo: boot.rankLo,
+          rankHi: boot.rankHi,
+          games: fit.games,
+        },
+      });
+    }
+    if (!snapshots.length) return say(out, "No votes yet.", "warn");
+    await api(`/admin/api/rounds/${r.id}/snapshots`, { body: { snapshots } });
+    say(out, `Intervals saved for ${snapshots.length} pools in ${((performance.now() - t0) / 1000).toFixed(1)} s.`, "ok");
+  } catch (err) {
+    say(out, err instanceof ApiError ? err.message : String(err), "error");
+  }
+}
+
+// ---------- codes ----------
+
+function renderCodes(): void {
+  show($("#newCodesOut"), lastCodes.length > 0);
+  table($<HTMLTableElement>("#codesTable"), ["Label", "Role", "Code"], lastCodes.map((c) => [c.label, c.role, el("span", { class: "mono" }, c.code)]));
+}
+
+async function loadVoters(): Promise<void> {
+  const r = await api<{ voters: Record<string, any>[] }>("/admin/api/codes");
+  table(
+    $<HTMLTableElement>("#voters"),
+    ["Label", "Role", "Owner", "Votes", "Board seen", "Revoked", ""],
+    r.voters.map((v) => [
+      v.label,
+      v.role,
+      v.is_owner ? "yes" : "",
+      v.n_votes,
+      v.board_seen_at ? fmtDate(v.board_seen_at) : "",
+      v.revoked_at ? fmtDate(v.revoked_at) : "",
+      v.revoked_at
+        ? null
+        : button("Revoke", () => {
+            if (confirm(`Revoke ${v.label}? Their code stops working and their votes leave the ratings. The votes stay in the log.`))
+              void act(() => api("/admin/api/codes/revoke", { body: { label: v.label } }), `${v.label} revoked; caches rebuilt.`);
+          }),
+    ]),
+    [3],
+  );
+}
+
+// ---------- board and raw votes ----------
+
+async function loadBoard(): Promise<void> {
+  const round = $<HTMLSelectElement>("#boardRound").value;
+  const pool = $<HTMLSelectElement>("#boardPool").value;
+  if (!round) return;
+  const b = await api<{ votes: number; left: number; intervalsAsOf: string | null; rows: Record<string, any>[] }>(
+    `/admin/api/rounds/${round}/board?pool=${pool}`,
+  );
+  $("#boardInfo").textContent =
+    `${b.votes} first-presentation votes. Left-side effect ${b.left.toFixed(3)} log-odds. ` +
+    (b.intervalsAsOf ? `Intervals as of ${fmtDate(b.intervalsAsOf)}.` : "No intervals yet: use Refresh intervals.");
+  table(
+    $<HTMLTableElement>("#board"),
+    ["Rank", "Question", "Rating", "Low", "High", "Games", "Wins"],
+    b.rows.map((r) => [r.rank ?? "", el("span", { class: "mono" }, r.id), r.rating.toFixed(0), r.lo?.toFixed(0) ?? "", r.hi?.toFixed(0) ?? "", r.games, r.wins]),
+    [0, 2, 3, 4, 5, 6],
+  );
+}
+
+async function loadVotes(): Promise<void> {
+  const q = new URLSearchParams();
+  const round = $<HTMLSelectElement>("#vRound").value;
+  const role = $<HTMLSelectElement>("#vRole").value;
+  const label = $<HTMLInputElement>("#vLabel").value.trim();
+  const repeat = $<HTMLSelectElement>("#vRepeat").value;
+  if (round) q.set("round", round);
+  if (role) q.set("role", role);
+  if (label) q.set("label", label);
+  if (repeat) q.set("repeat", repeat);
+  q.set("page", String(votesPage));
+  const r = await api<{ page: number; size: number; total: number; votes: Record<string, any>[] }>(`/admin/api/votes?${q}`);
+  const from = r.total ? r.page * r.size + 1 : 0;
+  $("#votesInfo").textContent = `${r.total} votes; showing ${from} to ${Math.min(r.total, (r.page + 1) * r.size)}, newest first.`;
+  $<HTMLButtonElement>("#prev").disabled = r.page === 0;
+  $<HTMLButtonElement>("#next").disabled = (r.page + 1) * r.size >= r.total;
+  table(
+    $<HTMLTableElement>("#votes"),
+    ["#", "Time", "Voter", "Role", "Left", "Right", "Winner", "Close", "Repeat", "After board", "Client s", "Server s"],
+    r.votes.map((v) => [
+      v.id,
+      fmtDate(v.created_at),
+      v.label,
+      v.role,
+      el("span", { class: "mono" }, v.left_q),
+      el("span", { class: "mono" }, v.right_q),
+      v.winner_q === v.left_q ? "Left" : "Right",
+      v.close_call ? "yes" : "",
+      v.is_repeat ? "yes" : "",
+      v.after_board ? "yes" : "",
+      v.client_ms === null ? "" : (v.client_ms / 1000).toFixed(0),
+      v.server_ms === null ? "" : (v.server_ms / 1000).toFixed(0),
+    ]),
+    [0, 10, 11],
+  );
+}
+
+// ---------- page ----------
+
+async function refresh(): Promise<void> {
+  status = await api<Status>("/admin/api/status");
+  $("#actor").textContent = `Signed in as ${status.actor}`;
+  const banner = $("#exportBanner");
+  banner.textContent = status.lastExportAt
+    ? `The last export was ${fmtDate(status.lastExportAt)}. D1 Time Travel keeps only 7 days on the Free plan: export the round now.`
+    : "No export yet. D1 Time Travel keeps only 7 days on the Free plan: export the round regularly.";
+  show(banner, status.exportOverdue);
+
+  table(
+    $<HTMLTableElement>("#rounds"),
+    ["Round", "Item set", "State", "Votes", "Voters", "Opened", "Actions"],
+    status.rounds.map((r) => [r.name, r.item_set_id, r.state, r.n_votes, r.n_voters, fmtDate(r.opened_at), roundActions(r)]),
+    [3, 4],
+  );
+  options($<HTMLSelectElement>("#roundSet"), status.itemSets.map((s) => [s.id, `${s.id} (${s.n_items} items)`]));
+  const roundOpts: [string, string][] = status.rounds.filter((r) => r.state !== "draft").map((r) => [r.id, `${r.name} (${r.state})`]);
+  options($<HTMLSelectElement>("#boardRound"), roundOpts);
+  options($<HTMLSelectElement>("#vRound"), [["", "All rounds"], ...roundOpts]);
+  options($<HTMLSelectElement>("#boardPool"), status.pools.map((p) => [p, p]));
+  options($<HTMLSelectElement>("#codeRole"), status.roles.map((r) => [r.id, r.name]));
+  options($<HTMLSelectElement>("#vRole"), [["", "All roles"], ...status.roles.map((r) => [r.id, r.name] as [string, string])]);
+  table(
+    $<HTMLTableElement>("#itemSets"),
+    ["Item set", "Items", "File SHA-256", "Loaded", "Frozen"],
+    status.itemSets.map((s) => [
+      s.id,
+      s.n_items,
+      el("span", { class: "mono" }, s.file_sha256 + (s.file_sha256 === PREREG_ITEM_SHA ? " (matches the pre-registration)" : "")),
+      fmtDate(s.created_at),
+      s.frozen_at ? fmtDate(s.frozen_at) : "",
+    ]),
+    [1],
+  );
+  await loadVoters();
+  await loadVotes();
+}
+
+$("#newRound").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = $<HTMLInputElement>("#roundName").value.trim();
+  const itemSetId = $<HTMLSelectElement>("#roundSet").value;
+  if (!name || !itemSetId) return say(msg, "Give the round a name and pick an item set.", "error");
+  void act(() => api("/admin/api/rounds", { body: { name, itemSetId } }), "Round created as a draft.");
+});
+
+$("#newCodes").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const role = $<HTMLSelectElement>("#codeRole").value;
+  const count = Number($<HTMLInputElement>("#codeCount").value);
+  const owner = $<HTMLInputElement>("#codeOwner").checked;
+  void act(async () => {
+    const r = await api<{ codes: typeof lastCodes }>("/admin/api/codes", { body: { role, count, owner } });
+    lastCodes = r.codes;
+    renderCodes();
+  }, "Codes created. They are shown once.");
+});
+
+$("#codesCsv").addEventListener("click", () => {
+  const lines = ["label,role,code", ...lastCodes.map((c) => `${c.label},${c.role},${c.code}`)];
+  download(`wtpqr-codes-${new Date().toISOString().slice(0, 10)}.csv`, lines.join("\r\n") + "\r\n", "text/csv");
+});
+
+$("#boardForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  void loadBoard().catch((err) => say(msg, String(err), "error"));
+});
+
+$("#votesForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  votesPage = 0;
+  void loadVotes();
+});
+$("#prev").addEventListener("click", () => ((votesPage = Math.max(0, votesPage - 1)), void loadVotes()));
+$("#next").addEventListener("click", () => ((votesPage += 1), void loadVotes()));
+
+$("#itemsForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const file = $<HTMLInputElement>("#itemsFile").files?.[0];
+  const out = $("#itemsMsg");
+  if (!file) return say(out, "Choose an item file first.", "error");
+  void (async () => {
+    try {
+      const r = await api<{ itemSet: string; fileSha256: string; n?: number; already?: boolean }>("/admin/api/items", {
+        raw: await file.arrayBuffer(),
+      });
+      const match = r.fileSha256 === PREREG_ITEM_SHA ? "It matches the pre-registered hash." : "It does not match the pre-registered launch file.";
+      say(out, `${r.already ? "Already loaded" : "Loaded"} ${r.itemSet}. File SHA-256 ${r.fileSha256}. ${match}`, "ok");
+      await refresh();
+    } catch (err) {
+      const ids = err instanceof ApiError && Array.isArray(err.body.ids) ? ` Items: ${(err.body.ids as string[]).join(", ")}` : "";
+      say(out, (err instanceof ApiError ? err.message : String(err)) + ids, "error");
+    }
+  })();
+});
+
+$("#loginForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  void (async () => {
+    try {
+      await api("/admin/api/login", { body: { secret: $<HTMLInputElement>("#secret").value } });
+      $<HTMLInputElement>("#secret").value = "";
+      await init();
+    } catch {
+      say(msg, "That did not work.", "error");
+    }
+  })();
+});
+
+async function init(): Promise<void> {
+  try {
+    await refresh();
+    show($("#login"), false);
+    show($("#app"));
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 403) {
+      show($("#app"), false);
+      show($("#login"));
+      return;
+    }
+    say(msg, String(err), "error");
+  }
+}
+
+void init();

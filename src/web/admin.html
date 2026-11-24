@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin - WTP Question Rank</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="admin">
+    <main>
+      <header class="top">
+        <span class="brand">WTP Question Rank: admin</span>
+        <span id="actor" class="muted small"></span>
+      </header>
+      <p id="msg" class="notice" role="alert" hidden></p>
+      <p id="exportBanner" class="notice warn" hidden></p>
+
+      <section id="login" hidden>
+        <h2>Sign in</h2>
+        <p class="muted small">Shown only when Cloudflare Access is not set up.</p>
+        <form id="loginForm" class="row">
+          <div><label for="secret">Admin secret</label><input id="secret" type="password" autocomplete="current-password" /></div>
+          <button class="primary" type="submit">Sign in</button>
+        </form>
+      </section>
+
+      <div id="app" hidden>
+        <section>
+          <h2>Rounds</h2>
+          <div class="table-wrap"><table id="rounds"></table></div>
+          <form id="newRound" class="row">
+            <div><label for="roundName">New round name</label><input id="roundName" type="text" maxlength="80" /></div>
+            <div><label for="roundSet">Item set</label><select id="roundSet"></select></div>
+            <button type="submit">Create as draft</button>
+          </form>
+          <p id="bootMsg" class="notice" hidden aria-live="polite"></p>
+        </section>
+
+        <section>
+          <h2>Codes</h2>
+          <form id="newCodes" class="row">
+            <div><label for="codeRole">Role</label><select id="codeRole"></select></div>
+            <div><label for="codeCount">How many</label><input id="codeCount" type="number" min="1" max="200" value="5" /></div>
+            <label class="check"><input id="codeOwner" type="checkbox" /> My own code</label>
+            <button class="primary" type="submit">Create codes</button>
+          </form>
+          <div id="newCodesOut" hidden>
+            <p class="notice warn">These codes are shown once. Download the CSV now and keep it with your own list of names.</p>
+            <p><button id="codesCsv" type="button">Download CSV</button></p>
+            <div class="table-wrap"><table id="codesTable"></table></div>
+          </div>
+          <h2>Voters</h2>
+          <div class="table-wrap"><table id="voters"></table></div>
+        </section>
+
+        <section>
+          <h2>Leaderboard (any pool)</h2>
+          <form id="boardForm" class="row">
+            <div><label for="boardRound">Round</label><select id="boardRound"></select></div>
+            <div><label for="boardPool">Pool</label><select id="boardPool"></select></div>
+            <button type="submit">Show</button>
+          </form>
+          <p id="boardInfo" class="muted small"></p>
+          <div class="table-wrap"><table id="board"></table></div>
+        </section>
+
+        <section>
+          <h2>Raw votes</h2>
+          <form id="votesForm" class="row">
+            <div><label for="vRound">Round</label><select id="vRound"></select></div>
+            <div><label for="vRole">Role</label><select id="vRole"></select></div>
+            <div><label for="vLabel">Voter label</label><input id="vLabel" type="text" placeholder="Judge 07" /></div>
+            <div>
+              <label for="vRepeat">Repeats</label>
+              <select id="vRepeat"><option value="">All votes</option><option value="0">First showings</option><option value="1">Repeats only</option></select>
+            </div>
+            <button type="submit">Filter</button>
+          </form>
+          <p id="votesInfo" class="muted small"></p>
+          <div class="table-wrap"><table id="votes"></table></div>
+          <div class="actions"><button id="prev" type="button">Newer</button><button id="next" type="button">Older</button></div>
+        </section>
+
+        <section>
+          <h2>Items</h2>
+          <form id="itemsForm" class="row">
+            <div><label for="itemsFile">Item file (JSON)</label><input id="itemsFile" type="file" accept="application/json,.json" /></div>
+            <button type="submit">Load</button>
+          </form>
+          <p id="itemsMsg" class="notice" hidden></p>
+          <div class="table-wrap"><table id="itemSets"></table></div>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="./admin.ts"></script>
+  </body>
+</html>
