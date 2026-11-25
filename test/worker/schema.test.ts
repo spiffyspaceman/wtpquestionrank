@@ -19,8 +19,8 @@ describe("schema on local D1", () => {
     const d = db();
     for (const q of ["a", "b", "c"])
       await d.prepare("INSERT INTO questions VALUES (?,'State','2021-22',1,1,1,'stem','[]','src',NULL,'h',NULL,?)").bind(q, now).run();
-    await d.prepare("INSERT INTO item_sets VALUES ('s1','set',1,'full_text','h',?,NULL)").bind(now).run();
-    for (const q of ["a", "b"]) await d.prepare("INSERT INTO item_set_items VALUES ('s1',?)").bind(q).run();
+    await d.prepare("INSERT INTO item_sets VALUES ('s1','set',1,'full_text','h',?,NULL,0)").bind(now).run();
+    for (const q of ["a", "b"]) await d.prepare("INSERT INTO item_set_items VALUES ('s1',?,NULL)").bind(q).run();
     await d.prepare("INSERT INTO rounds VALUES ('r1','R1','s1','open',?,?,NULL,NULL)").bind(now, now).run();
     await d.prepare("INSERT INTO voters VALUES ('v1','h1','judge','Judge 01',0,?,NULL,NULL)").bind(now).run();
     await d.prepare("INSERT INTO batches VALUES ('b1','r1','v1',7,?)").bind(now).run();
@@ -37,10 +37,10 @@ describe("schema on local D1", () => {
     await d.prepare("INSERT INTO admin_audit (at,actor,action,detail_json) VALUES (?,?,?,?)").bind(now, "sub", "x", "{}").run();
   });
 
-  it("creates every table, all twenty-two triggers and both views (0001 to 0005)", async () => {
+  it("creates every table, all twenty-three triggers and both views (0001 to 0006)", async () => {
     const t = await db().prepare("SELECT type, count(*) AS n FROM sqlite_schema WHERE type IN ('table','trigger','view') AND name NOT LIKE '\\_%' ESCAPE '\\' AND name NOT LIKE 'sqlite%' AND name <> 'd1_migrations' GROUP BY type").all<{ type: string; n: number }>();
     const by = Object.fromEntries(t.results.map((r) => [r.type, r.n]));
-    expect(by.trigger).toBe(22);
+    expect(by.trigger).toBe(23);
     expect(by.table).toBe(20);
     expect(by.view).toBe(2);
   });
@@ -95,8 +95,14 @@ describe("schema on local D1", () => {
 
   it("freezes item set membership once frozen_at is set", async () => {
     await db().prepare("UPDATE item_sets SET frozen_at = ? WHERE id = 's1'").bind(now).run();
-    expect(await fails("INSERT INTO item_set_items VALUES ('s1','c')")).toMatch(/frozen/);
+    expect(await fails("INSERT INTO item_set_items VALUES ('s1','c',NULL)")).toMatch(/frozen/);
     expect(await fails("DELETE FROM item_set_items WHERE item_set_id = 's1'")).toMatch(/frozen/);
+    // A frozen set cannot be turned into an open-ended one (migration 0006): the launch set stays fixed.
+    expect(await fails("UPDATE item_sets SET open_ended = 1 WHERE id = 's1'")).toMatch(/open-ended/);
+    // A set created open-ended still takes questions after it freezes, and still loses none.
+    await db().prepare("INSERT INTO item_sets VALUES ('s2','grow',1,'full_text','h',?,?,1)").bind(now, now).run();
+    expect(await fails("INSERT INTO item_set_items VALUES ('s2','c',?)", now)).toBe(false);
+    expect(await fails("DELETE FROM item_set_items WHERE item_set_id = 's2'")).toMatch(/frozen/);
   });
 
   it("one first vote and at most one repeat per pair per voter", async () => {

@@ -200,6 +200,7 @@ interface BuiltinSet {
   questions: number;
   cycles: string;
   loaded: boolean;
+  toAdd: number;
   rounds: string[];
 }
 
@@ -208,7 +209,7 @@ async function loadBuiltin(): Promise<BuiltinSet[]> {
   table(
     $<HTMLTableElement>("#builtin"),
     ["Round", "Item set", "Questions", "Covers", "Loaded", "Round state"],
-    sets.map((b) => [b.roundName, el("span", { class: "mono" }, b.id), b.questions, b.cycles, b.loaded ? "yes" : "no", b.rounds.join(", ") || "none"]),
+    sets.map((b) => [b.roundName, el("span", { class: "mono" }, b.id), b.questions, b.cycles, b.loaded ? (b.toAdd ? `yes; ${b.toAdd} more to add` : "yes") : "no", b.rounds.join(", ") || "none"]),
     [2],
   );
   return sets;
@@ -218,15 +219,16 @@ $("#builtinBtn").addEventListener("click", () => {
   void (async () => {
     try {
       const sets = await loadBuiltin();
-      const todo = sets.filter((b) => !b.loaded || !b.rounds.length);
-      if (!todo.length) return say(msg, "The full question set is loaded and has a round.", "ok");
-      const n = todo.reduce((sum, b) => sum + b.questions, 0);
-      if (!confirm(`Load ${n} questions and make a draft round? A loaded set cannot be changed afterwards, so every PDF should be in first.`)) return;
+      const todo = sets.filter((b) => !b.loaded || !b.rounds.length || b.toAdd > 0);
+      if (!todo.length) return say(msg, "The full question set is loaded and up to date, and has a round.", "ok");
+      const n = todo.reduce((sum, b) => sum + (b.loaded ? b.toAdd : b.questions), 0);
+      const adding = todo.some((b) => b.loaded);
+      if (!confirm(adding ? `Add ${n} more questions to the set? They join the round at once. A loaded question's text can never change.` : `Load ${n} questions and make a draft round? More can be added later; a loaded question's text can never change.`)) return;
       for (const b of todo) {
         say(msg, `Loading ${b.roundName}...`);
         await api(`/admin/api/builtin-sets/${b.id}`, { body: {} });
       }
-      say(msg, `${n} questions loaded; the round is a draft under Rounds.`, "ok");
+      say(msg, adding ? `${n} questions added to the set.` : `${n} questions loaded; the round is a draft under Rounds.`, "ok");
       await refresh();
     } catch (err) {
       say(msg, err instanceof ApiError ? err.message : String(err), "error");

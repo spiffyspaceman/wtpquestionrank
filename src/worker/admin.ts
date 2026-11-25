@@ -128,10 +128,21 @@ async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array)
   if (new Set(items.map((i) => i.id)).size !== items.length) return [{ error: "duplicate_ids" }, 400];
 
   const setId = `${file.item_set}-v${file.version}`;
-  const existing = await db.prepare("SELECT file_sha256 FROM item_sets WHERE id = ?").bind(setId).first<{ file_sha256: string }>();
+  const openEnded = (file as { open_ended?: unknown }).open_ended === true;
+  const existing = await db
+    .prepare("SELECT file_sha256, open_ended FROM item_sets WHERE id = ?")
+    .bind(setId)
+    .first<{ file_sha256: string; open_ended: number }>();
+  let have: Set<string> | null = null;
   if (existing) {
     if (existing.file_sha256 === fileSha) return [{ ok: true, itemSet: setId, fileSha256: fileSha, already: true }, 200];
-    return [{ error: "item_set_exists", message: `${setId} is already loaded from a different file.` }, 409];
+    if (!existing.open_ended) return [{ error: "item_set_exists", message: `${setId} is already loaded from a different file.` }, 409];
+    // An open-ended set takes a newer file that holds everything it already has, plus more (migration 0006).
+    have = new Set(await roundItems(db, setId));
+    const ids = new Set(items.map((i) => i.id));
+    const gone = [...have].filter((id) => !ids.has(id));
+    if (gone.length)
+      return [{ error: "items_removed", message: "The file leaves out questions the set already holds. A set only grows.", ids: gone }, 409];
   }
 
   const hashes = await Promise.all(items.map((i) => questionTextHash(i.stem, i.bullets)));
@@ -149,6 +160,24 @@ async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array)
     return [{ error: "text_conflict", message: "A loaded question has different text. Give the corrected text a new id.", ids: conflicts }, 409];
 
   const now = nowIso();
+  if (have) {
+    const added = items.map((i, k) => ({ i, hash: hashes[k] })).filter((x) => !have.has(x.i.id));
+    await db.batch([
+      ...added.map(({ i, hash }) =>
+        db
+          .prepare(
+            `INSERT INTO questions (id, level, cycle, unit, qnum, published, stem, bullets_json, source, source_url,
+                                    text_sha256, val_id, created_at)
+             VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO NOTHING`,
+          )
+          .bind(i.id, i.level, i.cycle, i.unit, i.q, i.stem, JSON.stringify(i.bullets), i.source, i.source_url ?? null, hash, i.val_id ?? null, now),
+      ),
+      ...added.map(({ i }) => db.prepare("INSERT INTO item_set_items (item_set_id, question_id, added_at) VALUES (?, ?, ?)").bind(setId, i.id, now)),
+      db.prepare("UPDATE item_sets SET file_sha256 = ? WHERE id = ?").bind(fileSha, setId),
+    ]);
+    await audit(c, "add_items", { itemSet: setId, fileSha256: fileSha, was: existing!.file_sha256, added: added.map((x) => x.i.id) });
+    return [{ ok: true, itemSet: setId, fileSha256: fileSha, n: items.length, added: added.length }, 200];
+  }
   await db.batch([
     ...items.map((i, k) =>
       db
@@ -160,8 +189,8 @@ async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array)
         .bind(i.id, i.level, i.cycle, i.unit, i.q, i.stem, JSON.stringify(i.bullets), i.source, i.source_url ?? null, hashes[k], i.val_id ?? null, now),
     ),
     db
-      .prepare("INSERT INTO item_sets (id, name, version, display_mode, file_sha256, created_at) VALUES (?, ?, ?, 'full_text', ?, ?)")
-      .bind(setId, file.item_set, file.version, fileSha, now),
+      .prepare("INSERT INTO item_sets (id, name, version, display_mode, file_sha256, created_at, open_ended) VALUES (?, ?, ?, 'full_text', ?, ?, ?)")
+      .bind(setId, file.item_set, file.version, fileSha, now, openEnded ? 1 : 0),
     ...items.map((i) => db.prepare("INSERT INTO item_set_items (item_set_id, question_id) VALUES (?, ?)").bind(setId, i.id)),
   ]);
   await audit(c, "load_items", { itemSet: setId, fileSha256: fileSha, n: items.length });
@@ -177,9 +206,12 @@ adminApi.post("/items", async (c) => {
 
 /** The sets, with whether each is loaded and has a round yet. */
 adminApi.get("/builtin-sets", async (c) => {
-  const sets = await c.env.DB.prepare("SELECT id FROM item_sets").all<{ id: string }>();
+  const sets = await c.env.DB.prepare(
+    "SELECT s.id, (SELECT count(*) FROM item_set_items i WHERE i.item_set_id = s.id) AS n FROM item_sets s",
+  ).all<{ id: string; n: number }>();
   const rounds = await c.env.DB.prepare("SELECT item_set_id, state FROM rounds").all<{ item_set_id: string; state: string }>();
   const loaded = new Set(sets.results.map((x) => x.id));
+  const held = new Map(sets.results.map((x) => [x.id, x.n]));
   return c.json({
     sets: BUILTIN_SETS.map((b) => ({
       id: b.id,
@@ -187,6 +219,8 @@ adminApi.get("/builtin-sets", async (c) => {
       questions: b.questions,
       cycles: b.cycles,
       loaded: loaded.has(b.id),
+      // Questions in the bundled file that the loaded set does not hold yet (an open-ended set can take them).
+      toAdd: loaded.has(b.id) ? b.questions - (held.get(b.id) ?? 0) : 0,
       rounds: rounds.results.filter((r) => r.item_set_id === b.id).map((r) => r.state),
     })),
   });

@@ -83,7 +83,9 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
   its first round opens.
 - **The full question set.** `items/rounds/all.json` holds every question transcribed from CCE's published PDFs by
   `items/transcribe.py`. It is bundled into the Worker (`src/worker/builtin-sets.ts`) and loaded from the admin page
-  with a draft round. It is never served as a static file. A round this size needs the Workers Paid plan: issuing a
+  with a draft round. It is never served as a static file. The set is open-ended (migration 0006): a
+  rebuilt file that holds everything loaded plus more adds the new questions to the same set and its running round,
+  each dated; nothing is ever removed and loaded text never changes. The launch set is fixed. A round this size needs the Workers Paid plan: issuing a
   batch refits the ratings and scores every pair, about 0.2 s of CPU at 324 questions and 0.65 s at 540.
 - **Codes.**
   - Create codes by role, with labels like "Judge 01" and an owner flag.

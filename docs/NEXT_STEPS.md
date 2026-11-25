@@ -99,26 +99,32 @@ environment cannot reach); everything before 2014-15 for both levels.
 The Free plan allows 10 ms, so the round must not open before the plan changes. "Refresh intervals" in admin (1,000
 refits per pool in the browser) will take minutes per pool at these sizes.
 
-**Built on branch `claude/busy-franklin-ct2lna`, not on `main`** (150 tests pass): migration 0005 (several open
-rounds, `after_board` and the correction lock per round, two indexes); batch assignment; no round name on voter
-pages; a "Questions" picker on the leaderboard; the bundled full set and the admin button **Load the full question
-set and make its draft round**; a test that runs a batch, 20 votes, the leaderboard and the export on all 324.
+**Built on branch `claude/busy-franklin-ct2lna`, not on `main`** (153 tests pass):
+- migration 0005: several open rounds, `after_board` and the correction lock per round, two indexes; batch
+  assignment; no round name on voter pages; a "Questions" picker on the leaderboard;
+- migration 0006: the full set is open-ended, so **questions can be added while the round runs** (owner's point,
+  25 Nov: like new players joining a rating pool). The missing cycles therefore no longer block the launch;
+- the bundled full set and the admin button **Load or update the full question set**;
+- a test that runs a batch, 20 votes, the leaderboard and the export on all 324.
 
 ### Owner: now
 
-1. **Send the remaining PDFs**, or say the set is complete. A loaded item set cannot change, so every PDF should be
-   in before the round opens.
-2. **Move the Worker to Workers Paid** (Cloudflare dashboard > Workers & Pages > Plans). Yours to do; about $5 a month.
-3. When the set is final, **say "merge"**. The merge applies migration 0005 to production. With Round 1 the only
-   open round, voters see one change: `/start` stops showing the round's name.
-4. Then, in `/admin`: **Load the full question set and make its draft round**; revoke `Other 04`; freeze Round 1;
-   open "All questions"; make the real codes and send the links.
+1. **Move the Worker to Workers Paid** (Cloudflare dashboard > Workers & Pages > Plans). Yours to do; about $5 a
+   month. The big round must not open before this.
+2. **Say "merge"**. The merge applies migrations 0005 and 0006 to production. With Round 1 the only open round,
+   voters see one change: `/start` stops showing the round's name.
+3. In `/admin`: **Load or update the full question set** (324 questions, a draft round "All questions"); revoke
+   `Other 04`; freeze Round 1 (this ends the registered comparison without a verdict and cannot be undone); open
+   "All questions"; make the real codes and send the links.
+4. **Send the remaining PDFs whenever you have them** (National Finals 2020-21 onward, State 2026-27, earlier
+   years). Claude transcribes them and rebuilds the file; after the next merge, the same admin button adds them to
+   the running round.
 
-### Claude: when the remaining PDFs arrive
+### Claude: next
 
-- Transcribe, rebuild `items/rounds/all.json`, report the counts and anything the transcriber flags.
-- Before the round opens: cut the cost of "Refresh intervals" for a round this size (fewer refits for this round,
-  or one pool at a time), and re-time a batch on the deployed Worker once the plan has changed.
+- When PDFs arrive: transcribe, rebuild `items/rounds/all.json`, report counts and anything the transcriber flags.
+- Before or soon after the round opens: cut the cost of "Refresh intervals" for a round this size, and re-time a
+  batch on the deployed Worker once the plan has changed.
 
 ## After the audit of 25 Nov 2026 (`docs/AUDIT_2026-11-25.md`)
 

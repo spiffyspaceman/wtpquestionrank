@@ -2,6 +2,7 @@
  "item_set": "all-questions",
  "version": 1,
  "round_name": "All questions",
+ "open_ended": true,
  "frame": "Published CCE hearing questions: NF 2014-15 to 2019-20 (6 cycles); State 2014-15 to 2025-26 (12 cycles)",
  "cycles": {
   "NF": [

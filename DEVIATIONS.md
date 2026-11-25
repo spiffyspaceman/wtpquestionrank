@@ -187,3 +187,13 @@ as a single round, "All questions", so that every question is ranked on one scal
 questions across units and across State and National Finals. The Worker moves to the Workers Paid plan to carry the
 pairing cost; the pairing and rating code is the registered code, unchanged. Round 1 is frozen when that round opens,
 as recorded above.
+
+**25 November 2026: questions can be added to the full round while it runs (owner decision; built, takes effect when
+merged).** The "All questions" set is open-ended (migration 0006): questions transcribed later are added to the same
+set and round, each with the time it was added (`item_set_items.added_at`, and an `add_items` audit row). A set only
+grows, and a loaded text never changes. The ratings are refit from the whole log, so a late question enters the next
+fit; the pairing's warm-up rule (favour the least-compared questions until every question has six comparisons) then
+applies again, so newcomers are paired first. Effects to keep in mind when reading that round's results: ratings are
+centred on the average question, so every rating shifts a little when questions join; and voters who stopped before an
+addition never judged the late questions. The launch set is not open-ended and cannot be made so (a database trigger
+refuses it), so Round 1's 36 questions stay fixed.

@@ -4,8 +4,9 @@ one round, on Workers Paid) from items/transcribed.json.
     python3 items/build_round_sets.py
 
 Writes items/rounds/all.json in the format the admin loader takes, and items/rounds/index.json. Rerun after
-transcribing more PDFs. Bump VERSION only if the set is already loaded on the site, because a loaded item set never
-changes; until then the file is simply rebuilt.
+transcribing more PDFs. The set is open-ended (migration 0006): once it is loaded on the site, a rebuilt file that
+holds everything loaded plus more adds the new questions to the same set and round. Never remove or reword a
+question that is loaded; a corrected text needs a new id.
 """
 import collections
 import json
@@ -19,7 +20,7 @@ by_level = collections.defaultdict(set)
 for it in items:
     by_level[it["level"]].add(it["cycle"])
 cover = {lv: sorted(c) for lv, c in sorted(by_level.items())}
-doc = dict(item_set="all-questions", version=VERSION, round_name="All questions",
+doc = dict(item_set="all-questions", version=VERSION, round_name="All questions", open_ended=True,
            frame="Published CCE hearing questions: " + "; ".join(f"{lv} {c[0]} to {c[-1]} ({len(c)} cycles)" for lv, c in cover.items()),
            cycles=cover, shown_to_voters=["stem", "bullets"],
            hidden_from_voters=["id", "val_id", "cycle", "unit", "q", "level", "source"],
