@@ -1,0 +1,319 @@
+{
+ "item_set": "nf-u2",
+ "version": 1,
+ "round_name": "Unit 2, National Finals",
+ "level": "NF",
+ "unit": 2,
+ "cycles": [
+  "2014-15",
+  "2015-16",
+  "2016-17",
+  "2017-18",
+  "2018-19",
+  "2019-20"
+ ],
+ "frame": "Published CCE NF hearing questions, Unit 2, cycles 2014-15 to 2019-20",
+ "shown_to_voters": [
+  "stem",
+  "bullets"
+ ],
+ "hidden_from_voters": [
+  "id",
+  "val_id",
+  "cycle",
+  "unit",
+  "q",
+  "level",
+  "source"
+ ],
+ "items": [
+  {
+   "id": "nf-2014-15-u2-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2014-15",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "At the Philadelphia Convention of 1787 “There was hard bargaining to be done. …Political as well as intellectual skills were essential. …The framers built their Constitution with the bricks and mortar of political compromise.” Do you agree with this appraisal? Why or why not? What evidence can you offer to support your position?",
+   "bullets": [
+    "What political and what intellectual skills were essential to the success of the Philadelphia Convention? Why were these skills essential?",
+    "Were the Framers justified in going beyond their limited mandate to “revise” rather than replace the Articles of Confederation? Why or why not?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2014-15, Unit 2, Question 1",
+   "text_source": "5cdffad6-hsnationalhearingquestions2014-15.pdf (sha256 4b0de2c670ec5f98), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2014-15-u2-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2014-15",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "Writing about the Philadelphia Convention, a historian claims that “of all the rules adopted, the two most important were the secrecy rule…and a rule allowing delegates to reconsider previous issues and change their votes.” Do you agree or disagree? Why? What evidence can you offer to support your response?",
+   "bullets": [
+    "In what ways, if any, do closed-door, nontransparent negotiations come into conflict with democratic norms, such as accountability and citizens’ right to know?",
+    "In what ways, if any, do “sunshine laws” requiring televised or public government meetings encourage public posturing and the hardening of positions rather than just negotiation? Why? What evidence can you offer to support your position?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2014-15, Unit 2, Question 2",
+   "text_source": "5cdffad6-hsnationalhearingquestions2014-15.pdf (sha256 4b0de2c670ec5f98), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2014-15-u2-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2014-15",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "An American historian claims that the ratification debates were “one of the greatest and most probing public debates in American history.” Do you agree or disagree? Why? What evidence can you offer to support your response?",
+   "bullets": [
+    "Evaluate the central arguments the Federalists advanced in support of the ratification of the Constitution.",
+    "Evaluate the major arguments the Anti-Federalists put forth in opposition to ratification of the Constitution."
+   ],
+   "source": "CCE National Finals Hearing Questions 2014-15, Unit 2, Question 3",
+   "text_source": "5cdffad6-hsnationalhearingquestions2014-15.pdf (sha256 4b0de2c670ec5f98), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2015-16-u2-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2015-16",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "Evaluate the claim that the Northwest Ordinance (1787) was the most significant measure passed by the Confederation Congress.",
+   "bullets": [
+    "What provisions of the Northwest Ordinance foreshadowed the Bill of Rights?",
+    "In what ways did the Northwest Ordinance serve as the template for the addition of other territories acquired by the United States in the nineteenth and twentieth centuries?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2015-16, Unit 2, Question 1",
+   "text_source": "b241c4b8-hsnationalhearingquestions2015-16.pdf (sha256 077b0dadda493120), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2015-16-u2-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2015-16",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "Why do you think the Framers provided for the Constitution to be ratified by special ratifying conventions rather than by state legislatures?",
+   "bullets": [
+    "What is the relationship, if any, of the ratification conventions to social contract theory and to natural rights philosophy?",
+    "What were the major disagreements between the two blocs that aligned themselves against one another during the ratification debates?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2015-16, Unit 2, Question 2",
+   "text_source": "b241c4b8-hsnationalhearingquestions2015-16.pdf (sha256 077b0dadda493120), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2015-16-u2-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2015-16",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "“The problem of power is the longest-lived issue in American constitutionalism. It was a central focus of the American Revolution; it became the critical problem of the Constitutional Convention; and it is a constant refrain in American politics.” Do you agree or disagree with this opinion? Why? What evidence can you offer to support your response?",
+   "bullets": [
+    "Why and how does the Constitution create “a government of separated institutions sharing powers”?",
+    "What are some of the major current issues regarding the sharing of powers or “checks and balances”?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2015-16, Unit 2, Question 3",
+   "text_source": "b241c4b8-hsnationalhearingquestions2015-16.pdf (sha256 077b0dadda493120), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2016-17-u2-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2016-17",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "Alexander Hamilton wrote that the Constitution ensures that “the process of election affords a moral certainty, that the office of President will never fall to the lot of any man who is not in an eminent degree endowed with the requisite qualifications. Talents for low intrigue, and the little arts of popularity, may alone suffice to elevate a man to the first honors in a single State; but it will require other talents, and a different kind of merit, to establish him in the esteem and confidence of the whole Union, or of so considerable a portion of it as would be necessary to make him a successful candidate for the distinguished office of President of the United States.” Do you agree or disagree with Hamilton? Why?",
+   "bullets": [
+    "What was the rationale for the establishment of the Electoral College to select the president? What basic democratic principles and values are involved in this topic? To what extent, if any, is the rationale used to justify the Electoral College relevant today? Explain your position.",
+    "What might be the advantages and disadvantages of selecting the president by popular vote? What impediments, if any, would there be to adopting this procedure? How might they be overcome? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2016-17, Unit 2, Question 1",
+   "text_source": "7af6a77f-hsnationalhearingquestions2016-17.pdf (sha256 3d8e4aac1ed0bf8e), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2016-17-u2-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2016-17",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "“Energy in the Executive is a leading character in the definition of good government. It is essential to the protection of the community against foreign attacks; it is not less essential to the steady administration of the laws; to the protection of property against those irregular and high-handed combinations which sometimes interrupt the ordinary course of justice; to the security of liberty against the enterprises and assaults of ambition, of faction, and of anarchy.” Do you agree or disagree with Alexander Hamilton? Why? What were the central disagreements between the Federalists and Anti-Federalists over the executive branch of government?",
+   "bullets": [
+    "What assumptions and what fundamental democratic principles and values underlie the positions of the Federalists and Anti- Federalists regarding the executive branch of government? Which position do you prefer? Why?",
+    "Does Article II adequately specify and limit the powers of the presidency? How does it compare with articles empowering the executive branch in the constitutions of other advanced democracies, such as those of Canada, South Africa, and Germany? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2016-17, Unit 2, Question 2",
+   "text_source": "7af6a77f-hsnationalhearingquestions2016-17.pdf (sha256 3d8e4aac1ed0bf8e), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2016-17-u2-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2016-17",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "In a speech to his fellow Virginians in 1775 Patrick Henry noted, “I have but one lamp by which my feet are guided, and that is the lamp of experience.” What lessons from history and experiences led the colonists to develop and structure their legislatures and their relationships to their executives and judiciaries the way they did in their new state constitutions?",
+   "bullets": [
+    "To what extent, if at all, did both the Federalists and the Anti-Federalists use the “lamp of experience” in their arguments over the legislative branch during the ratification debates?",
+    "Why did the Framers of the Constitution reject the concept of legislative supremacy? Is legislative supremacy found today in other advanced democracies? What arguments can you make for and against the concept of legislative supremacy?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2016-17, Unit 2, Question 3",
+   "text_source": "7af6a77f-hsnationalhearingquestions2016-17.pdf (sha256 3d8e4aac1ed0bf8e), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2017-18-u2-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2017-18",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "According to one historian, “most Antifederalist leaders disparaged Madison’s proposed amendments, which they considered positively harmful because their enactment would be likely to reduce the prospects of securing the sort of amendments they deemed necessary.” What sort of amendments did the Anti- Federalists think were necessary?",
+   "bullets": [
+    "What were the Anti-Federalists’ objections to Madison’s proposed amendments?",
+    "What additional rights, if any, should be added to the Constitution? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2017-18, Unit 2, Question 1",
+   "text_source": "e737a8e8-hsnationalhearingquestions2017-18.pdf (sha256 ed65856d0cf231a5), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2017-18-u2-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2017-18",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "“The general object was to provide a cure for the evils under which the United States labored; that in tracing these evils to their origin every man had found it in the turbulence and follies of democracy.” What impact, if any, did these “evils” have on the drafting of the Constitution and the type of government it established?",
+   "bullets": [
+    "What evidence of these “evils” was there in the colonies just before the American Revolution and in the newly independent states up to the time of the Philadelphia Convention?",
+    "To what extent, if any, do the “follies of democracy” referred to by Edmund Randolph exist today? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2017-18, Unit 2, Question 2",
+   "text_source": "e737a8e8-hsnationalhearingquestions2017-18.pdf (sha256 ed65856d0cf231a5), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2017-18-u2-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2017-18",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "James Madison opposed the Connecticut Compromise, which gave the Senate equal representation and gave proportional representation to the House of Representatives. What were the arguments in favor of the Connecticut Compromise, and what arguments did Madison make in opposition?",
+   "bullets": [
+    "Assuming there is little or no evidence in the history of the House of Representatives of its passing bills detrimental to small state governments or their citizens, what other arguments can you give to support equal representation in the Senate?",
+    "What fundamental democratic principles and values are involved in the issue regarding equal and proportional representation in the Senate?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2017-18, Unit 2, Question 3",
+   "text_source": "e737a8e8-hsnationalhearingquestions2017-18.pdf (sha256 ed65856d0cf231a5), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2018-19-u2-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2018-19",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "The state constitution developed in Pennsylvania in 1776 was considered the most democratic of the state constitutions, and it provoked considerable controversy. “Working for eight weeks, the constitution drafters considered and then rejected three of the most honored elements of English republican thought.” What elements did they reject when writing the Pennsylvania constitution, and what were their reasons for doing so?",
+   "bullets": [
+    "What are the advantages and disadvantages of a unicameral legislature? Which do you prefer, and on which fundamental democratic values and principles or other interests is your opinion based?",
+    "What impact, if any, did the Pennsylvania constitution have on the U.S. Constitution?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2018-19, Unit 2, Question 1",
+   "text_source": "b6ed0981-hsnationalhearingquestions2018-19.pdf (sha256 ecfa2b199b3bcb1c), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2018-19-u2-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2018-19",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "“The Constitution was designed to foster a healthy rivalry between the legislative and executive branches, but one in which the president was subordinate to Congress.” Do you agree or disagree with Thomas Mann and Norman Ornstein? Why? Why do you think some of the Framers of the Constitution intended the president to be subordinate to Congress? What fundamental democratic principles and values are reflected in this position?",
+   "bullets": [
+    "Which of the three branches of the national government appears to have the greatest influence on public policy today? What evidence do you have for your position?",
+    "What changes, if any, would you suggest be made in the balance of powers among the three branches of the national government? On which fundamental democratic values and principles or other important interests is your opinion based?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2018-19, Unit 2, Question 2",
+   "text_source": "b6ed0981-hsnationalhearingquestions2018-19.pdf (sha256 ecfa2b199b3bcb1c), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2018-19-u2-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2018-19",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "“In framing a government which is to be administered by men over men, the great difficulty lies in this: you must first enable the government to control the governed; and in the next place oblige it to control itself.” How does the system of government created by the Framers of Constitution “oblige [the government] to control itself”? Explain your position.",
+   "bullets": [
+    "Is our system of separated and shared powers enough to control the government to ensure it does not become tyrannical and violate the rights of the people and the common good? Explain your position.",
+    "What civic virtues of citizens and elected officials, if any, are required to prevent the emergence of a tyranny, secure the rights of the people, and foster the common good? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2018-19, Unit 2, Question 3",
+   "text_source": "b6ed0981-hsnationalhearingquestions2018-19.pdf (sha256 ecfa2b199b3bcb1c), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2019-20-u2-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2019-20",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "The states sent delegates to the Philadelphia Convention to join with other states “in devising and discussing all such alterations and further provisions, as may be necessary to render the Federal Constitution adequate to the exigencies of the Union.” To what extent, if any, did the delegates follow their instructions?",
+   "bullets": [
+    "What experiences of state governments under their new constitutions after independence might have influenced the creation of the Constitution?",
+    "Do the decisions of the U.S. Supreme Court function as a continuing constitutional convention? Why or why not?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2019-20, Unit 2, Question 1",
+   "text_source": "7af06adc-hsnationalhearingquestions2019-20.pdf (sha256 b9844ec2eb786b21), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2019-20-u2-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2019-20",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "When considering the Constitution’s provisions on impeachment, one Anti-Federalist observed that “there will be but little probability of the president ever being either impeached or convicted.” Has American history supported this view? Why or why not?",
+   "bullets": [
+    "What were the Federalists’ and Anti-Federalists’ thoughts about impeachment?",
+    "Is this sentence from Article II, Section 4 of the Constitution an adequate standard for impeachment: “The President … shall be removed from Office on Impeachment for, and Conviction of, Treason, Bribery, or other high Crimes and Misdemeanors”?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2019-20, Unit 2, Question 2",
+   "text_source": "7af06adc-hsnationalhearingquestions2019-20.pdf (sha256 b9844ec2eb786b21), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2019-20-u2-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2019-20",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "In a letter, New York delegate John Lansing wrote that Alexander Hamilton argued “for the subversion of the State Government[s] so far as to reduce them to mere corporate Communities & that even in this Situation he supposed them dangerous to the general Government.” Do you agree or disagree with Hamilton’s idea that the state governments posed a threat to the national government?",
+   "bullets": [
+    "To what extent, if any, did Alexander Hamilton’s ideas influence the ratification debates of 1787–88?",
+    "What are the advantages and disadvantages of distributing power between the national and state governments?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2019-20, Unit 2, Question 3",
+   "text_source": "7af06adc-hsnationalhearingquestions2019-20.pdf (sha256 b9844ec2eb786b21), page 2, pdftotext; footnote markers removed"
+  }
+ ]
+}

@@ -1,0 +1,319 @@
+{
+ "item_set": "nf-u6",
+ "version": 1,
+ "round_name": "Unit 6, National Finals",
+ "level": "NF",
+ "unit": 6,
+ "cycles": [
+  "2014-15",
+  "2015-16",
+  "2016-17",
+  "2017-18",
+  "2018-19",
+  "2019-20"
+ ],
+ "frame": "Published CCE NF hearing questions, Unit 6, cycles 2014-15 to 2019-20",
+ "shown_to_voters": [
+  "stem",
+  "bullets"
+ ],
+ "hidden_from_voters": [
+  "id",
+  "val_id",
+  "cycle",
+  "unit",
+  "q",
+  "level",
+  "source"
+ ],
+ "items": [
+  {
+   "id": "nf-2014-15-u6-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2014-15",
+   "unit": 6,
+   "q": 1,
+   "published": true,
+   "stem": "A recent study of the endurance of constitutions discovered that the mean lifespan is approximately 19 years. The United States Constitution is now more than 225 years old. What factors do you think account for its longevity?",
+   "bullets": [
+    "What role, if any, has judicial review played in the longevity of the Constitution? What evidence can you offer to support your response?",
+    "What role, if any, has the separation of powers played in the durability of the Constitution? What evidence can you offer to support your response?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2014-15, Unit 6, Question 1",
+   "text_source": "5cdffad6-hsnationalhearingquestions2014-15.pdf (sha256 4b0de2c670ec5f98), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2014-15-u6-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2014-15",
+   "unit": 6,
+   "q": 2,
+   "published": true,
+   "stem": "“Thirty-one countries have some form of mandatory voting. …More than half back up the legal requirement with an enforcement mechanism.” Should the United States make voting mandatory for federal primary and general elections? Why or why not?",
+   "bullets": [
+    "What are the advantages and disadvantages of mandatory voting?",
+    "In what ways other than mandatory voting might the United States enhance turnouts at elections?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2014-15, Unit 6, Question 2",
+   "text_source": "5cdffad6-hsnationalhearingquestions2014-15.pdf (sha256 4b0de2c670ec5f98), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2014-15-u6-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2014-15",
+   "unit": 6,
+   "q": 3,
+   "published": true,
+   "stem": "“We have this thing called the Declaration of Independence, this document called the Constitution, in common. They define us…You know, you don’t take a DNA test to see if you bleed freedom. It’s taught and it’s learned…Each generation has to learn all over again what the Constitution means.” Do you agree with this statement? Why or why not?",
+   "bullets": [
+    "In what ways, if any, might the Declaration of Independence and the Constitution be said to “define” Americans as a people?",
+    "In what ways, if any, is what the Constitution means different from what the Constitution says?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2014-15, Unit 6, Question 3",
+   "text_source": "5cdffad6-hsnationalhearingquestions2014-15.pdf (sha256 4b0de2c670ec5f98), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2015-16-u6-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2015-16",
+   "unit": 6,
+   "q": 1,
+   "published": true,
+   "stem": "Evaluate the claim that modern international organizations, such as the United Nations, the North Atlantic Treaty Organization, and the European Union, “mimic” the Articles of Confederation in “their bold aims and weak structures.”",
+   "bullets": [
+    "What are the major purposes of the United Nations, and how successful has it been in achieving them?",
+    "How would you explain the concept of collective security, and why has the United States continued to play a major role in organizations concerned with collective security?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2015-16, Unit 6, Question 1",
+   "text_source": "b241c4b8-hsnationalhearingquestions2015-16.pdf (sha256 077b0dadda493120), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2015-16-u6-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2015-16",
+   "unit": 6,
+   "q": 2,
+   "published": true,
+   "stem": "Thomas Jefferson wrote, “Though written constitutions may be violated in moments of passion or delusion, yet they furnish a text to which those who are watchful may again rally and recall the people, they fix, too, for the people the principles of their political creed.” Do you agree or disagree with Thomas Jefferson? Why or why not?",
+   "bullets": [
+    "What examples from history can you provide in which the U.S. Constitution may have been “violated” in a “moment of passion or delusion.”",
+    "Rather than violating the Constitution, how important is it that all Americans understand the amendment process as one of the basic principles embodied in the U.S. Constitution?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2015-16, Unit 6, Question 2",
+   "text_source": "b241c4b8-hsnationalhearingquestions2015-16.pdf (sha256 077b0dadda493120), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2015-16-u6-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2015-16",
+   "unit": 6,
+   "q": 3,
+   "published": true,
+   "stem": "“In our time (as it was in the time the Fourteenth Amendment was written), immigration is a bitter cultural and political issue.” Why has immigration continued to be a difficult issue for Americans over the course of history?",
+   "bullets": [
+    "What were the major cultural and political issues regarding immigration and citizenship at the time the Fourteenth Amendment was proposed?",
+    "What are the major cultural and political issues regarding immigration today?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2015-16, Unit 6, Question 3",
+   "text_source": "b241c4b8-hsnationalhearingquestions2015-16.pdf (sha256 077b0dadda493120), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2016-17-u6-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2016-17",
+   "unit": 6,
+   "q": 1,
+   "published": true,
+   "stem": "“The states that we watch most closely in cyberspace remain Russia, China, Iran, and North Korea. Russia has very capable cyber operators who can and do work with speed, precision, and stealth. Russia is also home to a substantial segment of the world’s most sophisticated cyber criminals, who have found victims all over the world. We believe there is some overlap between the state-sponsored and criminal elements in cyberspace, which is of concern because Russian actions have posed challenges to the international order.” To what extent are cyber threats a danger to the United States? Explain your position.",
+   "bullets": [
+    "In what ways, if any, is the conduct of cyber warfare by the United States consistent with the principles found the Declaration of Independence and the Constitution?",
+    "What role, if any, should Congress, the executive, and the courts have in the conduct of cyber warfare by the United States and around the world? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2016-17, Unit 6, Question 1",
+   "text_source": "7af6a77f-hsnationalhearingquestions2016-17.pdf (sha256 3d8e4aac1ed0bf8e), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2016-17-u6-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2016-17",
+   "unit": 6,
+   "q": 2,
+   "published": true,
+   "stem": "On November 9, 2016, former vice president Al Gore wrote, “Today, I am as optimistic and resolved as ever that we will solve the climate crisis. Our collective efforts are dependent not on politics or ideology—or elections—but on our commitment to each other, to the health of our planet and to a sustainable future for all.” Do you agree or disagree with Vice President Gore’s position on climate change? Why or why not?",
+   "bullets": [
+    "What scientific evidence suggests that humans are mainly responsible for climate change? What scientific evidence suggests that natural causes are mainly responsible for climate change? What is your position on this issue and how can you justify it?",
+    "What responsibility, if any, does the U.S. government have in helping to reduce greenhouse gases in the United States and around the world? What environmental policies has the U.S. government enacted to deal with climate change, and what have been the consequences?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2016-17, Unit 6, Question 2",
+   "text_source": "7af6a77f-hsnationalhearingquestions2016-17.pdf (sha256 3d8e4aac1ed0bf8e), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2016-17-u6-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2016-17",
+   "unit": 6,
+   "q": 3,
+   "published": true,
+   "stem": "“Compared with the political systems of the other advanced democratic countries, ours is among the most opaque, complex, confusing, and difficult to understand.” Do you agree or disagree with this statement by Robert Dahl? Why? What institutional arrangements established by the Constitution, if any, make our political system difficult to understand?",
+   "bullets": [
+    "What policies and practices exist in the public and private sectors that are designed to make our political system easier for the average citizen to understand? How effective are they?",
+    "What institutional arrangements do some other advanced democratic countries have that might make them easier to understand? For example, how might parliamentary systems be easier to understand?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2016-17, Unit 6, Question 3",
+   "text_source": "7af6a77f-hsnationalhearingquestions2016-17.pdf (sha256 3d8e4aac1ed0bf8e), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2017-18-u6-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2017-18",
+   "unit": 6,
+   "q": 1,
+   "published": true,
+   "stem": "In 1875, the U.S. Supreme Court ruled that the power to set rules surrounding immigration and to manage foreign relations rested with the United States national government rather than with the states. What criteria, if any, should immigrants be required to meet to enter the United States?",
+   "bullets": [
+    "What changes, if any, would you suggest to U.S. immigration policy? Explain your position.",
+    "Should “sanctuary cities” be forced by the federal government to detain an illegal immigrant if the government does not have a warrant? Why or why not?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2017-18, Unit 6, Question 1",
+   "text_source": "e737a8e8-hsnationalhearingquestions2017-18.pdf (sha256 ed65856d0cf231a5), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2017-18-u6-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2017-18",
+   "unit": 6,
+   "q": 2,
+   "published": true,
+   "stem": "In his farewell address George Washington said, “Citizens by birth or choice of a common country, that country has a right to concentrate your affections. The name of American, which belongs to you in your national capacity, must always exalt the just pride of patriotism more than any appellation derived from local discriminations.” Do you agree or disagree with Washington’s assessment? Why or why not?",
+   "bullets": [
+    "To what extent, if any, do you think Washington’s perspective has influenced how Americans view themselves as citizens of their nation, of their states, and of their local communities?",
+    "To what extent, if any, has globalization presented a challenge to Washington’s perspective?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2017-18, Unit 6, Question 2",
+   "text_source": "e737a8e8-hsnationalhearingquestions2017-18.pdf (sha256 ed65856d0cf231a5), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2017-18-u6-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2017-18",
+   "unit": 6,
+   "q": 3,
+   "published": true,
+   "stem": "“The local interests of a state ought in every case to give way to the interests of the Union: For when a sacrifice of one or the other is necessary, the former becomes only an apparent, partial interest, and should yield, on the principle that the small good ought never to oppose the great one.” Do you agree or disagree with Alexander Hamilton? Why or why not? In what areas, if any, should states be considered sovereign and not subject to the authority of the national government? Explain your position.",
+   "bullets": [
+    "What examples can you provide of issues that are best handled by the national government, state governments, or shared among them?",
+    "Despite federal law prohibiting the possession and use of marijuana, half of the states and some local governments have legalized the recreational or medical use of marijuana. What power, if any, do states and local governments have to pass such laws? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2017-18, Unit 6, Question 3",
+   "text_source": "e737a8e8-hsnationalhearingquestions2017-18.pdf (sha256 ed65856d0cf231a5), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2018-19-u6-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2018-19",
+   "unit": 6,
+   "q": 1,
+   "published": true,
+   "stem": "Today, more than one million immigrants come to the United States each year, more than to any other country in the world. In 1970, immigrants were 4.7 percent of the population. Today, there are more than 43 million immigrants living in the United States, which is around 14 percent of the population. What are some of the most commonly claimed benefits and costs of immigration? What evidence supports or contradicts these claims?",
+   "bullets": [
+    "What are the advantages and disadvantages of our present immigration policy?",
+    "How great a problem is illegal immigration, and what are our current policies for dealing with it? What changes, if any, would you suggest? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2018-19, Unit 6, Question 1",
+   "text_source": "b6ed0981-hsnationalhearingquestions2018-19.pdf (sha256 ecfa2b199b3bcb1c), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2018-19-u6-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2018-19",
+   "unit": 6,
+   "q": 2,
+   "published": true,
+   "stem": "Publius wrote in Federalist 51, “A dependence on the people is, no doubt, the primary control on the government.” Fair and frequent elections are the foundation of democratic republics, where the people have the ultimate control of their government. The people select the person they wish to serve in public office on their behalf. How fair is our electoral system? To what extent does it provide for political equality and majority rule? What improvements, if any, would you make in our electoral system?",
+   "bullets": [
+    "What are the benefits and costs of our plurality/majority system compared with proportional systems?",
+    "What are some examples of current attempts to make our system more fair? Explain what position you support regarding these attempts."
+   ],
+   "source": "CCE National Finals Hearing Questions 2018-19, Unit 6, Question 2",
+   "text_source": "b6ed0981-hsnationalhearingquestions2018-19.pdf (sha256 ecfa2b199b3bcb1c), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2018-19-u6-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2018-19",
+   "unit": 6,
+   "q": 3,
+   "published": true,
+   "stem": "“A decade ago, 80 percent of Americans agreed with the statement that a free market economy is the best system. Today, it is 60 percent, lower than in China. One recent poll found that only 42 percent of millennials supported capitalism. In another, a majority of millennials said they would rather live in a socialist country than a capitalist one.” What do you think are the advantages and disadvantages of capitalism and socialism?",
+   "bullets": [
+    "Most countries, including the United States and Sweden, have a mixed economic system that includes elements of capitalism and socialism. What elements of capitalism and socialism can you identify in the economy of the United States? What changes, if any, would you suggest be made in our economic system?",
+    "What are the similarities and differences in the positions of democratic capitalists, democratic socialists, and social democrats? Which, if any, do you prefer? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2018-19, Unit 6, Question 3",
+   "text_source": "b6ed0981-hsnationalhearingquestions2018-19.pdf (sha256 ecfa2b199b3bcb1c), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2019-20-u6-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2019-20",
+   "unit": 6,
+   "q": 1,
+   "published": true,
+   "stem": "In 1963, Dr. Martin Luther King Jr. said, “Never in the history of this nation have so many people been arrested for the cause of freedom and human dignity.” What lessons can be learned from the Children’s March in Birmingham, Alabama?",
+   "bullets": [
+    "What is civic engagement, and what is its significance in American history?",
+    "What responsibility, if any, do schools have to promote civic engagement?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2019-20, Unit 6, Question 1",
+   "text_source": "7af06adc-hsnationalhearingquestions2019-20.pdf (sha256 b9844ec2eb786b21), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2019-20-u6-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2019-20",
+   "unit": 6,
+   "q": 2,
+   "published": true,
+   "stem": "Robert Dahl noted that the focus of most modern Americans’ lives is on “food, sex, love, family, work, play, shelter, comfort, friendship, social esteem, and the like. Activities like these—not politics—are the primary concerns of most men and women.” What might have influenced Dahl to reach this conclusion, and is it relevant today? Why or why not?",
+   "bullets": [
+    "What relationship does Dahl’s assessment have to the principles of classical republicanism and natural rights philosophy?",
+    "Should politics be a concern for people living in a democratic republic? Why or why not?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2019-20, Unit 6, Question 2",
+   "text_source": "7af06adc-hsnationalhearingquestions2019-20.pdf (sha256 b9844ec2eb786b21), page 6, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2019-20-u6-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2019-20",
+   "unit": 6,
+   "q": 3,
+   "published": true,
+   "stem": "Adam Smith wrote that “how selfish soever man may be supposed, there are evidently some principles in his nature, which interest him in the fortune of others, and render their happiness necessary to him, though he derives nothing from it, except the pleasure of seeing it.” What evidence is there, if any, to support Adam Smith’s claim that people are naturally inclined to support the well- being of other people?",
+   "bullets": [
+    "How, if at all, does enlightened self-interest affect American capitalism?",
+    "To what extent, if any, does American capitalism promote both individual liberty and the common good?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2019-20, Unit 6, Question 3",
+   "text_source": "7af06adc-hsnationalhearingquestions2019-20.pdf (sha256 b9844ec2eb786b21), page 6, pdftotext; footnote markers removed"
+  }
+ ]
+}

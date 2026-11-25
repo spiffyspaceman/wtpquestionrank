@@ -244,6 +244,9 @@ header.top nav button.link { min-height: 0; padding: 0; font-size: 1rem; }
 .board-page main { max-width: 1120px; }
 .board-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 20px; }
 .board-head h1 { margin-bottom: 0.2em; }
+.board-pick { display: flex; flex-wrap: wrap; align-items: end; gap: 8px 16px; }
+.board-pick .control label { margin: 0 0 4px; font-size: 0.85rem; color: var(--muted); }
+.board-pick .control select { min-height: 48px; min-width: 14rem; }
 .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 6px; }
 .tabs button[aria-pressed="true"], .tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .scale-note { font-size: 0.9rem; color: var(--muted); }

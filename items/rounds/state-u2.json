@@ -1,0 +1,613 @@
+{
+ "item_set": "state-u2",
+ "version": 1,
+ "round_name": "Unit 2, State",
+ "level": "State",
+ "unit": 2,
+ "cycles": [
+  "2014-15",
+  "2015-16",
+  "2016-17",
+  "2017-18",
+  "2018-19",
+  "2019-20",
+  "2020-21",
+  "2021-22",
+  "2022-23",
+  "2023-24",
+  "2024-25",
+  "2025-26"
+ ],
+ "frame": "Published CCE State hearing questions, Unit 2, cycles 2014-15 to 2025-26",
+ "shown_to_voters": [
+  "stem",
+  "bullets"
+ ],
+ "hidden_from_voters": [
+  "id",
+  "val_id",
+  "cycle",
+  "unit",
+  "q",
+  "level",
+  "source"
+ ],
+ "items": [
+  {
+   "id": "st-2014-15-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "“The Constitution was ordained and established not by the States in their sovereign capacities, but emphatically, as the Preamble of the Constitution declares, by the people of the United States.” In what ways, if any, did that mark an important departure from the establishment of the Articles Art of Confederation?",
+   "bullets": [
+    "In what ways is the United States Constitution different from legislative codes, and why are those differences important?",
+    "What is the significance of using the words “We the People” in the Preamble?"
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 2, Question 1",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2014-15-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "“The creation of the Northwest Territory out of the western lands was one of the few successful exercises of power during the years in which the Articles of Confederation were in place.” Do you agree or disagree with this assertion? Wh Why? y? What evidence can you offer to support your position?",
+   "bullets": [
+    "What do you consider to be the most important principles set forth in the Northwest Ordinance? Why?",
+    "What do you consider to be the most important failures of the Articles of Confederation? Why?"
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 2, Question 2",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2014-15-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "“No society, certainly not a large and heterogeneous one, can fail in time to explode if it is deprived of the art of compromise, if it knows no ways of muddling through. No good society can be unprincipled; and no viable society can be principle principle-ridden.” ridden.” Do you agree or disagree with this opinion? Why? What evidence can you offer to support your response?",
+   "bullets": [
+    "What compromises were made at the Constituti Constitutional onal Convention of 1787? At what costs? For what benefits?",
+    "How would you distinguish between someone who is “unprincipled” and someone who is “principle- “principle ridden”? What is the significance of those differences?"
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 2, Question 3",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "Why did the Articles of Confederation prove inadequate to the first attempt to form a national government?",
+   "bullets": [
+    "In what ways did the Articles of Confederation demonstrate a distrust of a strong national government?",
+    "What were the historical and philosophical reasons for the distrust of strong national government? To what extent do those reasons exist today? Are they justified? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 2, Question 1",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "Compare the New Jersey and Virginia Plans. What were the strengths and weaknesses of each plan?",
+   "bullets": [
+    "How would you explain the principle of proportional representation, and why was it controversial at the Philadelphia Convention?",
+    "The Great Compromise resulted in proportional representation of people in the House of Representatives and equal representation of states in the Senate. What have been the consequences of this compromise? Would you change it in any way? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 2, Question 2",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "A widespread public debate over the ratification of the Constitution raged for almost a year. What important purposes, if any, were served by that debate?",
+   "bullets": [
+    "Why did the delegates to the Philadelphia Convention create new rules for the ratification of the proposed Constitution, and were they justified in doing so?",
+    "What role did the newspapers and pamphlets—the media of that time—play in educating the public and furthering reasoned discourse? How would you compare today’s media with the media of the time of ratification?"
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 2, Question 3",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "In Federalist 51, James Madison wrote, “In framing a government which is to be administered by men over men, the great difficulty lies in this: You must first enable the government to control the governed; and in the next place, oblige it to control itself.” What is the challenge of both empowering and limiting government?",
+   "bullets": [
+    "What role does civic virtue play in both empowering and limiting governmental power?",
+    "What are the “auxiliary precautions” that Madison referred to in Federalist 51, and what are their significance to constitutional government?"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 2, Question 1",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "In Federalist 1, Alexander Hamilton observed, “It has been frequently remarked, that it seems to have been reserved to the people of this country, by their conduct and example, to decide the important question, whether societies of men are really capable or not, of establishing good government from reflection and choice, or whether they are forever destined to depend, for their political constitutions, on accident and force.” Do you agree or disagree with Hamilton’s opinion about the American experiment? Why or why not?",
+   "bullets": [
+    "Does Hamilton’s remark reflect social contract theory? Why or why not?",
+    "Is Hamilton’s observation relevant to today’s thinking about government? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 2, Question 2",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "“What truly distinguishes the founding generation, in contrast to our own, is their lack of reverence for existing constitutional systems, and their willingness to experiment. They rejected the parliamentary system then emerging in Britain, improvised on existing state constitutional experiments, and created a new federal republic with a system of separated powers.” What might be the benefits and costs of Americans’ current reverence for our constitutional system? Explain your position.",
+   "bullets": [
+    "What experiences did the Founders have that led them to think differently about government?",
+    "What new ideas about government, if any, did the founding generation embrace?"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 2, Question 3",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "Most of the delegates at the Philadelphia Convention signed the Constitution on September 17, 1787. However, some did not. What were the Anti-Federalists’ objections to the proposed Constitution and how did their political philosophy shape their objections?",
+   "bullets": [
+    "How did the Federalists respond to Anti-Federalist objections?",
+    "What was the ratification process for adopting the Constitution, what democratic principles did it reflect, and how did it succeed?"
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 2, Question 1",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "What were the major historical events and philosophical principles that influenced the debates over representation at the Philadelphia Convention?",
+   "bullets": [
+    "What were the major differences between the Federalists and Anti-Federalists on the issues of representation?",
+    "To what extent have these issues continued to be debated throughout our constitutional history?"
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 2, Question 2",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "The Articles of Confederation provided the framework for an alliance of states to fight the Revolutionary War and to govern after the war. What were the strengths and weaknesses of the Articles of Confederation?",
+   "bullets": [
+    "What is the significance of the Northwest Ordinance of 1787?",
+    "How similar, if at all, is the system of government created by the Articles of Confederation to the European Union?"
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 2, Question 3",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "Anti-Federalists believed in classical republicanism, the idea that representative government dedicated to the common good could only work in small communities with similar interests. Do you agree or disagree with this statement? Why?",
+   "bullets": [
+    "How did the Federalists respond to Anti-Federalist objections to the proposed constitution?",
+    "Why did the Anti-Federalists object to the supremacy and necessary and proper clauses of the Constitution? Explain your position on this issue."
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 2, Question 1",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "In the Virginia Plan, James Madison proposed proportional representation in both houses of Congress. The delegates rejected Madison’s proposal in favor of the Great Compromise introduced by Roger Sherman and Oliver Ellsworth, delegates from Connecticut. What is the Great Compromise and how was it justified? Do you think the justification is acceptable today? Explain your position.",
+   "bullets": [
+    "What has been the impact of equal representation in the Senate on our political system?",
+    "What would be some of the benefits and costs of changing the Senate to proportional representation? Explain what position you would take on this issue."
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 2, Question 2",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "Alexander Hamilton claimed that the national government was too weak during the Revolutionary War. He argued that if the states did not cooperate during a time in which they all faced extreme dangers, they were not likely to cooperate at all during times of peace and security. Therefore, a stronger national government was needed. What evidence supports Hamilton’s position?",
+   "bullets": [
+    "What were the strengths and weaknesses of the Articles of Confederation?",
+    "What were the efforts to amend the Articles of Confederation and why did they fail?"
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 2, Question 3",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "Abigail Adams said that individuals involved in Shays’ Rebellion were “ignorant, wrestless desperadoes, without conscience or principals, [who] have led a deluded multitude to follow their standard, under pretence of grievences which have no existance but in their immaginations.” To what extent would you agree with her assessment?",
+   "bullets": [
+    "What other events of the Confederation Period were cause for concern for many Americans?",
+    "In your view, have there been other events in our nation’s history that were similar to the “crisis of the Confederation Period”?"
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 2, Question 1",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "One historian has suggested that the secrecy rule of the Philadelphia Convention allowed a “group of elite nationalists … some space to maneuver independent of public opinion.” What were the reasons for the secrecy rule? In your opinion, were they legitimate?",
+   "bullets": [
+    "What other rules of the convention, if any, were as important as the secrecy rule?",
+    "In your opinion, are there any circumstances that warrant government proceedings to be shielded from public scrutiny?"
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 2, Question 2",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "“I do not recollect to have met with a sensible and candid Man who has not admitted that it would be both safer and better if amendments were made to the Constitution … Some thinking that a second Convention might do the business, whilst others fear that the attempt to remedy by another Convention would risk the whole.” What were some of the amendments proposed by the Anti-Federalists? Should they have been added before the adoption of the Constitution? Why or why not?",
+   "bullets": [
+    "Why did Federalists oppose prior amendments to the Constitution?",
+    "In your opinion, why have there been so few amendments to the Constitution?"
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 2, Question 3",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "Patrick Henry famously quipped that he did not attend the Philadelphia Convention because he “smelt a rat.” What would have led him to such a conclusion?",
+   "bullets": [
+    "In your opinion, did the plans of government discussed at the convention support Henry’s suspicions?",
+    "To what extent, if any, did the delegates at the Philadelphia Convention represent the interests of the American people at the time?"
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 2, Question 1",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "During the ratification debates, one Anti-Federalist observed that the Constitution “proves upon examination to be the most odious system of tyranny that was ever projected, a many headed hydra of despotism.” What features within the Constitution might lead one to such a conclusion?",
+   "bullets": [
+    "How did Federalists counter such accusations made by critics of the Constitution?",
+    "To what extent, if any, is hyperbole appropriate in political discourse?"
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 2, Question 2",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "One view of the Articles of Confederation was that the equality among the states was “founded in reason, and its propriety is evinced by experience.” What experiences in the colonial period might have produced such a position?",
+   "bullets": [
+    "What were the strengths and weaknesses of the Articles of Confederation?",
+    "What amendments, if any, to the Articles of Confederation would have given them more viability?"
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 2, Question 3",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "In 1790, John Adams observed, “Our new Government is a new Attempt to divide a Sovereignty. A fresh Essay at Imperium in Imperio. It cannot, therefore, be expected to be very stable, or very firm.” What factors would have influenced Adams to take such a view?",
+   "bullets": [
+    "Has John Adams’s view been borne out by events throughout American history?",
+    "What have been the most important clauses of the Constitution influencing the practice of American federalism?"
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 2, Question 1",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "While delegates met at the Philadelphia Convention, one essayist noted that government under the Articles of Confederation was “weak, imperfect and distracted” and that “anarchy, poverty, infamy, and slavery, await the United States.” Do you agree with this assessment? Why or why not?",
+   "bullets": [
+    "What criticisms did Anti-Federalists level against the proceedings of the Philadelphia Convention?",
+    "What circumstances, if any, would warrant the creation of a new constitution?"
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 2, Question 2",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "When considering the House of Representatives, Brutus observed that a representative “cannot possibly represent the feelings, opinions, and characters of a great multitude. In this respect, the new constitution is radically defective.” What would have led Brutus to this conclusion?",
+   "bullets": [
+    "What were the Federalists’ views regarding representation in the Constitution?",
+    "To what extent, if any, are the views of Brutus relevant today?"
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 2, Question 3",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "George Washington said of the Articles of Confederation, “no Morn ever dawned more favourable than ours did—and no day was ever more clouded than the present! Wisdom, & good examples are necessary at this time to rescue the political machine from the impending storm.” What were the problems resulting from the Articles of Confederation?",
+   "bullets": [
+    "What do you consider the most important achievements of government under the Articles of Confederation?",
+    "Do you think the Constitution effectively remedied the problems of the Articles of Confederation?"
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 2, Question 1",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "At the Philadelphia Convention, the delegates agreed that “nothing spoken in the House be printed, or otherwise published, or communicated without leave.” Do you agree or disagree that the convention proceedings should have been kept secret? Why or why not?",
+   "bullets": [
+    "Evaluate the delegates’ other rules to govern debates in the Philadelphia Convention.",
+    "Some deliberations are still held in secret, such as the deliberations of juries, certain congressional committees, and those of the Supreme Court. Are these secret deliberations justifiable? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 2, Question 2",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "James Madison observed, “it seems now to be pretty well understood that the real difference of interests lies not between the large and small but between the northern and southern states. The institution of slavery and its consequences form the line of discrimination.” What were the Framers’ views on slavery at the time of the Philadelphia Convention?",
+   "bullets": [
+    "In what ways did the existence of slavery in the states shape the powers of Congress and the clauses in the Constitution?",
+    "Which issues left unaddressed by the Philadelphia Convention are most relevant today?"
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 2, Question 3",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "At the Philadelphia Convention, what considerations resulted in the creation of the three-fifths clause in the Constitution?",
+   "bullets": [
+    "To what extent, if any, did the Three-Fifths Compromise shape the political and social landscape in the first 70 years of United States history?",
+    "How did the 14th Amendment alter the meaning of the three-fifths clause, and, in your estimation, did it provide full citizenship for African Americans?"
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 2, Question 1",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "How did Brutus I and Federalist 10 assess the problem of factions, and what were their proposed remedies to address the presence of factions?",
+   "bullets": [
+    "How did these ratification essayists’ views influence future interpretations of the nature of representation?",
+    "In your opinion, which of these two has proven to be the most accurate in their assessment?"
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 2, Question 2",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "During the ratification debates, one writer claimed, “Most men seem to agree that amendments ought to be made in the proposed plan in some stage of the business.” What were the major disagreements between the Federalists and Anti-Federalists during the ratification period over the need to amend the proposed Constitution?",
+   "bullets": [
+    "In your opinion, which side made the most compelling arguments? Why?",
+    "Since so many attempts to amend the Constitution have failed, should we consider changing the amendment process in Article V of the Constitution? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 2, Question 3",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "Seeking to rebut the fears of the Anti-Federalists, one Federalist rhetorically asked, “Will a virtuous and sensible people chuse villains or fools for their officers?” To what extent, if any, has Fabius’s confidence in the American people prevailed throughout American history?",
+   "bullets": [
+    "Which constitutional design elements are intended to prevent the election of an unqualified or harmful executive, as described by Fabius? How effective have these elements been in practice?",
+    "Should we consider additional constitutional amendments to address potential issues with executive power? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 2, Question 1",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "James Madison claimed that “the Convention must have enjoyed … an exemption from the pestilential influence of party animosities; the diseases most incident to deliberative bodies, and most apt to contaminate their proceedings.” To what extent, if any, is this a valid claim regarding the proceedings of the Philadelphia Convention?",
+   "bullets": [
+    "What were the primary sources of contention at the Philadelphia Convention, and how did these conflicts shape the final outcome of the constitutional debates?",
+    "If another constitutional convention were held today, what partisan animosities might emerge, and how could these affect the proceedings?"
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 2, Question 2",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "What were the key controversies and challenges faced during the confederation period under the Articles of Confederation? Discuss how these issues contributed to the eventual call for a new constitution.",
+   "bullets": [
+    "In your estimation, have assessments of the Articles of Confederation been overly critical? Explain your answer.",
+    "If you were to propose revisions to the Articles of Confederation, what specific changes would you suggest to address the issues of the period and ensure the document’s long-term success?"
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 2, Question 3",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u2-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 2,
+   "q": 1,
+   "published": true,
+   "stem": "Historian Gordon Wood wrote that in “destroying monarchy and establishing republics, they [the Founders] were changing their society as well as their governments.” In your opinion, was the American Revolution both a political and a social revolution?",
+   "bullets": [
+    "What evidence is there that the American Revolution led to lasting changes in social structures, values, or institutions?",
+    "In your view, how have later generations carried forward, or struggled with, the ideal of forming “a more perfect union”?"
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 2, Question 1",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u2-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 2,
+   "q": 2,
+   "published": true,
+   "stem": "James Madison proposed in the Philadelphia Convention that the national legislature have the authority “to negative all laws passed by the several states” and “to call forth the force of the Union against any member … failing to fulfill its duty.” To what extent was it a reasonable idea to place such power in the national legislature?",
+   "bullets": [
+    "In your opinion, has the supremacy clause functioned the way Madison’s national negative might have functioned? Why or why not?",
+    "To what extent has Congress historically maintained its strength within the separation of powers framework?"
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 2, Question 2",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 2, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u2-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 2,
+   "q": 3,
+   "published": true,
+   "stem": "One critic of the Constitution noted that, like the “wooden horse filled with soldiers … in ancient times,” the Constitution would be destructive to the liberties Americans enjoyed. What features of the Constitution might this author have had in mind that would threaten Americans’ liberties?",
+   "bullets": [
+    "In your opinion, would a second convention have reduced the Anti-Federalists’ concerns over the Constitution? Why or why not?",
+    "When examining American history, to what extent were the Anti-Federalists’ criticisms legitimate?"
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 2, Question 3",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 2, pdftotext; footnote markers removed"
+  }
+ ]
+}

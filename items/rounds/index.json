@@ -1,0 +1,86 @@
+[
+ {
+  "file": "state-u1.json",
+  "item_set": "state-u1-v1",
+  "round_name": "Unit 1, State",
+  "questions": 36,
+  "cycles": "2014-15 to 2025-26"
+ },
+ {
+  "file": "state-u2.json",
+  "item_set": "state-u2-v1",
+  "round_name": "Unit 2, State",
+  "questions": 36,
+  "cycles": "2014-15 to 2025-26"
+ },
+ {
+  "file": "state-u3.json",
+  "item_set": "state-u3-v1",
+  "round_name": "Unit 3, State",
+  "questions": 36,
+  "cycles": "2014-15 to 2025-26"
+ },
+ {
+  "file": "state-u4.json",
+  "item_set": "state-u4-v1",
+  "round_name": "Unit 4, State",
+  "questions": 36,
+  "cycles": "2014-15 to 2025-26"
+ },
+ {
+  "file": "state-u5.json",
+  "item_set": "state-u5-v1",
+  "round_name": "Unit 5, State",
+  "questions": 36,
+  "cycles": "2014-15 to 2025-26"
+ },
+ {
+  "file": "state-u6.json",
+  "item_set": "state-u6-v1",
+  "round_name": "Unit 6, State",
+  "questions": 36,
+  "cycles": "2014-15 to 2025-26"
+ },
+ {
+  "file": "nf-u1.json",
+  "item_set": "nf-u1-v1",
+  "round_name": "Unit 1, National Finals",
+  "questions": 18,
+  "cycles": "2014-15 to 2019-20"
+ },
+ {
+  "file": "nf-u2.json",
+  "item_set": "nf-u2-v1",
+  "round_name": "Unit 2, National Finals",
+  "questions": 18,
+  "cycles": "2014-15 to 2019-20"
+ },
+ {
+  "file": "nf-u3.json",
+  "item_set": "nf-u3-v1",
+  "round_name": "Unit 3, National Finals",
+  "questions": 18,
+  "cycles": "2014-15 to 2019-20"
+ },
+ {
+  "file": "nf-u4.json",
+  "item_set": "nf-u4-v1",
+  "round_name": "Unit 4, National Finals",
+  "questions": 18,
+  "cycles": "2014-15 to 2019-20"
+ },
+ {
+  "file": "nf-u5.json",
+  "item_set": "nf-u5-v1",
+  "round_name": "Unit 5, National Finals",
+  "questions": 18,
+  "cycles": "2014-15 to 2019-20"
+ },
+ {
+  "file": "nf-u6.json",
+  "item_set": "nf-u6-v1",
+  "round_name": "Unit 6, National Finals",
+  "questions": 18,
+  "cycles": "2014-15 to 2019-20"
+ }
+]

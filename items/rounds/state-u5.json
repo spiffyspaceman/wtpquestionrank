@@ -1,0 +1,613 @@
+{
+ "item_set": "state-u5",
+ "version": 1,
+ "round_name": "Unit 5, State",
+ "level": "State",
+ "unit": 5,
+ "cycles": [
+  "2014-15",
+  "2015-16",
+  "2016-17",
+  "2017-18",
+  "2018-19",
+  "2019-20",
+  "2020-21",
+  "2021-22",
+  "2022-23",
+  "2023-24",
+  "2024-25",
+  "2025-26"
+ ],
+ "frame": "Published CCE State hearing questions, Unit 5, cycles 2014-15 to 2025-26",
+ "shown_to_voters": [
+  "stem",
+  "bullets"
+ ],
+ "hidden_from_voters": [
+  "id",
+  "val_id",
+  "cycle",
+  "unit",
+  "q",
+  "level",
+  "source"
+ ],
+ "items": [
+  {
+   "id": "st-2014-15-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "The rights declared in the Fourth Amendment “are not mere second class rights but belong in the catalogue of indispensable freedoms.” Do you agree or disagree? What evidence can you offer to support your response?",
+   "bullets": [
+    "What historical experiences led to the adoption of the Fourth Amendment?",
+    "Unrestricted search and seizure has been called “one of the first and most effective weapons in the arsenal of every arbitrary government.” Do you agree or disagree? What evidence can you offer to support your response?"
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 5, Question 1",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2014-15-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "“The court has struggled to find a neutral course between the two Religion Clauses, both of which are cast in absolute terms and d either of which, if expanded to a logical extreme, would tend to clash with the other.” Why has the Court continued to struggle to find a neutral course? What basic values and principles have been in contention?",
+   "bullets": [
+    "Why might the two clauses, if expanded expanded, clash with one another?",
+    "What criteria should be used to determine what religious practices should be protected and which practices government may limit?"
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 5, Question 2",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2014-15-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "“The jury summed up–indeed indeed embodied embodied–the ideals of federalism, populism and civic virtue that were the essence of the original Bill of Rights.” Do you agree or disagree with this opinion? What evidence can you offer in support of your response?",
+   "bullets": [
+    "What purposes are served by the right to be tried by a jury of your peers?",
+    "Evaluate the Anti-Federalists’ Federalists’ claim that “judges unencumbered (unrestrained) by juries have been, ever found much better friends to government than to the people.”"
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 5, Question 3",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "Why has capital punishment continued to be controversial? What values and important principles are at variance?",
+   "bullets": [
+    "What are the major arguments for and against capital punishment?",
+    "“In assessing a punishment selected by a democratically elected legislature…we presume its validity.… And a heavy burden rests on those who would attack the judgment of the representatives of the people.” Do you agree or disagree with this opinion? Why?"
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 5, Question 1",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "The jury has been defined as “the democratic branch of the judiciary power—more necessary than representatives in the legislature.” Do you agree or disagree with the opinion expressed here? Why?",
+   "bullets": [
+    "In what ways do the jury clauses of the Fifth, Sixth, and Seventh Amendments serve to ensure citizen participation in the judicial process?",
+    "In what ways, if any, are both the grand (large) jury and the petit (trial) jury related to the principle of limited government?"
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 5, Question 2",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "What is the relationship, if any, between the Fourth Amendment and the principles of limited government and the rule of law?",
+   "bullets": [
+    "What is the relationship, if any, between the Fourth Amendment and a right to privacy and to freedom of conscience and thought?",
+    "At the time the Constitution was adopted, all searches would have involved a physical trespass. How have searches changed since then, and what problems do those changes create?"
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 5, Question 3",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "In Brandenburg v. Ohio the Supreme Court created a two-part test for limiting free expression. Speech can be limited if it is “directed to inciting or producing imminent lawless action and is likely to incite or produce such action.” What are the advantages and disadvantages of using this test to limit free expression, and how should this test apply to posts on social media?",
+   "bullets": [
+    "Does the decision in Tinker v. Des Moines Independent Community School District apply to student speech on social media sites? Why or why not?",
+    "Should public schools limit student speech posted on social media sites that criticizes teachers or administrators? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 5, Question 1",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "Chief Justice John Roberts stated, “The fact that technology now allows an individual to carry such information in his hand does not make the information any less worthy of the protection for which the Founders fought. Our answer to the question of what police must do before searching a cell phone seized incident to an arrest is accordingly simple—get a warrant.” Do you agree or disagree with the decision of the Supreme Court? Why?",
+   "bullets": [
+    "When is it reasonable, if ever, to conduct a search and seizure without a warrant? Why?",
+    "Does the government have a compelling interest in collecting and storing Internet communications? Why or why not? Should the collection of such information by the government require a warrant? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 5, Question 2",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "Political and social movements in American history have been successful because of the right of assembly. President Abraham Lincoln wrote in a letter that “the right of peaceable assembly” is part of the “Constitutional substitute for revolution.” Do you agree or disagree with President Lincoln? Why? What is the history of freedom of assembly in America?",
+   "bullets": [
+    "What historical or contemporary evidence is there, if any, that political and social movements have led to significant changes in laws or policies?",
+    "What limits, if any, should be placed on the right to freedom of assembly?"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 5, Question 3",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "“From their founding era until today, Americans have believed that the highest purpose of government is protection of the rights of the people to whom it is accountable. Commitment to ideals about rights to liberty and equality is the foundation of an American national identity.” What are bills of rights and how have they evolved?",
+   "bullets": [
+    "What positive and negative rights are found in the Constitution and Bill of Rights?",
+    "How have the three branches of government expanded the rights of Americans?"
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 5, Question 1",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "Free speech is a cornerstone of American liberties. It may be easy for the government to protect speech we like; however, it is much more difficult to protect speech we abhor. What is free speech and what role does government have in protecting or limiting it?",
+   "bullets": [
+    "How has the meaning of free speech changed over the course of American history?",
+    "What limits on speech, if any, should be enforced on high school or college campuses?"
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 5, Question 2",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "How has the Fourth Amendment’s protection against unreasonable search and seizures changed throughout American history?",
+   "bullets": [
+    "What exceptions to the Fourth Amendment requirement of a warrant has the U.S. Supreme Court established?",
+    "What are the advantages and disadvantages of the exclusionary rule?"
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 5, Question 3",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "“The Government’s collection of telephony metadata from a third party such as a telecommunications service provider is not considered a search under the Fourth Amendment.” Do you agree or disagree with Judge Brett Kavanaugh? Why or why not?",
+   "bullets": [
+    "Should searches and seizures conducted by the National Security Agency be held to the same Fourth Amendment standard as searches and seizures by the police? Why or why not?",
+    "Under what conditions, if any, should police be able to search and seize people or their property without obtaining a warrant?"
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 5, Question 1",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "In a 2005 Supreme Court opinion, Associate Justice Anthony Kennedy wrote, “It is proper that we acknowledge the overwhelming weight of international opinion against the juvenile death penalty, resting in large part on the understanding that the instability and emotional imbalance of young people may often be a factor in the crime.” Do you agree or disagree with Justice Kennedy’s opinion? Why or why not?",
+   "bullets": [
+    "Does the death penalty for a capital crime violate the Eighth Amendment’s protection against cruel and unusual punishment? Why or why not?",
+    "Should the Eighth Amendment prohibit a state from executing a prisoner whose mental disability leaves him or her with no memory of the commission of the capital offense? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 5, Question 2",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "“When a choice must be made, it is better to allow those who preach racial hate to expend their venom in rhetoric rather than to be panicked into embarking on the dangerous course of permitting the government to decide what its citizens may say and hear.” Do you agree with U.S. District Court Judge Bernard Decker’s upholding the First Amendment rights of Nazis to march in Skokie, Illinois? Why or why not?",
+   "bullets": [
+    "What, if any, benefit is there from the presentation of ideas that are designed to alarm, antagonize, and offend members of that society?",
+    "Should the “fighting words” doctrine of Chaplinsky v. New Hampshire be reinvigorated and applied on a broader scale to deny First Amendment protection to volatile speech like that expressed in places like Charlottesville, Virginia, in August of 2017? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 5, Question 3",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "“The Self-Incrimination Clause of the Fifth Amendment is an unsolved riddle of vast proportions, a Gordian knot in the middle of our Bill of Rights.” Do you agree or disagree with this quote? Explain your position.",
+   "bullets": [
+    "What is the history of the Fifth Amendment’s self-incrimination clause, and why might it be controversial?",
+    "Should refusing to give up your mobile phone’s passcode be protected under the self- incrimination clause of the Fifth Amendment? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 5, Question 1",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "The U.S. Supreme Court has used a two-pronged test to evaluate speech. First, speech can be prohibited if it is “directed to inciting or producing imminent lawless action” and second, if it is “likely to incite or produce such action.” Using this test, the Court held that an Ohio law violated Clarence Brandenburg’s right to speech in Brandenburg v. Ohio. Do you agree or disagree with the Court’s decision and the use of a two-pronged test?",
+   "bullets": [
+    "Under what conditions, if any, should freedom of expression be limited?",
+    "Why is freedom of expression a necessary part of representative government?"
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 5, Question 2",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "In 1784, Patrick Henry proposed a general tax called the Bill Establishing a Provision for Teachers of the Christian Religion. In reaction, James Madison wrote, “The Religion then of every man must be left to the conviction and conscience of every man; and it is the right of every man to exercise it as these may dictate.” Do you agree with Patrick Henry or James Madison? Why?",
+   "bullets": [
+    "How have the courts interpreted the establishment clause of the First Amendment?",
+    "How is the right of free exercise of religion balanced against other interests of society?"
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 5, Question 3",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "The “very essence of the liberty” guaranteed by the Constitution “is the freedom of the individual from compulsion as to what he shall think and what he shall say.” Do you agree or disagree with Justice Stone? Why?",
+   "bullets": [
+    "Do you think the right to freedom of expression is the most important right guaranteed by the Constitution? Explain your position.",
+    "What limits, if any, have courts placed on our right to think and speak as we wish?"
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 5, Question 1",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "“Instantaneous photographs and newspaper enterprise have invaded the sacred precincts of private and domestic life; and numerous mechanical devices threaten to make good the prediction that ‘what is whispered in the closet shall be proclaimed from the house-tops.’” Where, if at all, is the right to privacy reflected in the U.S. Constitution?",
+   "bullets": [
+    "What other important rights, if any, are related to the right to privacy? Explain your position.",
+    "What are the most current threats to the right to privacy? Explain your position."
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 5, Question 2",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "The Ninth Amendment to the Constitution says, “The enumeration in the Constitution, of certain rights, shall not be construed to deny or disparage others retained by the people.” What rights, if any, not listed in the Bill of Rights or the U.S. Constitution should be retained by the people?",
+   "bullets": [
+    "What branch of government is best suited to establish legal rights? Why?",
+    "What role, if any, do people have in establishing their moral and legal rights?"
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 5, Question 3",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "“We do not believe the special characteristics that give schools additional license to regulate student speech always disappear when a school regulates speech that takes place off campus.” When and how, if at all, should schools regulate student speech?",
+   "bullets": [
+    "How have the courts treated student speech rights differently than public speech rights?",
+    "What forms of speech, if any, deserve greater protection than others? Why?"
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 5, Question 1",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "“That the individual shall have full protection in person and in property is a principle as old as the common law; but it has been found necessary from time to time to define anew the exact nature and extent of such protection.” Do you agree or disagree with this statement? Why?",
+   "bullets": [
+    "Under what circumstances, if any, is it appropriate for a government to limit privacy to promote the common good?",
+    "Where in the constitutions of countries around the world is the right to privacy implied or specifically stated?"
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 5, Question 2",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "“We ought not to part with the trial by jury; we ought to guard this and many other privileges by a bill of rights, which cannot be invaded.” Why was the right to a jury trial so important to the Founders?",
+   "bullets": [
+    "What are some advantages and disadvantages of a jury trial?",
+    "Which rights included in procedural due process rights do you believe are the most important and why?"
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 5, Question 3",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "“It is said that the insertion of a bill of rights would be an argument against the present liberty of the people. … If the people do really possess them [rights], there can be no harm in expressing what is meant to be understood.” Does it matter whether protected rights are identified in the body of a constitution or in a separate bill of rights?",
+   "bullets": [
+    "What are negative and positive rights, and how are they protected differently?",
+    "How do different methods of constitutional interpretation affect the meaning of various provisions of the Bill of Rights?"
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 5, Question 1",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "Does the Constitution protect the right to privacy? How does it do so, or how do you know it does not?",
+   "bullets": [
+    "Why and to what degree may the government limit individuals’ right to privacy?",
+    "What other Supreme Court decisions have protected unenumerated rights?"
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 5, Question 2",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "“The liberty of the press is essential to the security of freedom in a state: it ought not, therefore, to be restrained in this Commonwealth.” Many of the first state constitutions specifically protect freedom of the press. Why was the protection of a free press so important to the Framers?",
+   "bullets": [
+    "Are different types of media treated differently under the First Amendment today? Why or why not?",
+    "How, if at all, do you think the government should strike a balance between protecting freedom of the press and preventing the spread of “fake news”?"
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 5, Question 3",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "The United States Supreme Court recently ruled that, under the Second Amendment, firearms regulations must be “consistent with this Nation’s historical tradition of firearm regulation.” Do you agree or disagree? Why?",
+   "bullets": [
+    "In light of this ruling, how should courts balance the right to bear arms against the need for public safety?",
+    "To what extent, if any, should other amendments in the Bill of Rights be interpreted based on an understanding of the country’s historical tradition?"
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 5, Question 1",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "“The 2022–23 school year has been marked to date by an escalation of book bans and censorship in classrooms and school libraries across the United States.” To what extent, if any, do these bans limit students’ and teachers’ freedom of speech?",
+   "bullets": [
+    "How should schools determine student access to certain books and online materials?",
+    "Who should determine whether certain books should be banned or access to them should be restricted, and what criteria should they use?"
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 5, Question 2",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "How does the reasonable suspicion doctrine, as established in New Jersey v. T.L.O. (1985), both limit and protect students’ Fourth Amendment rights in public schools?",
+   "bullets": [
+    "Can school officials lawfully seize a student’s backpack based on an anonymous tip reported on a social media site? Does it make a difference if the tip is made pursuant to a state statute encouraging students to report tips about school safety concerns anonymously? Why or why not?",
+    "To what extent should the exclusionary rule apply to school searches by school officials?"
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 5, Question 3",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "“If there is a bedrock principle underlying the First Amendment, it is that the government may not prohibit the expression of an idea simply because society finds the idea itself offensive or disagreeable.” Do you agree or disagree with Justice Brennan’s view of freedom of expression? Why?",
+   "bullets": [
+    "To what extent, if any, should public universities be able to prohibit expression on campus that may be considered harmful to other groups?",
+    "Have recent U.S. Supreme Court decisions upheld the Framers’ commitment to freedom of speech? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 5, Question 1",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "“These two Clauses, the Establishment Clause and the Free Exercise Clause, are frequently in tension. … Yet we have long said that ‘there is room for play in the joints’ between them.” What are some ways the First Amendment’s religion clauses have been in tension with one another?",
+   "bullets": [
+    "In your opinion, have recent Supreme Court interpretations of the establishment clause strengthened or weakened the protection of religious liberty? Explain.",
+    "Should the federal or state governments implement additional laws offering more robust protections for religious practice? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 5, Question 2",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "How do the Sixth Amendment’s protections for the rights of the accused relate to the First Amendment’s protections for freedom of expression during a criminal trial?",
+   "bullets": [
+    "What reasonable limitations, if any, should judges impose on freedom of the press during a criminal trial to protect the accused’s right to a fair trial?",
+    "How should public expression, such as protests or media coverage, be managed during a criminal trial to maintain jury impartiality and to protect the rights of the accused?"
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 5, Question 3",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u5-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 5,
+   "q": 1,
+   "published": true,
+   "stem": "The United States Supreme Court has recognized “streets, sidewalks, and parks” as locations where “the government’s ability to permissibly restrict expressive conduct is very limited.” How should the government be able to limit expressive conduct in these locations, if at all?",
+   "bullets": [
+    "In what ways have social movements historically relied on public spaces to express their views or demand change?",
+    "What kinds of public spaces has the Supreme Court treated differently, and why might those distinctions matter for free expression today?"
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 5, Question 1",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u5-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 5,
+   "q": 2,
+   "published": true,
+   "stem": "“Discovery and invention have made it possible for the Government … to obtain disclosure in court of what is whispered in the closet.” Justice Brandeis believed Fourth Amendment protections must adapt to technological change to safeguard liberty and privacy. Do you agree? Why or why not?",
+   "bullets": [
+    "To what extent have technological advancements throughout America’s 250-year history changed how the Supreme Court interprets the Fourth Amendment?",
+    "How might artificial intelligence challenge or reshape current interpretations of Fourth Amendment protections? Should courts and lawmakers adjust legal standards in response?"
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 5, Question 2",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 5, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u5-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 5,
+   "q": 3,
+   "published": true,
+   "stem": "In proposing the Bill of Rights to Congress, James Madison warned that the “greatest danger” to liberty is not found in the legislative or executive departments of government but “in the body of the people, operating by the majority against the minority.” How does the Bill of Rights heed Madison’s concern and protect minorities against the danger of majorities?",
+   "bullets": [
+    "To what extent, if any, should individual rights set forth in the Bill of Rights be limited by the will of the majority?",
+    "Which rights do you think need the most protection today, and why?"
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 5, Question 3",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 5, pdftotext; footnote markers removed"
+  }
+ ]
+}

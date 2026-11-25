@@ -5,7 +5,7 @@ interface Me {
   votes: number;
   unlockAt: number;
   unlocked: boolean;
-  round: { name: string; state: string } | null;
+  open: boolean;
   batch: { size: number; remaining: number } | null;
 }
 
@@ -37,8 +37,8 @@ async function init(): Promise<void> {
   $("#votes").textContent = String(me.votes);
   $("#votesWord").textContent = plural(me.votes, "pair judged", "pairs judged");
 
-  const open = me.round?.state === "open";
-  $("#roundLine").textContent = me.round ? `${me.round.name}${open ? "" : ", voting closed"}` : "No round yet";
+  const open = me.open;
+  $("#roundLine").textContent = open ? "" : "Voting is closed right now";
 
   const unlock = $("#unlockLine");
   if (me.unlocked) {

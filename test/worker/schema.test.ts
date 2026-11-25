@@ -37,11 +37,11 @@ describe("schema on local D1", () => {
     await d.prepare("INSERT INTO admin_audit (at,actor,action,detail_json) VALUES (?,?,?,?)").bind(now, "sub", "x", "{}").run();
   });
 
-  it("creates every table and all twenty triggers and both views (0001 to 0004)", async () => {
+  it("creates every table, all twenty-two triggers and both views (0001 to 0005)", async () => {
     const t = await db().prepare("SELECT type, count(*) AS n FROM sqlite_schema WHERE type IN ('table','trigger','view') AND name NOT LIKE '\\_%' ESCAPE '\\' AND name NOT LIKE 'sqlite%' AND name <> 'd1_migrations' GROUP BY type").all<{ type: string; n: number }>();
     const by = Object.fromEntries(t.results.map((r) => [r.type, r.n]));
-    expect(by.trigger).toBe(20);
-    expect(by.table).toBe(19);
+    expect(by.trigger).toBe(22);
+    expect(by.table).toBe(20);
     expect(by.view).toBe(2);
   });
 
@@ -75,9 +75,17 @@ describe("schema on local D1", () => {
     expect(await fails("DELETE FROM vote_other")).toMatch(/append-only/);
   });
 
-  it("allows only one open round (partial unique index)", async () => {
-    expect(await fails("INSERT INTO rounds VALUES ('r2','R2','s1','open',?,?,NULL,NULL)", now, now)).toMatch(/UNIQUE/);
+  it("allows several open rounds (migration 0005 drops the one-open index)", async () => {
+    expect(await fails("INSERT INTO rounds VALUES ('r2','R2','s1','open',?,?,NULL,NULL)", now, now)).toBe(false);
     expect(await fails("INSERT INTO rounds VALUES ('r3','R3','s1','draft',?,NULL,NULL,NULL)", now)).toBe(false);
+    await db().prepare("UPDATE rounds SET state = 'closed' WHERE id = 'r2'").run();
+  });
+
+  it("round_board_seen holds one first view per voter and round, append-only", async () => {
+    expect(await fails("INSERT INTO round_board_seen VALUES ('v1','r1',?)", now)).toBe(false);
+    expect(await fails("INSERT INTO round_board_seen VALUES ('v1','r1',?)", now)).toMatch(/UNIQUE|PRIMARY/);
+    expect(await fails("UPDATE round_board_seen SET seen_at = 'x'")).toMatch(/append-only/);
+    expect(await fails("DELETE FROM round_board_seen")).toMatch(/append-only/);
   });
 
   it("rejects a draft question, and question text cannot change", async () => {

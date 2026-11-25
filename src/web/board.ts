@@ -18,7 +18,9 @@ interface Row {
 interface Board {
   pool: string;
   pools: { id: string; name: string }[];
-  round: { name: string; state: string };
+  round: { id: string; name: string; state: string };
+  /** Every round with a board, when there is more than one. */
+  rounds: { id: string; name: string }[];
   votes: number;
   intervalsAsOf: string | null;
   rows: Row[];
@@ -715,11 +717,15 @@ function fillFilters(): void {
 
 // ---------- load ----------
 
-async function load(p?: string): Promise<void> {
+async function load(p?: string, round?: string): Promise<void> {
   if ($("#content").hidden) say(msg, "Loading the leaderboard");
   let b: Board;
   try {
-    b = await api<Board>("/api/leaderboard" + (p ? `?pool=${encodeURIComponent(p)}` : ""));
+    const q = new URLSearchParams();
+    if (p) q.set("pool", p);
+    const r = round ?? board?.round.id;
+    if (r) q.set("round", r);
+    b = await api<Board>("/api/leaderboard" + (q.size ? `?${q}` : ""));
   } catch (err) {
     if (err instanceof ApiError && err.status === 404) return location.replace("/");
     if (err instanceof ApiError && err.body.error === "locked")
@@ -739,6 +745,11 @@ async function load(p?: string): Promise<void> {
       return btn;
     }),
   );
+  // With several rounds, a picker; the pool chosen stays the same across rounds.
+  const sel = $<HTMLSelectElement>("#roundSel");
+  sel.replaceChildren(...b.rounds.map((x) => el("option", { value: x.id }, x.name)));
+  sel.value = b.round.id;
+  show($("#roundPick"), b.rounds.length > 1);
   const ranked = rows.filter((r) => r.rank !== null).length;
   $("#summary").textContent = `${count(b.votes, "vote", "votes")} · ${count(rows.length, "question", "questions")}, ${ranked} ranked`;
   renderTop();
@@ -747,5 +758,7 @@ async function load(p?: string): Promise<void> {
   lastW = chartWidth();
   renderChart();
 }
+
+$("#roundSel").addEventListener("change", () => void load(board?.pool, $<HTMLSelectElement>("#roundSel").value));
 
 void load();

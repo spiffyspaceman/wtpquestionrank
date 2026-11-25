@@ -1,0 +1,319 @@
+{
+ "item_set": "nf-u4",
+ "version": 1,
+ "round_name": "Unit 4, National Finals",
+ "level": "NF",
+ "unit": 4,
+ "cycles": [
+  "2014-15",
+  "2015-16",
+  "2016-17",
+  "2017-18",
+  "2018-19",
+  "2019-20"
+ ],
+ "frame": "Published CCE NF hearing questions, Unit 4, cycles 2014-15 to 2019-20",
+ "shown_to_voters": [
+  "stem",
+  "bullets"
+ ],
+ "hidden_from_voters": [
+  "id",
+  "val_id",
+  "cycle",
+  "unit",
+  "q",
+  "level",
+  "source"
+ ],
+ "items": [
+  {
+   "id": "nf-2014-15-u4-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2014-15",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "“Since the 19th century, Parliament has rarely made any major impact on the content of legislation. Responsibility for proposing and drafting the vast bulk of legislation rests with the government which, because of its parliamentary majority, is generally able to have its Bills enacted into law in the desired form.” How is the British system of mingling executive and legislative powers different from the American system of separation of powers?",
+   "bullets": [
+    "What might be the advantages of the parliamentary system of mingling powers?",
+    "What might be the disadvantages of the parliamentary system of mingling powers?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2014-15, Unit 4, Question 1",
+   "text_source": "5cdffad6-hsnationalhearingquestions2014-15.pdf (sha256 4b0de2c670ec5f98), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2014-15-u4-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2014-15",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "“The Constitution envisions a healthy contestation between Congress and the president, whose separate functions, but overlapping powers, create a constitutional struggle for the authority to exercise power.” Do you agree or disagree with this assertion? What evidence can you offer to support your response?",
+   "bullets": [
+    "What purposes, if any, does a “healthy contestation” between the president and Congress serve? Why?",
+    "When and why might a “contestation” between the president and Congress become “unhealthy”?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2014-15, Unit 4, Question 2",
+   "text_source": "5cdffad6-hsnationalhearingquestions2014-15.pdf (sha256 4b0de2c670ec5f98), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2014-15-u4-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2014-15",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "“Congress is becoming more like a parliamentary system where everyone simply votes with their party and those in charge employ every possible tactic to block the other side.” Do you agree or disagree with this statement? Why? What evidence can you offer to support your response?",
+   "bullets": [
+    "How would you distinguish among deliberating, debating, and bargaining in Congress? Which is preferable? Why?",
+    "What problems can arise when Congress becomes gridlocked, or simply fails to act, and how does gridlock shift the balance of power among the three branches of government?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2014-15, Unit 4, Question 3",
+   "text_source": "5cdffad6-hsnationalhearingquestions2014-15.pdf (sha256 4b0de2c670ec5f98), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2015-16-u4-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2015-16",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "Americans “offered the world a new way of organizing government when they ‘invented’ federalism.” How would you explain federalism and what was new and different about it?",
+   "bullets": [
+    "Why has conflict over federalism been a recurrent feature of American history?",
+    "Evaluate the claim that federalism allows states to experiment with new programs that other states can adopt or modify."
+   ],
+   "source": "CCE National Finals Hearing Questions 2015-16, Unit 4, Question 1",
+   "text_source": "b241c4b8-hsnationalhearingquestions2015-16.pdf (sha256 077b0dadda493120), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2015-16-u4-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2015-16",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "Compare the American and British ideas of representation. What are their most important differences? In what respects are they similar?",
+   "bullets": [
+    "Compare the relationship of the British prime minister to Parliament with the relationship of the president of the United States to Congress. What are the advantages and disadvantages of each arrangement?",
+    "In the British system ministers of the Crown are simultaneously members of Parliament. Why did Americans reject this idea? What are the advantages and disadvantages of each arrangement?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2015-16, Unit 4, Question 2",
+   "text_source": "b241c4b8-hsnationalhearingquestions2015-16.pdf (sha256 077b0dadda493120), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2015-16-u4-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2015-16",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "A scholar claims, “The language of the Constitution permits either an active or a passive executive. A sufficiently vigorous president can overcome various checks and balances of the document without violating its design of limited power.” Do you agree or disagree with this claim? Why? What evidence can you offer to support your response?",
+   "bullets": [
+    "Why did establishing the structure of the role of the executive branch pose a major problem for the Founders?",
+    "Article I both allocates and limits the powers of Congress. Article II says only, “The executive power shall be vested in a President.” It fails to define executive power. How might you account for this difference in specificity? What problems, if any, has the failure to define “executive power” created?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2015-16, Unit 4, Question 3",
+   "text_source": "b241c4b8-hsnationalhearingquestions2015-16.pdf (sha256 077b0dadda493120), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2016-17-u4-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2016-17",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "Regarding the Supreme Court’s decision in Brown v. Board of Education, scholar Francis Fukuyama wrote, “What was arguably one of the most important changes in American public policy came about not because Congress as representative of the American people voted for it but because private individuals litigated through the court system to change the rules.” Should such policy changes be made by Supreme Court justices or by a majority of elected representatives in Congress? Why?",
+   "bullets": [
+    "What decisions of the Supreme Court have made significant changes in public policy throughout American history? What impact, if any, did those decisions have on individual rights? What evidence supports your position?",
+    "According to Erwin Chemerinsky, “Now, and throughout American history, the Court has been far more likely to rule in favor of corporations than workers or consumers; it has been far more likely to uphold government abuses of power than to stop them.” What evidence is there to support or refute this claim?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2016-17, Unit 4, Question 1",
+   "text_source": "7af6a77f-hsnationalhearingquestions2016-17.pdf (sha256 3d8e4aac1ed0bf8e), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2016-17-u4-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2016-17",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "On January 17, 1961, President Dwight Eisenhower said, “In the councils of government, we must guard against the acquisition of unwarranted influence, whether sought or unsought, by the military-industrial complex. The potential for the disastrous rise of misplaced power exists and will persist.” What is the military-industrial complex referred to by President Eisenhower? What evidence is there of its existence and influence? Should it be considered a legitimate part of the political process? Explain your position.",
+   "bullets": [
+    "What powers of the government over the military are listed in the Constitution? Are they sufficient? Why or why not?",
+    "Under what circumstances, if any, should the United States go to war with other nations? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2016-17, Unit 4, Question 2",
+   "text_source": "7af6a77f-hsnationalhearingquestions2016-17.pdf (sha256 3d8e4aac1ed0bf8e), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2016-17-u4-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2016-17",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "James Madison wrote that “the problem to be solved is, not what form of Govt. is perfect, but which of the forms is least imperfect.” The choice is then “between a Republican Government in which the majority rule the minority, and a Govt. in which … a lesser number or the least number rule the majority. … The least imperfect … [is the] will of the majority.” What arguments can you make to support the principle of majority rule among political equals in making decisions that affect them?",
+   "bullets": [
+    "How can the majority overriding the will of the minority be justified? What position do you take on this question? Why?",
+    "Are there any situations in which a minority should be allowed to block the will of the majority? What examples in our system of minorities blocking the will of majorities can you identify? How might they be justified? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2016-17, Unit 4, Question 3",
+   "text_source": "7af6a77f-hsnationalhearingquestions2016-17.pdf (sha256 3d8e4aac1ed0bf8e), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2017-18-u4-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2017-18",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "The War Powers Act of 1973 provides that the president can send the armed forces into action abroad only by a declaration of war by Congress, “statutory authorization,” or in case of a “national emergency created by attack upon the United States, its territories or possessions, or its armed forces.” How effective has the War Powers Act been at checking the president’s power to engage the military power of the United States in conflicts in other nations?",
+   "bullets": [
+    "What are Congress’s constitutional war-making powers and to what extent has it ceded them to the presidency? What action, if any, do you think should be taken in this regard?",
+    "Should the president alone have the authority to engage the United States in nuclear war? Explain your position and any alternative you propose."
+   ],
+   "source": "CCE National Finals Hearing Questions 2017-18, Unit 4, Question 1",
+   "text_source": "e737a8e8-hsnationalhearingquestions2017-18.pdf (sha256 ed65856d0cf231a5), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2017-18-u4-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2017-18",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "Brutus 15 observed that in England, the decisions of the judges were subject to correction by the House of Lords. However, the American Constitution has no such provision for overruling the decisions of the judicial branch. The powers of the judiciary under the proposed U.S. Constitution “transcends any power before given to a judicial by any free government under heaven.” How has the power of the judicial branch changed since it was first established? What has helped to bring about this change? Is it too powerful? Explain your position.",
+   "bullets": [
+    "Is the power of judicial review consistent with democratic principles in a republican form of government? Why or why not?",
+    "What checks, if any, does Congress have on the judicial branch?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2017-18, Unit 4, Question 2",
+   "text_source": "e737a8e8-hsnationalhearingquestions2017-18.pdf (sha256 ed65856d0cf231a5), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2017-18-u4-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2017-18",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "Since the Virginia House of Burgesses in 1619, people have relied on democratically elected legislative bodies to promote both individual liberty and the common good. At one time, the U.S. Congress was regarded as the most august legislative body in history. Why is the approval rating of Congress so low today? What is the role of Congress in promoting both individual liberty and the common good?",
+   "bullets": [
+    "What is the role, if any, of negotiation and compromise in a legislative body?",
+    "How does the current level of polarization affect the functioning of Congress? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2017-18, Unit 4, Question 3",
+   "text_source": "e737a8e8-hsnationalhearingquestions2017-18.pdf (sha256 ed65856d0cf231a5), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2018-19-u4-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2018-19",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "“On one side of Capitol Hill [the Senate], then, the give and take that ought to be part of the legislative process is now far too easily shut down by the minority. On the other side [the House], it’s all too often shut down by the majority. … There are several instances in which our Constitution calls for more than a simple majority … On everything else, let’s allow a measure onto the floor through a fair process, then vote it up or down by simple majority rule. Why should the world’s greatest democracy not practice democracy?” Do you agree or disagree with this criticism of the way Congress is working today and the remedy suggested? Explain your position.",
+   "bullets": [
+    "Under what conditions, if any, do you think that more than a simple majority—a “supermajority”—should be required to pass a law? Does requiring supermajorities result in minority rule? Explain your position.",
+    "What rules, if any, in the House or Senate allow a minority to stop legislation supported by a majority? Do you support or oppose such rules? Explain your position."
+   ],
+   "source": "CCE National Finals Hearing Questions 2018-19, Unit 4, Question 1",
+   "text_source": "b6ed0981-hsnationalhearingquestions2018-19.pdf (sha256 ecfa2b199b3bcb1c), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2018-19-u4-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2018-19",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "“The complete independence of the courts of justice is peculiarly essential in a limited Constitution. By a limited Constitution, I understand one which contains certain specified exceptions to the legislative authority; such, for instance, as that it shall pass no bills of attainder, no ex-post-facto laws, and the like. Limitations of this kind can be preserved in practice no other way than through the medium of courts of justice, whose duty it must be to declare all acts contrary to the manifest tenor of the Constitution void.” What limits, if any, should there be on the Supreme Court’s power to declare acts of Congress and other branches of government unconstitutional? Explain your position.",
+   "bullets": [
+    "What are the advantages and disadvantages of the U.S. Supreme Court exercising its power of judicial review?",
+    "What are the advantages and disadvantages of the president nominating Supreme Court justices and the Senate confirming them?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2018-19, Unit 4, Question 2",
+   "text_source": "b6ed0981-hsnationalhearingquestions2018-19.pdf (sha256 ecfa2b199b3bcb1c), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2018-19-u4-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2018-19",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "Oversight is an implicit constitutional responsibility of Congress. “It was not considered necessary to make an explicit grant of such authority [in the Constitution]. … The power to make laws implied the power to see whether they were faithfully executed.” Do you agree or disagree with historian Arthur Schlesinger Jr.?",
+   "bullets": [
+    "What formal powers are granted in the Constitution to Congress to hold the president and the rest of the executive branch accountable for their actions or inactions?",
+    "How does congressional oversight work, and what are some of its advantages and disadvantages?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2018-19, Unit 4, Question 3",
+   "text_source": "b6ed0981-hsnationalhearingquestions2018-19.pdf (sha256 ecfa2b199b3bcb1c), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2019-20-u4-q1",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2019-20",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "In the 1793–94 Pacificus–Helvidius debates, Alexander Hamilton contended that the power to declare war was both legislative and executive in nature. James Madison disagreed, saying that this power was exclusively legislative. Whose opinion do you favor and why?",
+   "bullets": [
+    "To what extent, if any, are Madison’s or Hamilton’s opinions relevant to the current understanding of the warmaking power? Why?",
+    "Francis Biddle, Franklin D. Roosevelt’s attorney general, noted that “the Constitution has never greatly bothered a wartime president.” Has history proven this to be true? Why or why not?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2019-20, Unit 4, Question 1",
+   "text_source": "7af06adc-hsnationalhearingquestions2019-20.pdf (sha256 b9844ec2eb786b21), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2019-20-u4-q2",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2019-20",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "Gerald N. Rosenberg wrote that “the structural constraints … built into the American judicial system, make courts virtually powerless to produce change. They must depend on the actions of others for their decisions to be implemented.” Do you agree or disagree with this view? Why?",
+   "bullets": [
+    "What role, if any, do you believe the courts should play in expanding civil rights?",
+    "What recourse, if any, do individuals or groups have when they disagree with court decisions?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2019-20, Unit 4, Question 2",
+   "text_source": "7af06adc-hsnationalhearingquestions2019-20.pdf (sha256 b9844ec2eb786b21), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "nf-2019-20-u4-q3",
+   "val_id": null,
+   "level": "NF",
+   "cycle": "2019-20",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "Article I, Section 4 of the Constitution provides that state legislatures can determine the “Times, Places and Manner of holding Elections for Senators and Representatives” yet gives Congress the power to “make or alter such Regulations.” What are the advantages and disadvantages of a uniform election process?",
+   "bullets": [
+    "What responsibility do state legislatures, state election officials, and citizens have in maintaining free and fair elections?",
+    "What are the advantages and disadvantages of the trustee and delegate theories of representation as they apply to congressional districts?"
+   ],
+   "source": "CCE National Finals Hearing Questions 2019-20, Unit 4, Question 3",
+   "text_source": "7af06adc-hsnationalhearingquestions2019-20.pdf (sha256 b9844ec2eb786b21), page 4, pdftotext; footnote markers removed"
+  }
+ ]
+}

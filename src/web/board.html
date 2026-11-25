@@ -19,7 +19,10 @@
       <div id="content" hidden>
         <div class="board-head">
           <h1>Leaderboard</h1>
-          <div class="tabs" id="tabs" role="group" aria-label="Whose votes"></div>
+          <div class="board-pick">
+            <div id="roundPick" class="control" hidden><label for="roundSel">Questions</label><select id="roundSel"></select></div>
+            <div class="tabs" id="tabs" role="group" aria-label="Whose votes"></div>
+          </div>
         </div>
         <p id="summary" class="scale-note" aria-live="polite"></p>
 

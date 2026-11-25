@@ -2,8 +2,9 @@
 import { Hono, type Context } from "hono";
 import { QUALITY, RATING, ROLES } from "../rating/config";
 import { requireAdmin, adminSecretLogin } from "./access";
+import { BUILTIN_SETS } from "./builtin-sets";
 import { codeHash, inviteCode } from "./auth";
-import { board, currentRound, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems } from "./data";
+import { board, openRounds, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems } from "./data";
 import type { AppEnv, RoundRow } from "./env";
 import { correctionsCsv, exportMeta, reasonsCsv, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
 import { studyHealth } from "./health";
@@ -85,26 +86,26 @@ interface ItemIn {
 /** text_sha256 = SHA-256 of JSON.stringify([stem, bullets]) as loaded. */
 export const questionTextHash = (stem: string, bullets: string[]) => sha256Hex(JSON.stringify([stem, bullets]));
 
-adminApi.post("/items", async (c) => {
+/** Load an item file: the checks, the writes and the audit row. Returns the JSON answer and its status. */
+async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array): Promise<[Record<string, unknown>, 200 | 400 | 409]> {
   const db = c.env.DB;
-  const bytes = await c.req.arrayBuffer();
   const fileSha = await sha256Hex(bytes);
   let file: { item_set?: unknown; version?: unknown; items?: unknown };
   try {
     file = JSON.parse(new TextDecoder().decode(bytes));
   } catch {
-    return c.json({ error: "bad_json" }, 400);
+    return [{ error: "bad_json" }, 400];
   }
   if (typeof file.item_set !== "string" || !/^[a-z0-9-]{1,40}$/.test(file.item_set))
-    return c.json({ error: "bad_item_set", message: "item_set must be a short lower-case id." }, 400);
+    return [{ error: "bad_item_set", message: "item_set must be a short lower-case id." }, 400];
   if (typeof file.version !== "number" || !Number.isInteger(file.version) || file.version < 1)
-    return c.json({ error: "bad_version" }, 400);
-  if (!Array.isArray(file.items) || file.items.length < 2) return c.json({ error: "no_items" }, 400);
+    return [{ error: "bad_version" }, 400];
+  if (!Array.isArray(file.items) || file.items.length < 2) return [{ error: "no_items" }, 400];
   const items = file.items as ItemIn[];
 
   const unpublished = items.filter((i) => i?.published !== true).map((i) => i?.id ?? "?");
   if (unpublished.length)
-    return c.json({ error: "unpublished", message: "Every item must have published: true.", ids: unpublished }, 400);
+    return [{ error: "unpublished", message: "Every item must have published: true.", ids: unpublished }, 400];
   const bad = items.filter(
     (i) =>
       typeof i.id !== "string" ||
@@ -123,14 +124,14 @@ adminApi.post("/items", async (c) => {
       !i.bullets.every((b) => typeof b === "string") ||
       typeof i.source !== "string",
   );
-  if (bad.length) return c.json({ error: "bad_items", ids: bad.map((i) => i?.id ?? "?") }, 400);
-  if (new Set(items.map((i) => i.id)).size !== items.length) return c.json({ error: "duplicate_ids" }, 400);
+  if (bad.length) return [{ error: "bad_items", ids: bad.map((i) => i?.id ?? "?") }, 400];
+  if (new Set(items.map((i) => i.id)).size !== items.length) return [{ error: "duplicate_ids" }, 400];
 
   const setId = `${file.item_set}-v${file.version}`;
   const existing = await db.prepare("SELECT file_sha256 FROM item_sets WHERE id = ?").bind(setId).first<{ file_sha256: string }>();
   if (existing) {
-    if (existing.file_sha256 === fileSha) return c.json({ ok: true, itemSet: setId, fileSha256: fileSha, already: true });
-    return c.json({ error: "item_set_exists", message: `${setId} is already loaded from a different file.` }, 409);
+    if (existing.file_sha256 === fileSha) return [{ ok: true, itemSet: setId, fileSha256: fileSha, already: true }, 200];
+    return [{ error: "item_set_exists", message: `${setId} is already loaded from a different file.` }, 409];
   }
 
   const hashes = await Promise.all(items.map((i) => questionTextHash(i.stem, i.bullets)));
@@ -145,7 +146,7 @@ adminApi.post("/items", async (c) => {
   }
   const conflicts = items.filter((i, k) => loadedHash.has(i.id) && loadedHash.get(i.id) !== hashes[k]).map((i) => i.id);
   if (conflicts.length)
-    return c.json({ error: "text_conflict", message: "A loaded question has different text. Give the corrected text a new id.", ids: conflicts }, 409);
+    return [{ error: "text_conflict", message: "A loaded question has different text. Give the corrected text a new id.", ids: conflicts }, 409];
 
   const now = nowIso();
   await db.batch([
@@ -164,7 +165,51 @@ adminApi.post("/items", async (c) => {
     ...items.map((i) => db.prepare("INSERT INTO item_set_items (item_set_id, question_id) VALUES (?, ?)").bind(setId, i.id)),
   ]);
   await audit(c, "load_items", { itemSet: setId, fileSha256: fileSha, n: items.length });
-  return c.json({ ok: true, itemSet: setId, fileSha256: fileSha, n: items.length });
+  return [{ ok: true, itemSet: setId, fileSha256: fileSha, n: items.length }, 200];
+}
+
+adminApi.post("/items", async (c) => {
+  const [body, status] = await loadItemFile(c, await c.req.arrayBuffer());
+  return c.json(body, status);
+});
+
+// ---------- the unit sets that ship with the site (owner decision, 25 Nov 2026) ----------
+
+/** The sets, with whether each is loaded and has a round yet. */
+adminApi.get("/builtin-sets", async (c) => {
+  const sets = await c.env.DB.prepare("SELECT id FROM item_sets").all<{ id: string }>();
+  const rounds = await c.env.DB.prepare("SELECT item_set_id, state FROM rounds").all<{ item_set_id: string; state: string }>();
+  const loaded = new Set(sets.results.map((x) => x.id));
+  return c.json({
+    sets: BUILTIN_SETS.map((b) => ({
+      id: b.id,
+      roundName: b.roundName,
+      questions: b.questions,
+      cycles: b.cycles,
+      loaded: loaded.has(b.id),
+      rounds: rounds.results.filter((r) => r.item_set_id === b.id).map((r) => r.state),
+    })),
+  });
+});
+
+/**
+ * Load one set and make its round as a draft, if neither exists yet. One set per request, so the work of a request
+ * does not grow with the number of sets. Opening a round stays a separate, confirmed step.
+ */
+adminApi.post("/builtin-sets/:id", async (c) => {
+  const set = BUILTIN_SETS.find((b) => b.id === c.req.param("id"));
+  if (!set) return c.json({ error: "not_found" }, 404);
+  const [body, status] = await loadItemFile(c, new TextEncoder().encode(JSON.stringify(set.file)));
+  if (status !== 200) return c.json(body, status);
+  let roundId: string | null = null;
+  if (!(await c.env.DB.prepare("SELECT 1 FROM rounds WHERE item_set_id = ?").bind(set.id).first())) {
+    roundId = randomId(9);
+    await c.env.DB.prepare("INSERT INTO rounds (id, name, item_set_id, state, created_at) VALUES (?, ?, ?, 'draft', ?)")
+      .bind(roundId, set.roundName, set.id, nowIso())
+      .run();
+    await audit(c, "create_round", { id: roundId, name: set.roundName, itemSetId: set.id });
+  }
+  return c.json({ ...body, roundCreated: roundId });
 });
 
 adminApi.get("/item-sets/:id/items", async (c) => {
@@ -211,12 +256,8 @@ adminApi.post("/rounds/:id/:action{open|freeze|close}", async (c) => {
   // The item set freezes when its first round opens.
   if (t.to === "open")
     stmts.push(db.prepare("UPDATE item_sets SET frozen_at = ? WHERE id = ? AND frozen_at IS NULL").bind(now, round.item_set_id));
-  try {
-    await db.batch(stmts);
-  } catch (e) {
-    if (isUniqueViolation(e)) return c.json({ error: "another_round_open", message: "Another round is open. Freeze or close it first." }, 409);
-    throw e;
-  }
+  // Several rounds may be open at once (migration 0005); each new batch goes to the one with the fewest batches.
+  await db.batch(stmts);
   await audit(c, `${c.req.param("action")}_round`, { id: round.id });
   return c.json({ ok: true, state: t.to });
 });
@@ -298,23 +339,19 @@ adminApi.post("/rounds/:id/snapshots", async (c) => {
 // ---------- codes ----------
 
 adminApi.get("/codes", async (c) => {
-  // With each code, how far its holder has got in the current round (open, or else the latest frozen): whether the
-  // code has been used, first-presentation votes, and the last vote. Nothing new is stored: signed_in_at is the oldest
+  // With each code, how far its holder has got: whether the code has been used, first-presentation votes over every
+  // round (the leaderboard opens at 20 of them), and the last vote. Nothing new is stored: signed_in_at is the oldest
   // session still on file (sessions lapse after 90 days and end on sign-out, so it can be later than the first use).
-  const round = await currentRound(c.env.DB);
   const r = await c.env.DB.prepare(
     `SELECT u.label, u.role, u.is_owner, u.created_at, u.revoked_at, u.board_seen_at, COALESCE(c.n, 0) AS n_votes,
-            COALESCE(c.round_first, 0) AS round_votes, c.last_vote_at,
+            COALESCE(c.first_votes, 0) AS round_votes, c.last_vote_at,
             (SELECT MIN(s.created_at) FROM sessions s WHERE s.voter_id = u.id) AS signed_in_at
        FROM voters u
-       LEFT JOIN (SELECT voter_id, count(*) AS n, MAX(created_at) AS last_vote_at,
-                         SUM(round_id = ?1 AND is_repeat = 0) AS round_first
+       LEFT JOIN (SELECT voter_id, count(*) AS n, MAX(created_at) AS last_vote_at, SUM(is_repeat = 0) AS first_votes
                     FROM votes GROUP BY voter_id) c ON c.voter_id = u.id
       ORDER BY u.created_at DESC, CAST(substr(u.label, instr(u.label, ' ') + 1) AS INTEGER), u.label`,
-  )
-    .bind(round?.id ?? "")
-    .all();
-  return c.json({ voters: r.results, round: round ? { id: round.id, name: round.name } : null, unlockAt: QUALITY.LEADERBOARD_UNLOCK_VOTES });
+  ).all();
+  return c.json({ voters: r.results, openRounds: (await openRounds(c.env.DB)).length, unlockAt: QUALITY.LEADERBOARD_UNLOCK_VOTES });
 });
 
 adminApi.post("/codes", async (c) => {

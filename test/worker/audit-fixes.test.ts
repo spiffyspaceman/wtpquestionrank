@@ -96,7 +96,9 @@ describe("corrections, audit fixes", () => {
     expect((await call("/api/correct", { cookie: v.cookie, body: { pairId: p0.pairId, pick: "R" } })).status).toBe(200);
     const pause = () => new Promise((r) => setTimeout(r, 15));
     await pause();
-    await env.DB.prepare("UPDATE voters SET board_seen_at = ? WHERE label = ?").bind(new Date().toISOString(), v.label).run();
+    await env.DB.prepare("INSERT INTO round_board_seen (voter_id, round_id, seen_at) SELECT id, ?, ? FROM voters WHERE label = ?")
+      .bind(round, new Date().toISOString(), v.label)
+      .run();
     await pause();
 
     // Before-the-board votes are now fixed: nothing is appended and the cache does not move.

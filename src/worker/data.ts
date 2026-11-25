@@ -6,16 +6,34 @@ import type { RoundRow } from "./env";
 export { isAdultRole, POOLS, poolsForRole, ROLE_NAMES, visiblePools, type Pool } from "./pools";
 import { poolsForRole } from "./pools";
 
-export async function openRound(db: D1Database): Promise<RoundRow | null> {
-  return db.prepare("SELECT * FROM rounds WHERE state = 'open' LIMIT 1").first<RoundRow>();
+/** Every open round, oldest first. Several can be open at once (migration 0005). */
+export async function openRounds(db: D1Database): Promise<RoundRow[]> {
+  return (await db.prepare("SELECT * FROM rounds WHERE state = 'open' ORDER BY opened_at, id").all<RoundRow>()).results;
 }
 
-/** The round voters see: the open one, or else the most recently frozen one. */
-export async function currentRound(db: D1Database): Promise<RoundRow | null> {
+/** Rounds whose leaderboard a voter may open: open or frozen, by name. */
+export async function boardRounds(db: D1Database): Promise<RoundRow[]> {
+  return (await db.prepare("SELECT * FROM rounds WHERE state IN ('open', 'frozen') ORDER BY name, id").all<RoundRow>()).results;
+}
+
+/**
+ * Open rounds in the order new batches should go to them: fewest batches issued first, so votes spread evenly
+ * (owner decision, 25 Nov 2026). Ties go to the round opened first.
+ */
+export async function roundsByNeed(db: D1Database): Promise<RoundRow[]> {
   return (
-    (await openRound(db)) ??
-    (await db.prepare("SELECT * FROM rounds WHERE state = 'frozen' ORDER BY frozen_at DESC LIMIT 1").first<RoundRow>())
-  );
+    await db
+      .prepare(
+        `SELECT r.* FROM rounds r WHERE r.state = 'open'
+          ORDER BY (SELECT count(*) FROM batches b WHERE b.round_id = r.id), r.opened_at, r.id`,
+      )
+      .all<RoundRow>()
+  ).results;
+}
+
+/** True once this voter has opened this round's leaderboard. */
+export async function boardSeen(db: D1Database, voterId: string, roundId: string): Promise<boolean> {
+  return Boolean(await db.prepare("SELECT 1 FROM round_board_seen WHERE voter_id = ? AND round_id = ?").bind(voterId, roundId).first());
 }
 
 export async function roundItems(db: D1Database, itemSetId: string): Promise<string[]> {
@@ -26,11 +44,12 @@ export async function roundItems(db: D1Database, itemSetId: string): Promise<str
   return r.results.map((x) => x.question_id);
 }
 
-export async function firstVoteCount(db: D1Database, roundId: string, voterId: string): Promise<number> {
-  const r = await db
-    .prepare("SELECT count(*) AS n FROM votes WHERE round_id = ? AND voter_id = ? AND is_repeat = 0")
-    .bind(roundId, voterId)
-    .first<{ n: number }>();
+/**
+ * A voter's first-presentation votes, over every round. The leaderboard opens at 20 of these; with one round this is
+ * the count it always was.
+ */
+export async function firstVoteCount(db: D1Database, voterId: string): Promise<number> {
+  const r = await db.prepare("SELECT count(*) AS n FROM votes WHERE voter_id = ? AND is_repeat = 0").bind(voterId).first<{ n: number }>();
   return r?.n ?? 0;
 }
 

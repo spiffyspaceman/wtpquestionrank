@@ -1,0 +1,613 @@
+{
+ "item_set": "state-u4",
+ "version": 1,
+ "round_name": "Unit 4, State",
+ "level": "State",
+ "unit": 4,
+ "cycles": [
+  "2014-15",
+  "2015-16",
+  "2016-17",
+  "2017-18",
+  "2018-19",
+  "2019-20",
+  "2020-21",
+  "2021-22",
+  "2022-23",
+  "2023-24",
+  "2024-25",
+  "2025-26"
+ ],
+ "frame": "Published CCE State hearing questions, Unit 4, cycles 2014-15 to 2025-26",
+ "shown_to_voters": [
+  "stem",
+  "bullets"
+ ],
+ "hidden_from_voters": [
+  "id",
+  "val_id",
+  "cycle",
+  "unit",
+  "q",
+  "level",
+  "source"
+ ],
+ "items": [
+  {
+   "id": "st-2014-15-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "Article One Section 8 has been called “one of the most important sections of the Constitution.” Do you agree or disagree? Why?",
+   "bullets": [
+    "What historical experiences led to the length and the specificity of Article One Section 8?",
+    "How would you explain “the necessary and proper clause” included in Article I Section 8? Why do you think it was added to the other more specific powers granted to Congress?"
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 4, Question 1",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2014-15-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "Since the presidency of Franklin Roosevelt there has been an increasing use by presidents of executive orders and signing gning statements to establish national policy. To what extent, if any, does this practice violate the principle of separation of powers contained within the Constitution?",
+   "bullets": [
+    "What are the advantages and disadvantages of the use of executive orders and signing statements?",
+    "Should the president be able to refuse to carry out a law he/she believes to be unconstitutional? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 4, Question 2",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2014-15-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "The United States Supreme Court has been called “a Constitution Constitution–guarding guarding court” as well as a court of “last resort”. Do you agree or disagree with this assessment of the role of the Supreme Court?",
+   "bullets": [
+    "What checks exist on the power of the Supreme Court? What examples can you provide of how those checks have been used?",
+    "Should there be term limits on Supreme Court justices? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 4, Question 3",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "In 1798 James Madison wrote to Thomas Jefferson that “the constitution supposes, what the History of all Governments demonstrates, that the Executive is the branch of power most interested in war, and most prone to it. It has accordingly with studied care vested the question of war in the Legislature.” To what extent, if any, has the executive branch taken this power from Congress?",
+   "bullets": [
+    "How well has the War Powers Resolution of 1973 limited the powers of the president? Explain your position.",
+    "What changes, if any, do you think should be made regarding the war powers of the president and Congress? Explain your answer."
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 4, Question 1",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "To devote more time to crafting and passing legislation, “the Senate should do more of its business by simple majority vote of the senators present and voting. I know that many senators like the ability to filibuster and do not want to abandon the rule that requires 60 votes to close debate. But here’s the thing: the super-majority rule, as it has been applied recently, has become a formula for impotence and disorder. Every democratic institution in this country operates by majority rule except the Senate, where a small minority can completely gum up the works.” Do you agree or disagree with Congressman Lee Hamilton? Why?",
+   "bullets": [
+    "What fundamental democratic principles are involved in this issue? Explain your answer.",
+    "What policies, if any, would you suggest be established to deal with this issue? Justify your position."
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 4, Question 2",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "What are the major differences between Congress and the British Parliament?",
+   "bullets": [
+    "In what ways does the British Parliament mingle legislative and executive powers? What are the advantages and disadvantages of such mingling compared with the American system of separated powers?",
+    "Compare and contrast the manner in which members are elected to Parliament and the U.S. Congress and their terms of office. What are the advantages and disadvantages of each?"
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 4, Question 3",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "Justice Stephen Breyer said, “I write an opinion and you write a dissent. I read what you say and I think, ‘Did I really say that? Oh dear. He has a good point. I better rewrite what I did. I better be certain that my argument is as good as I thought it was the first time.’ The impact of your dissent will be, at the least, to make me write a better decision.” Do you agree with Justice Breyer’s opinion about the value of dissents? Why or why not?",
+   "bullets": [
+    "What purpose, if any, does the dissent serve in furthering justice?",
+    "What are some of the most important dissents in American history, and why are they important?"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 4, Question 1",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "In January of 1918, President Woodrow Wilson announced his Fourteen Points, which advocated for freedom of the seas, free trade, an international organization dedicated to collective security, and an active, global role for the United States. What relevance, if any, does President Wilson’s foreign policy have for current times and the power of the executive?",
+   "bullets": [
+    "President Wilson argued that a person whose primary identity is with a particular group in America “has not yet become an American.” Do you agree or disagree? Why?",
+    "During President Wilson’s time in office, a number of important issues regarding citizens’ rights to freedom of expression were judged by the U.S. Supreme Court. Do you agree or disagree with the decisions of the Court? Why?"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 4, Question 2",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "Former congressman Lee Hamilton once said, “Congress is the most important link between the American people and their national government.” Do you agree with Congressman Hamilton’s statement? Why or why not?",
+   "bullets": [
+    "What are the advantages and disadvantages of the two-year congressional term?",
+    "What disagreements about representation were made at the Philadelphia Convention? Are any of these arguments relevant today? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 4, Question 3",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "How have the role and powers of the U.S. Supreme Court evolved since the founding period?",
+   "bullets": [
+    "What methods of constitutional interpretation do justices commonly use to decide cases?",
+    "To what extent, if any, has the Court promoted both the common good and individual liberty?"
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 4, Question 1",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "“Politics is rarely a struggle between good and evil; it’s how we Americans try to make the country work better … It’s a means of resolving our differences through dialogue and compromise, rather than through ideological battle or pitched warfare.” What is the role of the legislative branch in American constitutional government?",
+   "bullets": [
+    "How have the U.S. Congress and state legislatures promoted the protection of individual rights and the common good throughout American history?",
+    "Are the U.S. Congress and state legislatures adequately fulfilling their role today? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 4, Question 2",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "It is commonly observed that the president of the United States is the most powerful person in the world. However, the president is not a king. How do checks and balances, separation of powers, and the Constitution limit the authority of the president?",
+   "bullets": [
+    "What historical events have resulted in the shifting of power from Congress to the presidency? Has this resulted in too much power being held in the hands of the president? Explain your position.",
+    "What elements of the Constitution support the idea of a strong executive? Explain your position."
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 4, Question 3",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "Federalist 51 states that “in republican government, the legislative authority necessarily predominates.” John Locke said, “The legislative cannot transfer the power of making laws to any other hands: for it being but a delegated power from the people, they who have it cannot pass it over to others.” Do you agree with these ideas? Why or why not?",
+   "bullets": [
+    "To what extent, if any, do you think Congress has given some of its legislative responsibilities to the executive or judicial branches? Why might it do so, and what evidence do you have to support your position?",
+    "What legislative powers are held by the executive and judicial branches? What problems might be posed for democracy if the balance of legislative power were to shift to these branches? Explain your position."
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 4, Question 1",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "Alexis de Tocqueville wrote in 1835 that “the power vested in the American courts of justice of pronouncing a statute to be unconstitutional, forms one of the most powerful barriers which has ever been devised against the tyranny of political assemblies.” Do you agree or disagree with Tocqueville? Why or why not?",
+   "bullets": [
+    "Is the power of judicial review consistent with the principle of majority rule? Why or why not?",
+    "Under what conditions, if any, should the Supreme Court have the power to overrule a decision by a majority of the people’s representatives in our legislative branches? Explain your position."
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 4, Question 2",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "How does the exercise of presidential power in the twenty-first century compare with the views of the Framers of the Constitution? Does the current extent of presidential power represent a threat to the constitutional system created in 1787? Why or why not?",
+   "bullets": [
+    "Have the actions of presidents represented a departure from the power asserted by their predecessors throughout American history? Why or why not?",
+    "What are the constitutional checks upon the presidency and are they still effective?"
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 4, Question 3",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "Professor Michael J. Klarman argues that “the immediate backdrop against which the delegates in Philadelphia were designing the executive branch—state constitutions—was one of emasculated executives.” Why would this be, and do you agree with this assessment? Why or why not?",
+   "bullets": [
+    "To what extent did the Framers have to imbue the new executive branch with powers not found in state constitutions?",
+    "What were the Framers’ fears of moving toward a more powerful executive in the U.S. Constitution, and have those fears been realized over the years? Explain your position."
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 4, Question 1",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "According to historian Joseph Ellis, “there was no single source of sovereignty in the new Constitution. What he [James Madison] had initially regarded as the great failure at the Constitutional Convention—the coexistence of federal and state claims to authority—was, albeit inadvertently, in fact the great achievement.” Do you agree or disagree with Ellis’s assessment of Madison’s view of shared sovereignty? Why or why not?",
+   "bullets": [
+    "How has this “shared sovereignty” led to ongoing arguments in our federal system today?",
+    "How has our federal system created both majority and minority control of state and national governments? What are the advantages and disadvantages of this system?"
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 4, Question 2",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "“Of all times to abandon the Court’s duty to declare the law, this was not the one. The practices challenged in these cases imperil our system of government. Part of the Court’s role in that system is to defend its foundations. None is more important than free and fair elections.” Do you agree with Justice Elena Kagan’s dissent on the Court’s role, or should the courts not get involved in political questions? Why or why not?",
+   "bullets": [
+    "Under what circumstances have the courts intervened in “political questions” in the past?",
+    "Looking forward, what role, if any, should the courts play in preserving free, fair, and frequent elections in the United States?"
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 4, Question 3",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "Should states be willing “‘to purchase’ what [James] Wilson called ‘federal liberty’ with ‘the necessary concession of their political sovereignty’”? Why or why not?",
+   "bullets": [
+    "How would you explain American federalism to a non-American?",
+    "Explain how ideological groups, at different times, have been in favor of shifting power between state and national governments."
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 4, Question 1",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "“On a single day in 1964, the [Supreme] Court in effect declared that almost all state governments were constitutionally defective! … Thus, a bloodless revolution occurred without a shot fired.” Do you agree or disagree with Akhil Reed Amar’s statement regarding the Supreme Court’s opinion in Reynolds v. Sims? Why or why not?",
+   "bullets": [
+    "How well have the national and state governments done in preserving the “one person, one vote” doctrine?",
+    "What are some of the current issues associated with redistricting?"
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 4, Question 2",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "“The doctrine of the separation of powers was adopted by the Convention of 1787 not to promote efficiency, but to preclude the exercise of arbitrary power.” How well has the Constitution’s design accomplished what Justice Brandeis described? Explain your position.",
+   "bullets": [
+    "Which branch has been most constrained by its constitutional limits? Explain your position.",
+    "Which branch has gone beyond its constitutional constraints? Explain your position."
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 4, Question 3",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "“Nothing can be more evident, than that an exclusive power of regulating elections for the National Government, in the hands of the State Legislatures, would leave the existence of the Union entirely at their mercy.” Do you agree or disagree with Publius and why?",
+   "bullets": [
+    "To what effect, if any, has the national government appropriately influenced election processes in the states?",
+    "How do national and state governments prevent voter fraud during an election without engaging in voter suppression?"
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 4, Question 1",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "“Finally, the Framers invented an Electoral College as the best of several unappealing alternatives.” What were the debates at the Philadelphia Convention regarding electing the executive?",
+   "bullets": [
+    "Why did the Framers create the Electoral College?",
+    "What are the advantages and disadvantages of the Electoral College today?"
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 4, Question 2",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "To what extent, if any, has the Court’s power of judicial review served to balance individual liberty and the common good?",
+   "bullets": [
+    "What judicial philosophies should guide the decision-making of the courts?",
+    "What criteria do you think should be used to determine whether a Supreme Court decision is a landmark decision?"
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 4, Question 3",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "What are the major functions of the House of Representatives and the Senate? What institutional checks exist between the two chambers?",
+   "bullets": [
+    "How has political polarization influenced the function of Congress? To what extent have political compromises overcome political differences?",
+    "Which do you think has the most influence on a congressional representative: the interests of their constituents, party leadership, or ideology? Why?"
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 4, Question 1",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "Sir Francis Bacon stated that “judges ought to remember that their office is … to interpret law and not to make or give law.” Has the Supreme Court done a good job maintaining this standard?",
+   "bullets": [
+    "What checks are there on the power of the Supreme Court, if any?",
+    "If a majority of people disagree with a Supreme Court decision, in what ways, if any, can they change the ruling?"
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 4, Question 2",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "The Framers of the Constitution wanted to ensure that the presidency was energetic as opposed to the deliberative nature of Congress. Did the Framers achieve this aim based on the constitutional powers given to the president?",
+   "bullets": [
+    "At the Philadelphia Convention, what were the various measures proposed to check and balance the power of the executive?",
+    "How, if at all, has the role of the president evolved?"
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 4, Question 3",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "“Congress did not create the Supreme Court. … I know this is a controversial view, but I’m willing to say it. No provision in the Constitution gives them the authority to regulate the Supreme Court—period.” Do you agree or disagree with Justice Samuel Alito’s constitutional assessment of judicial independence? Why or why not?",
+   "bullets": [
+    "Historically, how effective have constitutional checks been in controlling the courts?",
+    "Alexander Hamilton wrote that the judicial branch would be the “least dangerous to the political rights of the Constitution.” Do you believe this description is still warranted? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 4, Question 1",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "“The Convention with justice & the majority of the people on their side, had nothing to fear. With injustice and the minority on their side they had every thing to fear.” Have James Madison’s fears about the Senate’s construction expressed at the Philadelphia Convention come to fruition? Why or why not?",
+   "bullets": [
+    "What tensions arise from the design of Congress, particularly the bicameral structure and the composition of the Senate and the House of Representatives?",
+    "Should the 17th Amendment be repealed? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 4, Question 2",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "Has the Constitution’s “take care” clause that the laws be faithfully executed placed a duty on the president and expanded presidential power? Why or why not?",
+   "bullets": [
+    "Has the growth of administrative agencies expanded executive power? Why or why not?",
+    "What checks on the exercise of administrative authority are available to prevent agencies from becoming too powerful?"
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 4, Question 3",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "Article II, Section 3 of the Constitution allows the president to recommend legislation to Congress and yet tasks the office to “take care that the laws be faithfully executed.” Is this consistent with the separation of powers doctrine? Why or why not?",
+   "bullets": [
+    "To what extent have executive agencies influenced the balance of power between Congress and the president?",
+    "How have recent Supreme Court decisions shaped the balance of power between Congress and the president?"
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 4, Question 1",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "How does the idea that “history is a resource and not a command” apply to the current Supreme Court’s approach to constitutional interpretation? Analyze recent decisions to illustrate how historical context is used or disregarded in the Court’s rulings.",
+   "bullets": [
+    "What role should historical context play in interpreting the Constitution?",
+    "Which methods of constitutional interpretation do you believe are most effective and why?"
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 4, Question 2",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "To what extent was it feasible for the legislature to accurately represent society in 1789, and how does this compare to the present day? Analyze the factors that influenced representation in the early years of the republic, and discuss the challenges that affect legislative representation today.",
+   "bullets": [
+    "Is the principle of equal state representation in the U.S. Senate still justified in modern American society? Why or why not?",
+    "Should the number of voting members in the U.S. House of Representatives be increased? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 4, Question 3",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u4-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 4,
+   "q": 1,
+   "published": true,
+   "stem": "In 2016, a group of congressional scholars advocated for increased funding to hire more staff and to increase staff compensation for Congress, writing that “Congress has been doing government on the cheap for decades. And we get what we pay for.” In your opinion, should Congress invest more resources in itself ? Why or why not?",
+   "bullets": [
+    "Are these scholars correct that Congress needs to devote greater attention and resources to its own work? Provide examples from recent decades that support your reasoning.",
+    "What factors might explain why Congress has not invested in its own professional staff and other helpful resources over the last several decades?"
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 4, Question 1",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u4-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 4,
+   "q": 2,
+   "published": true,
+   "stem": "“ ‘Our Federalism’ … is a system in which there is sensitivity to the legitimate interests of both State and National Governments, and in which the National Government, anxious though it may be to vindicate and protect federal rights and federal interests, always endeavors to do so in ways that will not unduly interfere with the legitimate activities of the States.” What are the advantages and disadvantages of this kind of tension between state and national authority in a constitutional democracy?",
+   "bullets": [
+    "What are some significant historical or contemporary examples of federalism-related conflict? How were they resolved, and do you think those resolutions strengthened or weakened the constitutional system?",
+    "Do you agree with Justice Black’s claim that the national government is sensitive to the interests of the states, even when federal interests are at stake?"
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 4, Question 2",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 4, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u4-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 4,
+   "q": 3,
+   "published": true,
+   "stem": "“It is emphatically the province and duty of the Judicial Department to say what the law is.” Do you agree or disagree? Who decides what the Constitution means?",
+   "bullets": [
+    "When, if ever, should different branches or levels of government be allowed to interpret the Constitution differently? How should such conflicts be resolved?",
+    "Has judicial review been good or bad for the American republic? Explain your position."
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 4, Question 3",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 4, pdftotext; footnote markers removed"
+  }
+ ]
+}

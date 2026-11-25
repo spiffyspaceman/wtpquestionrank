@@ -15,13 +15,15 @@ import {
 } from "./auth";
 import {
   board,
-  currentRound,
+  boardRounds,
+  boardSeen,
   firstVoteCount,
-  openRound,
+  openRounds,
   pairCounts,
   pairCountUpserts,
   ROLE_NAMES,
   roundItems,
+  roundsByNeed,
   visiblePools,
 } from "./data";
 import type { AppEnv, RoundRow, VoterRow } from "./env";
@@ -106,38 +108,44 @@ voterApi.post("/signout", async (c) => {
 
 // ---------- session required ----------
 
-async function meState(db: D1Database, voter: VoterRow, round: RoundRow | null) {
-  const votes = round ? await firstVoteCount(db, round.id, voter.id) : 0;
+async function meState(db: D1Database, voter: VoterRow) {
+  const votes = await firstVoteCount(db, voter.id);
+  const isOpen = (await openRounds(db)).length > 0;
   // A batch left part-way (closed tab, other device): how much of it is still waiting, so the home page can offer it.
-  const open = round?.state === "open" ? await unfinishedPairs(db, round, voter.id) : null;
+  const open = isOpen ? await unfinishedPairs(db, voter.id) : null;
   return {
     role: ROLE_NAMES[voter.role] ?? voter.role,
     votes,
     unlockAt: QUALITY.LEADERBOARD_UNLOCK_VOTES,
     unlocked: votes >= QUALITY.LEADERBOARD_UNLOCK_VOTES,
-    round: round ? { name: round.name, state: round.state } : null,
+    // No round names here: the site chooses the round for each batch, and a name would tell a voter the unit.
+    open: isOpen,
     batch: open && open.pairs.length ? { size: open.size, remaining: open.pairs.length } : null,
   };
 }
 
 voterApi.get("/me", requireVoter(), async (c) => {
-  return c.json(await meState(c.env.DB, c.get("voter"), await currentRound(c.env.DB)));
+  return c.json(await meState(c.env.DB, c.get("voter")));
 });
 
-/** True when the voter (?3) has an issued pair in round ?2 with neither a vote nor a skip. */
+/** True when the voter (?3) has an issued pair, in any open round, with neither a vote nor a skip. */
 const UNANSWERED_SQL = `SELECT 1 FROM batch_pairs bp JOIN batches b ON b.id = bp.batch_id
-  WHERE b.round_id = ?2 AND b.voter_id = ?3
-    AND NOT EXISTS (SELECT 1 FROM votes v WHERE v.round_id = ?2 AND v.voter_id = ?3
+    JOIN rounds r ON r.id = b.round_id AND r.state = 'open'
+  WHERE b.voter_id = ?3
+    AND NOT EXISTS (SELECT 1 FROM votes v WHERE v.round_id = b.round_id AND v.voter_id = ?3
                     AND v.item_lo = MIN(bp.left_q, bp.right_q) AND v.item_hi = MAX(bp.left_q, bp.right_q) AND v.is_repeat = bp.is_repeat)
-    AND NOT EXISTS (SELECT 1 FROM skips s WHERE s.round_id = ?2 AND s.voter_id = ?3
+    AND NOT EXISTS (SELECT 1 FROM skips s WHERE s.round_id = b.round_id AND s.voter_id = ?3
                     AND s.item_lo = MIN(bp.left_q, bp.right_q) AND s.item_hi = MAX(bp.left_q, bp.right_q) AND s.is_repeat = bp.is_repeat)`;
 
-/** Pairs of the voter's latest batch that have neither a vote nor a skip yet. */
-async function unfinishedPairs(db: D1Database, round: RoundRow, voterId: string) {
+/** Pairs of the voter's latest batch, in any open round, that have neither a vote nor a skip yet. */
+async function unfinishedPairs(db: D1Database, voterId: string) {
   const batch = await db
-    .prepare("SELECT id FROM batches WHERE round_id = ? AND voter_id = ? ORDER BY created_at DESC, rowid DESC LIMIT 1")
-    .bind(round.id, voterId)
-    .first<{ id: string }>();
+    .prepare(
+      `SELECT b.id, b.round_id FROM batches b JOIN rounds r ON r.id = b.round_id AND r.state = 'open'
+        WHERE b.voter_id = ? ORDER BY b.created_at DESC, b.rowid DESC LIMIT 1`,
+    )
+    .bind(voterId)
+    .first<{ id: string; round_id: string }>();
   if (!batch) return { batchId: null, size: 0, pairs: [] as BatchPair[] };
   const size = await db.prepare("SELECT count(*) AS n FROM batch_pairs WHERE batch_id = ?").bind(batch.id).first<{ n: number }>();
   const r = await db
@@ -152,7 +160,7 @@ async function unfinishedPairs(db: D1Database, round: RoundRow, voterId: string)
                           AND s.is_repeat = bp.is_repeat)
         ORDER BY bp.position`,
     )
-    .bind(batch.id, round.id, voterId)
+    .bind(batch.id, batch.round_id, voterId)
     .all<BatchPair>();
   return { batchId: batch.id, size: size?.n ?? 0, pairs: r.results };
 }
@@ -218,37 +226,42 @@ async function pairingState(db: D1Database, round: RoundRow, voterId: string): P
 voterApi.get("/batch", requireVoter(), async (c) => {
   const db = c.env.DB;
   const voter = c.get("voter");
-  const round = await openRound(db);
-  if (!round) return c.json({ error: "no_open_round", message: "Voting is closed right now." }, 409);
+  if (!(await openRounds(db)).length) return c.json({ error: "no_open_round", message: "Voting is closed right now." }, 409);
 
-  let { batchId, pairs } = await unfinishedPairs(db, round, voter.id);
+  let { batchId, pairs } = await unfinishedPairs(db, voter.id);
   if (!pairs.length) {
-    const seed = randomSeed();
-    const issued = selectBatch(await pairingState(db, round, voter.id), makeRng(seed));
-    if (!issued.length) return c.json({ done: true, pairs: [], size: 0 });
-    const newBatchId = randomId();
-    const now = nowIso();
-    const rows = issued.map((p) => ({ id: randomId(), left_q: p.left, right_q: p.right, p }));
-    // Two requests at once (double tap, two devices) must not both create a batch. The insert happens only if the
-    // voter still has no unanswered pair; D1 runs each batch as one transaction, so the second request sees the first.
-    const res = await db.batch([
-      db
-        .prepare(
-          `INSERT INTO batches (id, round_id, voter_id, seed, created_at)
-           SELECT ?1, ?2, ?3, ?4, ?5 WHERE NOT EXISTS (${UNANSWERED_SQL})`,
-        )
-        .bind(newBatchId, round.id, voter.id, seed, now),
-      ...rows.map((r, i) =>
+    batchId = null;
+    // The new batch goes to the open round with the fewest batches so far; a round this voter has finished is passed over.
+    for (const round of await roundsByNeed(db)) {
+      const seed = randomSeed();
+      const issued = selectBatch(await pairingState(db, round, voter.id), makeRng(seed));
+      if (!issued.length) continue;
+      const newBatchId = randomId();
+      const now = nowIso();
+      const rows = issued.map((p) => ({ id: randomId(), left_q: p.left, right_q: p.right, p }));
+      // Two requests at once (double tap, two devices) must not both create a batch. The insert happens only if the
+      // voter still has no unanswered pair; D1 runs each batch as one transaction, so the second request sees the first.
+      const res = await db.batch([
         db
           .prepare(
-            `INSERT INTO batch_pairs (id, batch_id, position, left_q, right_q, is_repeat, reason, issued_at)
-             SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8 WHERE EXISTS (SELECT 1 FROM batches WHERE id = ?2)`,
+            `INSERT INTO batches (id, round_id, voter_id, seed, created_at)
+             SELECT ?1, ?2, ?3, ?4, ?5 WHERE NOT EXISTS (${UNANSWERED_SQL})`,
           )
-          .bind(r.id, newBatchId, i, r.left_q, r.right_q, r.p.isRepeat ? 1 : 0, r.p.reason, now),
-      ),
-    ]);
-    if (res[0].meta.changes === 1) batchId = newBatchId;
-    else ({ batchId } = await unfinishedPairs(db, round, voter.id)); // another request won; serve its batch
+          .bind(newBatchId, round.id, voter.id, seed, now),
+        ...rows.map((r, i) =>
+          db
+            .prepare(
+              `INSERT INTO batch_pairs (id, batch_id, position, left_q, right_q, is_repeat, reason, issued_at)
+               SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8 WHERE EXISTS (SELECT 1 FROM batches WHERE id = ?2)`,
+            )
+            .bind(r.id, newBatchId, i, r.left_q, r.right_q, r.p.isRepeat ? 1 : 0, r.p.reason, now),
+        ),
+      ]);
+      if (res[0].meta.changes === 1) batchId = newBatchId;
+      else ({ batchId } = await unfinishedPairs(db, voter.id)); // another request won; serve its batch
+      break;
+    }
+    if (!batchId) return c.json({ done: true, pairs: [], size: 0 });
   }
   // The whole batch, answered pairs included, so the voter can go back and change an answer.
   const all = await db
@@ -335,8 +348,8 @@ async function serverMs(db: D1Database, p: PairContext, nowMs: number): Promise<
   return Math.max(0, nowMs - start);
 }
 
-async function afterAnswer(db: D1Database, voter: VoterRow, roundId: string, batchId: string) {
-  const votes = await firstVoteCount(db, roundId, voter.id);
+async function afterAnswer(db: D1Database, voter: VoterRow, _roundId: string, batchId: string) {
+  const votes = await firstVoteCount(db, voter.id);
   const left = await db
     .prepare(
       `SELECT count(*) AS n FROM batch_pairs bp WHERE bp.batch_id = ?
@@ -383,7 +396,8 @@ async function insertVote(c: Context<AppEnv>, voter: VoterRow, found: Found, a: 
       .prepare(
         `INSERT INTO votes (batch_pair_id, round_id, item_set_id, voter_id, role, left_q, right_q, item_lo, item_hi,
                             winner_q, close_call, is_repeat, after_board, client_ms, server_ms, created_at)
-         SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16
+         SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12,
+                EXISTS (SELECT 1 FROM round_board_seen WHERE voter_id = ?4 AND round_id = ?2), ?13, ?14, ?15
           WHERE EXISTS (SELECT 1 FROM rounds WHERE id = ?2 AND state = 'open')
             AND EXISTS (SELECT 1 FROM voters WHERE id = ?4 AND revoked_at IS NULL)`,
       )
@@ -400,7 +414,6 @@ async function insertVote(c: Context<AppEnv>, voter: VoterRow, found: Found, a: 
         winner,
         a.closeCall,
         p.is_repeat,
-        voter.board_seen_at ? 1 : 0,
         a.clientMs,
         await serverMs(db, p, nowMs),
         new Date(nowMs).toISOString(),
@@ -439,11 +452,11 @@ voterApi.post("/vote", requireVoter(), async (c) => {
   return insertVote(c, voter, found, a);
 });
 
-/** The voter's newest batch in the round: the only one whose answers can still be changed. */
-async function latestBatchId(db: D1Database, roundId: string, voterId: string): Promise<string | null> {
+/** The voter's newest batch, in any round: the only one whose answers can still be changed. */
+async function latestBatchId(db: D1Database, voterId: string): Promise<string | null> {
   const b = await db
-    .prepare("SELECT id FROM batches WHERE round_id = ? AND voter_id = ? ORDER BY created_at DESC, rowid DESC LIMIT 1")
-    .bind(roundId, voterId)
+    .prepare("SELECT id FROM batches WHERE voter_id = ? ORDER BY created_at DESC, rowid DESC LIMIT 1")
+    .bind(voterId)
     .first<{ id: string }>();
   return b?.id ?? null;
 }
@@ -490,7 +503,7 @@ voterApi.post("/correct", requireVoter(), async (c) => {
   const found = await pairFor(db, body!.pairId, voter.id);
   if ("error" in found) return c.json({ error: found.error }, PAIR_ERRORS[found.error!]);
   const p = found.pair;
-  if ((await latestBatchId(db, p.round_id, voter.id)) !== p.batch_id)
+  if ((await latestBatchId(db, voter.id)) !== p.batch_id)
     return c.json({ error: "batch_closed", message: "That batch is finished; its answers can no longer change." }, 409);
 
   const v = await db
@@ -498,10 +511,10 @@ voterApi.post("/correct", requireVoter(), async (c) => {
     .bind(p.id)
     .first<EffectiveVote>();
   if (!v) return insertVote(c, voter, found, a);
-  // A vote cast before the voter first opened the leaderboard keeps its answer once they have opened it, so the
+  // A vote cast before the voter first opened this round's leaderboard keeps its answer once they have opened it, so the
   // pre-registered "before the leaderboard" votes (PREREG §8) hold only answers given before it. Owner decision,
   // 25 Nov 2026 (DEVIATIONS.md).
-  if (v.after_board === 0 && voter.board_seen_at)
+  if (v.after_board === 0 && (await boardSeen(db, voter.id, p.round_id)))
     return c.json({ error: "board_seen", message: "You have opened the leaderboard, so answers from before it can no longer change." }, 409);
 
   const winner = a.pick === "L" ? v.left_q : v.right_q;
@@ -516,7 +529,8 @@ voterApi.post("/correct", requireVoter(), async (c) => {
   // Every statement carries the same condition, so in one transaction they all apply or none does.
   // The last line repeats the leaderboard rule above inside the transaction, in case the board was opened meanwhile.
   const OPEN = `EXISTS (SELECT 1 FROM rounds WHERE id = ?2 AND state = 'open') AND EXISTS (SELECT 1 FROM voters WHERE id = ?3 AND revoked_at IS NULL)
-    AND NOT EXISTS (SELECT 1 FROM votes w JOIN voters u ON u.id = w.voter_id WHERE w.id = ?1 AND w.after_board = 0 AND u.board_seen_at IS NOT NULL)`;
+    AND NOT EXISTS (SELECT 1 FROM votes w JOIN round_board_seen s ON s.voter_id = w.voter_id AND s.round_id = w.round_id
+                     WHERE w.id = ?1 AND w.after_board = 0)`;
   const token = randomId();
   const stmts: D1PreparedStatement[] = [];
   // The cache moves first, by (new winner is left) - (current winner is left), read inside the transaction. It is
@@ -616,17 +630,31 @@ function groupBy<T extends GroupRow>(rows: T[], label: (r: T) => string, order: 
 voterApi.get("/leaderboard", requireVoter(404), async (c) => {
   const db = c.env.DB;
   const voter = c.get("voter");
-  const round = await currentRound(db);
-  if (!round) return c.json({ error: "no_round" }, 404);
-  const votes = await firstVoteCount(db, round.id, voter.id);
+  const rounds = await boardRounds(db);
+  if (!rounds.length) return c.json({ error: "no_round" }, 404);
+  const votes = await firstVoteCount(db, voter.id);
   if (votes < QUALITY.LEADERBOARD_UNLOCK_VOTES)
     return c.json({ error: "locked", votes, unlockAt: QUALITY.LEADERBOARD_UNLOCK_VOTES }, 403);
   const pools = visiblePools(voter.role);
   const pool = c.req.query("pool") ?? "adults";
   if (!(pools as string[]).includes(pool)) return c.json({ error: "pool_not_allowed" }, 403);
 
-  if (!voter.board_seen_at)
-    await db.prepare("UPDATE voters SET board_seen_at = ? WHERE id = ? AND board_seen_at IS NULL").bind(nowIso(), voter.id).run();
+  // Which round's board: the one asked for, or else the round this voter has judged most.
+  let round = rounds.find((r) => r.id === c.req.query("round"));
+  if (!round) {
+    const mine = await db
+      .prepare("SELECT round_id FROM votes WHERE voter_id = ? AND is_repeat = 0 GROUP BY round_id ORDER BY count(*) DESC")
+      .bind(voter.id)
+      .all<{ round_id: string }>();
+    round = mine.results.map((m) => rounds.find((r) => r.id === m.round_id)).find(Boolean) ?? rounds[0];
+  }
+
+  // Seen, round by round: later votes in this round carry after_board = 1 (migration 0005).
+  const seenAt = nowIso();
+  await db.batch([
+    db.prepare("INSERT OR IGNORE INTO round_board_seen (voter_id, round_id, seen_at) VALUES (?, ?, ?)").bind(voter.id, round.id, seenAt),
+    db.prepare("UPDATE voters SET board_seen_at = ? WHERE id = ? AND board_seen_at IS NULL").bind(seenAt, voter.id),
+  ]);
 
   const { fit, rows, snapshot } = await (await board(db, round))(pool);
   const index = new Map(rows.map((r, i) => [r.id, i]));
@@ -679,7 +707,8 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
   return c.json({
     pool,
     pools: pools.map((p) => ({ id: p, name: p === "adults" ? "All adults" : ROLE_NAMES[p] ?? p })),
-    round: { name: round.name, state: round.state },
+    round: { id: round.id, name: round.name, state: round.state },
+    rounds: rounds.map((r) => ({ id: r.id, name: r.name })),
     votes: fit.nVotes,
     intervalsAsOf: snapshot?.computed_at ?? null,
     rows: out,

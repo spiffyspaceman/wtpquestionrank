@@ -192,6 +192,47 @@ async function refreshIntervals(r: Round): Promise<void> {
   }
 }
 
+// ---------- unit sets that ship with the site ----------
+
+interface BuiltinSet {
+  id: string;
+  roundName: string;
+  questions: number;
+  cycles: string;
+  loaded: boolean;
+  rounds: string[];
+}
+
+async function loadBuiltin(): Promise<BuiltinSet[]> {
+  const sets = (await api<{ sets: BuiltinSet[] }>("/admin/api/builtin-sets")).sets;
+  table(
+    $<HTMLTableElement>("#builtin"),
+    ["Round", "Item set", "Questions", "Cycles", "Loaded", "Round state"],
+    sets.map((b) => [b.roundName, el("span", { class: "mono" }, b.id), b.questions, b.cycles, b.loaded ? "yes" : "no", b.rounds.join(", ") || "none"]),
+    [2],
+  );
+  return sets;
+}
+
+$("#builtinBtn").addEventListener("click", () => {
+  void (async () => {
+    try {
+      const sets = await loadBuiltin();
+      const todo = sets.filter((b) => !b.loaded || !b.rounds.length);
+      if (!todo.length) return say(msg, "Every unit set is loaded and has a round.", "ok");
+      if (!confirm(`Load ${todo.length} unit sets and make a draft round for each? A loaded set cannot be changed afterwards.`)) return;
+      for (const b of todo) {
+        say(msg, `Loading ${b.roundName}...`);
+        await api(`/admin/api/builtin-sets/${b.id}`, { body: {} });
+      }
+      say(msg, `${todo.length} unit sets loaded; their rounds are drafts under Rounds.`, "ok");
+      await refresh();
+    } catch (err) {
+      say(msg, err instanceof ApiError ? err.message : String(err), "error");
+    }
+  })();
+});
+
 // ---------- full backup ----------
 
 /** Every table that is not a cache or a credential, read a page at a time and saved as one JSON file. */
@@ -263,12 +304,12 @@ function revealCell(label: string): HTMLElement {
 }
 
 let voters: Record<string, any>[] = [];
-let tracker: { round: { id: string; name: string } | null; unlockAt: number } = { round: null, unlockAt: 20 };
+let tracker = { unlockAt: 20 };
 
 async function loadVoters(): Promise<void> {
-  const r = await api<{ voters: Record<string, any>[]; round: { id: string; name: string } | null; unlockAt: number }>("/admin/api/codes");
+  const r = await api<{ voters: Record<string, any>[]; unlockAt: number }>("/admin/api/codes");
   voters = r.voters;
-  tracker = { round: r.round, unlockAt: r.unlockAt };
+  tracker = { unlockAt: r.unlockAt };
   renderVoters();
 }
 
@@ -286,10 +327,9 @@ function renderVoters(): void {
   const live = voters.filter((v) => !v.revoked_at);
   const used = live.filter((v) => v.signed_in_at || v.n_votes > 0).length;
   const reached = live.filter((v) => v.round_votes >= tracker.unlockAt).length;
-  $("#trackerLine").textContent = tracker.round
-    ? `${tracker.round.name}: ${used} of ${live.length} live codes used; ${reached} at ${tracker.unlockAt} or more votes. "To ${tracker.unlockAt}" counts first showings in this round.`
-    : `${used} of ${live.length} live codes used.`;
-  const toGo = (v: Record<string, any>) => (v.revoked_at || !tracker.round ? "" : Math.max(0, tracker.unlockAt - v.round_votes));
+  $("#trackerLine").textContent =
+    `${used} of ${live.length} live codes used; ${reached} at ${tracker.unlockAt} or more votes. "To ${tracker.unlockAt}" counts first showings, over every round.`;
+  const toGo = (v: Record<string, any>) => (v.revoked_at ? "" : Math.max(0, tracker.unlockAt - v.round_votes));
   table(
     $<HTMLTableElement>("#voters"),
     ["Label", "Role", "Issued", "Owner", "Signed in", "Votes", `To ${tracker.unlockAt}`, "Last vote", "Board seen", "Revoked", "Invite", ""],
@@ -531,6 +571,7 @@ async function loadVotes(): Promise<void> {
 
 async function refresh(): Promise<void> {
   status = await api<Status>("/admin/api/status");
+  void loadBuiltin().catch(() => undefined);
   $("#actor").textContent = `Signed in as ${status.actor}`;
   const banner = $("#exportBanner");
   banner.textContent = status.lastExportAt

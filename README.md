@@ -78,8 +78,12 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
   `admin_audit`, never the email. `ADMIN_SECRET` works only while Access is not configured.
 - **Items.** Upload an item file. The Worker rejects any item without `published: true`. It stores the file's
   SHA-256 and `text_sha256 = SHA-256(JSON.stringify([stem, bullets]))` per question.
-- **Rounds.** Draft, open, frozen, closed. Only one round is open at a time. The item set freezes when its first
-  round opens.
+- **Rounds.** Draft, open, frozen, closed. Several rounds can be open at once (migration 0005): each new batch goes
+  to the open round with the fewest batches issued, and a part-done batch is served first. The item set freezes when
+  its first round opens.
+- **Unit sets.** `items/rounds/` holds one item file per unit and level, transcribed from CCE's published PDFs by
+  `items/transcribe.py`. They are bundled into the Worker (`src/worker/builtin-sets.ts`) and loaded from the admin
+  page, one set per request, each with a draft round. They are never served as static files.
 - **Codes.**
   - Create codes by role, with labels like "Judge 01" and an owner flag.
   - Each code also comes as a one-tap invite link, `https://PROD_HOST/#CODE`. The part after `#` never reaches the

@@ -119,7 +119,7 @@ describe("items", () => {
 describe("rounds", () => {
   beforeEach(() => mockOutbound());
 
-  it("create as draft, open one at a time, freeze, close; no other moves", async () => {
+  it("create as draft, open (several may be open), freeze, close; no other moves", async () => {
     await loadItems();
     await env.DB.prepare("UPDATE rounds SET state = 'closed' WHERE state = 'open'").run();
     const a = (await json(admin("/admin/api/rounds", { body: { name: "A", itemSetId: ITEM_SET } }))).id;
@@ -127,12 +127,12 @@ describe("rounds", () => {
     expect((await env.DB.prepare("SELECT state FROM rounds WHERE id = ?").bind(a).first<any>()).state).toBe("draft");
     expect((await admin(`/admin/api/rounds/${a}/freeze`, { body: {} })).status).toBe(409);
     expect((await admin(`/admin/api/rounds/${a}/open`, { body: {} })).status).toBe(200);
-    const second = await admin(`/admin/api/rounds/${b}/open`, { body: {} });
-    expect(second.status).toBe(409);
-    expect((await second.json<any>()).error).toBe("another_round_open");
+    // A second round opens beside the first (migration 0005).
+    expect((await admin(`/admin/api/rounds/${b}/open`, { body: {} })).status).toBe(200);
+    expect((await env.DB.prepare("SELECT count(*) AS n FROM rounds WHERE state = 'open'").first<any>()).n).toBe(2);
     expect((await admin(`/admin/api/rounds/${a}/freeze`, { body: {} })).status).toBe(200);
     expect((await admin(`/admin/api/rounds/${a}/open`, { body: {} })).status).toBe(409);
-    expect((await admin(`/admin/api/rounds/${b}/open`, { body: {} })).status).toBe(200);
+    expect((await admin(`/admin/api/rounds/${b}/open`, { body: {} })).status).toBe(409);
     expect((await admin(`/admin/api/rounds/${a}/close`, { body: {} })).status).toBe(200);
     const audit = await env.DB.prepare("SELECT action FROM admin_audit WHERE action LIKE '%_round'").all<any>();
     expect(audit.results.map((r) => r.action)).toEqual(expect.arrayContaining(["create_round", "open_round", "freeze_round", "close_round"]));

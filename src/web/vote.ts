@@ -30,7 +30,7 @@ interface Me {
   votes: number;
   unlockAt: number;
   unlocked: boolean;
-  round: { name: string; state: string } | null;
+  open: boolean;
 }
 interface AfterAnswer {
   votes: number;
@@ -344,7 +344,7 @@ async function init(): Promise<void> {
     return location.replace("/");
   }
   renderMe();
-  if (!me.round || me.round.state !== "open") return say(msg, "Voting is closed right now.", "warn");
+  if (!me.open) return say(msg, "Voting is closed right now.", "warn");
   await loadBatch();
 }
 

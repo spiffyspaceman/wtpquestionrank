@@ -28,7 +28,8 @@ export async function roundExport(db: D1Database, round: RoundRow): Promise<Roun
 async function roundExportParts(db: D1Database, round: RoundRow, withVotes: boolean): Promise<RoundExport> {
   const voters = await db
     .prepare(
-      `SELECT ${EXPORT_VOTER_KEYS.join(", ")} FROM voters
+      // board_seen_at is this round's: the first time the voter opened this round's leaderboard.
+      `SELECT ${EXPORT_VOTER_KEYS.map((k) => (k === "board_seen_at" ? "(SELECT s.seen_at FROM round_board_seen s WHERE s.voter_id = voters.id AND s.round_id = ?1) AS board_seen_at" : k)).join(", ")} FROM voters
         WHERE id IN (SELECT voter_id FROM votes WHERE round_id = ?1 UNION SELECT voter_id FROM skips WHERE round_id = ?1)
         ORDER BY label`,
     )
@@ -148,7 +149,8 @@ export async function correctionsCsv(db: D1Database, round: RoundRow): Promise<s
       `SELECT c.id AS correction_id, c.vote_id, c.created_at, u.label, v.voter_id, v.role, v.is_repeat, v.left_q, v.right_q,
               v.winner_q AS first_winner_q, v.close_call AS first_close_call, c.winner_q, c.close_call, c.client_ms,
               v.after_board AS vote_after_board,
-              (u.board_seen_at IS NOT NULL AND c.created_at >= u.board_seen_at) AS correction_after_board,
+              EXISTS (SELECT 1 FROM round_board_seen s WHERE s.voter_id = v.voter_id AND s.round_id = v.round_id
+                       AND c.created_at >= s.seen_at) AS correction_after_board,
               (SELECT group_concat(reason, ' ') FROM correction_reasons WHERE correction_id = c.id) AS reasons,
               (SELECT note FROM correction_other WHERE correction_id = c.id) AS other_note
          FROM vote_corrections c JOIN votes v ON v.id = c.vote_id JOIN voters u ON u.id = v.voter_id

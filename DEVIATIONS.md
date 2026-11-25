@@ -167,3 +167,17 @@ questions will appear again inside the larger State rounds, under different cond
 the guidance, reasons and leaderboard as they now are); any comparison of those votes with method A or A2 is
 exploratory and is not the registered analysis. This entry records the decision; the freeze itself will be logged
 with its time when the owner does it in `/admin`.
+
+**25 November 2026: several rounds open at once, the site choosing the round for each batch (owner decision; built,
+takes effect when merged).** Migration 0005 drops the one-open-round rule. Each new batch goes to the open round with
+the fewest batches issued; a part-done batch is always served first; a voter cannot choose a round and the voter pages
+carry no round name. Three things change with it:
+- **Leaderboard unlock.** It still opens at 20 first-presentation votes, now counted over every round, not within
+  one. With a single round the count is the same as before.
+- **`after_board`, round by round.** A vote is marked `after_board = 1` when the voter had already opened that
+  round's leaderboard (table `round_board_seen`), not any leaderboard. The lock on changing earlier answers follows
+  the same rule. Views recorded before the migration are assigned to the round open at the time.
+- **The leaderboard page** has a "Questions" picker when more than one round has a board, and opens on the round the
+  voter has judged most.
+Effect on Round 1 while it is the only open round: none; every rule above reduces to the old one. No frozen file,
+threshold, item or measure changes.

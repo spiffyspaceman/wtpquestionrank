@@ -1,0 +1,613 @@
+{
+ "item_set": "state-u3",
+ "version": 1,
+ "round_name": "Unit 3, State",
+ "level": "State",
+ "unit": 3,
+ "cycles": [
+  "2014-15",
+  "2015-16",
+  "2016-17",
+  "2017-18",
+  "2018-19",
+  "2019-20",
+  "2020-21",
+  "2021-22",
+  "2022-23",
+  "2023-24",
+  "2024-25",
+  "2025-26"
+ ],
+ "frame": "Published CCE State hearing questions, Unit 3, cycles 2014-15 to 2025-26",
+ "shown_to_voters": [
+  "stem",
+  "bullets"
+ ],
+ "hidden_from_voters": [
+  "id",
+  "val_id",
+  "cycle",
+  "unit",
+  "q",
+  "level",
+  "source"
+ ],
+ "items": [
+  {
+   "id": "st-2014-15-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "“America’s first eleven amendments had all aimed to limit the federal government and the Twelfth had neither added nor detracted from federal authority. By contrast the Thirteenth expanded the federal government’s role in broad ad language.” Do you agree or disagree with this scholar’s assertion? What evidence can you offer to support your position?",
+   "bullets": [
+    "Why and in what ways has Section 2 of the Thirteenth Amendment proved to be especially significant?",
+    "In what ways, if any, did the he Thirteenth Amendment extend to limits on private, as well as public actions."
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 3, Question 1",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2014-15-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "What are the basic differences between the adversary system of justice used in the United States and the inquisitorial system used in most European nations?",
+   "bullets": [
+    "The theory of the adversary system is that through observing the presentation of evidence and agreement favorable to each party, the truth will become apparent to the jury or ju judge dge making the decision. How well has that theory been substantiated in practice? What evidence can you offer to support your response?",
+    "What procedural safeguards in the Fifth and the Fourteenth Amendments ensure a fair trial for defendants in the adversarial sarial legal system?"
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 3, Question 2",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2014-15-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2014-15",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "In Federalist 51,, James Madison claimed that “The government must be structured and designed so that the three constitutional branches and their relationships will have the ability to keep each other in their proper places.” What is judicial review and how does it try to keep the other branches in “their proper places”?",
+   "bullets": [
+    "In writing Marbury v. Madison (1803), what were the major arguments Chief Justice Marshall gave to justify judicial review?",
+    "Why has judicial review remained controversial to the present day?"
+   ],
+   "source": "CCE State Hearing Questions 2014-15, Unit 3, Question 3",
+   "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "“The Civil War worked profound changes in the Constitution…amounting to what many have called America’s Second Founding.” What were those changes in the Constitution?",
+   "bullets": [
+    "Should those changes be called “profound”? Why or why not?",
+    "In what ways, if any, do those constitutional changes amount to “America’s Second Founding”?"
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 3, Question 1",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "The Fourteenth Amendment mandates that no state shall “deprive any person of life, liberty, or property, without due process of law.” It does not define due process of law, however. How would you explain the concept of due process of law?",
+   "bullets": [
+    "What is the relationship, if any, of due process to natural rights philosophy and the principle of limited government?",
+    "How would you distinguish between procedural and substantive due process, and why are both important?"
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 3, Question 2",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2015-16-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2015-16",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "“Who are to be the electors of the federal representatives?… Not the rich, more than the poor; not the learned, more than the ignorant.… The electors are to be the great body of the people of the United States. They are to be the same who exercise the right in every State of electing the corresponding branch of the legislature of the State.” Almost two centuries passed before James Madison’s prediction became reality. Why?",
+   "bullets": [
+    "In what ways, if any, is the right to vote related to the fundamental principles of American constitutional government?",
+    "Voter turnout in presidential elections over the past eighty years has ranged from a low of 50 percent to a high of 62 percent. Why do you think so many Americans fail to cast ballots? What might be done to improve this record?"
+   ],
+   "source": "CCE State Hearing Questions 2015-16, Unit 3, Question 3",
+   "text_source": "b27bf61c-StateHearingQuestions2015-16.pdf (sha256 583b82c1c1409427), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "President Lyndon B. Johnson signed the Voting Rights Act into law on August 6, 1965, saying, “Today is a triumph for freedom as huge as any victory that has ever been won on any battlefield. Yet to seize the meaning of this day, we must recall darker times.” Why did Congress think it was necessary to pass the Voting Rights Act?",
+   "bullets": [
+    "How did the decision in Shelby County v. Holder in 2013 impact voting rights? How have recent court decisions impacted voting rights?",
+    "How should the government deal with issues of voter fraud and disenfranchisement?"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 3, Question 1",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "John Bingham, the author of the Fourteenth Amendment, argued, “Is it not essential to the unity of the Government and the unity of the people that all persons, whether citizens or strangers, within this land, shall have equal protection in every State in this Union in the rights of life and liberty and property?” Why was Bingham’s statement controversial in 1866? Is it still controversial today? Why or why not?",
+   "bullets": [
+    "What are the “privileges and immunities” of citizens?",
+    "What is meant by “equal protection of the laws?”"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 3, Question 2",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2016-17-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2016-17",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "In Ex parte Milligan (1866) Justice David Davis stated, “The Constitution of the United States is a law for rulers and people, equally in war and in peace, and covers with the shield of its protection all classes of men, at all times and under all circumstances.” Do you agree with Justice Davis’s opinion? Why or why not? What are the facts surrounding this case?",
+   "bullets": [
+    "Under what circumstances, if any, should a president declare martial law?",
+    "Should suspected terrorists held at Guantanamo Bay, Cuba, be tried in civilian or military courts? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2016-17, Unit 3, Question 3",
+   "text_source": "633b2043-StateHearingQuestions2016-17.pdf (sha256 0c473f8e5e59c4c1), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "Frederick Douglass wrote that the Civil War was not a “mere strife for territory and dominion, but a contest of civilization against barbarism.” To what extent did the Civil War Amendments change America?",
+   "bullets": [
+    "What has been the impact of the due process clause and the equal protection clause of the Fourteenth Amendment on American governance and society?",
+    "What has been the impact of the doctrine of incorporation on American governance and society?"
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 3, Question 1",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "“If a law has been properly passed by the law-making branches of a democratic government, why should judges have the power to declare it unconstitutional?” Do you agree or disagree with the position implied by this question? Why or why not?",
+   "bullets": [
+    "What is judicial review, and why is it controversial?",
+    "What has been the impact of judicial review on American society?"
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 3, Question 2",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2017-18-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2017-18",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "“If a political party does not have its foundation in the determination to advance a cause that is right and that is moral, then it is not a political party; it is merely a conspiracy to seize power.” Do you agree or disagree with President Eisenhower? Why? What ideas and events led to the development and growth of political parties in the United States?",
+   "bullets": [
+    "Why does the United States have a two-party system instead of a multiparty system, like most other advanced democracies? What are the advantages and disadvantages of each type of system?",
+    "What part do political parties play in today’s political system?"
+   ],
+   "source": "CCE State Hearing Questions 2017-18, Unit 3, Question 3",
+   "text_source": "e126fe01-StateHearingQuestions2017-18.pdf (sha256 e81c49a1dc28e4d9), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "The amendment process “seems to be stamped with every mark of propriety. It guards equally against that extreme facility, which would render the Constitution too mutable; and that extreme difficulty, which might perpetuate its discovered faults.” Do you agree or disagree with James Madison’s assessment? Why?",
+   "bullets": [
+    "What is the amendment process and what are its advantages and disadvantages?",
+    "What amendments to the Constitution have made the country more democratic?"
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 3, Question 1",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "“No freeman shall be taken or imprisoned or disseised or exiled or in any way destroyed, nor will we go upon him nor send upon him, except by the lawful judgment of his peers or by the law of the land.” How has due process of law evolved since the Magna Carta?",
+   "bullets": [
+    "What is procedural due process, and how is it related to the principle of limited government?",
+    "Where in the Constitution and its amendments can you find protections of your right to due process of law? What powers do they limit?"
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 3, Question 2",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2018-19-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2018-19",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "What is the role and importance of political parties in our political system?",
+   "bullets": [
+    "Why does the United States have a two-party system instead of a multiparty system, like most other advanced democracies?",
+    "What has been the impact of third parties, and why have there been so few effective third parties in our history?"
+   ],
+   "source": "CCE State Hearing Questions 2018-19, Unit 3, Question 3",
+   "text_source": "7f4e052b-StateHearingQuestions2018-19.pdf (sha256 1777ca45cebae459), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "“The right of voting for persons charged with the execution of laws that govern society is inherent in the word liberty, and constitutes the equality of personal liberty.” Although voting is essential for liberty and equality, individuals and groups in our country have been denied this right. How and why has this occurred?",
+   "bullets": [
+    "Which branch of government is responsible for expanding voting rights, and how did it accomplish this expansion?",
+    "Are voting rights best protected and expanded by state or national governments? Explain your position."
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 3, Question 1",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "What is the difference between procedural and substantive due process, and what are the origins of these principles?",
+   "bullets": [
+    "Are the protections of procedural due process more fully guaranteed in an adversarial or inquisitorial system of justice? Explain your position.",
+    "Does procedural or substantive due process cause more conflict between the national and state governments? Why? Give examples."
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 3, Question 2",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2019-20-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2019-20",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "“The benefits from discussion lie in the fact that even representative legislators are limited in knowledge and the ability to reason. No one of them knows everything the others know, or can make all the same inferences that they can draw in concert. Discussion is a way of combining information and enlarging the range of arguments.” Does John Rawls’ statement accurately reflect the discussion taking place among political parties today in our legislative branch? Why or why not?",
+   "bullets": [
+    "What are the benefits and costs of having multiple political parties in a legislative branch?",
+    "Parliamentary government has proven to be very effective in other countries. What might be the advantages and disadvantages of the United States changing to a parliamentary form of government?"
+   ],
+   "source": "CCE State Hearing Questions 2019-20, Unit 3, Question 3",
+   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "Thomas Jefferson stated that “I had rather ask an enlargement of power from the nation where it is found necessary, than to assume it by a construction which would make our powers boundless. Our peculiar security is in the possession of a written constitution. Let us not make it a blank paper by construction.” Did the addition of amendments reduce our written framework of government to a “blank paper”?",
+   "bullets": [
+    "What are the advantages and disadvantages of the amendment process in Article V?",
+    "What other methods, if any, have been used to extend powers and liberties beyond the written Constitution?"
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 3, Question 1",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "The Civil War has been called a “second American Revolution.” How did both Northern and Southern states use the Declaration of Independence and the Constitution as foundations for their positions?",
+   "bullets": [
+    "To what extent did the Civil War expand both federal powers and personal rights?",
+    "Did the changes that resulted from the Civil War revolutionize the government, or did they clarify and validate the principles in our founding documents?"
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 3, Question 2",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2020-21-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2020-21",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "Nowhere in the U.S. Constitution, other than in the amendments, is there an explicit declaration of the right to vote. What provisions, if any, imply a right to vote in the body of the Constitution?",
+   "bullets": [
+    "How, if at all, has the right to vote been explicitly expanded?",
+    "In what ways, if any, is it legitimate to limit voting rights? Do you agree with these limitations? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2020-21, Unit 3, Question 3",
+   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "“During the second founding, a new definition of American citizenship, incorporating equal rights regardless of race, was written into the Constitution.” To what extent, if any, did the Civil War Amendments promote equality in the United States?",
+   "bullets": [
+    "Why do you think the scholar refers to this period in U.S. history as a “second founding”?",
+    "What challenges, if any, do Americans still encounter in ensuring equality before the law for all persons in the United States?"
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 3, Question 1",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "“To judge from the conduct of the opposite parties, … they will mutually hope to evince the justness of their opinions, and to increase the number of their converts by the loudness of their declamations and by the bitterness of their invectives.” Do you agree or disagree with this description of political parties?",
+   "bullets": [
+    "What are the advantages and disadvantages of political parties?",
+    "In what ways does America’s two-party system promote or thwart American constitutional principles?"
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 3, Question 2",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2021-22-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2021-22",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "George Mason supported an amendment process, noting, “it will be better to provide for them, in an easy, regular, and Constitutional way than to trust to chance and violence.” To what extent, if any, has Mason been proven correct about the amendment process?",
+   "bullets": [
+    "What role, if any, have other government institutions played in impacting the interpretation of the Constitution over time?",
+    "Should the amendment process be changed or altered in any way? Explain your answer."
+   ],
+   "source": "CCE State Hearing Questions 2021-22, Unit 3, Question 3",
+   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "Some constitutional scholars say that the Supreme Court should not “find” rights that are not specifically enumerated in the Constitution. They argue that the American people should amend the Constitution if they want to recognize certain rights. Do you agree or disagree? Why?",
+   "bullets": [
+    "Is the amendment process the best way to change the Constitution?",
+    "What rights, if any, that are not yet recognized or formally recognized by the courts as having constitutional protection do you believe should be enumerated in new amendments to the Constitution? Explain."
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 3, Question 1",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "“The Constitution limits only the action of Congress, and is not a limitation on the States. This amendment supplies [remedies] that defect, allows Congress to correct the unjust legislation of the States, so far that the law which operates upon one man shall operate equally upon all.” In what ways has selective incorporation altered the federal system?",
+   "bullets": [
+    "In what ways, if any, does the equal protection clause of the Fourteenth Amendment limit American governments? How does it limit private organizations?",
+    "Do all classifications that result in different treatment of persons violate the guarantee of equal protection of the laws? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 3, Question 2",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2022-23-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2022-23",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "In Washington v. Glucksberg, Chief Justice William Rehnquist said, “the Due Process Clause guarantees more than fair process, and the ‘liberty’ it protects includes more than the absence of physical restraint. The Clause also provides heightened protection against government interference with certain fundamental rights and liberty interests.” Do you agree with this interpretation of the due process clause? Why or why not?",
+   "bullets": [
+    "How has the Supreme Court defined “fundamental rights”?",
+    "What effect has the doctrine of selective incorporation had on fundamental rights?"
+   ],
+   "source": "CCE State Hearing Questions 2022-23, Unit 3, Question 3",
+   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "In what ways was the due process clause of the 14th Amendment interpreted by the courts in the immediate aftermath of the Civil War?",
+   "bullets": [
+    "To what extent, if any, have rights been better protected as a result of substantive due process?",
+    "To what extent has the incorporation doctrine contributed to an enhanced protection of rights?"
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 3, Question 1",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "How would you account for the origins of political parties, and how have they impacted the checks and balances embedded in the U.S. Constitution?",
+   "bullets": [
+    "To what extent, if any, do political parties shape electioneering for political office?",
+    "Are the functions of political parties adequate for the needs of U.S. citizens? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 3, Question 2",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2023-24-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2023-24",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "The presidential oath of office requires the president to preserve, protect, and defend the U.S. Constitution. To what extent, if any, did President Abraham Lincoln carry out this oath during the Civil War?",
+   "bullets": [
+    "How has the balance between individual rights and national security been tested since the Civil War?",
+    "Should safeguards restricting presidential powers be instituted during times of national crisis? Explain your answer."
+   ],
+   "source": "CCE State Hearing Questions 2023-24, Unit 3, Question 3",
+   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "Do you agree or disagree with the Supreme Court’s decision in Alexander v. South Carolina (2024) that political gerrymandering should not be subject to judicial review? Why?",
+   "bullets": [
+    "Compare the Supreme Court’s 2024 decision in Alexander v. South Carolina (2024) with the decision in Allen v. Milligan (2023). How do these decisions reflect different judicial approaches to racial gerrymandering and the Voting Rights Act?",
+    "How effective have state independent redistricting commissions been in addressing racial and political gerrymandering? What additional measures could improve fairness in redistricting?"
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 3, Question 1",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "Why did the Framers of the Constitution, in Article I, Section 4, delegate the responsibility for setting the time, place, and manner of congressional elections to state legislatures?",
+   "bullets": [
+    "In what ways have constitutional amendments and federal legislation expanded voting rights throughout American history?",
+    "How can modern technology facilitate the right to vote while ensuring the accuracy and timeliness of vote recording?"
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 3, Question 2",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2024-25-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2024-25",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "In the cases of Brown v. Board of Education (1954) and Dobbs v. Jackson Women’s Health Organization (2022), was the Supreme Court justified in overturning longstanding precedents given the doctrine of stare decisis? Evaluate the Court’s reasoning in both cases and how it aligns with or deviates from this principle.",
+   "bullets": [
+    "Under what circumstances, if any, should the process of overruling longstanding precedents be addressed through constitutional amendments, new legislation, or a combination of both?",
+    "Recently, many proposals have been made to modify the Supreme Court’s structure or procedures, such as imposing term limits or increasing its size. Do you agree with these proposals, or do you favor leaving the Court in its current form? Explain."
+   ],
+   "source": "CCE State Hearing Questions 2024-25, Unit 3, Question 3",
+   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u3-q1",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 3,
+   "q": 1,
+   "published": true,
+   "stem": "In Youngstown Sheet & Tube Co. v. Sawyer (1952), the Supreme Court declared the following test for when the president can issue an executive order: “The President’s power, if any, to issue the order must stem either from an act of Congress or from the Constitution itself.” Do you agree or disagree with this test? Explain.",
+   "bullets": [
+    "How do executive orders fit into our constitutional system of checks and balances?",
+    "Should the president be allowed to withhold funds that Congress has appropriated? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 3, Question 1",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u3-q2",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 3,
+   "q": 2,
+   "published": true,
+   "stem": "Thomas Jefferson opposed frequent constitutional “changes,” but wrote that “laws and institutions must go hand in hand with the progress of the human mind.” How has the Constitution been reinterpreted or amended to go “hand in hand with the progress of the human mind”?",
+   "bullets": [
+    "Looking back on the nation’s 250-year history, has the Constitution’s amendment process described in Article V sufficed to allow for the “changes” Jefferson referenced? Explain.",
+    "Should the Constitution be interpreted as a “living document” or interpreted based on its original understanding?"
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 3, Question 2",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 3, pdftotext; footnote markers removed"
+  },
+  {
+   "id": "st-2025-26-u3-q3",
+   "val_id": null,
+   "level": "State",
+   "cycle": "2025-26",
+   "unit": 3,
+   "q": 3,
+   "published": true,
+   "stem": "In the Civil Rights Cases (1883), the Supreme Court concluded that Section 2 of the 13th Amendment empowers Congress to enact laws abolishing “all badges and incidents of slavery.” What did the Court mean by this phrase, and why was it significant?",
+   "bullets": [
+    "What are some examples of “badges and incidents of slavery” that remained after the 13th Amendment was ratified? How has Congress responded over time to address these issues?",
+    "Should Congress pass additional legislation today to address the ongoing effects of slavery or systemic discrimination? Why or why not?"
+   ],
+   "source": "CCE State Hearing Questions 2025-26, Unit 3, Question 3",
+   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 3, pdftotext; footnote markers removed"
+  }
+ ]
+}
