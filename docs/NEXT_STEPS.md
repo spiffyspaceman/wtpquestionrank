@@ -124,7 +124,8 @@ quoted words: `avalon.law.yale.edu/18th_century/mchenry.asp` (State 2026-27 U1Q1
 
 ### Owner: now
 
-1. **Say "merge"** for the footnotes build (migration 0007; voters will see footnotes under questions).
+1. **Say "merge"** for the footnotes build (migration 0007; voters will see footnotes under questions) and the
+   day and night toggle in the masthead of every page (built 25 Nov; the choice stays in the reader's browser).
 2. In `/admin`: revoke `Other 04` and **Close** the round "Test" first (otherwise its 36 questions show footnotes
    too). Closing it ends the registered comparison without a verdict and cannot be undone.
 3. Press **Load or update the full question set** (438 questions with their footnotes; it makes a draft round "All

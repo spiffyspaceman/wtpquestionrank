@@ -78,6 +78,35 @@ export function setShortcuts(on: boolean): void {
   }
 }
 
+// ---------- day and night ----------
+
+/** True when the page is showing its night colours, by the reader's choice or the device's setting. */
+function isNight(): boolean {
+  const t = document.documentElement.getAttribute("data-theme");
+  return t ? t === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+/** Wire the masthead toggle, if the page has one. The button names the scheme it switches to. */
+export function initTheme(): void {
+  const b = document.querySelector<HTMLButtonElement>("#themeToggle");
+  if (!b) return;
+  const label = () => (b.textContent = isNight() ? "Day" : "Night");
+  label();
+  b.addEventListener("click", () => {
+    const next = isNight() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try {
+      localStorage.setItem("wtpqr-theme", next);
+    } catch {
+      /* storage unavailable: the choice lasts for this page only */
+    }
+    label();
+  });
+  // With no stored choice the page follows the device, so the label follows it too.
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", label);
+}
+initTheme();
+
 // ---------- published footnotes (owner decision, 25 Nov 2026) ----------
 
 /** A footnote as the server sends it: text pieces, each with a link target or null. */

@@ -40,8 +40,10 @@
   --heat-strong-ink: #ffffff;
   color-scheme: light;
 }
+/* Night colours. Used when the device asks for dark and the reader has not chosen day, or when the reader has chosen
+   night with the toggle in the masthead (data-theme is set by /theme.js before the page paints). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --paper: #171313;
     --surface: #201a1a;
     --ink: #ede6e3;
@@ -62,8 +64,33 @@
     --div-mid: #383835;
     --heat-strong-ink: #1a1414;
     color-scheme: dark;
+  
   }
 }
+:root[data-theme="dark"] {
+  --paper: #171313;
+  --surface: #201a1a;
+  --ink: #ede6e3;
+  --muted: #ab9f9c;
+  --line: #3a3030;
+  --line-strong: #524545;
+  --accent: #e0a3a3;
+  --accent-ink: #2a0d10;
+  --accent-soft: #2e2222;
+  --rule: #e0a3a3;
+  --warn-bg: #352c16;
+  --warn-line: #d9aa4c;
+  --ok: #74c792;
+  --error: #ff8f8f;
+  --focus: #fdba74;
+  --div-pos: #d97f88;
+  --div-neg: #5598e7;
+  --div-mid: #383835;
+  --heat-strong-ink: #1a1414;
+  color-scheme: dark;
+  
+}
+:root[data-theme="light"] { color-scheme: light; }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -247,6 +274,9 @@ dl.keys { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; 
 dl.keys dt { text-align: right; }
 dl.keys dd { margin: 0; }
 header.top nav button.link { min-height: 0; padding: 0; font-size: 1rem; }
+/* The day and night toggle sits in the masthead on every page, quieter than the links beside it. */
+button.theme { min-height: 0; padding: 0; border: 0; background: none; color: var(--muted); font-size: 0.95rem; text-decoration: underline; text-underline-offset: 0.15em; }
+button.theme:hover { color: var(--accent); }
 @media (hover: none), (pointer: coarse) { .keys-help { display: none; } }
 
 /* ---------- leaderboard ---------- */
