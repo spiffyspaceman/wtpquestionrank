@@ -7,6 +7,7 @@ import {
   attemptKey,
   codeHash,
   createSession,
+  endSession,
   MAX_WRONG_CODES_PER_DAY,
   recordWrongCode,
   requireVoter,
@@ -94,6 +95,12 @@ voterApi.post("/redeem", async (c) => {
   }
   if (voter.revoked_at) return c.json({ error: "revoked", message: "This code is no longer active." }, 403);
   await createSession(c, voter.id);
+  return c.json({ ok: true });
+});
+
+// Sign out on this device: the session row goes and the cookie is cleared. Other devices stay signed in.
+voterApi.post("/signout", async (c) => {
+  await endSession(c);
   return c.json({ ok: true });
 });
 
@@ -443,6 +450,7 @@ async function latestBatchId(db: D1Database, roundId: string, voterId: string): 
 
 interface EffectiveVote {
   id: number;
+  after_board: number;
   role: string;
   left_q: string;
   right_q: string;
@@ -486,10 +494,15 @@ voterApi.post("/correct", requireVoter(), async (c) => {
     return c.json({ error: "batch_closed", message: "That batch is finished; its answers can no longer change." }, 409);
 
   const v = await db
-    .prepare("SELECT id, role, left_q, right_q, winner_q, close_call, is_repeat FROM votes_effective WHERE batch_pair_id = ?")
+    .prepare("SELECT id, after_board, role, left_q, right_q, winner_q, close_call, is_repeat FROM votes_effective WHERE batch_pair_id = ?")
     .bind(p.id)
     .first<EffectiveVote>();
   if (!v) return insertVote(c, voter, found, a);
+  // A vote cast before the voter first opened the leaderboard keeps its answer once they have opened it, so the
+  // pre-registered "before the leaderboard" votes (PREREG §8) hold only answers given before it. Owner decision,
+  // 25 Nov 2026 (DEVIATIONS.md).
+  if (v.after_board === 0 && voter.board_seen_at)
+    return c.json({ error: "board_seen", message: "You have opened the leaderboard, so answers from before it can no longer change." }, 409);
 
   const winner = a.pick === "L" ? v.left_q : v.right_q;
   const now = (await currentReasons(db, [v.id])).get(v.id) ?? { reasons: [], other: null };
@@ -501,7 +514,9 @@ voterApi.post("/correct", requireVoter(), async (c) => {
   if (same) return c.json({ ok: true, unchanged: true, ...(await afterAnswer(db, voter, p.round_id, p.batch_id)) });
 
   // Every statement carries the same condition, so in one transaction they all apply or none does.
-  const OPEN = `EXISTS (SELECT 1 FROM rounds WHERE id = ?2 AND state = 'open') AND EXISTS (SELECT 1 FROM voters WHERE id = ?3 AND revoked_at IS NULL)`;
+  // The last line repeats the leaderboard rule above inside the transaction, in case the board was opened meanwhile.
+  const OPEN = `EXISTS (SELECT 1 FROM rounds WHERE id = ?2 AND state = 'open') AND EXISTS (SELECT 1 FROM voters WHERE id = ?3 AND revoked_at IS NULL)
+    AND NOT EXISTS (SELECT 1 FROM votes w JOIN voters u ON u.id = w.voter_id WHERE w.id = ?1 AND w.after_board = 0 AND u.board_seen_at IS NOT NULL)`;
   const token = randomId();
   const stmts: D1PreparedStatement[] = [];
   // The cache moves first, by (new winner is left) - (current winner is left), read inside the transaction. It is

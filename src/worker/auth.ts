@@ -1,6 +1,6 @@
 // Invite codes, voter sessions and the wrong-code throttle.
 import type { Context, MiddlewareHandler } from "hono";
-import { getCookie, setCookie } from "hono/cookie";
+import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import type { AppEnv, Env, VoterRow } from "./env";
 import { hmacHex, nowIso, randomId, sha256Hex, utcDay } from "./util";
 
@@ -94,6 +94,13 @@ export async function createSession(c: Context<AppEnv>, voterId: string): Promis
     sameSite: "Lax",
     maxAge: SESSION_DAYS * 86_400,
   });
+}
+
+/** End this device's session, if it has one, and clear the cookie. */
+export async function endSession(c: Context<AppEnv>): Promise<void> {
+  const token = getCookie(c, SESSION_COOKIE);
+  if (token && token.length <= 100) await c.env.DB.prepare("DELETE FROM sessions WHERE token_hash = ?").bind(await sha256Hex(token)).run();
+  deleteCookie(c, SESSION_COOKIE, { path: "/", secure: true });
 }
 
 /** The voter behind this request's session cookie, or null. Revoked voters and expired sessions count as none. */
