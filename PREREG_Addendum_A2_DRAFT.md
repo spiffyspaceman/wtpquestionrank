@@ -24,8 +24,8 @@ LLM judges the same two additions, so the write-up can report the adults against
      reason in the judge's own words stays;
   3. the output path (`llm-arm/out-a2/`) and a `reasons` list on each pair.
 - **Packet hashes:** `llm-arm/design_a2_hashes.json`.
-- **Judges:** one isolated subagent per packet, new sessions, the same model and effort as the method A run where
-  that model is still offered; the model and effort are logged in the records file either way.
+- **Judges:** one isolated subagent per packet, new sessions, the same model and effort as the method A run
+  (`claude-opus-5-5`, default effort); both are logged in the records file.
 - **Combination:** one Bradley–Terry fit over all 3,780 judgments with a left-side term, as §5.
 - **Timing:** A2 runs before any §7 measure is computed on the human votes. Its ratings are not shown on the site or
   to any voter.
@@ -63,9 +63,12 @@ do not appear to.
 - A2 was added after the round opened and after 20 test votes existed (all from the owner's test code, to be
   revoked). No §7 measure had been computed.
 
-## 7. Open points for the owner
+## 7. Owner's answers, 25 November 2026
 
-1. Is the 0.10 margin in §5 the one you want?
-2. Should A2 judges also be told they may flag a close call (recorded, not used in the fit), to mirror the voters?
-   The draft leaves it out, because a judge in one long session cannot skip or go back either.
-3. Confirm the model and effort to use.
+1. The margin in §5 is 0.10.
+2. A2 judges get no close-call flag. A2 changes the instructions and the reasons only.
+3. Model and effort: the same as the method A run, read from `llm-arm/MethodA36_Records_2026-11-24.jsonl`:
+   `claude-opus-5-5`, one isolated general-purpose subagent per packet, default effort. If that model is not offered
+   when A2 runs, the run stops and the owner is asked.
+
+Still needed before anything runs: the owner's go-ahead on this file as a whole.

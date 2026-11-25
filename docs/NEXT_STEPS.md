@@ -74,7 +74,7 @@ steps finish.*
 only, long caching for hashed files, two new `corrections.csv` columns, keyboard fixes on the voting page, the export
 order.
 
-**Built on branch `claude/busy-franklin-ct2lna`, waiting for the owner's word to merge (owner decisions, 25 Nov):**
+**Also live on `main` (merged 25 Nov at the owner's word, `6873a9a`):**
 - a vote from before the leaderboard cannot be changed once the voter has opened it (DEVIATIONS.md);
 - Sign out on `/start`; the unchosen question stays readable; a switch for letter and number keys; four short
   status lines (DEVIATIONS.md);
@@ -83,18 +83,21 @@ order.
 
 ### Owner: now
 
-A. **Say "merge"** and Claude puts the branch above on `main` (it deploys). Nothing in it adds a migration.
+A. **Look at the live voting page once** with `Other 04` before revoking it: pick a side (the other question should
+   stay readable on a dashed outline), choose two reasons ("Two chosen"), go Back ("Next saves the change"), and try
+   Sign out on `/start`. In `/admin`, try **Download full backup** and look at the Voters table and Study health.
 B. **Cloudflare, two settings.** The saved API token cannot read or change either (it holds D1 Edit and Workers
    Scripts Read only), so these are yours:
    1. Workers & Pages > `wtpquestionrank` > Settings > Build > Build command: set it to
       `npm ci && npm run typecheck && npm test && npm run build`.
    2. Always Use HTTPS (zone `spiffyspaceman.com` > SSL/TLS > Edge Certificates). It is zone-wide, so it also changes
       `reader.spiffyspaceman.com`. Optional: the Worker now redirects http to https by itself.
-C. **Read `PREREG_Addendum_A2_DRAFT.md`** and one packet, for example `llm-arm/packets-a2/b0j0.md`. Answer its three
-   open points (the 0.10 margin, close calls, model and effort). On your yes Claude removes DRAFT, hashes the file,
-   logs it in DEVIATIONS.md and runs the 30 judges. Nothing has run.
-D. After the merge, add to the weekly routine in step 7: **Download full backup** (it holds the batches and pairing
-   trail that no other export has).
+C. **Method A2: say "run A2"** after reading `PREREG_Addendum_A2_DRAFT.md` and one packet, for example
+   `llm-arm/packets-a2/b0j0.md`. Your three answers (margin 0.10, no close-call flag, `claude-opus-5-5` at default
+   effort) are in it. On your word Claude removes DRAFT, hashes the file, logs it in DEVIATIONS.md and runs the 30
+   judges. Nothing has run.
+D. Add to the weekly routine in step 7: **Download full backup** (it holds the batches and pairing trail that no
+   other export has).
 
 ### Claude: later
 
