@@ -28,7 +28,7 @@ import sourcesFile from "../../items/sources_v1.json";
 import { poolsForRole } from "./pools";
 import { MAX_REASONS, parseOther, parseReasons, type ReasonCode } from "./reasons";
 import { verifyTurnstile } from "./turnstile";
-import { isUniqueViolation, nowIso, optInt, randomId, randomSeed, readJsonObject } from "./util";
+import { chunks, isUniqueViolation, nowIso, optInt, randomId, randomSeed, readJsonObject } from "./util";
 
 export const voterApi = new Hono<AppEnv>();
 
@@ -41,12 +41,17 @@ interface QuestionText {
 
 async function questionRows(db: D1Database, ids: string[]) {
   if (!ids.length) return [];
-  const uniq = [...new Set(ids)];
-  const r = await db
-    .prepare(`SELECT id, stem, bullets_json, level, cycle, unit, qnum FROM questions WHERE id IN (${uniq.map(() => "?").join(",")})`)
-    .bind(...uniq)
-    .all<{ id: string; stem: string; bullets_json: string; level: string; cycle: string; unit: number; qnum: number }>();
-  return r.results;
+  type Q = { id: string; stem: string; bullets_json: string; level: string; cycle: string; unit: number; qnum: number };
+  const out: Q[] = [];
+  // In chunks: D1 allows 100 bound parameters per query, and a leaderboard can list more questions than that.
+  for (const part of chunks([...new Set(ids)])) {
+    const r = await db
+      .prepare(`SELECT id, stem, bullets_json, level, cycle, unit, qnum FROM questions WHERE id IN (${part.map(() => "?").join(",")})`)
+      .bind(...part)
+      .all<Q>();
+    out.push(...r.results);
+  }
+  return out;
 }
 
 /** Stem and bullets only: what a voter sees while judging. */

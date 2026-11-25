@@ -7,7 +7,7 @@ import { board, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems } from "./data"
 import type { AppEnv, RoundRow } from "./env";
 import { correctionsCsv, exportMeta, reasonsCsv, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
 import { studyHealth } from "./health";
-import { isUniqueViolation, nowIso, optInt, randomId, readJsonObject, sha256Hex } from "./util";
+import { chunks, isUniqueViolation, nowIso, optInt, randomId, readJsonObject, sha256Hex } from "./util";
 
 export const adminApi = new Hono<AppEnv>();
 
@@ -134,11 +134,15 @@ adminApi.post("/items", async (c) => {
   }
 
   const hashes = await Promise.all(items.map((i) => questionTextHash(i.stem, i.bullets)));
-  const loaded = await db
-    .prepare(`SELECT id, text_sha256 FROM questions WHERE id IN (${items.map(() => "?").join(",")})`)
-    .bind(...items.map((i) => i.id))
-    .all<{ id: string; text_sha256: string }>();
-  const loadedHash = new Map(loaded.results.map((q) => [q.id, q.text_sha256]));
+  // In chunks: D1 allows 100 bound parameters per query, and an item file can hold more questions than that.
+  const loadedHash = new Map<string, string>();
+  for (const part of chunks(items.map((i) => i.id))) {
+    const loaded = await db
+      .prepare(`SELECT id, text_sha256 FROM questions WHERE id IN (${part.map(() => "?").join(",")})`)
+      .bind(...part)
+      .all<{ id: string; text_sha256: string }>();
+    for (const q of loaded.results) loadedHash.set(q.id, q.text_sha256);
+  }
   const conflicts = items.filter((i, k) => loadedHash.has(i.id) && loadedHash.get(i.id) !== hashes[k]).map((i) => i.id);
   if (conflicts.length)
     return c.json({ error: "text_conflict", message: "A loaded question has different text. Give the corrected text a new id.", ids: conflicts }, 409);

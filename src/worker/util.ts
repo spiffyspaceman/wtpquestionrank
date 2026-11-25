@@ -50,6 +50,14 @@ export function safeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
+/** D1 allows at most 100 bound parameters per query; lists of ids go out in chunks below that. */
+export const MAX_BOUND = 90;
+export function chunks<T>(xs: readonly T[], size = MAX_BOUND): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < xs.length; i += size) out.push(xs.slice(i, i + size));
+  return out;
+}
+
 export function isUniqueViolation(e: unknown): boolean {
   return /UNIQUE constraint failed/i.test(String((e as Error)?.message ?? e));
 }
