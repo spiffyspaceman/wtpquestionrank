@@ -3,7 +3,7 @@ import { env } from "cloudflare:test";
 import { beforeEach, describe, expect, it } from "vitest";
 import launch from "../../items/launch_items_v1.json";
 import { BUILTIN_SETS } from "../../src/worker/builtin-sets";
-import { firstGroup, nextGroup, STAGE, type StageItem } from "../../src/worker/staging";
+import { firstGroup, HELD, nextGroup, STAGE, type StageItem } from "../../src/worker/staging";
 import { admin, call, getBatch, json, mockOutbound, voteN, voter } from "./helpers";
 
 const SET = BUILTIN_SETS[0];
@@ -76,7 +76,12 @@ describe("the order questions join in", () => {
       const open = [...new Set(waiting.map((i) => `${i.level}|${i.unit}`))].map((s) => counts.get(s) ?? 0);
       if (open.length > 1 && Math.min(...open) >= 6) expect(Math.max(...open) - Math.min(...open)).toBeLessThanOrEqual(1);
     }
-    expect(playing.size).toBe(ALL.length);
+    // Every question joins except those held back for a known defect in their loaded text.
+    expect(playing.size).toBe(ALL.length - HELD.size);
+    for (const id of HELD) {
+      expect(ALL.some((i) => i.id === id)).toBe(true);
+      expect(playing.has(id)).toBe(false);
+    }
   });
 
   it("a set without the launch questions starts with an even first group", () => {

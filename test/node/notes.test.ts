@@ -7,6 +7,7 @@ import { shownNote, shownNotes, storedNotes } from "../../src/worker/notes";
 const text = (parts: [string, string | null][]) => parts.map((p) => p[0]).join("");
 const links = (parts: [string, string | null][]) => parts.filter((p) => p[1]).map((p) => p[1]);
 const U = "https://avalon.law.yale.edu/18th_century/fed09.asp";
+const ROOT = path.join(import.meta.dirname, "../..");
 
 describe("footnotes as shown", () => {
   it("leaves out the access date and nothing else", () => {
@@ -17,6 +18,35 @@ describe("footnotes as shown", () => {
     expect(text(shownNote("Founders Online, National Archives, last modified June 13, 2018, http://x.org/a.", {}))).toBe("Founders Online, National Archives, http://x.org/a.");
     // A date that is part of the citation stays.
     expect(text(shownNote("Independent Journal, January 23, 1788, No. 9.", {}))).toBe("Independent Journal, January 23, 1788, No. 9.");
+  });
+
+  it("tidies what the access date and a dropped address leave behind", () => {
+    const text = (parts: [string, string | null][]) => parts.map((p) => p[0]).join("");
+    // The comma that followed the access date does not stand after the closing quote.
+    expect(text(shownNote(`Institute, “Population over Time, 1850-Present,” accessed January 28, 2019, ${U}.`, { [U]: { status: "ok" } }))).toBe(
+      `Institute, “Population over Time, 1850-Present,” ${U}.`,
+    );
+    // A title left at the end by a dropped address closes inside its quote.
+    expect(text(shownNote(`“Our Declaration,” accessed August 20, 2015, ${U}.`, { [U]: { status: "dead" } }))).toBe("“Our Declaration.”");
+  });
+
+  it("does not show the sponsor line of a special question, nor its marker", () => {
+    const stored = JSON.stringify({
+      marks: [[0, 10, "*"], [0, 40, "**"]],
+      notes: [
+        { mark: "*", text: "Milton Friedman, Capitalism and Freedom (Chicago, 2002), 15." },
+        { mark: "**", text: "This question is sponsored by the Bill of Rights Institute. The class providing the best response to this question will receive the Special Question Award." },
+      ],
+    });
+    const shown = shownNotes(stored);
+    expect(shown.notes.map((n) => n.mark)).toEqual(["*"]);
+    expect(shown.marks).toEqual([[0, 10, "*"]]);
+    // In the bundled set: no shown note names a sponsor or an award, and no shown address carries a download stamp.
+    const items = JSON.parse(fs.readFileSync(path.join(ROOT, "items/rounds/all.json"), "utf8")).items as { marks: unknown; notes: unknown }[];
+    for (const it of items) {
+      const all = JSON.stringify(shownNotes(JSON.stringify({ marks: it.marks, notes: it.notes })));
+      expect(all).not.toMatch(/sponsored by|Special Question Award|\?q=2024/);
+    }
   });
 
   it("links an address only when it was checked and opened; the full stop after it is not part of the link", () => {

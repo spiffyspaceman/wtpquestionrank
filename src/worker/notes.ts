@@ -29,6 +29,11 @@ export interface ShownNotes {
 
 const ACCESSED = /,?\s*\(?\b(?:accessed|last modified)\s+[A-Z][a-z]+\.? \d{1,2}, \d{4}\)?/g;
 const URL_RE = /https?:\/\/\S+/g;
+/**
+ * A note that is not a source: CCE's line naming the sponsor of a National Finals "special question" and its award.
+ * It is not shown, nor its marker, because it gives away the question's level (owner decision, 25 Nov 2026).
+ */
+const NOT_A_SOURCE = /^This question is sponsored by\b/i;
 
 /** The address without the punctuation that ends the sentence it sits in. */
 function splitUrl(raw: string): [string, string] {
@@ -37,7 +42,8 @@ function splitUrl(raw: string): [string, string] {
 }
 
 export function shownNote(text: string, links: Record<string, LinkRecord> = LINKS): [string, string | null][] {
-  const t = text.replace(ACCESSED, "");
+  // Taking the access date out can leave the comma that followed it standing after a closing quote (“Title,”, https…).
+  const t = text.replace(ACCESSED, "").replace(/([,.]”),(?=\s)/g, "$1");
   const parts: [string, string | null][] = [];
   let last = 0;
   const push = (s: string, href: string | null = null) => {
@@ -64,6 +70,8 @@ export function shownNote(text: string, links: Record<string, LinkRecord> = LINK
   // A footnote that ended with a dropped address still ends with a full stop.
   const end = parts[parts.length - 1];
   if (end && end[1] === null && !/[.?!”)]$/.test(end[0].trimEnd())) end[0] = end[0].trimEnd() + ".";
+  // A title left at the very end by a dropped address closes with its full stop inside the quote, not “Title,”.
+  if (end && end[1] === null) end[0] = end[0].replace(/,”\.?$/, ".”");
   return parts;
 }
 
@@ -72,9 +80,11 @@ export function shownNotes(json: string | null | undefined): ShownNotes {
   if (!json) return { marks: [], notes: [] };
   try {
     const v = JSON.parse(json) as StoredNotes;
+    const notes = (v.notes ?? []).filter((n) => !NOT_A_SOURCE.test(n.text.trim()));
+    const shown = new Set(notes.map((n) => n.mark));
     return {
-      marks: (v.marks ?? []).filter((m) => Array.isArray(m) && m.length === 3),
-      notes: (v.notes ?? []).map((n) => ({ mark: n.mark, parts: shownNote(n.text) })),
+      marks: (v.marks ?? []).filter((m) => Array.isArray(m) && m.length === 3 && shown.has(m[2])),
+      notes: notes.map((n) => ({ mark: n.mark, parts: shownNote(n.text) })),
     };
   } catch {
     return { marks: [], notes: [] };

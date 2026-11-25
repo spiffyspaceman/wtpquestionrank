@@ -1218,11 +1218,11 @@
   "quote_found": true,
   "status": "ok"
  },
- "https://repository.law.umich.edu/cgi/viewcontent.cgi?article=4901": {
+ "https://repository.law.umich.edu/cgi/viewcontent.cgi?article=4901&context=mlr": {
   "checked": "2026-11-25",
   "http": "403",
   "link": true,
-  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026; the address was cut short at '&' in the extraction and is whole again (audit, 25 Nov 2026)",
   "questions": [
    "nf-2023-24-u3-q3"
   ],

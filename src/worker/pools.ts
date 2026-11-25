@@ -26,3 +26,9 @@ export function poolsForRole(role: string): Pool[] {
 export function visiblePools(role: string): Pool[] {
   return ["adults", role as Pool];
 }
+
+/**
+ * A role's own board is shown once this many voters in that role have voted in the round. With fewer, each of them
+ * could work out the others' picks from it (owner decision, 25 Nov 2026).
+ */
+export const MIN_ROLE_BOARD_VOTERS = 3;

@@ -12,6 +12,14 @@ export const STAGE = { FIRST: 36, STEP: 24, SETTLED_ADULT_GAMES: 12 } as const;
 
 const LAUNCH_IDS: ReadonlySet<string> = new Set((launchFile as { items: { id: string }[] }).items.map((i) => i.id));
 
+/**
+ * Questions kept out of play because their loaded text is known to be wrong. A loaded text can never be edited, so
+ * the question waits here; the corrected text is added as a new question under a new id.
+ *   st-2019-20-u1-q1: the second bullet stops mid-sentence ("...taught us about"); the extraction dropped its last
+ *   line. Found in the audit of 25 Nov 2026; the ending has to come from CCE's PDF.
+ */
+export const HELD: ReadonlySet<string> = new Set(["st-2019-20-u1-q1"]);
+
 export interface StageItem {
   id: string;
   level: string;
@@ -38,7 +46,7 @@ export function nextGroup(all: readonly StageItem[], inPlay: ReadonlySet<string>
   for (const i of all) {
     const s = stratum(i);
     if (inPlay.has(i.id)) count.set(s, (count.get(s) ?? 0) + 1);
-    else waiting.set(s, [...(waiting.get(s) ?? []), i]);
+    else if (!HELD.has(i.id)) waiting.set(s, [...(waiting.get(s) ?? []), i]);
   }
   for (const list of waiting.values()) list.sort((a, b) => playKey(a.id) - playKey(b.id) || (a.id < b.id ? -1 : 1));
   const out: string[] = [];

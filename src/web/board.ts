@@ -25,6 +25,8 @@ interface Board {
   round: { id: string; name: string; state: string };
   /** A round that opens its questions in groups: how many are in play (the rows) out of how many in all. */
   staged: { inPlay: number; total: number } | null;
+  /** The viewer's own role board, while it waits for enough voters in that role; null once it is open. */
+  roleBoard: { name: string; need: number } | null;
   /** Every round with a board, when there is more than one. */
   rounds: { id: string; name: string }[];
   votes: number;
@@ -767,6 +769,10 @@ async function load(p?: string, round?: string): Promise<void> {
       return btn;
     }),
   );
+  // One board only: no tabs to choose between, and a line saying when the viewer's own role gets its board.
+  show($("#tabs"), b.pools.length > 1);
+  $("#roleNote").textContent = b.roleBoard ? `A board for your own role (${b.roleBoard.name}) opens once ${b.roleBoard.need} people in it have voted.` : "";
+  show($("#roleNote"), Boolean(b.roleBoard));
   // With several rounds, a picker; the pool chosen stays the same across rounds.
   const sel = $<HTMLSelectElement>("#roundSel");
   sel.replaceChildren(...b.rounds.map((x) => el("option", { value: x.id }, x.name)));

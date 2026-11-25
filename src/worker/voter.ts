@@ -19,6 +19,7 @@ import {
   boardSeen,
   firstVoteCount,
   growIfSettled,
+  MIN_ROLE_BOARD_VOTERS,
   openRounds,
   pairCounts,
   pairCountUpserts,
@@ -667,6 +668,18 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
     round = mine.results.map((m) => rounds.find((r) => r.id === m.round_id)).find(Boolean) ?? rounds[0];
   }
 
+  // A role's own board waits until enough voters in that role have voted in this round: with two or three, each
+  // could work out the others' picks from it (owner decision, 25 Nov 2026). The pooled adults board always shows.
+  const inRole = await db
+    .prepare(
+      `SELECT count(DISTINCT v.voter_id) AS n FROM votes v JOIN voters u ON u.id = v.voter_id
+        WHERE v.round_id = ? AND v.role = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL`,
+    )
+    .bind(round.id, voter.role)
+    .first<{ n: number }>();
+  const roleBoardOpen = (inRole?.n ?? 0) >= MIN_ROLE_BOARD_VOTERS;
+  if (pool !== "adults" && !roleBoardOpen) return c.json({ error: "pool_too_small", need: MIN_ROLE_BOARD_VOTERS }, 403);
+
   // Seen, round by round: later votes in this round carry after_board = 1 (migration 0005).
   const seenAt = nowIso();
   await db.batch([
@@ -728,7 +741,9 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
   });
   return c.json({
     pool,
-    pools: pools.map((p) => ({ id: p, name: p === "adults" ? "All adults" : ROLE_NAMES[p] ?? p })),
+    pools: pools.filter((p) => p === "adults" || roleBoardOpen).map((p) => ({ id: p, name: p === "adults" ? "All adults" : ROLE_NAMES[p] ?? p })),
+    // The voter's own role board, while it is still waiting for voters.
+    roleBoard: roleBoardOpen ? null : { name: ROLE_NAMES[voter.role] ?? voter.role, need: MIN_ROLE_BOARD_VOTERS },
     round: { id: round.id, name: round.name, state: round.state },
     // A staged round: how many of its questions are in play so far (the rows), out of how many in all.
     staged: round.staged ? { inPlay: rows.length, total: (await roundItems(db, round.item_set_id)).length } : null,

@@ -37,7 +37,26 @@ describe("leaderboard", () => {
     const text = await r.text();
     const b = JSON.parse(text);
     expect(b.pool).toBe("adults");
-    expect(b.pools.map((p: { id: string }) => p.id)).toEqual(["adults", "coach"]);
+    // One coach has voted: the coaches' own board waits for three (owner decision, 25 Nov 2026).
+    expect(b.pools.map((p: { id: string }) => p.id)).toEqual(["adults"]);
+    expect(b.roleBoard).toEqual({ name: "Coach", need: 3 });
+    const early = await call("/api/leaderboard?pool=coach", { cookie: v.cookie });
+    expect(early.status).toBe(403);
+    expect(await early.json()).toMatchObject({ error: "pool_too_small", need: 3 });
+    // A second coach is not enough; a third opens it. A revoked coach does not count.
+    for (const k of [2, 3]) {
+      const other = await voter("coach");
+      await voteN(other.cookie, 1);
+      const again = await json(call("/api/leaderboard", { cookie: v.cookie }));
+      expect(again.pools.map((p: { id: string }) => p.id)).toEqual(k === 3 ? ["adults", "coach"] : ["adults"]);
+      expect(again.roleBoard).toEqual(k === 3 ? null : { name: "Coach", need: 3 });
+      if (k === 3) {
+        await admin("/admin/api/codes/revoke", { body: { label: other.label } });
+        expect((await json(call("/api/leaderboard", { cookie: v.cookie }))).pools).toHaveLength(1);
+        const third = await voter("coach");
+        await voteN(third.cookie, 1);
+      }
+    }
     expect(b.rows).toHaveLength(36);
     for (const id of ids) expect(text).not.toContain(id);
     // Ranks only at 10 or more games.
@@ -54,8 +73,11 @@ describe("leaderboard", () => {
     const id = await openNewRound();
     const s = await voter("student");
     await voteN(s.cookie, 20);
+    // The students' board opens once three students have voted.
+    expect((await call("/api/leaderboard?pool=student", { cookie: s.cookie })).status).toBe(403);
+    for (let k = 0; k < 2; k++) await voteN((await voter("student")).cookie, 1);
     const own = await json(call("/api/leaderboard?pool=student", { cookie: s.cookie }));
-    expect(own.votes).toBe(20);
+    expect(own.votes).toBe(22);
     const adults = await json(call("/api/leaderboard?pool=adults", { cookie: s.cookie }));
     expect(adults.votes).toBe(0);
     expect((await call("/api/leaderboard?pool=judge", { cookie: s.cookie })).status).toBe(403);

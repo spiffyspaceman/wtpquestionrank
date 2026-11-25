@@ -302,5 +302,47 @@
   "find": "https://csac.history.wisc.edu/wp-THE PRESIDENT OF THE CONVENTION TO THE PRESIDENT OF CONGRESS, 17 September 1787content/uploads/sites/281/2017/07/assessments_41.pdf",
   "replace": "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/assessments_41.pdf",
   "reason": "The owner's text extract has the linked document's title pasted into the middle of the web address; the address is restored by removing it. No PDF of this cycle was available to check against."
+ },
+ {
+  "id": "nf-2023-24-u3-q3",
+  "note": "*",
+  "find": "article=4901 context=mlr",
+  "replace": "article=4901&context=mlr",
+  "reason": "The extraction lost the '&' between the address's two parameters, which cut the address short. Found in the audit of 25 Nov 2026; restored from the address's own form, not from the PDF."
+ },
+ {
+  "id": "st-2020-21-u3-q1",
+  "note": "*",
+  "find": "i n The Papers",
+  "replace": "in The Papers",
+  "reason": "A stray space inside a word in the extracted footnote (audit of 25 Nov 2026)."
+ },
+ {
+  "id": "nf-2019-20-u2-q3",
+  "note": "*",
+  "find": "Wisconsin– Madison",
+  "replace": "Wisconsin–Madison",
+  "reason": "A stray space after the dash in the extracted footnote (audit of 25 Nov 2026)."
+ },
+ {
+  "id": "nf-2021-22-u1-q2",
+  "note": "*",
+  "find": "Founders’Constitution",
+  "replace": "Founders’ Constitution",
+  "reason": "A missing space in the extracted footnote (audit of 25 Nov 2026)."
+ },
+ {
+  "id": "nf-2021-22-u6-q2",
+  "note": "*",
+  "find": "Founders’Constitution",
+  "replace": "Founders’ Constitution",
+  "reason": "A missing space in the extracted footnote (audit of 25 Nov 2026)."
+ },
+ {
+  "id": "nf-2024-25-u3-q3",
+  "note": "*",
+  "find": "1509.pdf ?q=20240728143454.",
+  "replace": "1509.pdf.",
+  "reason": "Owner decision, 25 Nov 2026: the address's download stamp (?q=20240728143454) is left out because it gives away the question's year, as with 'accessed <date>'. The address opens without it (items/links.json). CCE printed the stamp."
  }
 ]
