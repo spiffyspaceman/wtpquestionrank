@@ -13,8 +13,8 @@ the next steps", answer from this file and update it as steps finish.*
   (id `ZF_IZnsCUnZU`), is a **draft**: no batch, no vote.
 - Four codes exist, all revoked. No live code.
 
-**On the dev branch `claude/lucid-cannon-64slmj`, not on `main` (173 tests pass; typecheck passes; the browser smoke
-test passes 35 checks):**
+**On the dev branch `claude/lucid-cannon-64slmj`, not on `main` (184 tests pass; typecheck passes; the browser smoke
+test passes 50 checks):**
 - **Staged opening** (migration 0008): the round opens with the 36 launch questions in play and adds 24 at a time
   whenever every question in play has 12 adult comparisons. The deploy marks the draft round as staged.
 - The leaderboard shows no rating for an unranked question, says how many questions are in play and ranked, and
@@ -55,8 +55,8 @@ test passes 35 checks):**
 
 ## Owner: Cloudflare (yours; the saved token cannot change these)
 
-- Workers & Pages > `wtpquestionrank` > Settings > Build > Build command:
-  `npm ci && npm run typecheck && npm test && npm run build`. Today the deploy runs the tests but not the typecheck.
+- Nothing to change in the build command any more: `npm run build` now runs the typecheck itself, so the existing
+  command (`npm ci && npm test && npm run build`) stops a deploy on a type error.
 - Delete the API token "wtpquestionrank D1 setup" (D1 Edit plus Workers Scripts Read) once launch is done. It expires
   2 December 2026 anyway.
 - Always Use HTTPS is zone-wide, so it also changes `reader.spiffyspaceman.com`. Optional: the Worker redirects http

@@ -83,10 +83,10 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 173 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 184 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
-npm run build          # pages into dist/
-npm run test:ui        # browser smoke test of the voting flow (needs Playwright; not part of npm test or the deploy)
+npm run build          # typecheck, then pages into dist/ (so the deploy cannot ship a type error)
+npm run test:ui        # browser smoke test, 50 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)
 ```
 
@@ -116,8 +116,9 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
 - Local D1 state is keyed by the database id; after an id change, re-run
   `npx wrangler d1 migrations apply wtpquestionrank --local`.
 - Turnstile does not pass a headless browser on the live site; live test votes are the owner's to cast.
-- D1 allows 100 bound parameters per query and local D1 does not enforce it: send id lists through `chunks()` in
-  `src/worker/util.ts`.
+- D1 allows 100 bound parameters per query: send id lists through `chunks()` in `src/worker/util.ts`. Local D1
+  now enforces this too (a 101-parameter query failed with "too many SQL variables", checked 25 Nov 2026). It still
+  does not enforce a batch size, so the test helper `call()` refuses any `db.batch()` over 100 statements.
 - Production D1 refused the first full-set load, which sent about 1,300 statements in one `db.batch()`; local D1
   took it. The item loader now writes in batches of 40 that are each safe to repeat, and a set whose load stopped
   part-way (file hash `loading`) is resumed by running the load again. Keep database batches small.
@@ -133,5 +134,8 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
 - Tests in one file share a database (rounds and sets made by an earlier test are still there). Close other rounds
   first, and never assume a set's round is new.
 - `.dev.vars` is read by `npm run test:ui` as it stands: a `PROD_HOST` on another port makes that script fail.
+- No test may assert on wall-clock time with a tight bound: a 50 ms bound in `src/rating/rating.test.ts` failed about
+  one run in five on a busy machine and would have blocked a deploy. Pipe test output through `grep` or `tail` only
+  with `set -o pipefail`, or a failing run looks like a passing one.
 - Always Use HTTPS is a zone-wide setting, so it also changes `reader.spiffyspaceman.com`. It is the owner's to flip;
   the Worker redirects http itself.

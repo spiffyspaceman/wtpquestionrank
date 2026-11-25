@@ -7,6 +7,8 @@
 // provided. The Worker's outbound calls are stubbed (Turnstile always passes), so no network is needed.
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { createRequire } from "node:module";
 import { unstable_startWorker } from "wrangler";
 
@@ -40,6 +42,8 @@ if (madeVars)
   );
 const vars = Object.fromEntries(fs.readFileSync(VARS, "utf8").split("\n").filter((l) => l.includes("=")).map((l) => [l.slice(0, l.indexOf("=")), l.slice(l.indexOf("=") + 1)]));
 
+// A database of its own for each run, so a run never sees the last run's rounds and voters.
+const PERSIST = fs.mkdtempSync(path.join(os.tmpdir(), "wtpqr-smoke-"));
 let worker, browser;
 const failures = [];
 const check = (ok, what) => {
@@ -58,11 +62,12 @@ async function post(path, body, cookie) {
 const get = async (path, cookie) => (await fetch(B + path, { headers: cookie ? { cookie } : {} })).json();
 
 try {
-  execFileSync("npx", ["wrangler", "d1", "migrations", "apply", "wtpquestionrank", "--local"], { stdio: "ignore" });
+  execFileSync("npx", ["wrangler", "d1", "migrations", "apply", "wtpquestionrank", "--local", "--persist-to", PERSIST], { stdio: "ignore" });
   worker = await unstable_startWorker({
     config: "wrangler.jsonc",
     dev: {
       server: { hostname: "127.0.0.1", port: PORT },
+      persist: PERSIST,
       inspector: false,
       outboundService: () => Response.json({ success: true, hostname: "localhost" }),
     },
@@ -73,16 +78,37 @@ try {
   const adminLogin = await post("/admin/api/login", { secret: vars.ADMIN_SECRET });
   if (adminLogin.status !== 200) throw new Error("admin login failed: is ADMIN_SECRET set and Access off in .dev.vars?");
   const adm = adminLogin.cookie;
-  await post("/admin/api/items", fs.readFileSync("items/launch_items_v1.json", "utf8"), adm);
-  const status = await get("/admin/api/status", adm);
-  if (!status.rounds.some((r) => r.state === "open")) {
-    const made = await post("/admin/api/rounds", { name: "UI smoke", itemSetId: "state-launch-v1" }, adm);
-    await post(`/admin/api/rounds/${made.json.id}/open`, {}, adm);
-  }
+  // The full question set, as on the site: its round opens in stages, the 36 launch questions first, with footnotes.
+  const sets = await get("/admin/api/builtin-sets", adm);
+  const loaded = await post(`/admin/api/builtin-sets/${sets.sets[0].id}`, {}, adm);
+  if (loaded.status !== 200) throw new Error("loading the full set failed: " + JSON.stringify(loaded.json));
+  const ROUND = loaded.json.roundCreated;
+  await post(`/admin/api/rounds/${ROUND}/open`, {}, adm);
   const code = (await post("/admin/api/codes", { role: "judge", count: 1 }, adm)).json.codes[0];
   const session = (await post("/api/redeem", { code: code.code, turnstileToken: "smoke-token" })).cookie;
 
   browser = await chromium.launch();
+
+  // An invite link signs in with one tap. Turnstile's script is replaced by a stand-in that passes at once (the
+  // Worker's own check is stubbed above), so this runs without the network.
+  const linked = (await post("/admin/api/codes", { role: "coach", count: 1 }, adm)).json.codes[0];
+  const linkCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await linkCtx.route("https://challenges.cloudflare.com/**", (route) =>
+    route.fulfill({ contentType: "text/javascript", body: "window.turnstile={render:function(el,o){setTimeout(function(){o.callback('smoke-token')},0);return 'w'},reset:function(){}};" }),
+  );
+  const linkPage = await linkCtx.newPage();
+  await linkPage.goto(`${B}/#${linked.code}`);
+  await linkPage.waitForURL(B + "/start");
+  await linkPage.waitForSelector("#startBtn:not([hidden])");
+  check((await linkPage.textContent("#who")) === "Coach", "an invite link signs in with one tap and lands on the home page");
+  check(!(await linkPage.evaluate(() => history.length > 3)) && !linkPage.url().includes(linked.code), "the code is not left in the address bar");
+  // On a phone the two questions stack.
+  await linkPage.goto(B + "/vote");
+  await linkPage.waitForSelector("#judge:not([hidden])");
+  const stacked = await linkPage.evaluate(() => document.querySelector("#rightCard").getBoundingClientRect().top >= document.querySelector("#leftCard").getBoundingClientRect().bottom);
+  check(stacked && (await linkPage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)), "on a phone the questions stack and the page fits the width");
+  await linkCtx.close();
+
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, extraHTTPHeaders: { cookie: session } });
   const page = await ctx.newPage();
   const errors = [];
@@ -175,11 +201,36 @@ try {
   // Finish the batch
   await page.goto(B + "/vote");
   await page.waitForSelector("#judge:not([hidden])");
+  let linkTried = false, noteSent = false, sawNotes = false;
   for (let i = 0; i < 10 && !(await page.isVisible("#between")); i++) {
+    sawNotes ||= (await page.locator(".card .fnotes").count()) > 0;
+    // A link in a footnote opens the source; it does not choose the question.
+    if (!linkTried && (await page.locator(".card .fnotes a").count())) {
+      linkTried = true;
+      await page.evaluate(() => {
+        const a = document.querySelector(".card .fnotes a");
+        a.addEventListener("click", (e) => e.preventDefault(), { once: true });
+        a.click();
+      });
+      check((await page.getAttribute("#pickL", "aria-pressed")) === "false" && (await page.getAttribute("#pickR", "aria-pressed")) === "false", "a click on a footnote link does not choose the question");
+    }
     await page.click("#leftCard");
+    if (!noteSent) {
+      // Other with a few words, and Close call, reach the server with the vote.
+      noteSent = true;
+      await page.click("#pills .pill >> nth=9");
+      await page.fill("#otherText", "asks for a judgment");
+      await page.check("#close");
+    }
     await page.click("#next");
     await page.waitForTimeout(150);
   }
+  check(sawNotes, "published footnotes show under the questions");
+  // (Asking for the batch again here would start the next one, so the saved vote is read from the owner's export.)
+  const reasonsCsv = await (await fetch(`${B}/admin/api/rounds/${ROUND}/export/reasons.csv`, { headers: { cookie: adm } })).text();
+  const noteRow = reasonsCsv.split("\n").find((l) => l.includes("asks for a judgment"));
+  const col = (name) => reasonsCsv.split("\n")[0].split(",").indexOf(name);
+  check(Boolean(noteRow) && noteRow.split(",")[col("close_call")] === "1" && noteRow.split(",")[col("reason")] === "other", "an Other note and Close call are saved with the vote");
   check(await page.isVisible("#between"), "the batch ends on Batch done");
   check((await focused()) === "betweenH", "Batch done takes focus");
   await shot("batch-done");
@@ -203,6 +254,41 @@ try {
   await shot("board-phone");
   await page.setViewportSize({ width: 1280, height: 900 });
 
+  // A ranked leaderboard: five more judges vote through the API until every question in play has a rank.
+  for (let j = 0; j < 5; j++) {
+    const c = (await post("/admin/api/codes", { role: "judge", count: 1 }, adm)).json.codes[0];
+    const s = (await post("/api/redeem", { code: c.code, turnstileToken: "smoke-token" })).cookie;
+    for (let b = 0; b < 6; b++)
+      for (const p of (await get("/api/batch", s)).pairs.filter((x) => x.answer === null))
+        await post("/api/vote", { pairId: p.pairId, pick: p.left.stem < p.right.stem ? "L" : "R", closeCall: false, reasons: ["position"], clientMs: 30000 }, s);
+  }
+  await page.goto(B + "/board");
+  await page.waitForSelector("#top .hero-card");
+  check((await text("#top .hero-card .score strong")) === "#1" && /^rating \d+$/.test(await text("#top .hero-card .score .rating")), "the top card leads with the rank, the rating beside it");
+  check((await page.locator("#top10 > li").count()) === 9 && (await text("#top10 > li >> nth=0 >> .score strong")) === "#2", "the list carries on from #2 to #10");
+  check(await page.isVisible("#explore") && (await page.locator("#chart svg").count()) === 1, "the charts appear once questions are ranked");
+  for (const t of ["scatter", "dist", "h2h"]) await page.click(`#tab-${t}`);
+  check((await page.locator("#chart table.heat").count()) === 1, "each chart tab draws, the head-to-head table last");
+  check((await page.locator("#tabs button").count()) === 2 && !(await page.isVisible("#roleNote")), "with six judges, the judges' own board is offered");
+  check((await text("#all tbody tr >> nth=0 >> td >> nth=0")) === "#1", "the table lists ranks first");
+  // Whether the first 36 have all settled by now depends on the pairs drawn, so the round may or may not have taken
+  // its next group; either way the page and the admin table must agree on the number in play.
+  const inPlay = Number((/(\d+) of \d+ questions are in play/.exec(await text("#summary")) ?? [])[1]);
+  check(inPlay === 36 || inPlay === 60, "the summary says how many questions are in play");
+  await shot("board-ranked");
+  await page.setViewportSize({ width: 390, height: 844 });
+  check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "the ranked leaderboard fits a phone's width");
+  await page.setViewportSize({ width: 1280, height: 900 });
+
+  // Admin: the page loads its tables and shows the staged round.
+  const adminCtx = await browser.newContext({ viewport: { width: 1280, height: 900 }, extraHTTPHeaders: { cookie: adm } });
+  const adminPage = await adminCtx.newPage();
+  adminPage.on("pageerror", (e) => errors.push("admin: " + e.message));
+  await adminPage.goto(B + "/admin");
+  await adminPage.waitForSelector("#rounds tbody tr");
+  check(new RegExp(`${inPlay} of \\d+ in play`).test(await adminPage.textContent("#rounds tbody tr")), "the admin page lists the round with its questions in play");
+  await adminCtx.close();
+
   // Sign out
   await page.goto(B + "/start");
   await page.waitForSelector("#startBtn:not([hidden])");
@@ -219,6 +305,7 @@ try {
   await browser?.close();
   await worker?.dispose();
   if (madeVars) fs.rmSync(VARS, { force: true });
+  fs.rmSync(PERSIST, { recursive: true, force: true });
 }
 console.log(failures.length ? `\n${failures.length} failed` : "\nAll passed");
 process.exit(failures.length ? 1 : 0);

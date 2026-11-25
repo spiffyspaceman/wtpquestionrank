@@ -32,7 +32,7 @@ A change needs the owner's agreement and an entry in `DEVIATIONS.md` first.
 | `npm ci` | Install. `.npmrc` sets `legacy-peer-deps` because npm 10 crashes resolving the Vitest peer set otherwise. |
 | `npm test` | All tests: the shipped rating and analysis tests, the hash check, route tests in workerd against a local D1, and an end-to-end run that exports a scripted round and passes it through `analyze()`. |
 | `npm run typecheck` | TypeScript for the Node code, the Worker, the pages and the Worker tests. |
-| `npm run build` | Build the pages into `dist/`. |
+| `npm run build` | Typecheck, then build the pages into `dist/`. |
 | `npm run dev` | Build, then `wrangler dev` with a local D1. |
 | `npm run test:ui` | Browser smoke test of the voting flow against a local copy (needs Playwright and a built `dist/`). Not part of `npm test`. |
 | `node scripts/dev-local.mjs` | Like `wrangler dev`, but the Worker's outbound fetches go through Node (for sandboxes where only Node can reach the internet). |
@@ -184,6 +184,7 @@ Also checked that day:
 
 ## Deploys
 
-- **Build command:** `npm ci && npm test && npm run build`. A failing test stops the deploy.
+- **Build command:** `npm ci && npm test && npm run build`. A failing test stops the deploy, and so does a type
+  error, because `npm run build` runs the typecheck first.
 - **Deploy command:** `npx wrangler d1 migrations apply wtpquestionrank --remote && npx wrangler deploy`.
 - **Branches:** `main` deploys to production. Preview builds of other branches get no bindings.

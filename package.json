@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
-    "build": "vite build",
+    "build": "npm run typecheck && vite build",
     "typecheck": "tsc --noEmit && tsc -p src/worker && tsc -p src/web && tsc -p test/worker",
     "dev": "vite build && wrangler dev",
     "analyze": "tsx analysis/analyze.ts",

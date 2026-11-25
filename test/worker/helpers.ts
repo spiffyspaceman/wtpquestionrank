@@ -84,6 +84,25 @@ export interface CallOpts {
   ip?: string;
 }
 
+/**
+ * Production D1 refused one db.batch() of about 1,300 statements that local D1 took (25 Nov 2026). Local D1 still does
+ * not enforce a batch size, so the tests do: any batch a request sends above this many statements fails the request.
+ */
+export const MAX_BATCH_STATEMENTS = 100;
+function sizeChecked(db: D1Database): D1Database {
+  return new Proxy(db, {
+    get(target, key) {
+      if (key === "batch")
+        return (stmts: D1PreparedStatement[]) => {
+          if (stmts.length > MAX_BATCH_STATEMENTS) throw new Error(`db.batch() of ${stmts.length} statements: keep database batches at ${MAX_BATCH_STATEMENTS} or fewer`);
+          return target.batch(stmts);
+        };
+      const v = Reflect.get(target, key);
+      return typeof v === "function" ? v.bind(target) : v;
+    },
+  });
+}
+
 export async function call(path: string, o: CallOpts = {}): Promise<Response> {
   const method = o.method ?? (o.body !== undefined || o.raw !== undefined ? "POST" : "GET");
   const headers: Record<string, string> = { ...(o.headers ?? {}) };
@@ -96,7 +115,7 @@ export async function call(path: string, o: CallOpts = {}): Promise<Response> {
     headers,
     body: o.raw ?? (o.body !== undefined ? JSON.stringify(o.body) : undefined),
   });
-  return app.fetch(req, { ...env, ...(o.env ?? {}) } as Env, { waitUntil() {}, passThroughOnException() {}, props: {} } as unknown as ExecutionContext);
+  return app.fetch(req, { ...env, DB: sizeChecked(env.DB), ...(o.env ?? {}) } as Env, { waitUntil() {}, passThroughOnException() {}, props: {} } as unknown as ExecutionContext);
 }
 
 export async function admin(path: string, o: CallOpts = {}): Promise<Response> {
