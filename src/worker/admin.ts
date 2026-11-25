@@ -5,7 +5,8 @@ import { requireAdmin, adminSecretLogin } from "./access";
 import { codeHash, inviteCode } from "./auth";
 import { board, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems } from "./data";
 import type { AppEnv, RoundRow } from "./env";
-import { exportMeta, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
+import { exportMeta, reasonsCsv, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
+import { studyHealth } from "./health";
 import { isUniqueViolation, nowIso, optInt, randomId, readJsonObject, sha256Hex } from "./util";
 
 export const adminApi = new Hono<AppEnv>();
@@ -374,6 +375,14 @@ adminApi.post("/codes/revoke", async (c) => {
   return c.json({ ok: true });
 });
 
+// ---------- study health (report only) ----------
+
+adminApi.get("/rounds/:id/health", async (c) => {
+  const round = await getRound(c);
+  if (!round) return c.json({ error: "unknown_round" }, 404);
+  return c.json(await studyHealth(c.env.DB, round));
+});
+
 // ---------- raw votes ----------
 
 adminApi.get("/votes", async (c) => {
@@ -437,14 +446,20 @@ adminApi.get("/rounds/:id/export.json", async (c) => {
 });
 
 adminApi.get("/rounds/:id/export/:file", async (c) => {
-  const m = /^(votes|skips|ratings|voters)\.csv$/.exec(c.req.param("file"));
+  const m = /^(votes|skips|ratings|voters|reasons)\.csv$/.exec(c.req.param("file"));
   if (!m) return c.json({ error: "not_found" }, 404);
   const round = await getRound(c);
   if (!round) return c.json({ error: "unknown_round" }, 404);
   const kind = m[1];
   const db = c.env.DB;
-  const csv =
-    kind === "votes" ? await votesCsv(db, round) : kind === "skips" ? await skipsCsv(db, round) : kind === "ratings" ? await ratingsCsv(db, round) : await votersCsv(db);
+  const makers: Record<string, (db: D1Database, round: RoundRow) => Promise<string>> = {
+    votes: votesCsv,
+    skips: skipsCsv,
+    ratings: ratingsCsv,
+    reasons: reasonsCsv,
+    voters: (d) => votersCsv(d),
+  };
+  const csv = await makers[kind](db, round);
   await audit(c, `export_${kind}_csv`, { id: round.id });
   return new Response(csv, {
     headers: {

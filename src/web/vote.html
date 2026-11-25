@@ -12,7 +12,7 @@
   <body>
     <main>
       <header class="top">
-        <a class="brand" href="/vote">WTP Question Rank</a>
+        <a class="brand" href="/start">WTP Question Rank</a>
         <nav>
           <span id="who" class="who"></span>
           <a id="boardLink" href="/board" hidden>Leaderboard</a>
@@ -28,18 +28,22 @@
           <progress id="bar" max="10" value="0" aria-hidden="true"></progress>
         </div>
         <div class="pair">
-          <article class="card" aria-labelledby="leftH">
+          <article class="card pickable" id="leftCard" aria-labelledby="leftH">
             <h2 id="leftH">Question A</h2>
             <p class="stem" id="leftStem"></p>
             <ul id="leftBullets"></ul>
           </article>
-          <article class="card" aria-labelledby="rightH">
+          <article class="card pickable" id="rightCard" aria-labelledby="rightH">
             <h2 id="rightH">Question B</h2>
             <p class="stem" id="rightStem"></p>
             <ul id="rightBullets"></ul>
           </article>
         </div>
         <div class="decide">
+          <div class="reasons" role="group" aria-labelledby="reasonsH">
+            <p id="reasonsH" class="reasons-h">Why, if you like <span class="muted">(up to two)</span></p>
+            <div id="pills" class="pills"></div>
+          </div>
           <div class="close-row"><label class="check"><input type="checkbox" id="close" aria-keyshortcuts="c" /> Close call</label></div>
           <div class="picks">
             <button class="primary" id="pickL" type="button" aria-keyshortcuts="ArrowLeft">A is better</button>
@@ -54,15 +58,8 @@
         <p id="betweenText"></p>
         <div class="actions">
           <button id="more" class="primary" type="button">Keep going</button>
-          <button id="stop" type="button">Stop for now</button>
+          <a id="stop" class="button" href="/start">Stop for now</a>
         </div>
-      </section>
-
-      <section id="stopped" hidden>
-        <h1 tabindex="-1" id="stoppedH">Thank you</h1>
-        <p>Your votes are saved. Your code works on any device.</p>
-        <p id="stoppedBoard" hidden><a href="/board">See the leaderboard</a></p>
-        <div class="actions"><button id="resume" type="button">Judge more pairs</button></div>
       </section>
     </main>
     <script type="module" src="./vote.ts"></script>

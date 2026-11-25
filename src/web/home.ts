@@ -44,7 +44,7 @@ async function redeem(): Promise<void> {
   say(msg, "");
   try {
     await api("/api/redeem", { body: { code, turnstileToken: token } });
-    location.assign("/vote");
+    location.assign("/start");
   } catch (err) {
     const m = err instanceof ApiError ? err.message : "Something went wrong. Try again.";
     say(msg, m, "error");
@@ -61,7 +61,7 @@ async function start(): Promise<void> {
   // since the device may belong to someone else.
   if (!linkCode) try {
     await api("/api/me");
-    location.replace("/vote");
+    location.replace("/start");
     return;
   } catch {
     /* not signed in */

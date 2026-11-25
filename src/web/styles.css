@@ -162,6 +162,22 @@ label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
 .card ul { margin: 0; padding-left: 1.15em; }
 .card li { margin: 0.45em 0; }
 
+/* A whole card picks it, like its button. */
+.card.pickable { cursor: pointer; }
+.card.pickable:hover { border-color: var(--accent); }
+.card.pickable:active { background: var(--accent-soft); }
+.busy .card.pickable { cursor: progress; }
+
+.reasons { margin: 4px 0 10px; }
+.reasons-h { margin: 0 0 6px; font-size: 0.9rem; text-align: center; }
+.pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+button.pill {
+  min-height: 40px; padding: 6px 14px; border-radius: 999px; font-size: 0.88rem; line-height: 1.25;
+  background: var(--surface); border-color: var(--line-strong);
+}
+button.pill[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--accent); }
+button.pill:disabled { opacity: 0.45; }
+
 .decide { margin: 16px 0 8px; }
 .decide .close-row { display: flex; justify-content: center; }
 .picks { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 6px 0 4px; }
@@ -175,6 +191,28 @@ kbd { font: 0.8em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; bord
   .pair { grid-template-columns: 1fr; gap: 12px; }
   .picks { gap: 10px; }
 }
+
+/* ---------- voter home ---------- */
+.tally { margin: 8px 0 22px; }
+.tally h1 { margin-bottom: 0.15em; }
+.tally .figure { font-size: 2.6rem; font-variant-numeric: lining-nums tabular-nums; }
+.tally #roundLine { margin-top: 0; }
+.meter progress {
+  width: 100%; max-width: 360px; height: 6px; appearance: none; border: 0; border-radius: 3px; background: var(--line); overflow: hidden;
+}
+.meter progress::-webkit-progress-bar { background: var(--line); border-radius: 3px; }
+.meter progress::-webkit-progress-value { background: var(--accent); border-radius: 3px; }
+.meter progress::-moz-progress-bar { background: var(--accent); border-radius: 3px; }
+.tally .actions .button { min-width: 240px; }
+.guide { border-top: 1px solid var(--line); padding-top: 4px; }
+.guide h2 { margin-top: 0.8em; }
+.guide .criterion { border-bottom: 0; font-style: italic; font-size: 1rem; }
+ul.plain { padding-left: 1.15em; }
+ul.plain li { margin: 0.35em 0; }
+dl.keys { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 8px 0; }
+dl.keys dt { text-align: right; }
+dl.keys dd { margin: 0; }
+@media (hover: none), (pointer: coarse) { .keys-help { display: none; } }
 
 /* ---------- leaderboard ---------- */
 .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
@@ -246,6 +284,16 @@ td button, td .button { min-height: 36px; padding: 4px 10px; font-size: 0.85rem;
 .btn-group .btns { display: flex; flex-wrap: wrap; gap: 6px; }
 #rounds td:last-child { min-width: 440px; }
 .btn-group .label { font-size: 0.85rem; font-style: italic; color: var(--muted); }
+
+.admin h3 { font-size: 1.05rem; margin: 1.2em 0 0.3em; font-style: italic; }
+.gate { display: grid; gap: 10px; margin: 8px 0 4px; max-width: 560px; }
+.gate > div { display: grid; gap: 4px; font-size: 0.95rem; }
+.gate progress { width: 100%; height: 6px; appearance: none; border: 0; border-radius: 3px; background: var(--line); overflow: hidden; }
+.gate progress::-webkit-progress-bar { background: var(--line); border-radius: 3px; }
+.gate progress::-webkit-progress-value { background: var(--accent); border-radius: 3px; }
+.gate progress::-moz-progress-bar { background: var(--accent); border-radius: 3px; }
+#perDay td:last-child { width: 40%; }
+.daybar { display: block; height: 8px; min-width: 2px; background: var(--accent); border-radius: 0 4px 4px 0; opacity: 0.7; }
 
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }

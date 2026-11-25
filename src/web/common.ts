@@ -62,3 +62,7 @@ export function fmtDate(iso: string | null | undefined): string {
 
 export const CRITERION =
   "Which is the better hearing question: the one that more clearly lets a panel separate a strong, well-prepared team from a weak one, across a 4-minute opening and 6–10 minutes of follow-up?";
+
+/** The hearing format, as the LLM judges were given it (llm-arm packet). */
+export const FORMAT =
+  "In a We the People simulated congressional hearing, a unit of high school students answers one published hearing question. They give a prepared opening statement of about 4 minutes. A panel of judges then asks follow-up questions for 6 to 10 minutes and scores the team. Each question has a main prompt (the stem) and two follow-up bullets.";

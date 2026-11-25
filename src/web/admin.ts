@@ -2,6 +2,7 @@
 import { RATING } from "../rating/config";
 import { buildRoundExport, votesCsvFrom, type ExportVoteRow } from "../worker/export-shape";
 import { POOLS, poolsForRole } from "../worker/pools";
+import { REASONS } from "../worker/reasons";
 import { bootstrapBT, fitBT, type Vote } from "../rating/rating";
 import { $, api, ApiError, el, fmtDate, say, show } from "./common";
 
@@ -115,7 +116,7 @@ function roundActions(r: Round): Node {
         "Export",
         button("JSON", () => void pagedExport(r, "json")),
         button("votes CSV", () => void pagedExport(r, "votes")),
-        ...["skips", "ratings", "voters"].map((k) => el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export/${k}.csv` }, `${k} CSV`)),
+        ...["skips", "reasons", "ratings", "voters"].map((k) => el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export/${k}.csv` }, `${k} CSV`)),
       ),
     );
   }
@@ -270,6 +271,114 @@ function renderVoters(): void {
 
 $("#voterSearch").addEventListener("input", renderVoters);
 
+// ---------- study health (report only) ----------
+
+interface Health {
+  gate: {
+    MIN_ADULT_RATERS: number;
+    MIN_VOTES_PER_COUNTED_RATER: number;
+    MIN_ADULT_GAMES_PER_ITEM: number;
+    countedAdultRaters: number;
+    minAdultGamesPerItem: number;
+    itemsBelow: number;
+    items: number;
+    adultVotes: number;
+    passed: boolean;
+  };
+  flagRules: { minVotes: number; tooFastMedianMs: number; sideShare: number };
+  perDay: { day: string; votes: number; voters: number; adult_votes: number }[];
+  reasons: { votesWithReason: number; votes: number; counts: { reason: string; n: number }[] };
+  raters: {
+    label: string;
+    role: string;
+    votes: number;
+    medianMs: number | null;
+    leftShare: number;
+    closeCallShare: number;
+    skips: number;
+    flags: string[];
+  }[];
+}
+
+const REASON_LABEL = new Map<string, string>(REASONS.map((r) => [r.code, r.label]));
+const FLAG_TEXT: Record<string, string> = { too_fast: "Fast", one_side: "One side" };
+const pct = (x: number) => `${Math.round(x * 100)}%`;
+
+/** Width set through the DOM, not a style attribute: the CSP (style-src 'self') blocks inline styles. */
+function dayBar(share: number): HTMLElement {
+  const b = el("span", { class: "daybar" });
+  b.style.width = `${share * 100}%`;
+  return b;
+}
+
+function meter(id: string, value: number, max: number): void {
+  const bar = $<HTMLProgressElement>(id);
+  bar.max = max;
+  bar.value = Math.min(value, max);
+}
+
+async function loadHealth(): Promise<void> {
+  const round = $<HTMLSelectElement>("#healthRound").value;
+  if (!round) return show($("#health"), false);
+  const h = await api<Health>(`/admin/api/rounds/${round}/health`);
+  const g = h.gate;
+  $("#gateLine").textContent = g.passed
+    ? "The data gate is met: the analysis may run (PREREG §9)."
+    : `The data gate is not met yet (PREREG §9). ${g.adultVotes} adult first-presentation votes so far.`;
+  $("#gateRaters").textContent = `Adult raters with ${g.MIN_VOTES_PER_COUNTED_RATER}+ votes: ${g.countedAdultRaters} of ${g.MIN_ADULT_RATERS}`;
+  meter("#gateRatersBar", g.countedAdultRaters, g.MIN_ADULT_RATERS);
+  $("#gateItems").textContent =
+    `Fewest adult comparisons on any item: ${g.minAdultGamesPerItem} of ${g.MIN_ADULT_GAMES_PER_ITEM}` +
+    (g.itemsBelow ? ` (${g.itemsBelow} of ${g.items} items short)` : "");
+  meter("#gateItemsBar", g.minAdultGamesPerItem, g.MIN_ADULT_GAMES_PER_ITEM);
+
+  const peak = Math.max(1, ...h.perDay.map((d) => d.votes));
+  table(
+    $<HTMLTableElement>("#perDay"),
+    ["Day (UTC)", "Votes", "Adult", "Voters", ""],
+    h.perDay.map((d) => [d.day, d.votes, d.adult_votes, d.voters, dayBar(d.votes / peak)]),
+    [1, 2, 3],
+  );
+
+  const r = h.reasons;
+  $("#reasonsLine").textContent = r.votes
+    ? `${r.votesWithReason} of ${r.votes} first-presentation votes (${pct(r.votesWithReason / r.votes)}) carry at least one reason.`
+    : "No votes yet.";
+  const given = r.counts.reduce((s, x) => s + x.n, 0);
+  table(
+    $<HTMLTableElement>("#reasonCounts"),
+    ["Reason", "Times given", "Share"],
+    r.counts.map((x) => [REASON_LABEL.get(x.reason) ?? x.reason, x.n, pct(x.n / given)]),
+    [1, 2],
+  );
+
+  const f = h.flagRules;
+  $("#flagRules").textContent =
+    `Live codes, first presentations. Flags (report only): median time under ${f.tooFastMedianMs / 1000} s, or one side ` +
+    `${pct(f.sideShare)} or more, over ${f.minVotes} or more votes. Flagged raters stay in the primary analysis.`;
+  table(
+    $<HTMLTableElement>("#raters"),
+    ["Voter", "Role", "Votes", "Median s", "Left", "Close calls", "Skips", "Flags"],
+    h.raters.map((x) => [
+      x.label,
+      x.role,
+      x.votes,
+      x.medianMs === null ? "" : (x.medianMs / 1000).toFixed(0),
+      pct(x.leftShare),
+      pct(x.closeCallShare),
+      x.skips,
+      x.flags.map((k) => FLAG_TEXT[k] ?? k).join(", "),
+    ]),
+    [2, 3, 4, 5, 6],
+  );
+  show($("#health"));
+}
+
+$("#healthForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  void loadHealth().catch((err) => say(msg, err instanceof ApiError ? err.message : String(err), "error"));
+});
+
 // ---------- board and raw votes ----------
 
 async function loadBoard(): Promise<void> {
@@ -347,6 +456,7 @@ async function refresh(): Promise<void> {
   options($<HTMLSelectElement>("#roundSet"), status.itemSets.map((s) => [s.id, `${s.id} (${s.n_items} items)`]));
   const roundOpts: [string, string][] = status.rounds.filter((r) => r.state !== "draft").map((r) => [r.id, `${r.name} (${r.state})`]);
   options($<HTMLSelectElement>("#boardRound"), roundOpts);
+  options($<HTMLSelectElement>("#healthRound"), roundOpts);
   options($<HTMLSelectElement>("#vRound"), [["", "All rounds"], ...roundOpts]);
   options($<HTMLSelectElement>("#boardPool"), status.pools.map((p) => [p, p]));
   options($<HTMLSelectElement>("#codeRole"), status.roles.map((r) => [r.id, r.name]));
@@ -371,6 +481,7 @@ async function refresh(): Promise<void> {
   );
   await loadVoters();
   await loadVotes();
+  await loadHealth();
 }
 
 $("#newRound").addEventListener("submit", (e) => {

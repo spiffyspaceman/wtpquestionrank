@@ -27,3 +27,23 @@ confirmed (`items/sources_v1.json`), and average ratings by unit and by year. Ef
 opens the leaderboard may be influenced by recognising cycles and units. Such votes are already flagged
 (`after_board = 1`), and the §8 sensitivity analysis restricted to pre-board votes reports the result without them.
 No frozen file, threshold, item or measure changes. The 20-vote unlock is unchanged (owner decision, same day).
+
+**25 November 2026: home page with judging guidance (owner decision).** PREREG §2 and §5 give the LLM judges the
+hearing-format paragraph and the criterion, and voters saw the criterion on the voting page. After sign-in, voters now
+land on a home page (`/start`) that shows their vote count, the 20-vote leaderboard unlock, a button to start or
+continue a batch, the hearing-format paragraph word for word as the LLM packets give it, the criterion, and a short
+list of what strong hearing questions do. That list paraphrases general principles from the Center for Civic
+Education's 2026-27 Question Writers Committee Toolkit (its rubric categories and question design principles), without
+attribution, as the owner chose. Effect: human voters judge with guidance the LLM judges did not see, so a human–LLM
+gap may partly reflect different instructions. The voting page itself still shows only stem and bullets. Votes cast
+before this change can be told apart by time (`created_at` before the deploy recorded in the git log). No frozen file,
+threshold, item or measure changes.
+
+**25 November 2026: optional reasons with a vote (owner decision).** Before picking, a voter may tap up to two of nine
+fixed reasons: Forces a real position; Real constitutional substance; Strong quote or source; More room for follow-up;
+Hard trade-offs on every side; Competing ways to read the Constitution; Who should decide; Rewards connecting ideas;
+Ties to current issues. They are stored as codes in a new append-only table `vote_reasons` (migration 0002, never free
+text), exported as `reasons.csv`, and are not part of the JSON export or the registered analysis. Effect: the labels
+name qualities a voter might then weigh, and they add a step to each pair. Reasons are optional, the pick is unchanged,
+and every vote still counts the same. Also on the voting page, tapping anywhere on a question's card now picks it, as
+its button does. No frozen file, threshold, item or measure changes.

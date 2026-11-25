@@ -25,6 +25,7 @@ import {
 } from "./data";
 import type { AppEnv, RoundRow, VoterRow } from "./env";
 import sourcesFile from "../../items/sources_v1.json";
+import { parseReasons } from "./reasons";
 import { verifyTurnstile } from "./turnstile";
 import { isUniqueViolation, nowIso, optInt, randomId, randomSeed, readJsonObject } from "./util";
 
@@ -94,12 +95,15 @@ voterApi.post("/redeem", async (c) => {
 
 async function meState(db: D1Database, voter: VoterRow, round: RoundRow | null) {
   const votes = round ? await firstVoteCount(db, round.id, voter.id) : 0;
+  // A batch left part-way (closed tab, other device): how much of it is still waiting, so the home page can offer it.
+  const open = round?.state === "open" ? await unfinishedPairs(db, round, voter.id) : null;
   return {
     role: ROLE_NAMES[voter.role] ?? voter.role,
     votes,
     unlockAt: QUALITY.LEADERBOARD_UNLOCK_VOTES,
     unlocked: votes >= QUALITY.LEADERBOARD_UNLOCK_VOTES,
     round: round ? { name: round.name, state: round.state } : null,
+    batch: open && open.pairs.length ? { size: open.size, remaining: open.pairs.length } : null,
   };
 }
 
@@ -328,6 +332,8 @@ voterApi.post("/vote", requireVoter(), async (c) => {
   const body = await readJsonObject(c.req.raw);
   if (!body || (body.pick !== "L" && body.pick !== "R")) return c.json({ error: "bad_request" }, 400);
   const closeCall = body.closeCall === true ? 1 : 0;
+  const reasons = parseReasons(body.reasons);
+  if (!reasons) return c.json({ error: "bad_request" }, 400);
   const clientMs = optInt(body.clientMs, 0, MAX_CLIENT_MS);
   const found = await pairFor(db, body.pairId, voter.id);
   if ("error" in found) return c.json({ error: found.error }, PAIR_ERRORS[found.error!]);
@@ -363,6 +369,10 @@ voterApi.post("/vote", requireVoter(), async (c) => {
         await serverMs(db, p, nowMs),
         new Date(nowMs).toISOString(),
       ),
+    // Optional reasons, written only if the vote above was.
+    ...reasons.map((r) =>
+      db.prepare("INSERT INTO vote_reasons (vote_id, reason) SELECT id, ?2 FROM votes WHERE batch_pair_id = ?1").bind(p.id, r),
+    ),
     // Repeats measure consistency only; they never feed the ratings.
     ...(p.is_repeat ? [] : pairCountUpserts(db, p.round_id, voter.role, p.left_q, p.right_q, winner === p.left_q, p.id)),
   ];

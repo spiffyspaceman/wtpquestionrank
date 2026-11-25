@@ -39,6 +39,29 @@
         </section>
 
         <section>
+          <h2>Study health</h2>
+          <form id="healthForm" class="row">
+            <div><label for="healthRound">Round</label><select id="healthRound"></select></div>
+            <button type="submit">Show</button>
+          </form>
+          <div id="health" hidden>
+            <p id="gateLine"></p>
+            <div class="gate">
+              <div><span id="gateRaters"></span><progress id="gateRatersBar" aria-hidden="true"></progress></div>
+              <div><span id="gateItems"></span><progress id="gateItemsBar" aria-hidden="true"></progress></div>
+            </div>
+            <h3>Votes per day</h3>
+            <div class="table-wrap"><table id="perDay"></table></div>
+            <h3>Reasons given</h3>
+            <p id="reasonsLine" class="muted small"></p>
+            <div class="table-wrap"><table id="reasonCounts"></table></div>
+            <h3>Raters</h3>
+            <p id="flagRules" class="muted small"></p>
+            <div class="table-wrap"><table id="raters"></table></div>
+          </div>
+        </section>
+
+        <section>
           <h2>Codes</h2>
           <form id="newCodes" class="row">
             <div><label for="codeRole">Role</label><select id="codeRole"></select></div>

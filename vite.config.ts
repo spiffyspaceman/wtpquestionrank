@@ -15,6 +15,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         index: path.join(web, "index.html"),
+        start: path.join(web, "start.html"),
         vote: path.join(web, "vote.html"),
         board: path.join(web, "board.html"),
         admin: path.join(web, "admin.html"),

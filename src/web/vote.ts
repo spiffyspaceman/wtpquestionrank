@@ -1,3 +1,4 @@
+import { REASONS, MAX_REASONS, type ReasonCode } from "../worker/reasons";
 import { $, api, ApiError, CRITERION, el, say, show } from "./common";
 
 interface Side {
@@ -31,7 +32,6 @@ interface AfterAnswer {
 const msg = $("#msg");
 const judge = $("#judge");
 const between = $("#between");
-const stopped = $("#stopped");
 const pickL = $<HTMLButtonElement>("#pickL");
 const pickR = $<HTMLButtonElement>("#pickR");
 const skipBtn = $<HTMLButtonElement>("#skip");
@@ -42,8 +42,32 @@ let size = 0;
 let shownAt = 0;
 let busy = false;
 let me: Me;
+const chosen = new Set<ReasonCode>();
 
 $("#criterion").textContent = CRITERION;
+
+// Reason pills: optional, at most MAX_REASONS, cleared with each new pair. Keys 1-9 toggle them in order.
+const pills = REASONS.map((r, i) => {
+  const b = el("button", { type: "button", class: "pill", "aria-pressed": "false", "aria-keyshortcuts": String(i + 1) }, r.label);
+  b.addEventListener("click", () => toggleReason(r.code));
+  return b;
+});
+$("#pills").replaceChildren(...pills);
+
+function renderPills(): void {
+  const full = chosen.size >= MAX_REASONS;
+  REASONS.forEach((r, i) => {
+    const on = chosen.has(r.code);
+    pills[i].setAttribute("aria-pressed", String(on));
+    pills[i].disabled = full && !on;
+  });
+}
+
+function toggleReason(code: ReasonCode): void {
+  if (chosen.has(code)) chosen.delete(code);
+  else if (chosen.size < MAX_REASONS) chosen.add(code);
+  renderPills();
+}
 
 function renderMe(): void {
   $("#who").textContent = me.role;
@@ -61,6 +85,8 @@ function showPair(): void {
   fill("left", p.left);
   fill("right", p.right);
   closeBox.checked = false;
+  chosen.clear();
+  renderPills();
   const n = size - queue.length + 1;
   $("#position").textContent = `Pair ${n} of ${size}`;
   const bar = $<HTMLProgressElement>("#bar");
@@ -68,7 +94,6 @@ function showPair(): void {
   bar.value = n - 1;
   show(judge);
   show(between, false);
-  show(stopped, false);
   shownAt = performance.now();
   window.scrollTo({ top: 0 });
 }
@@ -108,7 +133,6 @@ async function fetchBatch(): Promise<void> {
 
 function batchDone(): void {
   show(judge, false);
-  show(stopped, false);
   $("#betweenText").textContent = me.unlocked
     ? `You have cast ${me.votes} votes. Keep going, or stop and look at the leaderboard.`
     : `You have cast ${me.votes} votes. The leaderboard opens after ${me.unlockAt}.`;
@@ -120,13 +144,16 @@ async function answer(kind: "L" | "R" | "skip"): Promise<void> {
   if (busy || !queue.length) return;
   busy = true;
   [pickL, pickR, skipBtn].forEach((b) => (b.disabled = true));
+  judge.classList.add("busy");
   const p = queue[0];
   const clientMs = Math.round(performance.now() - shownAt);
   try {
     const r =
       kind === "skip"
         ? await api<AfterAnswer>("/api/skip", { body: { pairId: p.pairId, clientMs } })
-        : await api<AfterAnswer>("/api/vote", { body: { pairId: p.pairId, pick: kind, closeCall: closeBox.checked, clientMs } });
+        : await api<AfterAnswer>("/api/vote", {
+            body: { pairId: p.pairId, pick: kind, closeCall: closeBox.checked, reasons: [...chosen], clientMs },
+          });
     me.votes = r.votes;
     me.unlocked = r.unlocked;
     renderMe();
@@ -141,6 +168,7 @@ async function answer(kind: "L" | "R" | "skip"): Promise<void> {
     } else say(msg, "That vote did not go through. Try again.", "error");
   } finally {
     busy = false;
+    judge.classList.remove("busy");
     [pickL, pickR, skipBtn].forEach((b) => (b.disabled = false));
   }
 }
@@ -149,13 +177,17 @@ pickL.addEventListener("click", () => void answer("L"));
 pickR.addEventListener("click", () => void answer("R"));
 skipBtn.addEventListener("click", () => void answer("skip"));
 $("#more").addEventListener("click", () => void loadBatch());
-$("#stop").addEventListener("click", () => {
-  show(between, false);
-  show($("#stoppedBoard"), me.unlocked);
-  show(stopped);
-  $("#stoppedH").focus();
-});
-$("#resume").addEventListener("click", () => void loadBatch());
+
+// Tapping anywhere on a question card picks it, like its button. Ignored while text is selected (someone copying a
+// line), and for a moment after a new pair appears, so a quick double tap cannot vote on the next pair unread.
+const CARD_TAP_GUARD_MS = 700;
+for (const [id, kind] of [["#leftCard", "L"], ["#rightCard", "R"]] as const) {
+  $(id).addEventListener("click", () => {
+    if (performance.now() - shownAt < CARD_TAP_GUARD_MS) return;
+    if (window.getSelection()?.toString()) return;
+    void answer(kind);
+  });
+}
 
 document.addEventListener("keydown", (e) => {
   if (judge.hidden || e.altKey || e.ctrlKey || e.metaKey) return;
@@ -165,6 +197,7 @@ document.addEventListener("keydown", (e) => {
   else if (e.key === "ArrowRight") (e.preventDefault(), void answer("R"));
   else if (e.key === "c" || e.key === "C") (e.preventDefault(), (closeBox.checked = !closeBox.checked));
   else if (e.key === "s" || e.key === "S") (e.preventDefault(), void answer("skip"));
+  else if (/^[1-9]$/.test(e.key) && REASONS[Number(e.key) - 1]) (e.preventDefault(), toggleReason(REASONS[Number(e.key) - 1].code));
 });
 
 async function init(): Promise<void> {

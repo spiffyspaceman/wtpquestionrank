@@ -26,10 +26,17 @@ steps finish.*
 - Cloudflare's zone-wide Web Analytics beacon: left in place, blocked by the site's CSP (owner decision).
 - Turnstile does not pass a headless browser, so live test votes are the owner's to cast.
 
+- Built 25 Nov, live once pushed: the voter home page `/start` (sign-in and invite links land there; it offers
+  "Continue your batch" when one is part-done), optional reason pills (up to two of nine), tap-a-card to pick, and
+  the admin **Study health** panel (data gate, votes per day, reasons given, rater flags). The deploy applies
+  migration 0002 (`vote_reasons`) to D1 before the Worker goes live. Both voter-facing changes are logged in
+  DEVIATIONS.md.
+
 ## Owner: now
 
 1. **Finish the test with `Other 04`** (Show link in admin if needed): judge 10 more pairs to reach 20, ticking one
-   close call and skipping one; the Leaderboard link appears. Open it, try **Info** and the unit/year chart. Then open
+   close call, skipping one, tapping a reason or two, and picking at least once by tapping a card; the Leaderboard
+   link appears. Check that the home page counts the votes and, if you stop mid-batch, offers to continue it. Open it, try **Info** and the unit/year chart. Then open
    the same link on a second device: you should land where the first left off.
 2. Confirm whether the **24 added question texts** were checked against CCE's PDFs. The item set is now frozen, so a
    wrong text found later is a logged deviation, not a fix.
@@ -46,7 +53,8 @@ steps finish.*
    revoked codes.
 6. Make the real codes by role, ticking **My own code** for the owner's. Download each CSV (label, role, code, link)
    and keep it with the list of names (any code can be shown again with **Show link**). Send each person their link.
-7. As votes come in, select **Refresh intervals** now and then, and export the JSON at least weekly. Time Travel keeps
+7. As votes come in, select **Refresh intervals** now and then, and export the JSON and **reasons CSV** at least
+   weekly (reasons are not in the JSON). Glance at **Study health** for the gate and for flagged raters. Time Travel keeps
    only 7 days on Free, and the admin banner reminds you.
 8. At freeze: export the JSON and run the analysis command in BUILD_STEPS §10 step 5.
 9. After launch, delete the Cloudflare API token "wtpquestionrank D1 setup" (expires 2 December 2026 anyway).

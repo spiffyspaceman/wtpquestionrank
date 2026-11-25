@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>WTP Question Rank</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/wtpqr-schola-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="narrow">
+      <header class="top">
+        <a class="brand" href="/start">WTP Question Rank</a>
+        <nav>
+          <span id="who" class="who"></span>
+          <a id="boardLink" href="/board" hidden>Leaderboard</a>
+        </nav>
+      </header>
+
+      <p id="msg" class="notice" role="alert" hidden></p>
+
+      <section class="tally" aria-labelledby="tallyH">
+        <h1 id="tallyH"><span id="votes" class="figure">0</span> <span id="votesWord">pairs judged</span></h1>
+        <p id="roundLine" class="muted"></p>
+        <p id="unlockLine"></p>
+        <div id="unlockMeter" class="meter" hidden><progress id="unlockBar" max="20" value="0" aria-hidden="true"></progress></div>
+        <p id="resumeLine" hidden></p>
+        <div class="actions"><a id="startBtn" class="button primary" href="/vote" hidden>Start a batch of ten</a></div>
+      </section>
+
+      <section class="guide" aria-labelledby="taskH">
+        <h2 id="taskH">The task</h2>
+        <p id="format"></p>
+        <p class="criterion" id="criterion"></p>
+        <p>Pick the better question in each pair. Tick Close call when they are near even, and skip a pair you cannot judge.
+          You may tap up to two reasons before you pick.</p>
+      </section>
+
+      <section class="guide" aria-labelledby="strongH">
+        <h2 id="strongH">What strong hearing questions do</h2>
+        <p>Judges score a team on evidence, understanding and analysis, application, and evaluation. A strong question
+          gives a well-prepared team room to show all four. It:</p>
+        <ul class="plain">
+          <li>rewards reasoning about constitutional principles, not memorized facts;</li>
+          <li>invites analysis and interpretation, and allows more than one answer a team could defend;</li>
+          <li>lets students draw on evidence: founding documents, Supreme Court cases, historical examples;</li>
+          <li>asks them to apply those principles to new situations, to history or to current issues, and to weigh what
+            follows;</li>
+          <li>is concise, clear and free of partisan framing.</li>
+        </ul>
+      </section>
+
+      <section class="guide keys-help" aria-labelledby="keysH">
+        <h2 id="keysH">Keys</h2>
+        <dl class="keys">
+          <dt><kbd>&larr;</kbd></dt><dd>A is better</dd>
+          <dt><kbd>&rarr;</kbd></dt><dd>B is better</dd>
+          <dt><kbd>1</kbd>&ndash;<kbd>9</kbd></dt><dd>Reasons</dd>
+          <dt><kbd>C</kbd></dt><dd>Close call</dd>
+          <dt><kbd>S</kbd></dt><dd>Skip</dd>
+        </dl>
+      </section>
+
+      <p class="fineprint">Your link works on any device. Stop whenever you like: your place is saved.</p>
+    </main>
+    <script type="module" src="./start.ts"></script>
+  </body>
+</html>

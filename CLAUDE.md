@@ -44,12 +44,15 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov | Leaderboard (only) shows year, unit, number and confirmed sources, plus unit and year averages (DEVIATIONS.md). |
 | 25 Nov | Leaderboard unlock stays at 20 votes. |
 | 25 Nov | Every published WTP question becomes Round 2, after Round 1; Round 1 stays the pre-registered 36. |
+| 25 Nov | After sign-in, voters land on `/start`: votes cast, unlock progress, start or continue a batch, hearing format, criterion, and judging guidance paraphrased from CCE's Toolkit without attribution (DEVIATIONS.md). |
+| 25 Nov | Optional reason pills, up to two of nine fixed codes per vote, in `vote_reasons` (migration 0002), exported as `reasons.csv` (DEVIATIONS.md). Tapping a question card picks it. |
+| 25 Nov | Admin "Study health": data gate, votes per day, reasons given, rater flags. Report only; no §7 measure (no repeat agreement) before the analysis. |
 
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 108 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 118 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # pages into dist/
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)
@@ -59,8 +62,8 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
 
 - `src/worker/`: the Hono Worker. `voter.ts` (voting API), `admin.ts` (admin API), `data.ts` (rounds, caches,
   board), `access.ts`, `auth.ts`, `guards.ts`, `exports.ts` and `export-shape.ts` (must match `RoundExport`),
-  `pools.ts`.
-- `src/web/`: the pages (home, vote, board, admin) and `styles.css`. Fonts in `src/web/public/fonts/`.
+  `pools.ts`, `reasons.ts` (pill codes), `health.ts` and `gate.ts` (study health).
+- `src/web/`: the pages (sign-in `index`, voter home `start`, vote, board, admin) and `styles.css`. Fonts in `src/web/public/fonts/`.
 - `items/`: the frozen launch item file, `sources_v1.json` (confirmed quoted sources), `corpus.csv` (scores only).
 - `test/worker/` (workerd, local D1) and `test/node/` (hashes, export shape, end-to-end with Miniflare).
 - Production: Cloudflare Worker `wtpquestionrank`, D1 database `wtpquestionrank` (id in `wrangler.jsonc`), secrets
