@@ -219,3 +219,9 @@ before then.
 **25 November 2026: day and night toggle (owner decision; built, takes effect when merged).** Every page has a
 sliding "Night" switch in the masthead. Until now the colours followed the device's setting only. The choice is kept
 in the reader's browser and nowhere else. Effect on votes: none expected; recorded because voters see it.
+
+**25 November 2026: which footnote addresses are links (owner decisions, same day).** After the link check: 89
+addresses whose pages opened are links; 42 dead ones show a replacement that was opened first (the same file at the
+site's new address, or the same speech, column or document on its publisher's new page or a scholarly host); 6 dead
+ones with no replacement are dropped and the citation stays; 52 on sites that refuse automated readers are linked
+unconfirmed, at the owner's word. A replacement address is not the one CCE printed; `items/links.json` records both.

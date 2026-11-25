@@ -115,7 +115,7 @@ leaderboard, with "accessed <date>" left out. 341 notes on 317 of the 438 questi
 | Page opened | 89 (70 hold the quoted words) | a link |
 | Dead, replaced | 42 | a link to the replacement |
 | Dead, no replacement | 6 | the address is dropped; the citation stays |
-| The site refuses automated readers | 52 | plain text, not a link |
+| The site refuses automated readers | 52 | a link, at the owner's word (not machine-checked) |
 
 - **Replacements.** 29 are files the Center for the Study of the American Constitution moved to a new folder (21
   opened with the quoted words found; 8 are the same file at the new address whose words could not be matched by
@@ -139,8 +139,7 @@ leaderboard, with "accessed <date>" left out. 341 notes on 317 of the 438 questi
    too). Closing it ends the registered comparison without a verdict and cannot be undone.
 3. Press **Load or update the full question set** (438 questions with their footnotes; it makes a draft round "All
    questions", which you can rename). Open it, make the codes by role, and send the links.
-4. Optional: open the 52 unconfirmed addresses by hand (list: `items/links.json`, status `unchecked`) and tell
-   Claude which are live; they then become links.
+4. Optional: if a voter reports a dead footnote link, tell Claude; the 52 unconfirmed ones are the likeliest.
 5. Weekly: **Download full backup**, and the JSON, reasons and corrections exports.
 
 ### Adding questions later (for example National Finals 2026-27)

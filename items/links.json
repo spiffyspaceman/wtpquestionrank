@@ -100,6 +100,8 @@
  "http://founders.archives.gov/documents/Jefferson/99-01-02-0348": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2016-17-u3-q1"
   ],
@@ -459,6 +461,8 @@
  "https://catalog.hathitrust.org/Record/008616178": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2020-21-u3-q1"
   ],
@@ -875,6 +879,8 @@
  "https://digital.library.cornell.edu/catalog/may854321": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2024-25-u6-q3"
   ],
@@ -893,6 +899,8 @@
  "https://founders.archives.gov/documents/Adams/06-10-02-0113": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2020-21-u3-q2"
   ],
@@ -902,6 +910,8 @@
  "https://founders.archives.gov/documents/Adams/99-02-02-0916": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2021-22-u2-q1"
   ],
@@ -911,6 +921,8 @@
  "https://founders.archives.gov/documents/Jefferson/01-11-02-0087": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2019-20-u2-q1"
   ],
@@ -920,6 +932,8 @@
  "https://founders.archives.gov/documents/Jefferson/01-12-02-0075": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2025-26-u2-q1"
   ],
@@ -929,6 +943,8 @@
  "https://founders.archives.gov/documents/Jefferson/01-12-02-0454": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2020-21-u5-q2"
   ],
@@ -938,6 +954,8 @@
  "https://founders.archives.gov/documents/Jefferson/01-23-02-0219": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2021-22-u4-q2"
   ],
@@ -947,6 +965,8 @@
  "https://founders.archives.gov/documents/Jefferson/03-10-02-0128-0002": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2025-26-u3-q2"
   ],
@@ -956,6 +976,8 @@
  "https://founders.archives.gov/documents/Jefferson/03-15-02-0014": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2023-24-u3-q1"
   ],
@@ -965,6 +987,8 @@
  "https://founders.archives.gov/documents/Madison/01-08-02-0163": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2019-20-u5-q3"
   ],
@@ -974,6 +998,8 @@
  "https://founders.archives.gov/documents/Madison/01-12-02-0126": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2025-26-u5-q3"
   ],
@@ -983,6 +1009,8 @@
  "https://founders.archives.gov/documents/Washington/04-04-02-0299": {
   "checked": "2026-11-25",
   "http": "202",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2022-23-u2-q1"
   ],
@@ -1012,6 +1040,8 @@
  "https://jeffersonpapers.princeton.edu/selected-documents/wilson-cary-nicholas-0": {
   "checked": "2026-11-25",
   "http": "000",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2020-21-u3-q1"
   ],
@@ -1031,6 +1061,8 @@
  "https://law.justia.com/cases/federal/appellate-courts/ca10/21-1247/21-1247-2022-07-11.html": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2026-27-u5-q2"
   ],
@@ -1040,6 +1072,8 @@
  "https://law.justia.com/cases/hawaii/supreme-court/2024/scap-22-0000561.html": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2026-27-u4-q3"
   ],
@@ -1069,6 +1103,8 @@
  "https://memory.loc.gov/ammem/amlaw/lwcglink.html": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2022-23-u3-q2"
   ],
@@ -1078,6 +1114,8 @@
  "https://memory.loc.gov/ammem/amlaw/lwcglink.html#anchor39": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2016-17-u3-q2"
   ],
@@ -1107,6 +1145,8 @@
  "https://oll.libertyfund.org/titles/hamilton-the-pacificus-helvidius-debates-of-1793-1794": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2019-20-u4-q1"
   ],
@@ -1116,6 +1156,8 @@
  "https://pen.org/report/banned-in-the-usa-state-laws-supercharge-book-suppression-in-schools": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2023-24-u5-q2"
   ],
@@ -1179,6 +1221,8 @@
  "https://repository.law.umich.edu/cgi/viewcontent.cgi?article=4901": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2023-24-u3-q3"
   ],
@@ -1198,6 +1242,8 @@
  "https://supreme.justia.com/cases/federal/us/109/3/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2025-26-u3-q3"
   ],
@@ -1207,6 +1253,8 @@
  "https://supreme.justia.com/cases/federal/us/217/349/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2023-24-u5-q1"
   ],
@@ -1216,6 +1264,8 @@
  "https://supreme.justia.com/cases/federal/us/277/438/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2025-26-u5-q2"
   ],
@@ -1225,6 +1275,8 @@
  "https://supreme.justia.com/cases/federal/us/285/262/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2023-24-u4-q2"
   ],
@@ -1234,6 +1286,8 @@
  "https://supreme.justia.com/cases/federal/us/343/579/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2025-26-u3-q1"
   ],
@@ -1243,6 +1297,8 @@
  "https://supreme.justia.com/cases/federal/us/344/443/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2024-25-u4-q3"
   ],
@@ -1252,6 +1308,8 @@
  "https://supreme.justia.com/cases/federal/us/354/178/#tab-opinion-1941547": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2021-22-u4-q1"
   ],
@@ -1261,6 +1319,8 @@
  "https://supreme.justia.com/cases/federal/us/401/37/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2025-26-u4-q2"
   ],
@@ -1270,6 +1330,8 @@
  "https://supreme.justia.com/cases/federal/us/461/171/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2025-26-u5-q1"
   ],
@@ -1279,6 +1341,8 @@
  "https://supreme.justia.com/cases/federal/us/481/739/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2025-26-u4-q3"
   ],
@@ -1288,6 +1352,8 @@
  "https://supreme.justia.com/cases/federal/us/5/137/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2025-26-u4-q3"
   ],
@@ -1297,6 +1363,8 @@
  "https://supreme.justia.com/cases/federal/us/531/98/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2025-26-u3-q1"
   ],
@@ -1306,6 +1374,8 @@
  "https://supreme.justia.com/cases/federal/us/586/17-1091/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2018-19-u3-q2"
   ],
@@ -1315,6 +1385,8 @@
  "https://supreme.justia.com/cases/federal/us/591/18-1195/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2026-27-u5-q3"
   ],
@@ -1324,6 +1396,8 @@
  "https://supreme.justia.com/cases/federal/us/600/20-1199/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2023-24-u5-q3"
   ],
@@ -1333,6 +1407,8 @@
  "https://supreme.justia.com/cases/federal/us/603/23-175/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2024-25-u5-q2"
   ],
@@ -1342,6 +1418,8 @@
  "https://supreme.justia.com/cases/federal/us/609/24-1046/": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2026-27-u4-q3"
   ],
@@ -1391,6 +1469,8 @@
  "https://tminstituteldf.org/tmi-explains/thurgood-marshall-institute-briefs/tmi-briefs-the-14th-amendment/14th-amendment-equal-protection/": {
   "checked": "2026-11-25",
   "http": "429",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2021-22-u3-q2"
   ],
@@ -1462,6 +1542,8 @@
  "https://www.bartleby.com/73/1593.html": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2022-23-u6-q3"
   ],
@@ -1551,6 +1633,8 @@
  "https://www.gutenberg.org/files/1497/1497-h/1497-h.htm": {
   "checked": "2026-11-25",
   "http": "503",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2022-23-u1-q3"
   ],
@@ -1560,6 +1644,8 @@
  "https://www.gutenberg.org/files/575/575-h/575-h.htm#link2H_4_0056": {
   "checked": "2026-11-25",
   "http": "503",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2022-23-u4-q2"
   ],
@@ -1569,6 +1655,8 @@
  "https://www.gutenberg.org/files/7370/7370-h/7370-h.htm": {
   "checked": "2026-11-25",
   "http": "503",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2018-19-u4-q1"
   ],
@@ -1578,6 +1666,8 @@
  "https://www.gutenberg.org/files/815/815-h/815-h.htm": {
   "checked": "2026-11-25",
   "http": "503",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2023-24-u6-q1"
   ],
@@ -1587,6 +1677,8 @@
  "https://www.huffpost.com/entry/john-lewis-social-change-voting-rights_n_57f2bd99e4b0703f7590753e": {
   "checked": "2026-11-25",
   "http": "406",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2023-24-u6-q3"
   ],
@@ -1663,6 +1755,8 @@
  "https://www.migrationpolicy.org/programs/data-hub/charts/immigrant-population-over-time": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2018-19-u6-q1"
   ],
@@ -1722,6 +1816,8 @@
  "https://www.oxfordreference.com/view/10.1093/acref/9780191826719.001.0001/q-oro-ed4-00008130": {
   "checked": "2026-11-25",
   "http": "302",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2021-22-u6-q3"
   ],
@@ -1761,6 +1857,8 @@
  "https://www.presidency.ucsb.edu/documents/remarks-accepting-the-presidential-nomination-the-democratic-national-convention-chicago": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2022-23-u6-q2"
   ],
@@ -1790,6 +1888,8 @@
  "https://www.ssa.gov/history/paine4.html": {
   "checked": "2026-11-25",
   "http": "403",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2019-20-u3-q1"
   ],
@@ -1799,6 +1899,8 @@
  "https://www.state.gov/about/about-the-u-s-department-of-state/": {
   "checked": "2026-11-25",
   "http": "405",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "st-2020-21-u6-q1"
   ],
@@ -1878,6 +1980,8 @@
  "https://youtu.be/YAG1N4a84Dk": {
   "checked": "2026-11-25",
   "http": "429",
+  "link": true,
+  "link_note": "not machine-checked (the site refuses automated readers); linked at the owner's word, 25 Nov 2026",
   "questions": [
    "nf-2018-19-u5-q1"
   ],

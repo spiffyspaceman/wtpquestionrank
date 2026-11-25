@@ -2,12 +2,14 @@
 //   * as CCE printed them, with the "accessed <date>" phrase left out, since the date gives away the question's year;
 //   * a web address is a link only if it was checked and the page opened (items/links.json, built by
 //     items/check_links.py); a dead address is replaced by a checked replacement or dropped; an address that could not
-//     be checked is shown as plain text.
+//     be checked is plain text, unless the owner chose to link it anyway ("link": true in items/links.json).
 import linksFile from "../../items/links.json";
 
 interface LinkRecord {
   status: "ok" | "dead" | "unchecked";
   replacement?: string;
+  /** An unchecked address the owner chose to link anyway (a site that refuses automated readers). */
+  link?: boolean;
 }
 const LINKS = linksFile as unknown as Record<string, LinkRecord>;
 
@@ -48,7 +50,7 @@ export function shownNote(text: string, links: Record<string, LinkRecord> = LINK
     const [url, tail] = splitUrl(m[0]);
     const rec = links[url];
     push(t.slice(last, m.index));
-    if (rec?.status === "ok") push(url, url);
+    if (rec?.status === "ok" || (rec?.status === "unchecked" && rec.link === true)) push(url, url);
     else if (rec?.status === "dead" && rec.replacement) push(rec.replacement, rec.replacement);
     else if (rec?.status === "dead") {
       // Dropped: also the comma and space that led up to it.

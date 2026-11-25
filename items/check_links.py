@@ -12,8 +12,9 @@ For each address: is the page there, and are the quoted words on it? Statuses:
 A "replacement" is never written by this script. Add one by hand, only after opening the new page and finding the
 quoted words on it; the site then shows that address in place of the published one.
 
-The site (src/worker/notes.ts) links an address only when it is "ok", shows a "replacement" in place of a dead
-address, drops a dead address that has none, and shows an unchecked address as plain text.
+The site (src/worker/notes.ts) links an address when it is "ok", shows a "replacement" in place of a dead address,
+drops a dead address that has none, and shows an unchecked address as plain text unless its record says "link": true
+(the owner's choice, 25 Nov 2026, for sites that refuse automated readers; this script keeps that flag).
 """
 import datetime
 import html

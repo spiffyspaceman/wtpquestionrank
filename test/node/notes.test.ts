@@ -24,6 +24,8 @@ describe("footnotes as shown", () => {
     expect(links(shownNote(`See ${U}.`, { [U]: { status: "unchecked" } }))).toEqual([]);
     expect(text(shownNote(`See ${U}.`, { [U]: { status: "unchecked" } }))).toBe(`See ${U}.`);
     expect(links(shownNote(`See ${U}.`, {}))).toEqual([]);
+    // An unchecked address the owner chose to link anyway.
+    expect(links(shownNote(`See ${U}.`, { [U]: { status: "unchecked", link: true } }))).toEqual([U]);
   });
 
   it("drops a dead address, or shows its checked replacement", () => {
@@ -55,7 +57,7 @@ describe("footnotes as shown", () => {
   it("no footnote in the full set shows an access date, and every link shown was checked", () => {
     const root = path.join(import.meta.dirname, "../..");
     const items = JSON.parse(fs.readFileSync(path.join(root, "items/rounds/all.json"), "utf8")).items as { id: string; notes: { text: string }[] }[];
-    const status = JSON.parse(fs.readFileSync(path.join(root, "items/links.json"), "utf8")) as Record<string, { status: string; replacement?: string }>;
+    const status = JSON.parse(fs.readFileSync(path.join(root, "items/links.json"), "utf8")) as Record<string, { status: string; replacement?: string; link?: boolean }>;
     // A link shown is either a published address whose page opened, or the checked replacement of a dead one.
     const replacements = new Set(Object.values(status).filter((r) => r.status === "dead" && r.replacement).map((r) => r.replacement));
     let linked = 0;
@@ -66,7 +68,8 @@ describe("footnotes as shown", () => {
         // No dead address is ever printed.
         for (const [u, r] of Object.entries(status)) if (r.status === "dead") expect(text(p).includes(u), u).toBe(false);
         for (const href of links(p)) {
-          expect(status[href!]?.status === "ok" || replacements.has(href!), href!).toBe(true);
+          // ... or an unconfirmed address the owner chose to link anyway.
+          expect(status[href!]?.status === "ok" || replacements.has(href!) || status[href!]?.link === true, href!).toBe(true);
           linked++;
         }
       }
