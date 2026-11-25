@@ -217,10 +217,18 @@ async function loadBuiltin(): Promise<BuiltinSet[]> {
     sets.map((b) => [b.roundName, el("span", { class: "mono" }, b.id), b.questions, b.cycles, b.loaded ? (b.toAdd ? `yes; ${b.toAdd} more to add` : "yes") : "no", b.rounds.join(", ") || "none"]),
     [2],
   );
+  // Say so at the top of the page when the bundled questions are not all on the site yet: the button itself sits far
+  // down, under Items.
+  const waiting = sets.filter((b) => !b.loaded || !b.rounds.length || b.toAdd > 0);
+  const n = waiting.reduce((sum, b) => sum + (b.loaded ? b.toAdd : b.questions), 0);
+  $("#builtinBannerText").textContent = waiting.some((b) => b.loaded)
+    ? `${n} more questions are ready to add to the full question set.`
+    : `The full question set (${n} questions) is not loaded yet.`;
+  show($("#builtinBanner"), waiting.length > 0);
   return sets;
 }
 
-$("#builtinBtn").addEventListener("click", () => {
+function loadOrUpdateBuiltin(): void {
   void (async () => {
     try {
       const sets = await loadBuiltin();
@@ -239,7 +247,9 @@ $("#builtinBtn").addEventListener("click", () => {
       say(msg, err instanceof ApiError ? err.message : String(err), "error");
     }
   })();
-});
+}
+$("#builtinBtn").addEventListener("click", loadOrUpdateBuiltin);
+$("#builtinBtnTop").addEventListener("click", loadOrUpdateBuiltin);
 
 // ---------- full backup ----------
 
@@ -579,7 +589,7 @@ async function loadVotes(): Promise<void> {
 
 async function refresh(): Promise<void> {
   status = await api<Status>("/admin/api/status");
-  void loadBuiltin().catch(() => undefined);
+  void loadBuiltin().catch((err) => say(msg, `The full question set could not be listed: ${err instanceof ApiError ? err.message : String(err)}`, "error"));
   $("#actor").textContent = `Signed in as ${status.actor}`;
   const banner = $("#exportBanner");
   banner.textContent = status.lastExportAt
