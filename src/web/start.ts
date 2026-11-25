@@ -57,7 +57,7 @@ async function init(): Promise<void> {
   const start = $<HTMLAnchorElement>("#startBtn");
   // A first visit: what the task is comes before the button that starts it (owner decision, 25 Nov 2026). The words
   // are the same; the count of zero and its meter are left out. The button follows the task itself and comes before
-  // the longer guidance, so it is not far down the page (owner decision, 26 Nov 2026).
+  // the longer guidance, so it is not far down the page (owner decision, 25 Nov 2026).
   if (me.votes === 0 && open) {
     $("#task").after($("#tally"));
     show($("#tallyH"), false);

@@ -549,7 +549,7 @@ function renderH2H(): void {
   });
   chart.replaceChildren(el("div", { class: "table-wrap" }, el("table", { class: "heat" }, el("thead", {}, head), el("tbody", {}, ...body))));
   $("#chartNote").textContent =
-    "Each cell: how often a question from the row's group beat one from the column's group, with the number of comparisons. Burgundy: the row won more; blue: it lost more.";
+    "Each cell: how often a question from the row's group beat one from the column's group, with the number of comparisons. Blue: the row won more; gold: it lost more.";
   show($("#chartTableWrap"), false);
 }
 
@@ -560,7 +560,7 @@ function heatCell(share: number | null, n: number, what: string): HTMLElement {
     return td;
   }
   td.append(el("span", { class: "v" }, pct(share)), el("span", { class: "n" }, String(n)));
-  // Diverging: blue below 50%, burgundy above, grey at even. Strength grows with distance from 50% and with n.
+  // Diverging: gold below 50%, blue above, grey at even. Strength grows with distance from 50% and with n.
   const d = Math.min(1, Math.abs(share - 0.5) * 2) * Math.min(1, n / 10);
   const mix = Math.round(d * 85);
   td.style.background = `color-mix(in oklab, var(${share >= 0.5 ? "--div-pos" : "--div-neg"}) ${mix}%, var(--div-mid))`;

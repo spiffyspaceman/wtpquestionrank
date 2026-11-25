@@ -1,6 +1,6 @@
 // Sign-up by email through the owner's sign-up link (owner decision, 25 Nov 2026). The page asks for the email
 // alone; an address that has signed up before is signed in at once, and only a new one is asked for a name and a
-// role (owner decision, 26 Nov 2026).
+// role (owner decision, 25 Nov 2026).
 import { $, api, ApiError, say, show } from "./common";
 
 declare global {

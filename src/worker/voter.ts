@@ -135,7 +135,7 @@ voterApi.post("/join", async (c) => {
   const name = cleanName(body?.name);
   if (name === false) return c.json({ error: "bad_name", message: "Keep the name to 60 characters." }, 400);
   // The page asks for the email alone first, and for a role only when the address is new (owner decision,
-  // 26 Nov 2026). So a request may come without a role; one that names a role must name an adult role.
+  // 25 Nov 2026). So a request may come without a role; one that names a role must name an adult role.
   const role = body?.role === undefined || body?.role === null || body?.role === "" ? null : body.role;
   if (role !== null && (typeof role !== "string" || !(SIGNUP_ROLES as readonly string[]).includes(role)))
     return c.json({ error: "bad_role", message: "Choose the role that fits you best." }, 400);

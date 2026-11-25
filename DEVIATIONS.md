@@ -331,7 +331,7 @@ He signed up through his own sign-up link as "Judge 01" and cast 20 first-presen
 (`mark_owner`, actor `claude-d1-token`). Nothing else about the voter or the votes changed. The export carries the
 flag per voter, so the "voters other than the owner" analysis (PREREG §8) can set all of his votes aside.
 
-**26 November 2026: the Start button sits higher, and sign-up asks for the email first (owner decisions).**
+**25 November 2026 (late): the Start button sits higher, and sign-up asks for the email first (owner decisions).**
 - **Home page.** On a first visit the Start button now follows the task (the hearing format, the criterion and how
   to answer) and comes before "What strong hearing questions do"; it used to come after that guidance. For a
   returning voter it sits directly under the count, above the leaderboard line. Effect: a new voter can start
@@ -340,3 +340,10 @@ flag per voter, so the "voters other than the owner" analysis (PREREG §8) can s
   through the sign-up link as well as the sign-in box; only a new address is then asked for a role and an optional
   name. Nothing is stored for a new address until it gives a role. No change to what is kept or who sees it.
 No frozen file, threshold, item or measure changes.
+
+**25 November 2026 (late): new colours (owner decision).** The site's burgundy on warm stone gives way to the navy, white,
+grey-blue and gold of the Nevada Center for Civic Engagement's mark, taken from the logo the owner supplied. Type,
+layout and wording are unchanged, apart from the head-to-head chart's note (blue where the row's group won more, gold
+where it lost more). Every text and control pairing was checked for contrast in day and night colours. Effect on
+votes: none expected; recorded because voters see it, and because votes cast before about 22:20 UTC on 25 November
+were cast on the old colours.

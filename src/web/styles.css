@@ -1,5 +1,7 @@
-/* WTP Question Rank. One stylesheet for every page: Schola throughout, paper and ink, light and dark,
-   visible focus, no motion. */
+/* WTP Question Rank. One stylesheet for every page: Schola throughout, light and dark, visible focus, no motion.
+   Colours (owner decision, 25 Nov 2026): the navy, white, grey-blue and gold of the Nevada Center for Civic
+   Engagement's mark (#142954, #ffffff, #d0d9e2, #e49f33). By day navy is the working colour and gold is the rule
+   across the masthead; at night the page is navy and gold does the work. Each pairing was checked for contrast. */
 
 @font-face {
   font-family: "WTPQR Schola";
@@ -18,75 +20,75 @@
 
 :root {
   --font: "WTPQR Schola", "Century Schoolbook", "New Century Schoolbook", Georgia, serif;
-  --paper: #f7f4ef;
-  --surface: #fffdf9;
-  --ink: #1e1b1b;
-  --muted: #5f5857;
-  --line: #dbd4cc;
-  --line-strong: #b8ada1;
-  --accent: #6e1f26;
-  --accent-ink: #fbf7f2;
-  --accent-soft: #f1e6e4;
-  --rule: #6e1f26;
+  --paper: #f3f5f9;
+  --surface: #ffffff;
+  --ink: #101b33;
+  --muted: #4f5b74;
+  --line: #d0d9e2;
+  --line-strong: #7f8fa8;
+  --accent: #142954;
+  --accent-ink: #ffffff;
+  --accent-soft: #e3e9f2;
+  --rule: #e49f33;
   --warn-bg: #fbf1d9;
   --warn-line: #a8741a;
   --ok: #1f6b3a;
   --error: #a4262c;
-  --focus: #c2410c;
+  --focus: #b45309;
   --radius: 6px;
-  --div-pos: #6e1f26;
-  --div-neg: #256abf;
-  --div-mid: #f0efec;
-  --heat-strong-ink: #ffffff;
+  --div-pos: #5e82d0;
+  --div-neg: #e49f33;
+  --div-mid: #eef1f5;
+  --heat-strong-ink: #101b33;
   color-scheme: light;
 }
 /* Night colours. Used when the device asks for dark and the reader has not chosen day, or when the reader has chosen
    night with the toggle in the masthead (data-theme is set by /theme.js before the page paints). */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #171313;
-    --surface: #201a1a;
-    --ink: #ede6e3;
-    --muted: #ab9f9c;
-    --line: #3a3030;
-    --line-strong: #524545;
-    --accent: #e0a3a3;
-    --accent-ink: #2a0d10;
-    --accent-soft: #2e2222;
-    --rule: #e0a3a3;
+    --paper: #0c1528;
+    --surface: #131f3a;
+    --ink: #e8ecf4;
+    --muted: #a2adc2;
+    --line: #27345a;
+    --line-strong: #5a6a92;
+    --accent: #e49f33;
+    --accent-ink: #101b33;
+    --accent-soft: #25304f;
+    --rule: #e49f33;
     --warn-bg: #352c16;
     --warn-line: #d9aa4c;
     --ok: #74c792;
     --error: #ff8f8f;
-    --focus: #fdba74;
-    --div-pos: #d97f88;
-    --div-neg: #5598e7;
-    --div-mid: #383835;
-    --heat-strong-ink: #1a1414;
+    --focus: #9cc2ff;
+    --div-pos: #3e5fa8;
+    --div-neg: #8a6420;
+    --div-mid: #1c2745;
+    --heat-strong-ink: #e8ecf4;
     color-scheme: dark;
   
   }
 }
 :root[data-theme="dark"] {
-  --paper: #171313;
-  --surface: #201a1a;
-  --ink: #ede6e3;
-  --muted: #ab9f9c;
-  --line: #3a3030;
-  --line-strong: #524545;
-  --accent: #e0a3a3;
-  --accent-ink: #2a0d10;
-  --accent-soft: #2e2222;
-  --rule: #e0a3a3;
+  --paper: #0c1528;
+  --surface: #131f3a;
+  --ink: #e8ecf4;
+  --muted: #a2adc2;
+  --line: #27345a;
+  --line-strong: #5a6a92;
+  --accent: #e49f33;
+  --accent-ink: #101b33;
+  --accent-soft: #25304f;
+  --rule: #e49f33;
   --warn-bg: #352c16;
   --warn-line: #d9aa4c;
   --ok: #74c792;
   --error: #ff8f8f;
-  --focus: #fdba74;
-  --div-pos: #d97f88;
-  --div-neg: #5598e7;
-  --div-mid: #383835;
-  --heat-strong-ink: #1a1414;
+  --focus: #9cc2ff;
+  --div-pos: #3e5fa8;
+  --div-neg: #8a6420;
+  --div-mid: #1c2745;
+  --heat-strong-ink: #e8ecf4;
   color-scheme: dark;
   
 }

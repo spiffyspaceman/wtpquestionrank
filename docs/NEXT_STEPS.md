@@ -17,9 +17,9 @@ the next steps", answer from this file and update it as steps finish.*
 for email sign-up); 210 tests pass, the typecheck passes, and the browser smoke test passes 66 checks.** What went
 live:
 - **Sign-up by email** (migration 0009, evening of 25 Nov): a sign-up link from admin, an address, an optional name
-  and a self-chosen adult role; the address is then the login. Not verified; students keep codes. Since 26 Nov the
+  and a self-chosen adult role; the address is then the login. Not verified; students keep codes. Since late on 25 Nov the
   page asks for the email alone and for the rest only when the address is new.
-- **Home page** (26 Nov): the Start button follows the task on a first visit and sits under the count after that.
+- **Home page** (late on 25 Nov): the Start button follows the task on a first visit and sits under the count after that.
 - **Staged opening** (migration 0008): the round opens with the 36 launch questions in play and adds 24 at a time
   whenever every question in play has 12 adult comparisons. The deploy marks the draft round as staged.
 - **Leaderboard:** rank leads; no rating for an unranked question; the list has the full width with the charts

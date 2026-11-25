@@ -87,8 +87,9 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov (audit) | The adults board, like a role board, waits for three voters in the round; a voter with no open board is told so and nothing is marked seen. |
 | 25 Nov (audit) | Leaderboard layout: the list of #2 to #10 has the full width and the Explore charts follow it. Head-to-head counts go to the page added up by group, never per pair of questions. |
 | 25 Nov (evening) | **Supersedes "No email or phone accounts" and owner-assigned roles, for adults.** Sign-up by email through a sign-up link the owner makes in admin (`/join#WORD`; `src/worker/signup.ts`, migration 0009): address, optional name, and a self-chosen role (Judge, Coach, Teacher, Alumni, Other). No verification: the address is a username and the sign-in box takes a code or an email. The role is fixed once chosen; the owner can change it in admin. Students keep codes. Addresses appear in admin, the voters CSV and the backup only (DEVIATIONS.md). |
-| 26 Nov | `/start`: on a first visit the Start button follows the task and comes before the guidance; for a returning voter it sits right under the count. |
-| 26 Nov | Sign-up asks for the email alone; a known address is signed in at once, and only a new one is asked for a role and an optional name (`needProfile` from `/api/join`). |
+| 25 Nov (late) | `/start`: on a first visit the Start button follows the task and comes before the guidance; for a returning voter it sits right under the count. |
+| 25 Nov (late) | Sign-up asks for the email alone; a known address is signed in at once, and only a new one is asked for a role and an optional name (`needProfile` from `/api/join`). |
+| 25 Nov (late) | **Colour: supersedes burgundy.** The navy, white, grey-blue and gold of the Nevada Center for Civic Engagement's mark (`#142954`, `#ffffff`, `#d0d9e2`, `#e49f33`), from the logo the owner supplied. By day navy is the working colour and gold is the masthead rule; at night the page is navy and gold does the work. Type and layout are unchanged. The Center's logo and name are not on the site; do not add them without the owner's yes. Tokens are at the top of `src/web/styles.css`; any change must pass the contrast scan. |
 
 ## Commands
 
