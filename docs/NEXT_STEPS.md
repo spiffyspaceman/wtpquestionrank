@@ -47,6 +47,20 @@ passes, and the browser smoke test passes 54 checks.** What went live with it:
 6. **Send Claude page 1 of CCE's 2019-20 State questions PDF** (Unit 1). Question 1's second bullet was cut off in
    transcription ("...taught us about"), so that question is held out of play until its full text is added.
 
+## Deploy check (Claude, 25 Nov 2026, 13:25 UTC)
+
+`main` is at `2c83d35`. The new build was live about 90 seconds after the push. Read from production afterwards,
+changing nothing:
+- Migration `0008_staged_rounds.sql` is applied; the table `round_in_play` and its three triggers exist.
+- "All questions" is still a draft, now marked staged and growing by itself, with no question in play and no vote.
+  "Test" is closed and untouched.
+- The stored set is still the earlier build of the file (hash `73b4433f6018…`), which is why admin offers the
+  corrected footnotes (step 2).
+- The live pages serve the files this branch builds (same file names); `/`, `/start`, `/vote` and `/board` answer
+  200; `/api/me` 401 and `/api/leaderboard` 404 without a session; `/admin/api/status` redirects to Cloudflare Access;
+  plain http redirects to https; the content policy, HSTS and `no-store` headers are as tested.
+- Not checked, because they need a sign-in: a real vote, the leaderboard, and the admin page on the live site.
+
 ## Owner: while the round runs
 
 - **Weekly:** **Download full backup**, and the JSON, reasons CSV and corrections CSV exports. The backup is the only
