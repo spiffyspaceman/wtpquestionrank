@@ -181,3 +181,9 @@ carry no round name. Three things change with it:
   voter has judged most.
 Effect on Round 1 while it is the only open round: none; every rule above reduces to the old one. No frozen file,
 threshold, item or measure changes.
+
+**25 November 2026: every question in one round (owner decision; supersedes the rounds by unit).** The full set runs
+as a single round, "All questions", so that every question is ranked on one scale. Voters will therefore compare
+questions across units and across State and National Finals. The Worker moves to the Workers Paid plan to carry the
+pairing cost; the pairing and rating code is the registered code, unchanged. Round 1 is frozen when that round opens,
+as recorded above.

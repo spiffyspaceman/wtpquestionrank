@@ -192,7 +192,7 @@ async function refreshIntervals(r: Round): Promise<void> {
   }
 }
 
-// ---------- unit sets that ship with the site ----------
+// ---------- the full question set that ships with the site ----------
 
 interface BuiltinSet {
   id: string;
@@ -207,7 +207,7 @@ async function loadBuiltin(): Promise<BuiltinSet[]> {
   const sets = (await api<{ sets: BuiltinSet[] }>("/admin/api/builtin-sets")).sets;
   table(
     $<HTMLTableElement>("#builtin"),
-    ["Round", "Item set", "Questions", "Cycles", "Loaded", "Round state"],
+    ["Round", "Item set", "Questions", "Covers", "Loaded", "Round state"],
     sets.map((b) => [b.roundName, el("span", { class: "mono" }, b.id), b.questions, b.cycles, b.loaded ? "yes" : "no", b.rounds.join(", ") || "none"]),
     [2],
   );
@@ -219,13 +219,14 @@ $("#builtinBtn").addEventListener("click", () => {
     try {
       const sets = await loadBuiltin();
       const todo = sets.filter((b) => !b.loaded || !b.rounds.length);
-      if (!todo.length) return say(msg, "Every unit set is loaded and has a round.", "ok");
-      if (!confirm(`Load ${todo.length} unit sets and make a draft round for each? A loaded set cannot be changed afterwards.`)) return;
+      if (!todo.length) return say(msg, "The full question set is loaded and has a round.", "ok");
+      const n = todo.reduce((sum, b) => sum + b.questions, 0);
+      if (!confirm(`Load ${n} questions and make a draft round? A loaded set cannot be changed afterwards, so every PDF should be in first.`)) return;
       for (const b of todo) {
         say(msg, `Loading ${b.roundName}...`);
         await api(`/admin/api/builtin-sets/${b.id}`, { body: {} });
       }
-      say(msg, `${todo.length} unit sets loaded; their rounds are drafts under Rounds.`, "ok");
+      say(msg, `${n} questions loaded; the round is a draft under Rounds.`, "ok");
       await refresh();
     } catch (err) {
       say(msg, err instanceof ApiError ? err.message : String(err), "error");

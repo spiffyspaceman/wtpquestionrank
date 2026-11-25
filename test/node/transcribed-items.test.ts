@@ -17,10 +17,9 @@ describe("transcribed items", () => {
     }
   });
 
-  it("the unit sets are exactly the transcribed questions, split by level and unit", () => {
+  it("the full set is exactly the transcribed questions", () => {
     const all = read("items/transcribed.json") as { id: string }[];
-    const index = read("items/rounds/index.json") as { file: string; questions: number }[];
-    const ids = index.flatMap((x) => (read("items/rounds/" + x.file).items as { id: string }[]).map((i) => i.id));
+    const ids = (read("items/rounds/all.json").items as { id: string }[]).map((i) => i.id);
     expect(ids.sort()).toEqual(all.map((i) => i.id).sort());
   });
 });

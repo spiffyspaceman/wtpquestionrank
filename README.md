@@ -81,9 +81,10 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
 - **Rounds.** Draft, open, frozen, closed. Several rounds can be open at once (migration 0005): each new batch goes
   to the open round with the fewest batches issued, and a part-done batch is served first. The item set freezes when
   its first round opens.
-- **Unit sets.** `items/rounds/` holds one item file per unit and level, transcribed from CCE's published PDFs by
-  `items/transcribe.py`. They are bundled into the Worker (`src/worker/builtin-sets.ts`) and loaded from the admin
-  page, one set per request, each with a draft round. They are never served as static files.
+- **The full question set.** `items/rounds/all.json` holds every question transcribed from CCE's published PDFs by
+  `items/transcribe.py`. It is bundled into the Worker (`src/worker/builtin-sets.ts`) and loaded from the admin page
+  with a draft round. It is never served as a static file. A round this size needs the Workers Paid plan: issuing a
+  batch refits the ratings and scores every pair, about 0.2 s of CPU at 324 questions and 0.65 s at 540.
 - **Codes.**
   - Create codes by role, with labels like "Judge 01" and an owner flag.
   - Each code also comes as a one-tap invite link, `https://PROD_HOST/#CODE`. The part after `#` never reaches the

@@ -68,50 +68,57 @@ steps finish.*
 8. At freeze: export the JSON and run the analysis command in BUILD_STEPS §10 step 5.
 9. After launch, delete the Cloudflare API token "wtpquestionrank D1 setup" (expires 2 December 2026 anyway).
 
-## All published questions (owner decisions, 25 Nov 2026, evening)
+## All published questions in one round (owner decisions, 25 Nov 2026, evening)
 
-The owner chose: open every published State and National Finals question from the last 20 years; drop Round 1 when
-the first new round is ready (the registered comparison then reports no verdict; DEVIATIONS.md); rounds of about 35
-questions, one per unit and level, on the Free plan; several rounds open at once, the site assigning each batch.
+The owner chose: every published State and National Finals question from the last 20 years, **in one round** for one
+ranking on one scale, on the **Workers Paid** plan; Round 1 dropped when that round is ready (the registered
+comparison then reports no verdict; DEVIATIONS.md); more PDFs still to come; the build stays off `main` until the
+set is final.
 
 **Texts in hand: 324 questions from the 18 PDFs the owner uploaded** (`items/transcribed.json`, built by
-`items/transcribe.py`). The transcriber reproduces all 36 launch texts exactly, which also settles the old question
-of whether the 24 added launch texts match CCE's PDFs: they do, character for character.
+`items/transcribe.py`; bundled as `items/rounds/all.json`). The transcriber reproduces all 36 launch texts exactly,
+which also settles the old question of whether the 24 added launch texts match CCE's PDFs: they do, character for
+character.
 
 | Level | Cycles in hand | Questions |
 |---|---|---|
 | State | 2014-15 to 2025-26 (12) | 216 |
 | National Finals | 2014-15 to 2019-20 (6) | 108 |
 
-**Still missing**
-- National Finals 2020-21 to 2025-26 (six cycles; the corpus lists 84 questions for them).
-- State 2026-27, the current cycle. CCE posts it as a Google Drive file, which this environment cannot reach.
-- Everything before 2014-15, for both levels, if "the last 20 years" is meant literally.
-- `www.civiced.org` holds only the current cycle; `web.archive.org` is still blocked here.
+**Still missing:** National Finals 2020-21 to 2025-26; State 2026-27 (CCE posts it as a Google Drive file this
+environment cannot reach); everything before 2014-15 for both levels.
 
-**Built on branch `claude/busy-franklin-ct2lna`, not on `main`** (150 tests pass):
-- migration 0005: several open rounds; `after_board` and the correction lock per round; two indexes;
-- batch assignment to the open round with the fewest batches; no round name on any voter page; a "Questions" picker
-  on the leaderboard;
-- twelve unit sets in `items/rounds/` (State units at 36 questions, National Finals units at 18 until the missing
-  cycles arrive) and an admin button, **Load every unit set and make its draft round**.
+**What a round this size costs** (Node timings, not Workers measurements):
+
+| Questions | CPU per new batch | CPU per leaderboard view | Votes for 30 comparisons each |
+|---|---|---|---|
+| 324 | 0.2 s | 0.05 s | 4,860 |
+| 540 | 0.65 s | 0.17 s | 8,100 |
+| 720 | 2.1 s | 0.7 s | 10,800 |
+
+The Free plan allows 10 ms, so the round must not open before the plan changes. "Refresh intervals" in admin (1,000
+refits per pool in the browser) will take minutes per pool at these sizes.
+
+**Built on branch `claude/busy-franklin-ct2lna`, not on `main`** (150 tests pass): migration 0005 (several open
+rounds, `after_board` and the correction lock per round, two indexes); batch assignment; no round name on voter
+pages; a "Questions" picker on the leaderboard; the bundled full set and the admin button **Load the full question
+set and make its draft round**; a test that runs a batch, 20 votes, the leaderboard and the export on all 324.
 
 ### Owner: now
 
-1. **Send the remaining PDFs** (National Finals 2020-21 onward, State 2026-27, and any earlier years you want), or
-   say the set is complete as it is. A loaded item set cannot change, so every PDF should be in before the first
-   unit round opens; a late cycle would need new sets and new rounds.
-2. **Say "merge"** to put the branch on `main`. It applies migration 0005 to production. With Round 1 the only open
-   round, voters see one change: `/start` no longer shows the round's name.
-3. Then, in `/admin`: **Load every unit set and make its draft round**; revoke `Other 04`; freeze Round 1; open the
-   unit rounds; make the real codes and send the links.
+1. **Send the remaining PDFs**, or say the set is complete. A loaded item set cannot change, so every PDF should be
+   in before the round opens.
+2. **Move the Worker to Workers Paid** (Cloudflare dashboard > Workers & Pages > Plans). Yours to do; about $5 a month.
+3. When the set is final, **say "merge"**. The merge applies migration 0005 to production. With Round 1 the only
+   open round, voters see one change: `/start` stops showing the round's name.
+4. Then, in `/admin`: **Load the full question set and make its draft round**; revoke `Other 04`; freeze Round 1;
+   open "All questions"; make the real codes and send the links.
 
 ### Claude: when the remaining PDFs arrive
 
-- Transcribe, rebuild `items/rounds/`, show the owner the counts and anything the transcriber flags.
-- The linked fit across rounds (questions from different units never meet head to head, so a single ranking of
-  all questions needs either bridge pairs or a statement that rankings are within unit and level only). Open
-  question for the owner.
+- Transcribe, rebuild `items/rounds/all.json`, report the counts and anything the transcriber flags.
+- Before the round opens: cut the cost of "Refresh intervals" for a round this size (fewer refits for this round,
+  or one pool at a time), and re-time a batch on the deployed Worker once the plan has changed.
 
 ## After the audit of 25 Nov 2026 (`docs/AUDIT_2026-11-25.md`)
 
