@@ -100,7 +100,12 @@ function roundActions(r: Round): Node {
     button(verb, () => {
       if (confirm(`${verb} "${r.name}"? ${warn}`)) void act(() => api(path, { body: {} }), `${verb}: done.`);
     });
-  const state: Node[] = [];
+  const state: Node[] = [
+    button("Rename", () => {
+      const name = prompt("New name for this round", r.name)?.trim();
+      if (name && name !== r.name) void act(() => api(`/admin/api/rounds/${r.id}/rename`, { body: { name } }), "Renamed.");
+    }),
+  ];
   if (r.state === "draft") state.push(confirmAct("Open", `/admin/api/rounds/${r.id}/open`, "Voters can vote as soon as it opens, and its item set freezes."));
   if (r.state === "open") state.push(confirmAct("Freeze", `/admin/api/rounds/${r.id}/freeze`, "No more votes will be accepted."));
   if (r.state === "open" || r.state === "frozen") state.push(confirmAct("Close", `/admin/api/rounds/${r.id}/close`, "Voters will no longer see it."));

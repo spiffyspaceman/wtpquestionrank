@@ -17,6 +17,17 @@ describe("transcribed items", () => {
     }
   });
 
+  it("every by-eye correction is in the text, and none of the text it replaced remains", () => {
+    const all = new Map<string, { stem: string; bullets: string[] }>(read("items/transcribed.json").map((i: { id: string }) => [i.id, i]));
+    const fixes = read("items/corrections.json") as { id: string; find: string; replace: string }[];
+    expect(fixes.length).toBeGreaterThan(0);
+    for (const f of fixes) {
+      const text = [all.get(f.id)!.stem, ...all.get(f.id)!.bullets].join(" || ");
+      expect(text.includes(f.replace), `${f.id}: ${f.replace}`).toBe(true);
+      expect(text.includes(f.find), `${f.id}: ${f.find}`).toBe(false);
+    }
+  });
+
   it("the full set is exactly the transcribed questions", () => {
     const all = read("items/transcribed.json") as { id: string }[];
     const ids = (read("items/rounds/all.json").items as { id: string }[]).map((i) => i.id);

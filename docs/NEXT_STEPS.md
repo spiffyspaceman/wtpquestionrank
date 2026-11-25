@@ -68,63 +68,60 @@ steps finish.*
 8. At freeze: export the JSON and run the analysis command in BUILD_STEPS §10 step 5.
 9. After launch, delete the Cloudflare API token "wtpquestionrank D1 setup" (expires 2 December 2026 anyway).
 
-## All published questions in one round (owner decisions, 25 Nov 2026, evening)
+## All published questions in one standing round (owner decisions, 25 Nov 2026)
 
-The owner chose: every published State and National Finals question from the last 20 years, **in one round** for one
-ranking on one scale, on the **Workers Paid** plan; Round 1 dropped when that round is ready (the registered
-comparison then reports no verdict; DEVIATIONS.md); more PDFs still to come; the build stays off `main` until the
-set is final.
+The owner chose: every published State and National Finals question he has, **in one round** that keeps growing as
+questions are added, on **Workers Paid** (upgraded 25 Nov); the first round renamed **"Test"** (done in production
+25 Nov) and ended when the big round opens, which ends the registered comparison without a verdict (DEVIATIONS.md).
 
-**Texts in hand: 324 questions from the 18 PDFs the owner uploaded** (`items/transcribed.json`, built by
-`items/transcribe.py`; bundled as `items/rounds/all.json`). The transcriber reproduces all 36 launch texts exactly,
-which also settles the old question of whether the 24 added launch texts match CCE's PDFs: they do, character for
-character.
+**Texts: 438 questions, the owner's full set** (`items/transcribed.json`; bundled as `items/rounds/all.json`).
 
-| Level | Cycles in hand | Questions |
-|---|---|---|
-| State | 2014-15 to 2025-26 (12) | 216 |
-| National Finals | 2014-15 to 2019-20 (6) | 108 |
-
-**Still missing:** National Finals 2020-21 to 2025-26; State 2026-27 (CCE posts it as a Google Drive file this
-environment cannot reach); everything before 2014-15 for both levels.
-
-**What a round this size costs** (Node timings, not Workers measurements):
-
-| Questions | CPU per new batch | CPU per leaderboard view | Votes for 30 comparisons each |
+| Level | Cycles | Questions | Source |
 |---|---|---|---|
-| 324 | 0.2 s | 0.05 s | 4,860 |
-| 540 | 0.65 s | 0.17 s | 8,100 |
-| 720 | 2.1 s | 0.7 s | 10,800 |
+| State | 2014-15 to 2026-27 (13) | 234 | CCE's PDFs |
+| National Finals | 2014-15 to 2019-20 (6) | 108 | CCE's PDFs |
+| National Finals | 2020-21 to 2025-26 (6; two cycles have 2 questions a unit) | 96 | the owner's text extracts of CCE's PDFs |
 
-The Free plan allows 10 ms, so the round must not open before the plan changes. "Refresh intervals" in admin (1,000
-refits per pool in the browser) will take minutes per pool at these sizes.
+How far to trust them:
+- The transcriber reproduces all 36 launch texts exactly.
+- For the 17 cycles with both a PDF and a usable extract, the two agree on every question (after joining words
+  hyphenated across a line, which both got wrong in five places).
+- The 2014-15 State PDF has a faulty text layer (fragments repeated). Claude read all six page images and corrected
+  27 places; one more correction in 2025-26. Each is listed in `items/corrections.json`.
+- **Not checked against a PDF:** the 96 National Finals questions from 2020-21 on. They come from the owner's
+  extracts alone. A wrong text found after loading cannot be edited; the corrected text would be a new question.
+- Nothing before 2014-15 is in hand, so the set covers 13 years, not 20.
 
-**Built on branch `claude/busy-franklin-ct2lna`, not on `main`** (153 tests pass):
-- migration 0005: several open rounds, `after_board` and the correction lock per round, two indexes; batch
-  assignment; no round name on voter pages; a "Questions" picker on the leaderboard;
-- migration 0006: the full set is open-ended, so **questions can be added while the round runs** (owner's point,
-  25 Nov: like new players joining a rating pool). The missing cycles therefore no longer block the launch;
-- the bundled full set and the admin button **Load or update the full question set**;
-- a test that runs a batch, 20 votes, the leaderboard and the export on all 324.
+**What a round this size costs** (Node timings; the plan is now Workers Paid): about 0.45 s of CPU for a new batch
+and 0.1 s for a leaderboard view at 438 questions. Every question reaches 10 comparisons (a rank) after about 2,200
+votes and 30 comparisons after about 6,600.
+
+**Built on branch `claude/busy-franklin-ct2lna`, not on `main`** (154 tests pass): migrations 0005 (several open
+rounds; `after_board` and the correction lock per round) and 0006 (open-ended sets: questions can join the running
+round); batch assignment; no round name on voter pages; the bundled 438-question set and the admin button **Load or
+update the full question set**; **Rename** for rounds; a test that runs a batch, 20 votes, the leaderboard and the
+export on all 438.
 
 ### Owner: now
 
-1. **Move the Worker to Workers Paid** (Cloudflare dashboard > Workers & Pages > Plans). Yours to do; about $5 a
-   month. The big round must not open before this.
-2. **Say "merge"**. The merge applies migrations 0005 and 0006 to production. With Round 1 the only open round,
-   voters see one change: `/start` stops showing the round's name.
-3. In `/admin`: **Load or update the full question set** (324 questions, a draft round "All questions"); revoke
-   `Other 04`; freeze Round 1 (this ends the registered comparison without a verdict and cannot be undone); open
-   "All questions"; make the real codes and send the links.
-4. **Send the remaining PDFs whenever you have them** (National Finals 2020-21 onward, State 2026-27, earlier
-   years). Claude transcribes them and rebuilds the file; after the next merge, the same admin button adds them to
-   the running round.
+1. **Say "merge"**. The merge applies migrations 0005 and 0006 to production. Voters see one change: `/start` stops
+   showing the round's name.
+2. In `/admin`: press **Load or update the full question set** (438 questions; it makes a draft round "All
+   questions", which you can rename).
+3. Revoke `Other 04`. **Close** the round "Test" (close, not freeze: a frozen round's board stays visible to voters
+   and would put a round picker on the leaderboard). This ends the registered comparison without a verdict and
+   cannot be undone.
+4. Open the big round, make the real codes by role, and send the links.
+5. Weekly: **Download full backup**, and the JSON, reasons and corrections exports.
+6. Later questions (National Finals 2026-27 when CCE posts it, any earlier years you find): send the files; after
+   the next merge the same admin button adds them to the running round.
 
 ### Claude: next
 
-- When PDFs arrive: transcribe, rebuild `items/rounds/all.json`, report counts and anything the transcriber flags.
-- Before or soon after the round opens: cut the cost of "Refresh intervals" for a round this size, and re-time a
-  batch on the deployed Worker once the plan has changed.
+- After the merge: time a batch on the deployed Worker; cut the cost of "Refresh intervals" for a round this size
+  (1,000 refits per pool in the browser will take minutes per pool).
+- If the owner wants the 96 extract-only National Finals questions checked, he sends those six PDFs and the
+  transcriber compares them.
 
 ## After the audit of 25 Nov 2026 (`docs/AUDIT_2026-11-25.md`)
 

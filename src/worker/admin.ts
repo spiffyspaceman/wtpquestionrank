@@ -296,6 +296,18 @@ adminApi.post("/rounds/:id/:action{open|freeze|close}", async (c) => {
   return c.json({ ok: true, state: t.to });
 });
 
+/** Rename a round. The name is a label for the owner; voters see it only in the leaderboard's round picker. */
+adminApi.post("/rounds/:id/rename", async (c) => {
+  const round = await getRound(c);
+  if (!round) return c.json({ error: "unknown_round" }, 404);
+  const body = await readJsonObject(c.req.raw);
+  const name = typeof body?.name === "string" ? body.name.trim() : "";
+  if (!name || name.length > 80) return c.json({ error: "bad_request" }, 400);
+  await c.env.DB.prepare("UPDATE rounds SET name = ? WHERE id = ?").bind(name, round.id).run();
+  await audit(c, "rename_round", { id: round.id, was: round.name, name });
+  return c.json({ ok: true, name });
+});
+
 adminApi.post("/rounds/:id/rebuild", async (c) => {
   const round = await getRound(c);
   if (!round) return c.json({ error: "unknown_round" }, 404);

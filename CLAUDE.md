@@ -62,7 +62,8 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov (later) | Several rounds are open at once and the site assigns each new batch to the open round with the fewest batches (migration 0005). Voters cannot choose a round and never see a round name outside the leaderboard. The unlock is 20 first votes over all rounds; `after_board` and the correction lock are per round (`round_board_seen`). Round 1 stays open until the first unit round is ready. |
 | 25 Nov (latest) | **Supersedes "rounds of about 35" above.** Every question goes in one round ("All questions"), for one ranking on one scale, and the owner moves the Worker to the Workers Paid plan to carry it: a new batch costs about 0.2 s of CPU at 324 questions, 0.65 s at 540 and 2 s at 720 (Node timings), against 10 ms on Free. Do not open that round on the Free plan. Several-open-rounds support stays (Round 1 beside it until frozen). |
 | 25 Nov (latest) | The "All questions" set is open-ended (migration 0006): later PDFs are transcribed and added to the same set and round, dated; a set only grows and loaded text never changes. The launch set can never be opened up. So the missing cycles do not block opening the round. |
-| 25 Nov (later) | Question texts come from CCE's PDFs through `items/transcribe.py` (owner uploads the files); the full set in `items/rounds/all.json` is bundled into the Worker and loaded from admin. Never serve it as a static file. |
+| 25 Nov (latest) | The first round ("Round 1" in older notes, id `C5TW5gelpkQa`) is renamed **"Test"**. The big round is one standing round that keeps growing; voters never see its name while it is the only round with a board, so close (not freeze) "Test" when the big round opens. Admin can rename any round. |
+| 25 Nov (later) | Question texts come from CCE's PDFs through `items/transcribe.py` (owner uploads the files, or his text extracts of them; where a PDF's text layer is faulty the fix is made by eye from the page image and listed in `items/corrections.json`); the full set in `items/rounds/all.json` is bundled into the Worker and loaded from admin. Never serve it as a static file. |
 | 25 Nov | Admin gets a full backup (every table but caches, sessions, attempts and code hashes), an invitation tracker in the Voters table, and a gate forecast in Study health (counts only). |
 | 25 Nov | Method A2: re-run the LLM judges with the human arm's guidance and reasons, as a registered addendum. `PREREG_Addendum_A2.md`, approved and hashed 25 Nov (DEVIATIONS.md); A2 is secondary and never enters the verdict. It ran 25 Nov (`llm-arm/out-a2/`); all 30 judges stay, with a 26-judge fit (`out-a2-without4/`) reported beside it. |
 
@@ -70,7 +71,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 153 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 154 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # pages into dist/
 npm run test:ui        # browser smoke test of the voting flow (needs Playwright; not part of npm test or the deploy)

@@ -1,0 +1,170 @@
+[
+ {
+  "id": "st-2014-15-u1-q1",
+  "find": "Virginia Dec Declaration laration of Rights?",
+  "replace": "Virginia Declaration of Rights?",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u2-q1",
+  "find": "the Articles Art of Confederation?",
+  "replace": "the Articles of Confederation?",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u2-q2",
+  "find": "Wh Why? y? What evidence",
+  "replace": "Why? What evidence",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u2-q3",
+  "find": "principle principle-ridden.” ridden.” Do",
+  "replace": "principle-ridden.” Do",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u2-q3",
+  "find": "Constituti Constitutional onal Convention",
+  "replace": "Constitutional Convention",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u2-q3",
+  "find": "“principle-“principle ridden”?",
+  "replace": "“principle-ridden”?",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u3-q1",
+  "find": "in broad ad language.”",
+  "replace": "in broad language.”",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u3-q1",
+  "find": "did the he Thirteenth",
+  "replace": "did the Thirteenth",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u3-q2",
+  "find": "jury or ju judge dge making",
+  "replace": "jury or judge making",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u3-q2",
+  "find": "adversarial sarial legal",
+  "replace": "adversarial legal",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u3-q3",
+  "find": "In Federalist 51,, James",
+  "replace": "In Federalist 51, James",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u4-q2",
+  "find": "signing gning statements to establish",
+  "replace": "signing statements to establish",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u4-q3",
+  "find": "“a Constitution Constitution–guarding guarding court”",
+  "replace": "“a Constitution–guarding court”",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u5-q2",
+  "find": "terms and d either",
+  "replace": "terms and either",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u5-q2",
+  "find": "if expanded expanded, clash",
+  "replace": "if expanded, clash",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u5-q3",
+  "find": "up–indeed indeed embodied embodied–the",
+  "replace": "up–indeed embodied–the",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u5-q3",
+  "find": "Anti-Federalists’ Federalists’ claim",
+  "replace": "Anti-Federalists’ claim",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u6-q1",
+  "find": "‘fire-alarm’ alarm’ model",
+  "replace": "‘fire-alarm’ model",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u6-q1",
+  "find": "the “fire “fire-alarm” alarm” model of",
+  "replace": "the “fire-alarm” model of",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u6-q1",
+  "find": "disadvantages disadvantages?",
+  "replace": "disadvantages?",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u6-q1",
+  "find": "African-Americans Americans and",
+  "replace": "African-Americans and",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u6-q1",
+  "find": "the “fire “fire-alarm” alarm” model to",
+  "replace": "the “fire-alarm” model to",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u6-q2",
+  "find": "vir virtually tually every",
+  "replace": "virtually every",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u6-q2",
+  "find": "divers diversity ity enrich",
+  "replace": "diversity enrich",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u6-q2",
+  "find": "culture lture or",
+  "replace": "culture or",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u6-q3",
+  "find": "were no nott a gift",
+  "replace": "were not a gift",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u6-q3",
+  "find": "state legi legislatures slatures in",
+  "replace": "state legislatures in",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2025-26-u4-q1",
+  "find": "in itself ? Why or why not?",
+  "replace": "in itself? Why or why not?",
+  "reason": "The PDF's text layer puts a space before the question mark; the printed page (read from the page image) has none."
+ }
+]

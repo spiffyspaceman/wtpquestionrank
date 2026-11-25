@@ -297,11 +297,11 @@
   "published": true,
   "stem": "The Virginia Declaration of Rights was the first written enumeration of the rights of citizens and the fundamental principles of government in the newly independent United States. What ideas drawn from the natural rights philosophy were incorporated into the Virginia Declaration of Rights?",
   "bullets": [
-   "What ideas drawn from classical republicanism are included in the Virginia Dec Declaration laration of Rights?",
+   "What ideas drawn from classical republicanism are included in the Virginia Declaration of Rights?",
    "What rights that Americans enjoy today under both their state and national bills of rights were included in the Virginia Declaration of Rights?"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 1, Question 1",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 1, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 1, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u1-q2",
@@ -343,13 +343,13 @@
   "unit": 2,
   "q": 1,
   "published": true,
-  "stem": "“The Constitution was ordained and established not by the States in their sovereign capacities, but emphatically, as the Preamble of the Constitution declares, by the people of the United States.” In what ways, if any, did that mark an important departure from the establishment of the Articles Art of Confederation?",
+  "stem": "“The Constitution was ordained and established not by the States in their sovereign capacities, but emphatically, as the Preamble of the Constitution declares, by the people of the United States.” In what ways, if any, did that mark an important departure from the establishment of the Articles of Confederation?",
   "bullets": [
    "In what ways is the United States Constitution different from legislative codes, and why are those differences important?",
    "What is the significance of using the words “We the People” in the Preamble?"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 2, Question 1",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 2, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 2, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u2-q2",
@@ -359,13 +359,13 @@
   "unit": 2,
   "q": 2,
   "published": true,
-  "stem": "“The creation of the Northwest Territory out of the western lands was one of the few successful exercises of power during the years in which the Articles of Confederation were in place.” Do you agree or disagree with this assertion? Wh Why? y? What evidence can you offer to support your position?",
+  "stem": "“The creation of the Northwest Territory out of the western lands was one of the few successful exercises of power during the years in which the Articles of Confederation were in place.” Do you agree or disagree with this assertion? Why? What evidence can you offer to support your position?",
   "bullets": [
    "What do you consider to be the most important principles set forth in the Northwest Ordinance? Why?",
    "What do you consider to be the most important failures of the Articles of Confederation? Why?"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 2, Question 2",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 2, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 2, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u2-q3",
@@ -375,13 +375,13 @@
   "unit": 2,
   "q": 3,
   "published": true,
-  "stem": "“No society, certainly not a large and heterogeneous one, can fail in time to explode if it is deprived of the art of compromise, if it knows no ways of muddling through. No good society can be unprincipled; and no viable society can be principle principle-ridden.” ridden.” Do you agree or disagree with this opinion? Why? What evidence can you offer to support your response?",
+  "stem": "“No society, certainly not a large and heterogeneous one, can fail in time to explode if it is deprived of the art of compromise, if it knows no ways of muddling through. No good society can be unprincipled; and no viable society can be principle-ridden.” Do you agree or disagree with this opinion? Why? What evidence can you offer to support your response?",
   "bullets": [
-   "What compromises were made at the Constituti Constitutional onal Convention of 1787? At what costs? For what benefits?",
-   "How would you distinguish between someone who is “unprincipled” and someone who is “principle- “principle ridden”? What is the significance of those differences?"
+   "What compromises were made at the Constitutional Convention of 1787? At what costs? For what benefits?",
+   "How would you distinguish between someone who is “unprincipled” and someone who is “principle-ridden”? What is the significance of those differences?"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 2, Question 3",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 2, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 2, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u3-q1",
@@ -391,13 +391,13 @@
   "unit": 3,
   "q": 1,
   "published": true,
-  "stem": "“America’s first eleven amendments had all aimed to limit the federal government and the Twelfth had neither added nor detracted from federal authority. By contrast the Thirteenth expanded the federal government’s role in broad ad language.” Do you agree or disagree with this scholar’s assertion? What evidence can you offer to support your position?",
+  "stem": "“America’s first eleven amendments had all aimed to limit the federal government and the Twelfth had neither added nor detracted from federal authority. By contrast the Thirteenth expanded the federal government’s role in broad language.” Do you agree or disagree with this scholar’s assertion? What evidence can you offer to support your position?",
   "bullets": [
    "Why and in what ways has Section 2 of the Thirteenth Amendment proved to be especially significant?",
-   "In what ways, if any, did the he Thirteenth Amendment extend to limits on private, as well as public actions."
+   "In what ways, if any, did the Thirteenth Amendment extend to limits on private, as well as public actions."
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 3, Question 1",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 3, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 3, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u3-q2",
@@ -409,11 +409,11 @@
   "published": true,
   "stem": "What are the basic differences between the adversary system of justice used in the United States and the inquisitorial system used in most European nations?",
   "bullets": [
-   "The theory of the adversary system is that through observing the presentation of evidence and agreement favorable to each party, the truth will become apparent to the jury or ju judge dge making the decision. How well has that theory been substantiated in practice? What evidence can you offer to support your response?",
-   "What procedural safeguards in the Fifth and the Fourteenth Amendments ensure a fair trial for defendants in the adversarial sarial legal system?"
+   "The theory of the adversary system is that through observing the presentation of evidence and agreement favorable to each party, the truth will become apparent to the jury or judge making the decision. How well has that theory been substantiated in practice? What evidence can you offer to support your response?",
+   "What procedural safeguards in the Fifth and the Fourteenth Amendments ensure a fair trial for defendants in the adversarial legal system?"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 3, Question 2",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 3, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 3, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u3-q3",
@@ -423,13 +423,13 @@
   "unit": 3,
   "q": 3,
   "published": true,
-  "stem": "In Federalist 51,, James Madison claimed that “The government must be structured and designed so that the three constitutional branches and their relationships will have the ability to keep each other in their proper places.” What is judicial review and how does it try to keep the other branches in “their proper places”?",
+  "stem": "In Federalist 51, James Madison claimed that “The government must be structured and designed so that the three constitutional branches and their relationships will have the ability to keep each other in their proper places.” What is judicial review and how does it try to keep the other branches in “their proper places”?",
   "bullets": [
    "In writing Marbury v. Madison (1803), what were the major arguments Chief Justice Marshall gave to justify judicial review?",
    "Why has judicial review remained controversial to the present day?"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 3, Question 3",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 3, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 3, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u4-q1",
@@ -455,13 +455,13 @@
   "unit": 4,
   "q": 2,
   "published": true,
-  "stem": "Since the presidency of Franklin Roosevelt there has been an increasing use by presidents of executive orders and signing gning statements to establish national policy. To what extent, if any, does this practice violate the principle of separation of powers contained within the Constitution?",
+  "stem": "Since the presidency of Franklin Roosevelt there has been an increasing use by presidents of executive orders and signing statements to establish national policy. To what extent, if any, does this practice violate the principle of separation of powers contained within the Constitution?",
   "bullets": [
    "What are the advantages and disadvantages of the use of executive orders and signing statements?",
    "Should the president be able to refuse to carry out a law he/she believes to be unconstitutional? Why or why not?"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 4, Question 2",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 4, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 4, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u4-q3",
@@ -471,13 +471,13 @@
   "unit": 4,
   "q": 3,
   "published": true,
-  "stem": "The United States Supreme Court has been called “a Constitution Constitution–guarding guarding court” as well as a court of “last resort”. Do you agree or disagree with this assessment of the role of the Supreme Court?",
+  "stem": "The United States Supreme Court has been called “a Constitution–guarding court” as well as a court of “last resort”. Do you agree or disagree with this assessment of the role of the Supreme Court?",
   "bullets": [
    "What checks exist on the power of the Supreme Court? What examples can you provide of how those checks have been used?",
    "Should there be term limits on Supreme Court justices? Why or why not?"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 4, Question 3",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 4, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 4, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u5-q1",
@@ -503,13 +503,13 @@
   "unit": 5,
   "q": 2,
   "published": true,
-  "stem": "“The court has struggled to find a neutral course between the two Religion Clauses, both of which are cast in absolute terms and d either of which, if expanded to a logical extreme, would tend to clash with the other.” Why has the Court continued to struggle to find a neutral course? What basic values and principles have been in contention?",
+  "stem": "“The court has struggled to find a neutral course between the two Religion Clauses, both of which are cast in absolute terms and either of which, if expanded to a logical extreme, would tend to clash with the other.” Why has the Court continued to struggle to find a neutral course? What basic values and principles have been in contention?",
   "bullets": [
-   "Why might the two clauses, if expanded expanded, clash with one another?",
+   "Why might the two clauses, if expanded, clash with one another?",
    "What criteria should be used to determine what religious practices should be protected and which practices government may limit?"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 5, Question 2",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 5, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 5, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u5-q3",
@@ -519,13 +519,13 @@
   "unit": 5,
   "q": 3,
   "published": true,
-  "stem": "“The jury summed up–indeed indeed embodied embodied–the ideals of federalism, populism and civic virtue that were the essence of the original Bill of Rights.” Do you agree or disagree with this opinion? What evidence can you offer in support of your response?",
+  "stem": "“The jury summed up–indeed embodied–the ideals of federalism, populism and civic virtue that were the essence of the original Bill of Rights.” Do you agree or disagree with this opinion? What evidence can you offer in support of your response?",
   "bullets": [
    "What purposes are served by the right to be tried by a jury of your peers?",
-   "Evaluate the Anti-Federalists’ Federalists’ claim that “judges unencumbered (unrestrained) by juries have been, ever found much better friends to government than to the people.”"
+   "Evaluate the Anti-Federalists’ claim that “judges unencumbered (unrestrained) by juries have been, ever found much better friends to government than to the people.”"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 5, Question 3",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 5, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 5, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u6-q1",
@@ -535,13 +535,13 @@
   "unit": 6,
   "q": 1,
   "published": true,
-  "stem": "“Judicial Review relies on a ‘fire-alarm’ alarm’ model using the complaints of damaged parties to trigger scrutiny of government policy.” How would you describe the “fire “fire-alarm” alarm” model of challenging government policies? What are its advantages and disadvantages disadvantages?",
+  "stem": "“Judicial Review relies on a ‘fire-alarm’ model using the complaints of damaged parties to trigger scrutiny of government policy.” How would you describe the “fire-alarm” model of challenging government policies? What are its advantages and disadvantages?",
   "bullets": [
-   "Why and how did African-Americans Americans and other groups use the “fire “fire-alarm” alarm” model to call attention to their grievances?",
+   "Why and how did African-Americans and other groups use the “fire-alarm” model to call attention to their grievances?",
    "In addition to court challenges, in what other ways have “damaged parties” tried to change government policies? With what success?"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 6, Question 1",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 6, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 6, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u6-q2",
@@ -551,13 +551,13 @@
   "unit": 6,
   "q": 2,
   "published": true,
-  "stem": "“Four decades of high volume immigration from vir virtually tually every country, rising intermarriage and persisting fertility differentials have transformed the United States into the most demographically complex society in the world.” On balance, does increasing the divers diversity ity enrich the nation’s economy and culture lture or are there limits to how much diversity the country can absorb?",
+  "stem": "“Four decades of high volume immigration from virtually every country, rising intermarriage and persisting fertility differentials have transformed the United States into the most demographically complex society in the world.” On balance, does increasing the diversity enrich the nation’s economy and culture or are there limits to how much diversity the country can absorb?",
   "bullets": [
    "Why has immigration reform become what some scholars call a “political minefield”?",
    "Evaluate the argument that because the federal government has failed to regulate immigration, that power should be given to the states."
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 6, Question 2",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 6, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 6, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2014-15-u6-q3",
@@ -567,13 +567,13 @@
   "unit": 6,
   "q": 3,
   "published": true,
-  "stem": "“American rights and American freedom were no nott a gift of the country’s ‘founding fathers.’ They are and have always been a work in progress.” Do you agree or disagree with this statement? Why? What evidence can you offer to support your response?",
+  "stem": "“American rights and American freedom were not a gift of the country’s ‘founding fathers.’ They are and have always been a work in progress.” Do you agree or disagree with this statement? Why? What evidence can you offer to support your response?",
   "bullets": [
-   "What has been the role of Congress and state legi legislatures slatures in the establishment and expansion of individual rights?",
+   "What has been the role of Congress and state legislatures in the establishment and expansion of individual rights?",
    "What do you think are the major challenges to the rights of Americans today and what should be done to address those challenges?"
   ],
   "source": "CCE State Hearing Questions 2014-15, Unit 6, Question 3",
-  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 6, pdftotext; footnote markers removed"
+  "text_source": "cdceaf94-statehearingquestions2014-15.pdf (sha256 aafa4843acd97504), page 6, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "nf-2015-16-u1-q1",
@@ -1225,7 +1225,7 @@
   "published": true,
   "stem": "“Energy in the Executive is a leading character in the definition of good government. It is essential to the protection of the community against foreign attacks; it is not less essential to the steady administration of the laws; to the protection of property against those irregular and high-handed combinations which sometimes interrupt the ordinary course of justice; to the security of liberty against the enterprises and assaults of ambition, of faction, and of anarchy.” Do you agree or disagree with Alexander Hamilton? Why? What were the central disagreements between the Federalists and Anti-Federalists over the executive branch of government?",
   "bullets": [
-   "What assumptions and what fundamental democratic principles and values underlie the positions of the Federalists and Anti- Federalists regarding the executive branch of government? Which position do you prefer? Why?",
+   "What assumptions and what fundamental democratic principles and values underlie the positions of the Federalists and Anti-Federalists regarding the executive branch of government? Which position do you prefer? Why?",
    "Does Article II adequately specify and limit the powers of the presidency? How does it compare with articles empowering the executive branch in the constitutions of other advanced democracies, such as those of Canada, South Africa, and Germany? Explain your position."
   ],
   "source": "CCE National Finals Hearing Questions 2016-17, Unit 2, Question 2",
@@ -1783,7 +1783,7 @@
   "unit": 2,
   "q": 1,
   "published": true,
-  "stem": "According to one historian, “most Antifederalist leaders disparaged Madison’s proposed amendments, which they considered positively harmful because their enactment would be likely to reduce the prospects of securing the sort of amendments they deemed necessary.” What sort of amendments did the Anti- Federalists think were necessary?",
+  "stem": "According to one historian, “most Antifederalist leaders disparaged Madison’s proposed amendments, which they considered positively harmful because their enactment would be likely to reduce the prospects of securing the sort of amendments they deemed necessary.” What sort of amendments did the Anti-Federalists think were necessary?",
   "bullets": [
    "What were the Anti-Federalists’ objections to Madison’s proposed amendments?",
    "What additional rights, if any, should be added to the Constitution? Explain your position."
@@ -3095,7 +3095,7 @@
   "unit": 5,
   "q": 2,
   "published": true,
-  "stem": "Richard Posner wrote that “the American public worries more about invasions of privacy than about summary proceedings against suspected terrorists, curtailments of the freedom of speech of the law- abiding, or the right of the media to publish government secrets.” Do you agree or disagree with this statement? Why or why not?",
+  "stem": "Richard Posner wrote that “the American public worries more about invasions of privacy than about summary proceedings against suspected terrorists, curtailments of the freedom of speech of the law-abiding, or the right of the media to publish government secrets.” Do you agree or disagree with this statement? Why or why not?",
   "bullets": [
    "To what extent, if any, is privacy in jeopardy today?",
    "What protection, if any, do people have from privacy violations by governments or businesses?"
@@ -3159,7 +3159,7 @@
   "unit": 6,
   "q": 3,
   "published": true,
-  "stem": "Adam Smith wrote that “how selfish soever man may be supposed, there are evidently some principles in his nature, which interest him in the fortune of others, and render their happiness necessary to him, though he derives nothing from it, except the pleasure of seeing it.” What evidence is there, if any, to support Adam Smith’s claim that people are naturally inclined to support the well- being of other people?",
+  "stem": "Adam Smith wrote that “how selfish soever man may be supposed, there are evidently some principles in his nature, which interest him in the fortune of others, and render their happiness necessary to him, though he derives nothing from it, except the pleasure of seeing it.” What evidence is there, if any, to support Adam Smith’s claim that people are naturally inclined to support the well-being of other people?",
   "bullets": [
    "How, if at all, does enlightened self-interest affect American capitalism?",
    "To what extent, if any, does American capitalism promote both individual liberty and the common good?"
@@ -3178,7 +3178,7 @@
   "stem": "“It is impossible to read of the petty republics of Greece and Italy without feeling sensations of horror and disgust at the distractions with which they were continually agitated, and at the rapid succession of revolutions by which they were kept in a state of perpetual vibration between the extremes of tyranny and anarchy.” How did the Founders’ knowledge of the history of republics (or democracies) and confederations affect their ideas about government?",
   "bullets": [
    "Why do you suppose that republican government in the United States has not been “kept in a state of perpetual vibration between the extremes of tyranny and anarchy”?",
-   "What have the past 230 years of our experiment as a constitutional republic taught us about the ability of people to self-govern on behalf of “we the people”?"
+   "What have the past 230 years of our experiment as a constitutional republic taught us about"
   ],
   "source": "CCE State Hearing Questions 2019-20, Unit 1, Question 1",
   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 1, pdftotext; footnote markers removed"
@@ -3370,7 +3370,7 @@
   "stem": "“The Self-Incrimination Clause of the Fifth Amendment is an unsolved riddle of vast proportions, a Gordian knot in the middle of our Bill of Rights.” Do you agree or disagree with this quote? Explain your position.",
   "bullets": [
    "What is the history of the Fifth Amendment’s self-incrimination clause, and why might it be controversial?",
-   "Should refusing to give up your mobile phone’s passcode be protected under the self- incrimination clause of the Fifth Amendment? Why or why not?"
+   "Should refusing to give up your mobile phone’s passcode be protected under the self-incrimination clause of the Fifth Amendment? Why or why not?"
   ],
   "source": "CCE State Hearing Questions 2019-20, Unit 5, Question 1",
   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 5, pdftotext; footnote markers removed"
@@ -3454,6 +3454,198 @@
   ],
   "source": "CCE State Hearing Questions 2019-20, Unit 6, Question 3",
   "text_source": "2a0f7483-StateHearingQuestions2019-20.pdf (sha256 2f5f8e2c9bef85d6), page 6, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u1-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 1,
+  "q": 1,
+  "published": true,
+  "stem": "“The American war is over: but this is far from being the case with the American revolution.” To what extent, if any, did revolutionary principles influence constitution-making during the founding period?",
+  "bullets": [
+   "What problems, if any, does the principle of consent present when creating or amending constitutions?",
+   "To what extent, if any, are revolutionary principles evident in modern times?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 1, Question 1",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u1-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 1,
+  "q": 2,
+  "published": true,
+  "stem": "Parliament passed the Habeas Corpus Act of 1679. What is habeas corpus, and to what extent, if any, is it essential to the principle of limited government?",
+  "bullets": [
+   "How has the writ of habeas corpus evolved in the United States?",
+   "Under what circumstances, if any, might the writ of habeas corpus place an unreasonable burden on the government?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 1, Question 2",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u2-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 2,
+  "q": 1,
+  "published": true,
+  "stem": "What were the major disagreements among the fifty-five delegates during the Constitutional Convention in Philadelphia and how were they resolved?",
+  "bullets": [
+   "What issues, if any, were not resolved and what were the consequences?",
+   "What changes, if any, should be made to the Constitution?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 2, Question 1",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u2-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 2,
+  "q": 2,
+  "published": true,
+  "stem": "One Founder claimed that representatives should “refine and enlarge the public views, by passing them through the medium of a chosen body of citizens, whose wisdom may best discern the true interest of their country.” Do you agree or disagree with this claim?",
+  "bullets": [
+   "What alternative systems of representation were considered by the Founders?",
+   "What alternative systems of representation, if any, should be considered in the twenty-first century?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 2, Question 2",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u3-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 3,
+  "q": 1,
+  "published": true,
+  "stem": "“I do not think the United States would come to an end if we lost our power to declare an Act of Congress void. I do think the Union would be imperiled if we could not make that declaration as to the laws of the several states.” What impact has judicial review had on federalism?",
+  "bullets": [
+   "Is judicial review a countermajoritarian practice? Please support your position.",
+   "What limits, if any, would you place on the practice of judicial review?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 3, Question 1",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u3-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 3,
+  "q": 2,
+  "published": true,
+  "stem": "“There is nothing I dread So much, as a Division of the Republick into two great Parties, each arranged under its Leader, and … in opposition to each other.” What issues led to the formation of the original political parties?",
+  "bullets": [
+   "To what extent have those issues persisted in American political parties?",
+   "What are the advantages and disadvantages of a unified or divided government?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 3, Question 2",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u4-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 4,
+  "q": 1,
+  "published": true,
+  "stem": "“It would be inconsistent with the Constitutional separation of the Executive & Legislative powers to let the prerogative [pardon power] be exercised by the latter.” What were the Framers’ reasons for giving the president the pardon power, and do you agree or disagree with them?",
+  "bullets": [
+   "According to the Framer James Wilson, if the president abuses the pardon power, “he can be impeached and prosecuted.” Do you agree with Wilson? Why or why not?",
+   "In your opinion, what constitutes “high crimes and misdemeanors”?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 4, Question 1",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u4-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 4,
+  "q": 2,
+  "published": true,
+  "stem": "Members of Congress are not only legislators but they “are also inquisitorial and should meet frequently to inspect the conduct of the public Officers.” How effectively do you believe Congress has used its investigatory power?",
+  "bullets": [
+   "Explain the differences, if any, between Congress’s power to investigate and the power of oversight. Which power, in your opinion, is more significant?",
+   "How effectively do you believe Congress has used its oversight powers?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 4, Question 2",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u5-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 5,
+  "q": 1,
+  "published": true,
+  "stem": "A result of the decision in Wisconsin v. Yoder is that “any parent/guardian … can refuse to let their child go to school beyond the 8th grade or learn about a subject by saying it’s against their religious beliefs.” Do you agree or disagree with this result of the decision? Why or why not?",
+  "bullets": [
+   "What words, if any, are found in the U.S. Constitution or in state constitutions that protect the right to an education?",
+   "How have courts balanced religious beliefs with other rights?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 5, Question 1",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u5-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 5,
+  "q": 2,
+  "published": true,
+  "stem": "“A bill of rights is what the people are entitled to against every government on earth, general or particular, and what no just government should refuse, or rest on inference.” Do you agree or disagree with Thomas Jefferson?",
+  "bullets": [
+   "What are the advantages and disadvantages of a national bill of rights as compared to state bills of rights?",
+   "What are the differences between positive and negative rights, and which are more important to the preservation of liberty?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 5, Question 2",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u6-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 6,
+  "q": 1,
+  "published": true,
+  "stem": "Thomas Hobbes noted that life in a state of nature is “solitary, poore, nasty, brutish, and short.” How has the human condition changed over time, and how is that change reflected in our expectations of government?",
+  "bullets": [
+   "Should the principles of natural rights or classical republicanism guide policy changes designed to improve the condition of all people?",
+   "What are the most pressing domestic and global challenges facing Americans today and in the future? What policies can you suggest to address them?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 6, Question 1",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2020-21-u6-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2020-21",
+  "unit": 6,
+  "q": 2,
+  "published": true,
+  "stem": "President Dwight D. Eisenhower said, “we must guard against the acquisition of unwarranted influence … by the military-industrial complex. The potential for the disastrous rise of misplaced power exists and will persist.” Do you agree or disagree? Why?",
+  "bullets": [
+   "What disagreements did the Founders have about a standing army, and are they relevant today?",
+   "To what extent should there be an international U.S. military presence?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2020-21, Unit 6, Question 2",
+  "text_source": "NF_2020-21.md (sha256 f0b8464fba14f6dd), the owner's text extract of CCE's PDF; footnote markers removed"
  },
  {
   "id": "st-2020-21-u1-q1",
@@ -3744,6 +3936,198 @@
   "text_source": "72aee0ab-StateHearingQuestions2020-21.pdf (sha256 1defe5dbcb394a1c), page 6, pdftotext; footnote markers removed"
  },
  {
+  "id": "nf-2021-22-u1-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 1,
+  "q": 1,
+  "published": true,
+  "stem": "In what ways, if any, are the concepts of civic virtue in the classical republican tradition and private morality in the Judeo–Christian tradition similar or different?",
+  "bullets": [
+   "How did the Enlightenment impact the Founders’ views of civic virtue, private morality, and the relationship between the people and their government?",
+   "To what extent, if any, does morality or civic virtue matter in 21st-century governance?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 1, Question 1",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2021-22-u1-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 1,
+  "q": 2,
+  "published": true,
+  "stem": "The foundation for good government is the rule of law. John Adams once wrote, “good government, is an empire of laws.” How, if at all, is the rule of law embedded in our founding documents?",
+  "bullets": [
+   "What challenges to the rule of law, if any, have we experienced in our history?",
+   "In what ways, if any, has the rule of law been important to the preservation of a free society?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 1, Question 2",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2021-22-u2-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 2,
+  "q": 1,
+  "published": true,
+  "stem": "When considering the necessary and proper clause, one Anti-Federalist wrote that “under such a clause as this can any thing be said to be reserved and kept back from Congress? … What limits are there to their authority?—I fear none at all.” Why did the necessary and proper clause create such concern for many Americans at that time?",
+  "bullets": [
+   "What were the Federalists’ responses to Anti-Federalist arguments regarding this clause?",
+   "To what extent, if any, are both groups’ views relevant today?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 2, Question 1",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2021-22-u2-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 2,
+  "q": 2,
+  "published": true,
+  "stem": "When explaining why the proposed Constitution lacked a bill of rights, one Federalist claimed that “in a government possessed of enumerated powers, such a measure would be not only unnecessary, but preposterous and dangerous.” Do you agree or disagree with this statement? Why or why not?",
+  "bullets": [
+   "In your opinion, did the first 10 amendments to the Constitution sufficiently address the concerns of the Anti-Federalists?",
+   "To what extent, if any, should we consider adding additional amendments to our Constitution?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 2, Question 2",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2021-22-u3-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 3,
+  "q": 1,
+  "published": true,
+  "stem": "The right to vote was not expressly included in the U.S. Constitution of 1787. In your opinion, was the implied right to vote in the Constitution sufficient for the creation of a representative democracy?",
+  "bullets": [
+   "How did the expansion of voting rights affect the evolution of democracy in our country? Please give examples.",
+   "Which is the greater threat to democracy, disenfranchisement or fraud? Explain your position."
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 3, Question 1",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2021-22-u3-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 3,
+  "q": 2,
+  "published": true,
+  "stem": "“The Fourteenth Amendment and its grand ideal of equality under the law have meant no more than succeeding generations were willing for them to mean.” To what extent, if any, have societal changes impacted the ideal of equality under the law?",
+  "bullets": [
+   "Is the legal analysis used by the courts to determine whether a government action violates equal protection of the law sufficient? Why or why not?",
+   "When, if ever, is it permissible for the government to discriminate against persons or groups? Explain your position."
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 3, Question 2",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2021-22-u4-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 4,
+  "q": 1,
+  "published": true,
+  "stem": "“The power of the Congress to conduct investigations is inherent in the legislative process. That power is broad.” Do you agree or disagree with this view of congressional investigative powers? Explain your position.",
+  "bullets": [
+   "What has been the historical significance of Congress’s investigatory power and, in your opinion, how well has it been used?",
+   "To what extent, if any, should Congress be able to use its subpoena power to compel witness testimony?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 4, Question 1",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2021-22-u4-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 4,
+  "q": 2,
+  "published": true,
+  "stem": "The president “ought to communicate such papers as the public good would permit, and ought to refuse those the disclosure of which would injure the public.” Do you agree or disagree that the executive can withhold or disclose information at her or his discretion?",
+  "bullets": [
+   "To what extent, if any, has the claim of executive privilege expanded presidential power since its inception?",
+   "Are the constitutional powers that enable the other two branches to counter executive privilege claims sufficient? Why or why not?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 4, Question 2",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2021-22-u5-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 5,
+  "q": 1,
+  "published": true,
+  "stem": "To what extent, if any, has the U.S. intelligence community been effective in balancing national security and personal liberty?",
+  "bullets": [
+   "The National Security Agency, created under President Harry S. Truman’s administration, was so secret that it was referred to as “No Such Agency.” What restrictions, if any, does the Fourth Amendment place on the NSA?",
+   "Under what circumstances, if any, should the NSA surveil American citizens?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 5, Question 1",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2021-22-u5-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 5,
+  "q": 2,
+  "published": true,
+  "stem": "“[9th Juror:] The facts are supposed to determine the case. … [10th Juror:] Ah, don’t give me any of that. I’m sick and tired of facts. You can twist ’em any way you like. Know what I mean? [9th Juror:] That’s exactly the point this gentleman [He indicates the 8th Juror.] has been making.” Why are juries required to render a unanimous decision rather than a majority decision in most criminal cases?",
+  "bullets": [
+   "To what extent, if any, do jury trials ensure due process as stated in the Constitution and Bill of Rights?",
+   "To what extent, if any, do jury trials reinforce founding principles?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 5, Question 2",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2021-22-u6-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 6,
+  "q": 1,
+  "published": true,
+  "stem": "“Disband your deluded followers. … Should you attempt to fire upon the troops of government, the consequences might be fatal to many of your men the least guilty.” What useful purposes, if any, have rebellions served throughout American history?",
+  "bullets": [
+   "Do the events of January 6, 2021, at the U.S. Capitol constitute a rebellion? Why or why not?",
+   "Are there rebellions in the world today that are justified? Why or why not?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 6, Question 1",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2021-22-u6-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2021-22",
+  "unit": 6,
+  "q": 2,
+  "published": true,
+  "stem": "‘‘It is a melancholy reflection that liberty should be equally exposed to danger whether the Government have too much or too little power, and that the line which divides these extremes should be so inaccurately defined by experience.’’ Have governments exercised too much, too little, or just the right amount of power during the COVID-19 pandemic?",
+  "bullets": [
+   "What policies should the national, state, and local governments implement in public schools to respond to the pandemic?",
+   "What, if any, are the responsibilities of people during a pandemic to balance individual liberty and the common good?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2021-22, Unit 6, Question 2",
+  "text_source": "NF_2021-22.md (sha256 6f44ef9ebd328345), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
   "id": "st-2021-22-u1-q1",
   "val_id": null,
   "level": "State",
@@ -4030,6 +4414,294 @@
   ],
   "source": "CCE State Hearing Questions 2021-22, Unit 6, Question 3",
   "text_source": "451b1d97-StateHearingQuestions2021-22.pdf (sha256 5591caba5f80d9dc), page 6, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u1-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 1,
+  "q": 1,
+  "published": true,
+  "stem": "John Trenchard wrote in 1721, “So that to know the Jurisdiction of Governors, and its Limits, we must have Recourse to the Institution of Government, and ascertain those Limits by the Measure of Power, which Men in the State of Nature have over themselves and one another.” To what extent is a constitution a limit on government and/or a limit on the people themselves?",
+  "bullets": [
+   "How does the U.S. Constitution reflect this tension between limits on government and the people?",
+   "What is the appropriate balance between limited government and empowered government today?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 1, Question 1",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u1-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 1,
+  "q": 2,
+  "published": true,
+  "stem": "Alexander Hamilton observed that “ambition, avarice, personal animosity, party opposition, and many other motives not more laudable than these, are apt to operate as well upon those who support as those who oppose the right side of a question.” Does Hamilton’s observation challenge the effective expression of popular sovereignty?",
+  "bullets": [
+   "How do our institutions of representation, such as legislatures, strengthen or weaken popular sovereignty?",
+   "What actions, if any, could citizens take if the government were not responsive to the will of the people?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 1, Question 2",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u1-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 1,
+  "q": 3,
+  "published": true,
+  "stem": "In The Republic Socrates says that one of the primary characteristics of democracies is that the citizens are “free” and “there is license in it to do whatever one wants.” What does Socrates mean by this?",
+  "bullets": [
+   "What concerns did Socrates have, if any, regarding the stability or fragility of democracy?",
+   "How has the Constitution addressed the issue of license?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 1, Question 3",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u2-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 2,
+  "q": 1,
+  "published": true,
+  "stem": "Mercy Otis Warren argued that the new Constitution was “dangerously adapted to the purposes of an immediate aristocratic tyranny.” Do you agree with Warren? Why or why not?",
+  "bullets": [
+   "What features of the Constitution did Anti-Federalists believe established an aristocratic tyranny?",
+   "How have citizens and the government responded to perceived attempts to establish aristocratic tyranny?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 2, Question 1",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u2-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 2,
+  "q": 2,
+  "published": true,
+  "stem": "In June 1787, one writer said, “I reprobate the idea of a division of the States into three or four republics—the greatest enemy to America could have suggested nothing worse or more destructive.” Why would some Americans have feared such a possibility in 1787?",
+  "bullets": [
+   "In your opinion, did these fears warrant the creation of a new Constitution?",
+   "To what extent, if any, are there issues facing our nation today that might lead some to advocate for a smaller nation?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 2, Question 2",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u2-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 2,
+  "q": 3,
+  "published": true,
+  "stem": "John Adams observed that unicameral legislatures were “subject to fits of humour, starts of passion, flights of enthusiasm, partialities of prejudice, and consequently productive of hasty results and absurd judgements.” What examples from the Revolutionary period would have led Adams to such a conclusion?",
+  "bullets": [
+   "Does it follow that bicameralism was a solution as the Founders were designing constitutions in the Founding era?",
+   "To what extent, if any, has bicameralism functioned the way the Founders intended?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 2, Question 3",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u3-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 3,
+  "q": 1,
+  "published": true,
+  "stem": "One historian has noted that the decade that followed ratification was “a period that did as much to mold the Constitution into what it became as anything that came before.” To what extent did the issues originally debated during the ratification debates continue into the first administrations under the new Constitution?",
+  "bullets": [
+   "What implications does this continuation of the ratification debates have in regard to the nature of American constitutionalism?",
+   "In your opinion, why have these issues continued to be discussed throughout our history?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 3, Question 1",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u3-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 3,
+  "q": 2,
+  "published": true,
+  "stem": "Throughout our history, each proposed expansion of the right to vote was greeted with opposition. What are the similarities and differences that characterize the opposition to expanding the right to vote?",
+  "bullets": [
+   "Why do you think that voting was not seen as a fundamental right at the birth of our nation?",
+   "In your opinion, are there any reasons to deny or restrict a person’s right to vote?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 3, Question 2",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u3-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 3,
+  "q": 3,
+  "published": true,
+  "stem": "At the Virginia Convention, Patrick Henry reminded delegates that the Articles of Confederation expressly declared “that every right was retained by the States respectively, which was not given up to the Government of the United States.” What would have motivated Henry to highlight this clause from the Articles of Confederation?",
+  "bullets": [
+   "To what extent, if any, did issues of state sovereignty continue prior to and during the Civil War era?",
+   "Which of these issues, if any, did the Reconstruction amendments resolve?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 3, Question 3",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u4-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 4,
+  "q": 1,
+  "published": true,
+  "stem": "Legislative power in Congress changed significantly from the Articles of Confederation to the Constitution. Why do you think the Framers felt it necessary and/or proper to add the necessary and proper clause?",
+  "bullets": [
+   "How has Congress used this constitutional power in legislation, and how have the courts impacted the power?",
+   "How does the listing of enumerated powers affect the impactfulness of the concept of implied powers?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 4, Question 1",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u4-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 4,
+  "q": 2,
+  "published": true,
+  "stem": "“The presidency is like a soft leather glove, and it takes the shape of the hand that’s put into it. And when a very big hand is put into it and stretches the glove—stretches the office—the glove never quite shrinks back to what it was.” How has presidential power expanded, specifically through the cabinet and administrative agencies, and what is your evaluation of the expansion of power over time?",
+  "bullets": [
+   "How have the legislative and judicial branches allowed the expansion of presidential power or attempted to curb it? Has one branch been more effective in doing so?",
+   "Is there a justification of presidential power expansion because of an actual or perceived voter mandate for the president to take control? Why or why not?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 4, Question 2",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u4-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 4,
+  "q": 3,
+  "published": true,
+  "stem": "“The accumulation of all powers, legislative, executive, and judiciary, in the same hands … may justly be pronounced the very definition of tyranny.” How fundamental is the concept of separation of powers to the functionality of our American government?",
+  "bullets": [
+   "Have political parties impacted the separation of powers doctrine? If so, how? If not, why not?",
+   "Does any one branch of government become more empowered or weakened when interbranch gridlock occurs? Why or why not?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 4, Question 3",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u5-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 5,
+  "q": 1,
+  "published": true,
+  "stem": "“The Religion then of every man must be left to the conviction and conscience of every man; and it is the right of every man to exercise it as these may dictate.” Do you agree or disagree with James Madison’s arguments against a Virginia bill using taxes to support teaching Christianity? Why or why not?",
+  "bullets": [
+   "How are the rights of conscience and free exercise of religion similar or dissimilar?",
+   "Do you believe the current “wall of separation” between church and state, as established by the courts, is consistent with the intent of the framers of the First Amendment? Why or why not?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 5, Question 1",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u5-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 5,
+  "q": 2,
+  "published": true,
+  "stem": "“Freedom of Speech is the great Bulwark of Liberty; they prosper and die together: And it is the Terror of Traytors and Oppressors, and a Barrier against them.” Do you agree that liberty and free speech are dependent upon each other? Why or why not?",
+  "bullets": [
+   "How has free speech served as a barrier against oppressors or traitors in American history?",
+   "Is it appropriate for the government to limit free speech in times of war or national emergency? Why or why not?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 5, Question 2",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u5-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 5,
+  "q": 3,
+  "published": true,
+  "stem": "Has the creation of so-called “fusion centers” violated citizens’ privacy rights, or are they necessary for preserving public safety?",
+  "bullets": [
+   "Why and how have the courts struggled with where to draw the line between national security and privacy?",
+   "Is the Fourth Amendment, ratified in 1791, still a viable safeguard against an overzealous government when it comes to modern technology? Why or why not?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 5, Question 3",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u6-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 6,
+  "q": 1,
+  "published": true,
+  "stem": "“Citizens are more likely to get the policies they want when initiatives are available than when government decisions are the monopoly of elected officials.” Do you agree or disagree with this claim? To what extent are ballot initiatives democratic?",
+  "bullets": [
+   "Is direct democracy an appropriate way of making public policy in the 21st century?",
+   "If states vary in their use of such things as initiatives and referendums, what challenges might arise, if any, due to the structure of federalism?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 6, Question 1",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u6-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 6,
+  "q": 2,
+  "published": true,
+  "stem": "Former President Bill Clinton stated, “We cannot become the world’s policeman, but where our values and our interests are at stake, and where we can make a difference, we must act and we must lead.” Do you agree or disagree with this idea? Why?",
+  "bullets": [
+   "What are the defining characteristics of a “leading nation” in the 21st century?",
+   "What conflicts might result from competing views on this issue?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 6, Question 2",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2022-23-u6-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2022-23",
+  "unit": 6,
+  "q": 3,
+  "published": true,
+  "stem": "“I didn’t change the Constitution; the equality principle was there from the start. I just was an advocate for seeing its full realization.” Do you agree with Justice Ruth Bader Ginsburg that the principle of equality was in the Constitution from the start? Why or why not?",
+  "bullets": [
+   "What role did the post-Civil War amendments play in helping to establish equality in the United States?",
+   "What do you see as the biggest struggles in ensuring equality under the law in the 21st century?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2022-23, Unit 6, Question 3",
+  "text_source": "NF_2022-23.md (sha256 0f73d83288c42326), the owner's text extract of CCE's PDF; footnote markers removed"
  },
  {
   "id": "st-2022-23-u1-q1",
@@ -4320,6 +4992,294 @@
   "text_source": "f8d347df-StateHearingQuestions2022-23.pdf (sha256 0d701479cdba7454), page 6, pdftotext; footnote markers removed"
  },
  {
+  "id": "nf-2023-24-u1-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 1,
+  "q": 1,
+  "published": true,
+  "stem": "What was the impact of early experiments with representative democracy, such as colonial assemblies and town meetings, on the development of the American political system?",
+  "bullets": [
+   "How did the Framers draw on their early experiences with democratic practices to shape the establishment of a more formalized representative democracy?",
+   "How, if at all, do the demographics of today’s elected officials align with or diverge from the ideals of representative democracy envisioned by the Framers?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 1, Question 1",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u1-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 1,
+  "q": 2,
+  "published": true,
+  "stem": "What factors, according to James Madison in Federalist 10, influenced the Framers’ preference for a republic over a pure democracy?",
+  "bullets": [
+   "How do the structural differences between republics and democracies impact the effectiveness of governance in each system?",
+   "What are the strengths and weaknesses of republics and democracies in handling emergencies and safeguarding public interests?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 1, Question 2",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u1-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 1,
+  "q": 3,
+  "published": true,
+  "stem": "How does the tension between protecting individual rights and promoting the common good manifest in the structure and language of the Constitution?",
+  "bullets": [
+   "How do ongoing challenges, such as technological advancements or global health crises, impact the delicate balance between individual rights and the common good outlined in the Constitution?",
+   "To what extent should lawmakers consider the role of public opinion as they navigate the constitutional tension between individual rights and the common good?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 1, Question 3",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u2-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 2,
+  "q": 1,
+  "published": true,
+  "stem": "Examine the features of the proposed Constitution that made essayists like Centinel claim that supporters were trying to establish a “masqued aristocracy.” What parts of the Constitution raised concerns about the potential creation of an aristocracy, and why did critics view these features as hiding aristocratic tendencies?",
+  "bullets": [
+   "In your opinion, why was the idea of an aristocracy such a hot-button issue throughout the founding era?",
+   "To what extent, if any, does the fear of aristocracy continue to concern Americans?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 2, Question 1",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u2-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 2,
+  "q": 2,
+  "published": true,
+  "stem": "How accurate was George Washington’s depiction of the outcome of the Philadelphia Convention as a product of “a spirit of amity, and of that mutual deference and concession” demonstrated by the convention delegates?",
+  "bullets": [
+   "To what extent did subsequent conventions for ratification continue in a spirit of friendliness, respect, and compromise?",
+   "How can the principles of amity, mutual deference, and concession be integrated into the processes of modern policymaking?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 2, Question 2",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u2-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 2,
+  "q": 3,
+  "published": true,
+  "stem": "The Northwest Ordinance, according to one historian, “is one of the great American Founding documents.” What provisions within the Northwest Ordinance would warrant such an assessment?",
+  "bullets": [
+   "How do the debates surrounding the passage of the Northwest Ordinance reveal the political issues facing American political leaders in the early years of the republic?",
+   "To what extent do features of the Northwest Ordinance continue to resonate throughout American history?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 2, Question 3",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u3-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 3,
+  "q": 1,
+  "published": true,
+  "stem": "Why did Thomas Jefferson use the phrase “Revolution of 1800” to describe that year’s presidential election? What aspects of the election and its aftermath led to its characterization as a “revolution,” and how did it signify a transformative moment in American politics?",
+  "bullets": [
+   "What were the key outcomes of this election, and how did they shape the trajectory of American governance in the subsequent years?",
+   "In your opinion, have there been other elections that could be assessed similarly to the Revolution of 1800?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 3, Question 1",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u3-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 3,
+  "q": 2,
+  "published": true,
+  "stem": "Does the constitutional amendment process primarily force societal change, respond to societal change, or involve a combination of both? Provide examples from different historical periods to illustrate how the Constitution has either driven or adapted to shifts in American society.",
+  "bullets": [
+   "How has public sentiment shaped the drafting and ratification of amendments to the Constitution?",
+   "How should the Constitution balance its enduring principles with the need to adapt to societal progress, ensuring continued relevance over time?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 3, Question 2",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u3-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 3,
+  "q": 3,
+  "published": true,
+  "stem": "Brown v. Board of Education (1954) has been called “a revolutionary statement of race relations law.” What were the immediate and long-term consequences of the decision, and in your opinion, how effective was the Brown ruling in bringing about meaningful social change for African Americans?",
+  "bullets": [
+   "How does the Brown decision compare to other landmark judicial decisions in its influence on societal attitudes and legal precedents?",
+   "To what extent have the goals set by Brown been realized, and what ongoing challenges persist in achieving educational equality?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 3, Question 3",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u4-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 4,
+  "q": 1,
+  "published": true,
+  "stem": "To what extent do legislators manage the delicate task of addressing immediate concerns within their districts while also actively contributing to broader national policy discussions?",
+  "bullets": [
+   "What measures, if any, are in place to guarantee that the opinions of constituents are heard and considered in the development of policies?",
+   "What criteria or principles should guide legislators as they balance representing their constituents’ diverse interests while making decisions based on their judgment?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 4, Question 1",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u4-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 4,
+  "q": 2,
+  "published": true,
+  "stem": "Justice Louis Brandeis wrote, “a single courageous State may, if its citizens choose, serve as a laboratory; and try novel social and economic experiments without risk to the rest of the country.” How does the concept of federalism contribute to the ability of individual states to experiment with social and economic policies?",
+  "bullets": [
+   "What constitutional principles support the idea of states serving as laboratories of democracy?",
+   "How might lessons learned from state-level experiments influence broader discussions on governance and policy at the national level?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 4, Question 2",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u4-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 4,
+  "q": 3,
+  "published": true,
+  "stem": "How do initiatives, referendums, and recalls utilized by various states align with or challenge the concept of representative government?",
+  "bullets": [
+   "Do you believe these tools enhance or undermine the principles of popular sovereignty? Why or why not?",
+   "Under what circumstances, if ever, do you believe it is appropriate for citizens to use these tools, and how might this choice impact the democratic process?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 4, Question 3",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u5-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 5,
+  "q": 1,
+  "published": true,
+  "stem": "“The Eighth Amendment is progressive, and does not prohibit merely the cruel and unusual punishments known in 1689 and 1787, but may acquire wider meaning as public opinion becomes enlightened by humane justice.” How have societal attitudes and legal perspectives shaped the understanding of what constitutes cruel and unusual punishment over time?",
+  "bullets": [
+   "How has federalism shaped our interpretation and application of the Eighth Amendment?",
+   "What are the advantages and disadvantages of using a uniform approach to sentencing guidelines in accordance with the Eighth Amendment?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 5, Question 1",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u5-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 5,
+  "q": 2,
+  "published": true,
+  "stem": "What are the implications of technological advancements on the criminal justice system? How might these advancements impact fairness, equity, and the protection of individual rights?",
+  "bullets": [
+   "How do technological tools, such as surveillance or predictive algorithms, affect the rights of defendants, and what potential risks or benefits do they pose?",
+   "What novel approaches could make the criminal justice system more efficient, accessible, and equitable while preserving the right to a fair trial?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 5, Question 2",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u5-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 5,
+  "q": 3,
+  "published": true,
+  "stem": "What were the key arguments in the Students for Fair Admissions, Inc. v. President and Fellows of Harvard College (2023) case? How might the Supreme Court’s decision impact considerations regarding various protected classes in college admissions, and what do you believe this means for future cases?",
+  "bullets": [
+   "How did the Court consider and apply past decisions, such as Brown v. Board of Education (1954) and Grutter v. Bollinger (2003), in reaching its conclusion?",
+   "Under what circumstances, if any, is it appropriate for the U.S. Supreme Court to overrule its precedents?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 5, Question 3",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u6-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 6,
+  "q": 1,
+  "published": true,
+  "stem": "Alexis de Tocqueville once wrote that voluntary associations have been utilized more effectively in America than anywhere else in the world. Do you agree or disagree with his viewpoint? Why?",
+  "bullets": [
+   "How have voluntary associations transformed over time in terms of their purposes, structures, and societal roles?",
+   "To what extent do voluntary associations contribute positively or pose challenges to the health of the political system in the United States today?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 6, Question 1",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u6-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 6,
+  "q": 2,
+  "published": true,
+  "stem": "How has civil disobedience evolved in American history in terms of its nature, methods, and motivations, and what are some historical examples of these changes?",
+  "bullets": [
+   "How, if at all, have acts of civil disobedience influenced the creation or modification of laws and policies?",
+   "In your opinion, what criteria make an act of civil disobedience legitimate, and how might these criteria vary across different contexts or perspectives?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 6, Question 2",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2023-24-u6-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2023-24",
+  "unit": 6,
+  "q": 3,
+  "published": true,
+  "stem": "According to Rep. John Lewis, “The vote is precious. It is the most powerful non-violent tool we have in a democratic society, and we must use it.” What factors contribute to lower participation among younger voters, and how do these factors vary across demographics, regions, or political contexts?",
+  "bullets": [
+   "How can younger citizens be effectively engaged and encouraged to participate in the democratic process?",
+   "What lessons, if any, should the United States draw from countries with comparatively higher youth voter turnout?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2023-24, Unit 6, Question 3",
+  "text_source": "NF_2023-24.md (sha256 ea60ee0fee4cabed), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
   "id": "st-2023-24-u1-q1",
   "val_id": null,
   "level": "State",
@@ -4606,6 +5566,294 @@
   ],
   "source": "CCE State Hearing Questions 2023-24, Unit 6, Question 3",
   "text_source": "86741d61-StateHearingQuestions2023-24.pdf (sha256 8179fd0b975d53df), page 6, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u1-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 1,
+  "q": 1,
+  "published": true,
+  "stem": "In what ways did the Renaissance change the way people thought about individual rights and their role in society, and how do these changes still influence today’s conversations about personal freedom?",
+  "bullets": [
+   "How did the Renaissance’s emphasis on understanding the natural world lead to a greater focus on government and societal institutions?",
+   "What parallels exist between the Renaissance era’s groundwork for integrating scientific principles into political thought and today’s debates about the role of science in shaping public policy?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 1, Question 1",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u1-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 1,
+  "q": 2,
+  "published": true,
+  "stem": "How did Enlightenment thinkers like Voltaire inspire the American Founders’ beliefs about freedom of thought and expression, and how did these ideas shape American politics?",
+  "bullets": [
+   "What contributions did the founding of Rhode Island and the trial of Anne Hutchinson make to the development of the American principles of freedom of thought and expression?",
+   "To what extent did public discourse during the Stamp Act protests highlight the growing importance of freedom of expression in the colonies?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 1, Question 2",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u1-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 1,
+  "q": 3,
+  "published": true,
+  "stem": "In the debates during the Philadelphia Convention, Benjamin Franklin asserted, “There are two passions which have a powerful influence on the affairs of men. These are ambition and avarice; the love of power, and the love of money.” Why did some Framers view ambition and greed as threats to government, and how did these concerns shape the Constitution?",
+  "bullets": [
+   "How did the Framers use ideas from philosophers like Montesquieu to divide power and limit the effects of ambition and greed?",
+   "In what ways do the Framers’ concerns about concentrated power and wealth remain relevant in today’s debates about governmental and corporate accountability?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 1, Question 3",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u2-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 2,
+  "q": 1,
+  "published": true,
+  "stem": "A critic of the Articles of Confederation remarked, “The present fœderal constitution was formed amidst the confusions of war, and in the infancy of our political knowledge.” To what extent do you agree with this assessment of the political understanding of Americans in 1787?",
+  "bullets": [
+   "What role did colonial governance play in shaping the American republic?",
+   "How do the leadership and unity challenges of the Confederation period compare to those faced by the United States today?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 2, Question 1",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u2-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 2,
+  "q": 2,
+  "published": true,
+  "stem": "Historian Cecelia Kenyon has referred to the Anti-Federalists as “men of little faith.” Do you agree or disagree with this characterization? Why?",
+  "bullets": [
+   "What were the main arguments presented by Federalists to address the Anti-Federalists’ concerns regarding the Constitution?",
+   "How do the Anti-Federalists’ fears about governmental power and individual rights continue to influence modern discussions around constitutional interpretation and civil liberties?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 2, Question 2",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u2-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 2,
+  "q": 3,
+  "published": true,
+  "stem": "At the Philadelphia Convention, John Rutledge of South Carolina said, “If the Convention thinks that N. C. S. C. & Georgia will ever agree to the plan, unless their right to import slaves be untouched, the expectation is vain.” What were the main issues about slavery debated at the convention, and how did these debates reflect the national discourse on slavery in the late 18th century?",
+  "bullets": [
+   "Was it feasible for the founding delegates to create a Constitution that eliminated slavery? Explain your reasoning.",
+   "How do the discussions surrounding slavery at the convention continue to shape contemporary debates about racial equality, reparations, and the legacy of slavery in the United States?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 2, Question 3",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u3-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 3,
+  "q": 1,
+  "published": true,
+  "stem": "Associate Justice Clarence Thomas, in his concurring opinion in Dobbs v. Jackson Women’s Health Organization, stated, “ ‘Substantive due process’ is an oxymoron that ‘lack[s] any basis in the Constitution.’ ” What is the concept of substantive due process, and how has it influenced the way courts evaluate the constitutionality of laws and government actions?",
+  "bullets": [
+   "How does substantive due process differ from procedural due process?",
+   "Should judges continue to use substantive due process in their decision making? Why or why not?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 3, Question 1",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u3-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 3,
+  "q": 2,
+  "published": true,
+  "stem": "The Constitution has been amended several times to expand voting rights. Today, most citizens 18 and older are allowed to vote. How well does the right to vote connect citizens to their government?",
+  "bullets": [
+   "What challenges or obstacles prevent citizens from exercising their right to vote, and what strategies or changes could be implemented to help eliminate these barriers?",
+   "In your opinion, are there any groups or individuals who currently cannot vote but should be given the opportunity to do so? Explain your answer."
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 3, Question 2",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u3-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 3,
+  "q": 3,
+  "published": true,
+  "stem": "In 2019, two representatives in Washington introduced a bill in the state legislature to create a new state called Liberty formed from six counties in eastern Washington. Was this proposal constitutional, and what principles govern the process of creating a new state?",
+  "bullets": [
+   "How do the arguments about secession during the Civil War apply to modern proposals like the one in Washington?",
+   "In your opinion, should Congress allow states or parts of states to secede? Why or why not?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 3, Question 3",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u4-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 4,
+  "q": 1,
+  "published": true,
+  "stem": "“The federal government is scarcely in charge of anything except foreign affairs; the state governments really run American society.” To what extent did the Framers of the Constitution intend for the federal and state governments to share power? How has this balance of power evolved over American history?",
+  "bullets": [
+   "How were the powers granted to the federal government delineated in the Constitution compared to those given to state governments?",
+   "In contemporary American society, do state governments continue to play a dominant role, and what factors contribute to their influence or diminished power compared to the federal government?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 4, Question 1",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u4-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 4,
+  "q": 2,
+  "published": true,
+  "stem": "“[Political factions] are likely, in the course of time and things, to become potent engines by which cunning, ambitious, and unprincipled men will be enabled to subvert the power of the people and to usurp for themselves the reins of government.” Have George Washington’s fears about factions become a reality in American politics today? Why or why not?",
+  "bullets": [
+   "What constitutional and institutional checks are in place to limit the influence of political factions, and how effective are these checks in practice?",
+   "Have these checks proven sufficient in preventing factions from undermining the will of the people? Explain your answer."
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 4, Question 2",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u4-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 4,
+  "q": 3,
+  "published": true,
+  "stem": "“We are not final because we are infallible, but we are infallible only because we are final.” Do you think Associate Justice Robert Jackson’s statement aligns more with the intentions of the Framers or the concerns raised by the Anti-Federalists regarding judicial power? Why?",
+  "bullets": [
+   "Historically, has the Supreme Court acted as the final arbiter on controversial issues? Provide examples.",
+   "To what extent should the Court consider public opinion in its decisions, and how does this align with the promotion of republican values?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 4, Question 3",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u5-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 5,
+  "q": 1,
+  "published": true,
+  "stem": "“The modern exclusionary rule draws no strength from the deeply rooted American ideal of innocence-protection. Instead, the rule perversely benefits the guilty as such.” Do you agree or disagree with Akhil Reed Amar’s position on the exclusionary rule? Why?",
+  "bullets": [
+   "How does the exclusionary rule function within the American legal system, and in your view, does it protect justice or undermine it?",
+   "What alternative methods could the courts use to address violations of the Fourth Amendment, and what are the potential benefits and drawbacks of those approaches?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 5, Question 1",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u5-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 5,
+  "q": 2,
+  "published": true,
+  "stem": "In City of Grants Pass v. Johnson, the United States Supreme Court held that the cruel and unusual punishments clause does not prohibit governments from restricting camping in public places by persons experiencing homelessness. Do you agree with this interpretation of the Eighth Amendment? Why or why not?",
+  "bullets": [
+   "What are the key differences between the majority and dissenting opinions in City of Grants Pass v. Johnson regarding the cruel and unusual punishments clause?",
+   "Should the interpretation of the Eighth Amendment evolve to reflect changes in society? Why or why not?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 5, Question 2",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u5-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 5,
+  "q": 3,
+  "published": true,
+  "stem": "To what extent should governments limit free speech on public property, and how does this balance with other constitutional values?",
+  "bullets": [
+   "How does the Supreme Court’s forum-analysis framework approach the conflict between free speech and other constitutional interests, and does it effectively achieve a fair balance?",
+   "In what ways has expressive activity on public property influenced American history, and how has the significance of access to these spaces evolved in the digital age?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 5, Question 3",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u6-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 6,
+  "q": 1,
+  "published": true,
+  "stem": "James Davison Hunter argues, “If there is little or no common political ground [in the United States] today, it is because there are few if any common assumptions about the nature of a good society that underwrite a shared political life.” To what extent do Americans share assumptions about a “good society,” and how does the lack—or presence—of these shared values influence political polarization in American democracy?",
+  "bullets": [
+   "How does political polarization impact the ability of American institutions to function effectively and address pressing societal challenges?",
+   "What lessons from historical strategies to reduce polarization can be applied to contemporary efforts to foster unity in a diverse and divided society?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 6, Question 1",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u6-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 6,
+  "q": 2,
+  "published": true,
+  "stem": "The bicentennial celebration of the Marquis de Lafayette’s Farewell Tour, which began on August 16, 2024, marks a significant historical moment. How did Lafayette’s views on federalism, the balance of power, and individual rights align with or challenge the principles of American constitutional democracy in 1824?",
+  "bullets": [
+   "How did Lafayette’s experiences with American democracy influence his advocacy for democratic ideals in France and other nations?",
+   "What lessons does Lafayette’s 1824 Farewell Tour offer about the enduring principles of liberty, equality, and justice in American democracy, and how do these ideals shape current debates on rights and inclusion?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 6, Question 2",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2024-25-u6-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2024-25",
+  "unit": 6,
+  "q": 3,
+  "published": true,
+  "stem": "In his 1853 speech, “The Claims of Our Common Cause,” Frederick Douglass declared, “By birth, we are American citizens; by the principles of the Declaration of Independence, we are American citizens; within the meaning of the United States Constitution, we are American citizens; by the facts of history, and the admissions of American statesmen, we are American citizens; by the hardships and trials endured; by the courage and fidelity displayed by our ancestors in defending the liberties and in achieving the independence of our land, we are American citizens.” How did the U.S. Constitution originally define the federal government’s role in determining citizenship, and how was this interpreted before the Civil War?",
+  "bullets": [
+   "How did the 14th Amendment’s citizenship clause redefine American citizenship, and how have courts shaped its interpretation, especially regarding birthright citizenship?",
+   "What rights and responsibilities come with American citizenship, and how have debates over these rights evolved in relation to voting, immigration, and civic participation?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2024-25, Unit 6, Question 3",
+  "text_source": "NF_2024-25.md (sha256 56bf3f1a2401982f), the owner's text extract of CCE's PDF; footnote markers removed"
  },
  {
   "id": "st-2024-25-u1-q1",
@@ -4896,6 +6144,294 @@
   "text_source": "5aeb6c7f-StateHearingQuestions_HighSchool_2024-25.pdf (sha256 d000478657b6c82e), page 6, pdftotext; footnote markers removed"
  },
  {
+  "id": "nf-2025-26-u1-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 1,
+  "q": 1,
+  "published": true,
+  "stem": "How did the principle of the rule of law in the Magna Carta shape the development of limited government, common law, and representative institutions in England?",
+  "bullets": [
+   "To what extent does the Magna Carta continue to function as a meaningful precedent for American constitutionalism today?",
+   "Are there foundational documents from other countries that are, or should be, considered as influential as the Magna Carta in shaping the American constitutional tradition?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 1, Question 1",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u1-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 1,
+  "q": 2,
+  "published": true,
+  "stem": "Many American colonists viewed the Quebec Act of 1774 as “nothing less than despotism.” Why did the colonists interpret this law as a threat to representative self-government, and why was it included among the grievances in the Declaration of Independence?",
+  "bullets": [
+   "What other foreign developments were of concern to the American colonists in the lead-up to the Revolutionary War?",
+   "How do current concerns about foreign influence on the U.S. government echo colonial fears, and are these concerns valid today?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 1, Question 2",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u1-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 1,
+  "q": 3,
+  "published": true,
+  "stem": "As English colonists settled North America, they “wrote a number of documents that deserve to be called ‘constitutions,’ ” despite Britain having no formal written constitution. What were the reasons for this, and was it necessary for the colonists to do so?",
+  "bullets": [
+   "In your opinion, were these written documents consistent with the colonists’ British heritage?",
+   "What elements do you consider essential for a document to be called a constitution? Why?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 1, Question 3",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u2-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 2,
+  "q": 1,
+  "published": true,
+  "stem": "Gouverneur Morris described the delegates to the Philadelphia Convention as “plain honest men,” while Thomas Jefferson famously praised them as “an assembly of demigods.” How can these contrasting assessments of the Framers be explained?",
+  "bullets": [
+   "How does the Constitution’s structure reflect the Framers’ assumptions about human nature, political conflict, and the need for restraint?",
+   "Does the constitutional structure established by the Framers still function as originally intended within the context of contemporary government? Justify your answer."
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 2, Question 1",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u2-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 2,
+  "q": 2,
+  "published": true,
+  "stem": "While advocating for the adoption of the Constitution, one New Englander concluded that slavery was “absolutely inconsistent with every idea of justice and humanity.” What additional evidence from the founding period supports this contradiction between American ideals of liberty and the continued existence of slavery?",
+  "bullets": [
+   "How did the debates at the Philadelphia Convention reveal the more profound paradox of slavery in a nation founded on natural rights and the consent of the governed?",
+   "To what extent does this founding-era paradox between liberty and slavery continue to shape American constitutional conflicts and debates about rights and equality today?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 2, Question 2",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u2-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 2,
+  "q": 3,
+  "published": true,
+  "stem": "Some Federalists assumed that ratification would proceed smoothly because the Philadelphia Convention included “a Franklin and a Washington, the fathers of their country.” Why might Federalists have believed that personal authority and reputation would overcome political disagreement?",
+  "bullets": [
+   "What major constitutional issues ultimately made ratification a deeply contested and prolonged process, despite the prestige of the Framers?",
+   "Which set of arguments, Federalist or Anti-Federalist, do you find more persuasive in light of how the American constitutional system has actually developed?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 2, Question 3",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u3-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 3,
+  "q": 1,
+  "published": true,
+  "stem": "“The individual citizen has no federal constitutional right to vote for electors for the President of the United States unless and until the state legislature chooses a statewide election as the means to implement its power to appoint members of the electoral college.” Why did the Framers decide that the president should be chosen through the Electoral College rather than by a direct national vote?",
+  "bullets": [
+   "To what extent was the Framers’ design of the Electoral College consistent with the principles of equality, consent, and popular sovereignty expressed in the Declaration of Independence?",
+   "In light of both the Framers’ intentions and the modern workings of the Electoral College, do you support or oppose electing the president through the National Popular Vote Interstate Compact? Explain your response."
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 3, Question 1",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u3-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 3,
+  "q": 2,
+  "published": true,
+  "stem": "In his Farewell Address, President George Washington warned that “the alternate domination” of one party over another could create a “spirit of revenge” and lead to “a frightful despotism.” What examples from American history either support or challenge Washington’s warning about the dangers of partisan conflict?",
+  "bullets": [
+   "Why has the United States historically been dominated by only two major political parties at a time, despite Washington’s warning about factional conflict?",
+   "What are the main advantages and disadvantages of ranked-choice voting compared to the single-member plurality system used in most U.S. elections, and would adopting ranked-choice voting reduce the risks Washington warned about?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 3, Question 2",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u3-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 3,
+  "q": 3,
+  "published": true,
+  "stem": "Section 2 of the 15th Amendment authorizes Congress to enforce voting rights through “appropriate legislation.” What principles should guide the Supreme Court in determining the scope of Congress’s power to protect voters from discrimination?",
+  "bullets": [
+   "How did the Supreme Court’s decision in Shelby County v. Holder (2013) affect the voting rights of racial minorities?",
+   "Should voting laws that disproportionately affect racial minorities be challenged only when there is clear evidence of discriminatory intent by lawmakers, or is it sufficient to demonstrate the law’s harmful impact, even if that outcome was unintended?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 3, Question 3",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u4-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 4,
+  "q": 1,
+  "published": true,
+  "stem": "“By shifting responsibility to a less accountable branch, Congress protects itself from political censure—and deprives the people of the say the framers intended them to have.” In what ways has Congress delegated its constitutional powers to the executive and judicial branches, and what examples illustrate how this delegation operates in practice?",
+  "bullets": [
+   "Is Judge Thapar correct that excessive congressional delegation deprives the people of the influence and accountability the Framers intended them to have? Why or why not?",
+   "In your opinion, has Congress surrendered too much of its power to the other branches, and what reforms, if any, should Congress adopt to restore the balance of powers envisioned by the Framers?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 4, Question 1",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u4-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 4,
+  "q": 2,
+  "published": true,
+  "stem": "Under the Supreme Court’s major questions doctrine, administrative agencies generally cannot exercise “highly consequential power” without “clear congressional authorization.” What are the main justifications the Court has offered for this doctrine, and do you find those justifications persuasive? Why or why not?",
+  "bullets": [
+   "What political, institutional, and practical factors limit Congress’s ability to provide the kind of clear statutory authorization that the major questions doctrine demands?",
+   "To what extent should courts consider legislative intent when interpreting federal laws, especially in cases involving major national policy questions?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 4, Question 2",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u4-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 4,
+  "q": 3,
+  "published": true,
+  "stem": "United States v. Salerno (1987) states that “liberty is the norm, and detention prior to trial … is the carefully limited exception.” Under what circumstances, if any, should courts detain a presumptively innocent individual based on claims that the individual is dangerous?",
+  "bullets": [
+   "Should courts possess their own independent law enforcement or investigative agencies? Why or why not?",
+   "Historically, what factors have led the courts to trust claims made by the executive branch and its lawyers, especially in matters involving security or public safety? Do you think that trust remains justified today?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 4, Question 3",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u5-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 5,
+  "q": 1,
+  "published": true,
+  "stem": "Why does the Sixth Amendment protect the right to a trial “by an impartial jury” in criminal prosecutions, and what historical or constitutional purposes does this right serve?",
+  "bullets": [
+   "Do you agree with the Supreme Court’s decision in Ramos v. Louisiana (2020) that the Sixth Amendment requires a unanimous jury to convict a defendant? Why or why not?",
+   "Other than unanimity, what else should the right to an “impartial jury” require in criminal cases today, and why?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 5, Question 1",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u5-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 5,
+  "q": 2,
+  "published": true,
+  "stem": "Do you agree or disagree with the Supreme Court’s decision in Mahmoud v. Taylor (2025) that a public school’s use of LGBTQ+ storybooks—without parental notice or the opportunity for parents to opt their children out—unconstitutionally burdens parents’ free exercise of religion? Explain your reasoning using constitutional principles and relevant precedents.",
+  "bullets": [
+   "To what extent, if any, does the ruling in Mahmoud v. Taylor conflict with the establishment clause of the First Amendment?",
+   "How does the Supreme Court’s reasoning in Mahmoud v. Taylor relate to its broader shift in recent free exercise clause cases?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 5, Question 2",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u5-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 5,
+  "q": 3,
+  "published": true,
+  "stem": "Publius argued in Federalist 84 that enumerating specific rights in the Constitution could be “dangerous.” To what extent, if any, can listing particular rights actually undermine individual liberty?",
+  "bullets": [
+   "If some Framers believed a bill of rights was unnecessary or dangerous, why did Congress ultimately propose and adopt the Bill of Rights after ratification?",
+   "How has the Bill of Rights reshaped the relationship between the people and both the federal and state governments over time?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 5, Question 3",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u6-q1",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 6,
+  "q": 1,
+  "published": true,
+  "stem": "Thomas Jefferson wrote, “Wherever the people are well informed they can be trusted with their own government.” To what extent are the American people today well-informed enough to protect our constitutional democracy? Support your answer.",
+  "bullets": [
+   "How does a person’s media consumption influence how well-informed they are about political issues? Is it possible to consume large amounts of news and still remain uninformed? Explain your reasoning.",
+   "What actions can individuals take to ensure they have a thorough and accurate understanding of political issues, and what skills are necessary to critically analyze contemporary political information?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 6, Question 1",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u6-q2",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 6,
+  "q": 2,
+  "published": true,
+  "stem": "Nobel laureate Shirin Ebadi said, “Democracy doesn’t recognize east or west; democracy is simply people’s will. Therefore, I do not acknowledge that there are various models of democracy; there is just democracy itself.” Do you agree with this assessment? Why or why not?",
+  "bullets": [
+   "How would you define democracy? What distinctions, if any, would you make between different models of democracy?",
+   "What are the key indicators of a healthy democracy in the modern era, and how can they be used to evaluate whether a political system is functioning democratically in practice?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 6, Question 2",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
+  "id": "nf-2025-26-u6-q3",
+  "val_id": null,
+  "level": "NF",
+  "cycle": "2025-26",
+  "unit": 6,
+  "q": 3,
+  "published": true,
+  "stem": "“The Second Day of July 1776, will be the most memorable Epocha, in the History of America. … I am well aware of the Toil and Blood and Treasure, that it will cost Us to maintain this Declaration, and support and defend these States. — Yet through all the Gloom I can see the Rays of ravishing Light and Glory. I can see that the End is more than worth all the Means. And that Posterity will tryumph.” As we approach the semiquincentennial celebration of the Declaration of Independence, how accurate were these predictions of John Adams?",
+  "bullets": [
+   "What are the challenges of celebrating landmark dates of a nation’s past while still acknowledging the evolution beyond those historic circumstances?",
+   "Which plays a more vital role in shaping a nation’s identity today: continuity with its founding ideals or the capacity for change and adaptation?"
+  ],
+  "source": "CCE National Finals Hearing Questions 2025-26, Unit 6, Question 3",
+  "text_source": "NF_2025-26.md (sha256 161cee3cf0861c09), the owner's text extract of CCE's PDF; footnote markers removed"
+ },
+ {
   "id": "st-2025-26-u1-q1",
   "val_id": null,
   "level": "State",
@@ -5047,13 +6583,13 @@
   "unit": 4,
   "q": 1,
   "published": true,
-  "stem": "In 2016, a group of congressional scholars advocated for increased funding to hire more staff and to increase staff compensation for Congress, writing that “Congress has been doing government on the cheap for decades. And we get what we pay for.” In your opinion, should Congress invest more resources in itself ? Why or why not?",
+  "stem": "In 2016, a group of congressional scholars advocated for increased funding to hire more staff and to increase staff compensation for Congress, writing that “Congress has been doing government on the cheap for decades. And we get what we pay for.” In your opinion, should Congress invest more resources in itself? Why or why not?",
   "bullets": [
    "Are these scholars correct that Congress needs to devote greater attention and resources to its own work? Provide examples from recent decades that support your reasoning.",
    "What factors might explain why Congress has not invested in its own professional staff and other helpful resources over the last several decades?"
   ],
   "source": "CCE State Hearing Questions 2025-26, Unit 4, Question 1",
-  "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 4, pdftotext; footnote markers removed"
+  "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 4, pdftotext; footnote markers removed; corrected by eye against the page image (items/corrections.json)"
  },
  {
   "id": "st-2025-26-u4-q2",
@@ -5182,5 +6718,293 @@
   ],
   "source": "CCE State Hearing Questions 2025-26, Unit 6, Question 3",
   "text_source": "512cccef-WeThePeople_HearingQuestions_State_HighSchool_2025-2026.pdf (sha256 a2a98b7795538c14), page 6, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u1-q1",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 1,
+  "q": 1,
+  "published": true,
+  "stem": "According to the convention notes of James McHenry, at the conclusion of the 1787 Philadelphia Convention, Benjamin Franklin was asked what form of government the delegates had created. Franklin replied, “A republic, if you can keep it.” Why do you think Franklin believed that a republic could be difficult to preserve?",
+  "bullets": [
+   "How has American history both tested and strengthened the republican form of government Franklin described?",
+   "What responsibilities, if any, do citizens have in helping preserve our constitutional republic?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 1, Question 1",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 1, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u1-q2",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 1,
+  "q": 2,
+  "published": true,
+  "stem": "Ancient Greek and Roman thinkers, such as Aristotle and Polybius, believed that governments could become unstable when conflict between the rich and the poor grow so intense that political factions place their own interests above the common good. Why did they think that class conflict could lead people to accept a tyrant or an authoritarian ruler?",
+  "bullets": [
+   "How did the Founders draw upon classical ideas about preventing tyranny while preserving the principle of popular sovereignty in the Constitution?",
+   "To what degree have these safeguards proved successful throughout the course of American history?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 1, Question 2",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 1, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u1-q3",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 1,
+  "q": 3,
+  "published": true,
+  "stem": "In 1931, historian James Truslow Adams described the American Dream as the belief that life should be “better and richer and fuller for every man, with opportunity for each according to his ability or achievement.” How has the meaning of the American Dream changed over time, and how has the Constitution been used to expand or protect those changes?",
+  "bullets": [
+   "To what extent do the principles of the Declaration of Independence and the framework established by the Constitution support or limit the pursuit of the American Dream?",
+   "Does the Constitution promise equal opportunity, equal outcomes, or something else? How does that affect a citizen’s ability to pursue the American Dream?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 1, Question 3",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 1, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u2-q1",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 2,
+  "q": 1,
+  "published": true,
+  "stem": "John Dickinson, a delegate at the Philadelphia Convention, argued that slavery conflicted with republican principles and supported giving the national government authority over the importation of enslaved people rather than leaving that decision to the states. In what ways did competing views about slavery affect the debates at the Philadelphia Convention?",
+  "bullets": [
+   "How did the Convention’s compromises over slavery shape the constitutional relationship between the federal and state governments in the decades that followed?",
+   "What lessons, if any, should modern Americans draw from the Framers’ compromises over slavery when confronting constitutional issues that deeply divide the nation?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 2, Question 1",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 2, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u2-q2",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 2,
+  "q": 2,
+  "published": true,
+  "stem": "Rather than provide for annual elections, “The framers of this perfect government, as it is called, have departed from this democratical principle, and established bi-ennial elections, for the house of representatives … and sextennial for the senate …” For Anti-Federalists, why would the proposed terms for Congress be a flaw in the Constitution?",
+  "bullets": [
+   "What arguments did the Federalists present in favor of longer terms, and do you find their reasoning compelling? Why or why not?",
+   "If you could change the terms of office for members of Congress, what changes, if any, would you make? Defend your answer."
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 2, Question 2",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 2, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u2-q3",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 2,
+  "q": 3,
+  "published": true,
+  "stem": "“In the constitution of the senate there is much cunning and little wisdom; that we have much to fear from it, and little to hope, and then it must necessarily produce a baneful aristocracy, by which the democratic rights of the people will be overwhelmed.” Which features of the proposed Senate led Anti-Federalists to fear it would become an aristocratic institution?",
+  "bullets": [
+   "To what extent did subsequent developments, including the 17th Amendment, validate or alleviate those concerns?",
+   "How should the government in a constitutional republic balance accountability to the public and deliberation in decision-making?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 2, Question 3",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 2, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u3-q1",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 3,
+  "q": 1,
+  "published": true,
+  "stem": "One of the Constitution’s purposes, expressed in its Preamble, is to “secure the Blessings of Liberty to ourselves and our Posterity.” To what extent have the Supreme Court’s interpretations of the 14th Amendment’s due process and equal protection clauses helped fulfill that purpose?",
+  "bullets": [
+   "Which Supreme Court decision interpreting either the due process or the equal protection clause do you think has done the most to secure the “Blessings of Liberty”? Explain your reasoning.",
+   "What new constitutional amendment would you propose to better “secure the Blessings of Liberty” in America today? Why?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 3, Question 1",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 3, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u3-q2",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 3,
+  "q": 2,
+  "published": true,
+  "stem": "In 1862, Justice Benjamin Curtis described President Abraham Lincoln’s Emancipation Proclamation and his declaration of martial law as “military despotism” for which there was “no warrant whatever in the Constitution.” Was Justice Curtis’s criticism of Lincoln persuasive? Defend your answer.",
+  "bullets": [
+   "In your opinion, which constitutional provisions, historical precedents, or Supreme Court decisions best define the limits of the president’s wartime powers?",
+   "How should constitutional principles guide presidential action during a modern national emergency, such as a terrorist attack, cyberattack, or domestic rebellion?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 3, Question 2",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 3, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u3-q3",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 3,
+  "q": 3,
+  "published": true,
+  "stem": "In Trump v. Slaughter (2026), the Supreme Court overruled Humphrey’s Executor v. United States (1935), adopting a broader interpretation of the president’s removal power under Article II. How did the Court’s majority interpret the president’s Article II powers, and how did their interpretation differ from earlier understandings of presidential removal authority?",
+  "bullets": [
+   "What constitutional principles should guide the balance of power between Congress and the president in controlling the executive branch?",
+   "How might the Court’s reasoning in Trump v. Slaughter affect the constitutional balance of power between the president and independent executive agencies?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 3, Question 3",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 3, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u4-q1",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 4,
+  "q": 1,
+  "published": true,
+  "stem": "In Federalist 58, James Madison called Congress’s control over federal spending “the most complete and effectual weapon” the people’s representatives hold. Since the early 1980s, however, Congress has repeatedly found itself unable to agree on a federal budget. What are the constitutional and practical consequences of Congress’s inability to agree on a budget?",
+  "bullets": [
+   "How has Congress’s difficulty with budgeting affected the balance of power between Congress and the president?",
+   "Should Congress take back the spending power it has handed to the president, or is that delegation a practical necessity? Defend your view."
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 4, Question 1",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 4, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u4-q2",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 4,
+  "q": 2,
+  "published": true,
+  "stem": "Clinton Rossiter argued that “in time of crisis a democratic, constitutional government must be temporarily altered to whatever degree is necessary to overcome the peril and restore normal conditions.” Do you agree? Why or why not?",
+  "bullets": [
+   "Have efforts like the National Emergencies Act of 1976 effectively constrained presidential emergency power, or have they ratified its expansion? Defend your view.",
+   "When the president declines to end a declared national emergency, what institution, if any, should be empowered to do so?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 4, Question 2",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 4, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u4-q3",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 4,
+  "q": 3,
+  "published": true,
+  "stem": "“In Hawai’i, the Aloha Spirit inspires constitutional interpretation. … The spirit of Aloha clashes with a federally-mandated lifestyle that lets citizens walk around with deadly weapons during day-to-day activities.” When should states interpret their state constitutions independently from federal precedent?",
+  "bullets": [
+   "Under what circumstances, if any, should state courts interpret their state constitutions to provide fewer protections for individual rights than the federal Constitution?",
+   "How much, if at all, should federal courts consider local or state-specific history when determining whether a state statute is constitutional?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 4, Question 3",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 4, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u5-q1",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 5,
+  "q": 1,
+  "published": true,
+  "stem": "Cell phones can collect detailed information revealing where the cell phone user has been. How have courts applied the protections of the Fourth Amendment to technologies that the founding generation could not have anticipated?",
+  "bullets": [
+   "How compelling do you find the Court’s rationale in Chatrie v. United States (2026) that acquiring location data from a third party, such as Google, constitutes a “search”? Explain your position.",
+   "Under what circumstances should law enforcement officers be allowed to access this information without violating the Fourth Amendment?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 5, Question 1",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 5, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u5-q2",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 5,
+  "q": 2,
+  "published": true,
+  "stem": "In 2022, a federal appeals court concluded that “there is a First Amendment right to film the police performing their duties in public.” How have interactions between law enforcement and the public shaped the Supreme Court’s interpretation of the First Amendment?",
+  "bullets": [
+   "In your view, is the conclusion reached in Irizarry v. Yehia consistent with First Amendment principles? Why or why not?",
+   "How should courts balance First Amendment freedoms with legitimate governmental interests in maintaining public safety and order during interactions with law enforcement?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 5, Question 2",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 5, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u5-q3",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 5,
+  "q": 3,
+  "published": true,
+  "stem": "If a state decides to fund private schools, “it cannot disqualify some private schools solely because they are religious.” How have states and the Supreme Court approached the relationship between religion and public education over time?",
+  "bullets": [
+   "How does the debate over religious charter schools illustrate tensions between the free exercise and establishment clauses?",
+   "What constitutional principles should guide government decisions about providing public funding to religious schools?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 5, Question 3",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 5, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u6-q1",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 6,
+  "q": 1,
+  "published": true,
+  "stem": "Alexis de Tocqueville worried that, even without government censorship, the power of majority opinion could discourage people from expressing unpopular ideas. In Democracy in America, he wrote, “I know of no country in which there is so little independence of mind and real freedom of discussion as in America.” What danger did Tocqueville believe majority opinion posed to constitutional democracy?",
+  "bullets": [
+   "How have Americans throughout history challenged prevailing public opinion, and what obstacles have they faced in doing so?",
+   "In what ways has the modern digital age changed the dynamic between majority opinion, free expression, and civil discourse?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 6, Question 1",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 6, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u6-q2",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 6,
+  "q": 2,
+  "published": true,
+  "stem": "Political philosophers have long argued that legitimate governmental authority comes from the consent of the governed acting through constitutional institutions. Yet today, the Stanford Center for International Security and Cooperation observes that “there is extensive evidence of criminal, insurgent, and other non-state governance structures successfully controlling populations.” Why do non-state actors challenge the legitimacy and authority of governments?",
+  "bullets": [
+   "What examples best illustrate cooperation or competition between non-state actors and governments?",
+   "What constitutional principles should guide how governments respond when non-state actors exercise governmental functions or control territory?"
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 6, Question 2",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 6, pdftotext; footnote markers removed"
+ },
+ {
+  "id": "st-2026-27-u6-q3",
+  "val_id": null,
+  "level": "State",
+  "cycle": "2026-27",
+  "unit": 6,
+  "q": 3,
+  "published": true,
+  "stem": "Sports commentator Roger Bennett argues that when national teams compete, “their nations’ histories, their nations’ politics, their nations’ cultures take the field alongside them.” When athletes represent their nation in international competition, how should democracies balance individual liberty with national representation?",
+  "bullets": [
+   "How have historical examples of athletes expressing views that differ from those of their governments illustrated the tensions between individual liberty and national representation?",
+   "When conflicts arise, should an athlete’s constitutional rights or the government’s interest in national representation receive greater protection? Explain your reasoning."
+  ],
+  "source": "CCE State Hearing Questions 2026-27, Unit 6, Question 3",
+  "text_source": "WTP_StateQuestions_20262027.pdf (sha256 3e5248e70060b81e), page 6, pdftotext; footnote markers removed"
  }
 ]

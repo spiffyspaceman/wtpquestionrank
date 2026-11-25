@@ -134,8 +134,13 @@ describe("rounds", () => {
     expect((await admin(`/admin/api/rounds/${a}/open`, { body: {} })).status).toBe(409);
     expect((await admin(`/admin/api/rounds/${b}/open`, { body: {} })).status).toBe(409);
     expect((await admin(`/admin/api/rounds/${a}/close`, { body: {} })).status).toBe(200);
+    // A round can be renamed in any state; the old name goes in the audit log.
+    expect((await admin(`/admin/api/rounds/${a}/rename`, { body: { name: "  Test  " } })).status).toBe(200);
+    expect((await env.DB.prepare("SELECT name FROM rounds WHERE id = ?").bind(a).first<any>()).name).toBe("Test");
+    expect((await admin(`/admin/api/rounds/${a}/rename`, { body: { name: "" } })).status).toBe(400);
+    expect((await admin(`/admin/api/rounds/nope/rename`, { body: { name: "X" } })).status).toBe(404);
     const audit = await env.DB.prepare("SELECT action FROM admin_audit WHERE action LIKE '%_round'").all<any>();
-    expect(audit.results.map((r) => r.action)).toEqual(expect.arrayContaining(["create_round", "open_round", "freeze_round", "close_round"]));
+    expect(audit.results.map((r) => r.action)).toEqual(expect.arrayContaining(["create_round", "open_round", "freeze_round", "close_round", "rename_round"]));
   });
 });
 

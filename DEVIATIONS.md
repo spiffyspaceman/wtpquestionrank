@@ -197,3 +197,9 @@ applies again, so newcomers are paired first. Effects to keep in mind when readi
 centred on the average question, so every rating shifts a little when questions join; and voters who stopped before an
 addition never judged the late questions. The launch set is not open-ended and cannot be made so (a database trigger
 refuses it), so Round 1's 36 questions stay fixed.
+
+**25 November 2026: the first round is renamed "Test" (owner decision).** The round that opened on 25 November under
+the name "Round 1" (id `C5TW5gelpkQa`, item set `state-launch-v1`) is now named "Test". Claude changed the name in
+production through the D1 API at the owner's request and added an `admin_audit` row (`rename_round`, actor
+`claude-d1-token`). Nothing else about the round changed: 20 votes from one voter, the owner's test code. Where this
+file and the pre-registration say "Round 1" or "the first round", they mean this round.
