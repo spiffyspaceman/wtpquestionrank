@@ -4,7 +4,7 @@
 import { env } from "cloudflare:test";
 import { beforeEach, describe, expect, it } from "vitest";
 import itemsRaw from "../../items/launch_items_v1.json?raw";
-import { admin, call, getBatch, json, mockOutbound, openNewRound, voteN, voter, type ClientPair } from "./helpers";
+import { admin, call, type ClientPair, getBatch, json, mockOutbound, openNewRound, quorum, voteN, voter } from "./helpers";
 
 const items: { id: string; stem: string }[] = JSON.parse(itemsRaw).items;
 
@@ -15,6 +15,7 @@ describe("coverage gaps closed after the launch audit", () => {
     const round = await openNewRound();
     // A known order: of any two questions, the one whose stem comes first in the alphabet wins.
     const place = new Map([...items].sort((x, y) => (x.stem < y.stem ? -1 : 1)).map((i, k) => [i.stem, k]));
+    await quorum("other");
     const v = await voter("judge");
     await voteN(v.cookie, 260, (p: ClientPair) => (place.get(p.left.stem)! < place.get(p.right.stem)! ? "L" : "R"));
     const b = await json(call("/api/leaderboard", { cookie: v.cookie }));
@@ -72,6 +73,7 @@ describe("coverage gaps closed after the launch audit", () => {
 
   it("a swapped repeat does not count toward the twenty votes that open the leaderboard", async () => {
     await openNewRound();
+    await quorum("other");
     const v = await voter("judge");
     const key = (p: ClientPair) => [p.left.stem, p.right.stem].sort().join("|");
     const seen = new Set<string>();
@@ -97,6 +99,7 @@ describe("coverage gaps closed after the launch audit", () => {
 
   it("a revoked voter's reasons leave the leaderboard with their votes", async () => {
     await openNewRound();
+    await quorum("other");
     const a = await voter("judge");
     const b = await voter("judge");
     for (const p of (await getBatch(a.cookie)).pairs) await call("/api/vote", { cookie: a.cookie, body: { pairId: p.pairId, pick: "L", reasons: ["tradeoffs"] } });
@@ -106,7 +109,7 @@ describe("coverage gaps closed after the launch audit", () => {
     await admin("/admin/api/codes/revoke", { body: { label: a.label } });
     const after = await json(call("/api/leaderboard", { cookie: b.cookie }));
     expect(total(after)).toBe(0);
-    expect(after.votes).toBe(20);
+    expect(after.votes).toBe(22);
   });
 
   it("a POST without an Origin is refused as such, even with a live session; an expired session is no session", async () => {

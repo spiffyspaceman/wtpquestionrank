@@ -199,8 +199,9 @@ describe("admin: backup, invitation tracker, gate forecast", () => {
     expect(f.adultVotesNeeded).toBe(530);
     expect(f.itemsShort).toHaveLength(12);
     expect(f.itemsShort[0].games).toBeLessThanOrEqual(f.itemsShort[11].games);
-    expect(f.adultVotesPerDay).toBe(10);
-    expect(f.daysAtThisPace).toBe(53);
+    // Ten votes on one day; if the run crossed midnight UTC they fall on two days and the pace halves.
+    expect([10, 5]).toContain(f.adultVotesPerDay);
+    expect(f.daysAtThisPace).toBe(f.adultVotesPerDay === 10 ? 53 : 106);
     expect(f.ratersShort).toBe(15);
     expect(f.adultsUnderThreshold).toBe(1);
     expect(f.adultVotesToThreshold).toBe(10);

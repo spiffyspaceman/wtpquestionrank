@@ -279,6 +279,14 @@ async function answer(kind: "vote" | "skip"): Promise<void> {
         },
       });
     }
+    // Another device answered this pair first: its answer stands. Show what the server holds, not what was tapped here.
+    if ((r as AfterAnswer & { duplicate?: boolean }).duplicate && given) {
+      me.votes = r.votes;
+      me.unlocked = r.unlocked;
+      renderMe();
+      await fetchBatch();
+      return say(msg, "That pair was already answered on another device, and that answer stands.", "warn");
+    }
     p.answer = given ?? { skipped: true };
     me.votes = r.votes;
     me.unlocked = r.unlocked;

@@ -25,7 +25,8 @@ export default defineConfig({
           name: "node",
           environment: "node",
           include: ["src/rating/**/*.test.ts", "analysis/**/*.test.ts", "test/node/**/*.test.ts"],
-          testTimeout: 120_000,
+          // The end-to-end export test took 54 s on a busy machine (launch audit, 25 Nov 2026); leave it room.
+          testTimeout: 300_000,
         },
       },
       {

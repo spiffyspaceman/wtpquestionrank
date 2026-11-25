@@ -78,15 +78,19 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov (audit) | State 2019-20 U1Q1 is held out of play (`HELD` in `staging.ts`): its second bullet was cut off in transcription. The corrected text goes in under a new id when the owner sends the PDF page. |
 | 25 Nov (audit) | Footnotes: the "sponsored by" line of a special question and its marker are not shown; one address loses its download stamp. Both gave away level or year. |
 | 25 Nov (audit) | The leaderboard leads with rank: "#1" is the large figure and the rating sits beside it in small type (top card, list and table). |
+| 25 Nov (audit) | A skipped pair later voted on is one trial toward the 20-trial repeat gap. One swapped repeat per batch stays. |
+| 25 Nov (audit) | The adults board, like a role board, waits for three voters in the round; a voter with no open board is told so and nothing is marked seen. |
+| 25 Nov (audit) | Leaderboard layout: the list of #2 to #10 has the full width and the Explore charts follow it. Head-to-head counts go to the page added up by group, never per pair of questions. |
 
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 184 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 196 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # typecheck, then pages into dist/ (so the deploy cannot ship a type error)
-npm run test:ui        # browser smoke test, 50 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
+npm run test:ui        # browser smoke test, 54 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
+npm run premerge       # all of the above in order; run it before merging anything that touches src/web
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)
 ```
 
@@ -102,7 +106,10 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
   the repo), `build_round_sets.py` and `rounds/all.json` (every question in one item file, bundled by
   `src/worker/builtin-sets.ts`), `corrections.json` (fixes made by eye against page images), `check_links.py` and
   `links.json` (which footnote links were checked; read by `src/worker/notes.ts`).
-- `test/worker/` (workerd, local D1) and `test/node/` (hashes, export shape, end-to-end with Miniflare).
+- `test/worker/` (workerd, local D1) and `test/node/` (hashes, export shape, end-to-end with Miniflare). In a test, a
+  voter sees a board only once three voters stand behind it: `quorum()` in `test/worker/helpers.ts` adds two.
+- `analysis/first_group.ts` (not frozen): cuts a staged round's export down to the votes among the 36 launch
+  questions cast before the second group joined, for an exploratory run of `analyze.ts` beside method A and A2.
 - Production: Cloudflare Worker `wtpquestionrank`, D1 database `wtpquestionrank` (id in `wrangler.jsonc`), secrets
   `CODE_PEPPER` and `TURNSTILE_SECRET` (values never in the repo). Never change `CODE_PEPPER` mid-round: every code
   and link would stop working.

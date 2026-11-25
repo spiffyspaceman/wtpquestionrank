@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import launch from "../../items/launch_items_v1.json";
 import { BUILTIN_SETS } from "../../src/worker/builtin-sets";
 import { firstGroup, HELD, nextGroup, STAGE, type StageItem } from "../../src/worker/staging";
-import { admin, call, getBatch, json, mockOutbound, voteN, voter } from "./helpers";
+import { admin, call, getBatch, json, mockOutbound, quorum, voteN, voter } from "./helpers";
 
 const SET = BUILTIN_SETS[0];
 const ALL = (SET.file.items as { id: string; level: string; unit: number }[]).map((i) => ({ id: i.id, level: i.level, unit: i.unit }));
@@ -106,6 +106,7 @@ describe("staged rounds", () => {
 
     const v = await voter("judge");
     await voteN(v.cookie, 20);
+    await quorum("other");
     const shown = await env.DB.prepare("SELECT left_q, right_q FROM batch_pairs bp JOIN batches b ON b.id = bp.batch_id WHERE b.round_id = ?").bind(round).all<{ left_q: string; right_q: string }>();
     expect(shown.results.length).toBeGreaterThanOrEqual(20);
     for (const p of shown.results) expect(LAUNCH.has(p.left_q) && LAUNCH.has(p.right_q)).toBe(true);
@@ -128,6 +129,7 @@ describe("staged rounds", () => {
 
   it("the next group joins once every question in play has 12 adult comparisons, and not on student votes alone", async () => {
     const round = await openFullRound();
+    await quorum("other");
     const v = await voter("judge");
     await getBatch(v.cookie);
     expect(await inPlay(round)).toHaveLength(36);
@@ -185,6 +187,7 @@ describe("staged rounds", () => {
     expect(await inPlay(round)).toHaveLength(0);
     const v = await voter("judge");
     await voteN(v.cookie, 20);
+    await quorum("other");
     const board = await json(call("/api/leaderboard", { cookie: v.cookie }));
     // Every question but the held one, which is in play in no round, staged or not.
     expect(board.rows).toHaveLength(REACHABLE);
@@ -214,6 +217,7 @@ describe("staged rounds", () => {
     const round = await openFullRound();
     const v = await voter("judge");
     await voteN(v.cookie, 20);
+    await quorum("other");
     await call("/api/leaderboard", { cookie: v.cookie });
     const start = await json(admin("/admin/api/backup"));
     const names = start.tables.map((t: { name: string }) => t.name);

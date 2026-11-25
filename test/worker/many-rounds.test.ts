@@ -2,7 +2,7 @@
 // round with the fewest batches, the leaderboard flag is kept round by round, and the unlock counts votes over all rounds.
 import { env } from "cloudflare:test";
 import { beforeEach, describe, expect, it } from "vitest";
-import { admin, call, getBatch, ITEM_SET, json, loadItems, mockOutbound, voteN, voter } from "./helpers";
+import { admin, call, getBatch, ITEM_SET, json, loadItems, mockOutbound, quorum, voteN, voter } from "./helpers";
 
 /** Close everything, then open `n` rounds on the launch item set. */
 async function openRounds(n: number): Promise<string[]> {
@@ -53,11 +53,13 @@ describe("several open rounds", () => {
 
   it("the leaderboard opens at 20 votes over all rounds, and after_board is kept round by round", async () => {
     const rounds = await openRounds(2);
+    await quorum("other", 4); // two more adults in each round: a board is shown once three stand behind it
     const v = await voter("judge");
     await voteN(v.cookie, 19);
     expect((await call("/api/leaderboard", { cookie: v.cookie })).status).toBe(403);
     await voteN(v.cookie, 1); // 10 in each round
-    const count = async (r: string) => (await env.DB.prepare("SELECT count(*) AS n, sum(after_board) AS ab FROM votes WHERE round_id = ?").bind(r).first<{ n: number; ab: number }>())!;
+    const count = async (r: string) =>
+      (await env.DB.prepare("SELECT count(*) AS n, sum(after_board) AS ab FROM votes WHERE round_id = ? AND voter_id = (SELECT id FROM voters WHERE label = ?)").bind(r, v.label).first<{ n: number; ab: number }>())!;
     expect([(await count(rounds[0])).n, (await count(rounds[1])).n]).toEqual([10, 10]);
 
     // Open the board of the second round only.
@@ -75,12 +77,14 @@ describe("several open rounds", () => {
     // The round export carries that round's first view, or none.
     const ex0 = await json(admin(`/admin/api/rounds/${rounds[0]}/export.json`));
     const ex1 = await json(admin(`/admin/api/rounds/${rounds[1]}/export.json`));
-    expect(ex0.voters[0].board_seen_at).toBeNull();
-    expect(ex1.voters[0].board_seen_at).toBeTruthy();
+    const mine = (ex: { voters: { label: string; board_seen_at: string | null }[] }) => ex.voters.find((x) => x.label === v.label)!;
+    expect(mine(ex0).board_seen_at).toBeNull();
+    expect(mine(ex1).board_seen_at).toBeTruthy();
   });
 
   it("with no round asked for, the board shown is the round the voter has judged most; an unknown id falls back to it", async () => {
     const rounds = await openRounds(2);
+    await quorum("other", 4);
     const v = await voter("judge");
     await voteN(v.cookie, 30); // batches go 0, 1, 0: twenty in the first round
     const b = await json(call("/api/leaderboard", { cookie: v.cookie }));

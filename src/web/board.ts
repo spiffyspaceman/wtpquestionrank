@@ -25,15 +25,15 @@ interface Board {
   round: { id: string; name: string; state: string };
   /** A round that opens its questions in groups: how many are in play (the rows) out of how many in all. */
   staged: { inPlay: number; total: number } | null;
-  /** The viewer's own role board, while it waits for enough voters in that role; null once it is open. */
-  roleBoard: { name: string; need: number } | null;
+  /** Boards the viewer may see that still wait for enough voters behind them. */
+  waiting: { name: string; need: number }[];
   /** Every round with a board, when there is more than one. */
   rounds: { id: string; name: string }[];
   votes: number;
   intervalsAsOf: string | null;
   rows: Row[];
-  /** [i, j, wins of row i over row j, comparisons], by position in rows. */
-  pairs: [number, number, number, number][];
+  /** Head-to-head counts by group, per grouping: how often a question of group a beat one of group b. */
+  h2h: Record<string, { a: string; b: string; aw: number; n: number }[]>;
 }
 
 const msg = $("#msg");
@@ -517,20 +517,20 @@ function renderH2H(): void {
     select("cH", "Compare", Object.entries(GROUPS).filter(([k]) => k !== "reason").map(([k, g]) => [k, g.label]), by, rerender("h.by")),
   );
   const G = GROUPS[by] ?? GROUPS.unit;
-  // Every question in play counts here, ranked or not: the cells are plain win counts between groups.
+  // Every question in play counts here, ranked or not: the cells are plain win counts between groups, which the
+  // server has already added up (nothing per question is sent).
   const gs = grouped(rows, G);
-  const of = new Map<number, number>();
-  gs.forEach((g, gi) => g.rows.forEach((r) => of.set(rows.indexOf(r), gi)));
+  const of = new Map(gs.map((g, gi) => [g.label, gi]));
   const k = gs.length;
   const wins = Array.from({ length: k }, () => new Array(k).fill(0));
   const games = Array.from({ length: k }, () => new Array(k).fill(0));
-  for (const [i, j, iw, n] of board?.pairs ?? []) {
-    const a = of.get(i)!, b = of.get(j)!;
-    if (a === b) continue;
-    wins[a][b] += iw;
-    wins[b][a] += n - iw;
-    games[a][b] += n;
-    games[b][a] += n;
+  for (const cell of board?.h2h[GROUPS[by] ? by : "unit"] ?? []) {
+    const a = of.get(cell.a), b = of.get(cell.b);
+    if (a === undefined || b === undefined || a === b) continue;
+    wins[a][b] += cell.aw;
+    wins[b][a] += cell.n - cell.aw;
+    games[a][b] += cell.n;
+    games[b][a] += cell.n;
   }
   const chart = $("#chart");
   const head = el("tr", {}, el("th", { scope: "col" }, `${G.label} (row) beat`), ...gs.map((g) => el("th", { scope: "col", class: "num" }, g.label)), el("th", { scope: "col", class: "num" }, "All others"));
@@ -753,8 +753,12 @@ async function load(p?: string, round?: string): Promise<void> {
     b = await api<Board>("/api/leaderboard" + (q.size ? `?${q}` : ""));
   } catch (err) {
     if (err instanceof ApiError && err.status === 404) return location.replace("/");
-    // The viewer's own role board is not open in this round (fewer than three voters in the role): show the adults board.
-    if (err instanceof ApiError && err.body.error === "pool_too_small" && p !== "adults") return load("adults", round);
+    // The board asked for is not open in this round (too few voters behind it): show whichever one is.
+    if (err instanceof ApiError && err.body.error === "pool_too_small" && p) return load(undefined, round);
+    if (err instanceof ApiError && err.body.error === "too_few_voters") {
+      show($("#content"), false);
+      return say(msg, `The leaderboard opens once ${err.body.need} people have voted. Check back soon.`, "warn");
+    }
     if (err instanceof ApiError && err.body.error === "locked")
       return say(msg, `The leaderboard opens after ${err.body.unlockAt} votes. You have ${err.body.votes} so far.`, "warn");
     return say(msg, "Could not load the leaderboard. Try again.", "error");
@@ -774,8 +778,10 @@ async function load(p?: string, round?: string): Promise<void> {
   );
   // One board only: no tabs to choose between, and a line saying when the viewer's own role gets its board.
   show($("#tabs"), b.pools.length > 1);
-  $("#roleNote").textContent = b.roleBoard ? `A board for your own role (${b.roleBoard.name}) opens once ${b.roleBoard.need} people in it have voted.` : "";
-  show($("#roleNote"), Boolean(b.roleBoard));
+  $("#roleNote").textContent = b.waiting
+    .map((w) => (w.name === "All adults" ? `The All adults board opens once ${w.need} adults have voted.` : `A board for your own role (${w.name}) opens once ${w.need} people in it have voted.`))
+    .join(" ");
+  show($("#roleNote"), b.waiting.length > 0);
   // With several rounds, a picker; the pool chosen stays the same across rounds.
   const sel = $<HTMLSelectElement>("#roundSel");
   sel.replaceChildren(...b.rounds.map((x) => el("option", { value: x.id }, x.name)));

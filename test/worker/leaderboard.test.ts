@@ -2,7 +2,7 @@
 // the voter may not see.
 import { env } from "cloudflare:test";
 import { beforeEach, describe, expect, it } from "vitest";
-import { admin, call, json, mockOutbound, openNewRound, voteN, voter } from "./helpers";
+import { admin, call, json, mockOutbound, openNewRound, quorum, voteN, voter } from "./helpers";
 import itemsRaw from "../../items/launch_items_v1.json?raw";
 
 const ids: string[] = JSON.parse(itemsRaw).items.map((i: { id: string }) => i.id);
@@ -31,6 +31,15 @@ describe("leaderboard", () => {
     const v = await voter("coach");
     await voteN(v.cookie, 20);
     expect((await json(call("/api/me", { cookie: v.cookie }))).unlocked).toBe(true);
+    // One adult has voted: no board is shown yet, and none is marked as seen (owner decision, 25 Nov 2026).
+    const alone = await call("/api/leaderboard", { cookie: v.cookie });
+    expect(alone.status).toBe(403);
+    expect(await alone.json()).toMatchObject({ error: "too_few_voters", need: 3 });
+    expect(await env.DB.prepare("SELECT 1 FROM round_board_seen s JOIN voters u ON u.id = s.voter_id WHERE u.label = ?").bind(v.label).first()).toBeNull();
+    const [one] = await quorum("other", 1);
+    expect((await call("/api/leaderboard", { cookie: v.cookie })).status).toBe(403);
+    await quorum("other", 1);
+    void one;
     const r = await call("/api/leaderboard", { cookie: v.cookie });
     expect(r.status).toBe(200);
     expect(r.headers.get("x-robots-tag")).toMatch(/noindex/);
@@ -39,7 +48,7 @@ describe("leaderboard", () => {
     expect(b.pool).toBe("adults");
     // One coach has voted: the coaches' own board waits for three (owner decision, 25 Nov 2026).
     expect(b.pools.map((p: { id: string }) => p.id)).toEqual(["adults"]);
-    expect(b.roleBoard).toEqual({ name: "Coach", need: 3 });
+    expect(b.waiting).toEqual([{ name: "Coach", need: 3 }]);
     const early = await call("/api/leaderboard?pool=coach", { cookie: v.cookie });
     expect(early.status).toBe(403);
     expect(await early.json()).toMatchObject({ error: "pool_too_small", need: 3 });
@@ -49,7 +58,7 @@ describe("leaderboard", () => {
       await voteN(other.cookie, 1);
       const again = await json(call("/api/leaderboard", { cookie: v.cookie }));
       expect(again.pools.map((p: { id: string }) => p.id)).toEqual(k === 3 ? ["adults", "coach"] : ["adults"]);
-      expect(again.roleBoard).toEqual(k === 3 ? null : { name: "Coach", need: 3 });
+      expect(again.waiting).toEqual(k === 3 ? [] : [{ name: "Coach", need: 3 }]);
       if (k === 3) {
         await admin("/admin/api/codes/revoke", { body: { label: other.label } });
         expect((await json(call("/api/leaderboard", { cookie: v.cookie }))).pools).toHaveLength(1);
@@ -73,19 +82,26 @@ describe("leaderboard", () => {
     const id = await openNewRound();
     const s = await voter("student");
     await voteN(s.cookie, 20);
-    // The students' board opens once three students have voted.
+    // The students' board opens once three students have voted; so does the adults board, with three adults.
     expect((await call("/api/leaderboard?pool=student", { cookie: s.cookie })).status).toBe(403);
     for (let k = 0; k < 2; k++) await voteN((await voter("student")).cookie, 1);
     const own = await json(call("/api/leaderboard?pool=student", { cookie: s.cookie }));
     expect(own.votes).toBe(22);
+    // With no pool asked for and the adults board still waiting, a student is shown the students' board.
+    const first = await json(call("/api/leaderboard", { cookie: s.cookie }));
+    expect(first).toMatchObject({ pool: "student", waiting: [{ name: "All adults", need: 3 }] });
+    expect((await call("/api/leaderboard?pool=adults", { cookie: s.cookie })).status).toBe(403);
+    await quorum("other", 3);
     const adults = await json(call("/api/leaderboard?pool=adults", { cookie: s.cookie }));
-    expect(adults.votes).toBe(0);
+    expect(adults.votes).toBe(3);
+    expect((await json(call("/api/leaderboard", { cookie: s.cookie }))).pool).toBe("adults");
     expect((await call("/api/leaderboard?pool=judge", { cookie: s.cookie })).status).toBe(403);
     void id;
   });
 
   it("records the first view, and every later vote carries after_board = 1", async () => {
     await openNewRound();
+    await quorum("other"); // two more adults, so three stand behind the adults board
     const v = await voter("judge");
     await voteN(v.cookie, 20);
     await call("/api/leaderboard", { cookie: v.cookie });
@@ -108,6 +124,7 @@ describe("leaderboard", () => {
 
   it("shows interval bounds once the admin saves a snapshot", async () => {
     const id = await openNewRound();
+    await quorum("other"); // two more adults, so three stand behind the adults board
     const v = await voter("judge");
     await voteN(v.cookie, 20);
     const input = await json(admin(`/admin/api/rounds/${id}/bootstrap-input`));
@@ -124,6 +141,7 @@ describe("leaderboard", () => {
 
   it("drops saved intervals when a voter in the round is revoked", async () => {
     const id = await openNewRound();
+    await quorum("other"); // two more adults, so three stand behind the adults board
     const keep = await voter("judge");
     const gone = await voter("judge");
     await voteN(keep.cookie, 20);
@@ -136,6 +154,6 @@ describe("leaderboard", () => {
     const b = await json(call("/api/leaderboard", { cookie: keep.cookie }));
     expect(b.intervalsAsOf).toBeNull();
     expect(b.rows.every((r: { lo: number | null }) => r.lo === null)).toBe(true);
-    expect(b.votes).toBe(20);
+    expect(b.votes).toBe(22);
   });
 });

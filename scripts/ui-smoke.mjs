@@ -201,6 +201,15 @@ try {
   // Finish the batch
   await page.goto(B + "/vote");
   await page.waitForSelector("#judge:not([hidden])");
+  // Another device answers the pair on screen first: that answer stands, and the page says so and moves on.
+  const elsewhere = (await get("/api/batch", session)).pairs.find((x) => x.answer === null);
+  await post("/api/vote", { pairId: elsewhere.pairId, pick: "R", closeCall: false, clientMs: 1000 }, session);
+  await page.click("#leftCard");
+  await page.click("#next");
+  await page.waitForFunction(() => document.querySelector("#msg").textContent.includes("another device"), null, { timeout: 5000 }).catch(() => {});
+  check((await text("#msg")).includes("another device"), "a pair answered on another device first is reported, not shown as saved here");
+  const held = (await get("/api/batch", session)).pairs.find((x) => x.pairId === elsewhere.pairId);
+  check(held.answer.pick === "R", "and the first answer is the one that stands");
   let linkTried = false, noteSent = false, sawNotes = false;
   for (let i = 0; i < 10 && !(await page.isVisible("#between")); i++) {
     sawNotes ||= (await page.locator(".card .fnotes").count()) > 0;
@@ -241,6 +250,16 @@ try {
     const more = await get("/api/batch", session);
     for (const p of more.pairs.filter((x) => x.answer === null)) await post("/api/vote", { pairId: p.pairId, pick: "L", closeCall: false, clientMs: 30000 }, session);
   }
+  // One adult has voted: no board yet. Two more adults with a vote each, and it opens.
+  await page.goto(B + "/board");
+  await page.waitForFunction(() => !document.querySelector("#msg").hidden && document.querySelector("#msg").textContent.includes("opens once"));
+  check((await text("#msg")).includes("opens once 3 people have voted") && !(await page.isVisible("#content")), "with one voter the leaderboard waits for three");
+  for (let j = 0; j < 2; j++) {
+    const c = (await post("/admin/api/codes", { role: "other", count: 1 }, adm)).json.codes[0];
+    const s = (await post("/api/redeem", { code: c.code, turnstileToken: "smoke-token" })).cookie;
+    const one = (await get("/api/batch", s)).pairs[0];
+    await post("/api/vote", { pairId: one.pairId, pick: "L", closeCall: false, clientMs: 30000 }, s);
+  }
   await page.goto(B + "/board");
   await page.waitForSelector("#content:not([hidden])");
   check(/\d+ votes\./.test(await text("#summary")), "the leaderboard opens after twenty votes and says how many votes it rests on");
@@ -266,6 +285,11 @@ try {
   await page.waitForSelector("#top .hero-card");
   check((await text("#top .hero-card .score strong")) === "#1" && /^rating \d+$/.test(await text("#top .hero-card .score .rating")), "the top card leads with the rank, the rating beside it");
   check((await page.locator("#top10 > li").count()) === 9 && (await text("#top10 > li >> nth=0 >> .score strong")) === "#2", "the list carries on from #2 to #10");
+  const wide = await page.evaluate(() => {
+    const list = document.querySelector("#top10").getBoundingClientRect(), main = document.querySelector("main").getBoundingClientRect(), ex = document.querySelector("#explore").getBoundingClientRect();
+    return list.width > main.width * 0.8 && ex.top >= list.bottom;
+  });
+  check(wide, "the list has the full width and the charts come after it");
   check(await page.isVisible("#explore") && (await page.locator("#chart svg").count()) === 1, "the charts appear once questions are ranked");
   for (const t of ["scatter", "dist", "h2h"]) await page.click(`#tab-${t}`);
   check((await page.locator("#chart table.heat").count()) === 1, "each chart tab draws, the head-to-head table last");

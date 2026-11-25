@@ -278,3 +278,22 @@ bullet changed.
 its rank as the large figure ("#1") with its rating in small type beside it, in the top card, the list and the
 table; the "Top question" label over the first card is gone. The numbers themselves are unchanged. Effect on votes:
 none expected beyond what the leaderboard already has; recorded because voters see it.
+
+**25 November 2026: the rest of the launch audit's recommendations (owner decisions; built and merged the same day).**
+- **A skipped pair that is later voted on counts as one trial.** PREREG §4 puts the swapped repeat at least 20
+  trials after the first showing. Going back to vote on a skipped pair used to add two trials (the skip and the
+  vote), so a repeat could come one real trial early. The skip is now left out of the count once the pair has a
+  vote. `src/rating/pairs.ts` is unchanged; the Worker hands it the corrected count. One swapped repeat per batch
+  stays (the owner weighed dropping it and kept it as the only check on rater consistency).
+- **The adults board waits for three adult voters**, as a role's own board already did. Until then a voter who has
+  20 votes is told the leaderboard opens once three people have voted, and nothing is marked as seen. A student whose
+  own board is open before the adults board is shown the students' board.
+- **The leaderboard's list has the full width and the charts come after it.** On a wide screen the list of #2 to #10
+  sat in a narrow column beside the charts.
+- **Head-to-head counts are sent already added up by group** (unit, year, question number, quote in the stem).
+  The page used to receive one row per pair of questions, from which a reader could work out an unranked question's
+  wins, or one voter's picks in a small pool.
+- **The home page says whether voting has yet to open or has ended** when no round is open, and the voting page says
+  so when another device answered a pair first (that first answer stands, as before).
+Effect on votes: none expected from the last four; the first changes when a repeat can appear, by one trial, for a
+voter who skipped a pair and went back to it. No frozen file, threshold, item or measure changes.

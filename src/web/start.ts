@@ -6,6 +6,8 @@ interface Me {
   unlockAt: number;
   unlocked: boolean;
   open: boolean;
+  /** No round is open and none is waiting to open. */
+  ended: boolean;
   batch: { size: number; remaining: number } | null;
 }
 
@@ -38,7 +40,7 @@ async function init(): Promise<void> {
   $("#votesWord").textContent = plural(me.votes, "pair judged", "pairs judged");
 
   const open = me.open;
-  $("#roundLine").textContent = open ? "" : "Voting is closed right now";
+  $("#roundLine").textContent = open ? "" : me.ended ? "Voting has ended. Thank you for your votes." : "Voting has not opened yet.";
 
   const unlock = $("#unlockLine");
   if (me.unlocked) {

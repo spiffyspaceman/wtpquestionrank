@@ -510,23 +510,33 @@ adminApi.post("/codes", async (c) => {
   if (typeof role !== "string" || !(ROLES as readonly string[]).includes(role) || !count) return c.json({ error: "bad_request" }, 400);
   if (!c.env.CODE_PEPPER) return c.json({ error: "not_configured", message: "CODE_PEPPER is not set." }, 503);
   const name = ROLE_NAMES[role];
-  const labels = await db.prepare("SELECT label FROM voters WHERE label LIKE ?").bind(`${name} %`).all<{ label: string }>();
-  let next = 1 + Math.max(0, ...labels.results.map((l) => Number(l.label.slice(name.length + 1)) || 0));
   const now = nowIso();
-  const out: { label: string; role: string; code: string }[] = [];
-  const stmts: D1PreparedStatement[] = [];
-  for (let k = 0; k < count; k++) {
-    const id = randomId();
-    const code = await inviteCode(c.env, id);
-    const label = `${name} ${String(next++).padStart(2, "0")}`;
-    out.push({ label, role, code });
-    stmts.push(
-      db
-        .prepare("INSERT INTO voters (id, code_hash, role, label, is_owner, created_at) VALUES (?, ?, ?, ?, ?, ?)")
-        .bind(id, await codeHash(c.env, code), role, label, owner ? 1 : 0, now),
-    );
+  let out: { label: string; role: string; code: string }[] = [];
+  // Two requests at the same moment can choose the same labels; the loser reads the labels again and retries.
+  for (let attempt = 0; ; attempt++) {
+    const labels = await db.prepare("SELECT label FROM voters WHERE label LIKE ?").bind(`${name} %`).all<{ label: string }>();
+    let next = 1 + Math.max(0, ...labels.results.map((l) => Number(l.label.slice(name.length + 1)) || 0));
+    out = [];
+    const stmts: D1PreparedStatement[] = [];
+    for (let k = 0; k < count; k++) {
+      const id = randomId();
+      const code = await inviteCode(c.env, id);
+      const label = `${name} ${String(next++).padStart(2, "0")}`;
+      out.push({ label, role, code });
+      stmts.push(
+        db
+          .prepare("INSERT INTO voters (id, code_hash, role, label, is_owner, created_at) VALUES (?, ?, ?, ?, ?, ?)")
+          .bind(id, await codeHash(c.env, code), role, label, owner ? 1 : 0, now),
+      );
+    }
+    try {
+      // In batches of at most 50, each one transaction: production D1 refuses very large batches.
+      for (const part of chunks(stmts, 50)) await db.batch(part);
+      break;
+    } catch (e) {
+      if (!isUniqueViolation(e) || attempt >= 3 || count > 50) throw e;
+    }
   }
-  await db.batch(stmts);
   await audit(c, "create_codes", { role, count, owner, labels: out.map((o) => o.label) });
   return c.json({ ok: true, codes: out });
 });

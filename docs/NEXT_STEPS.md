@@ -13,17 +13,18 @@ the next steps", answer from this file and update it as steps finish.*
   (id `ZF_IZnsCUnZU`), is a **draft**: no batch, no vote.
 - Four codes exist, all revoked. No live code.
 
-**On the dev branch `claude/lucid-cannon-64slmj`, not on `main` (184 tests pass; typecheck passes; the browser smoke
-test passes 50 checks):**
+**Merged to `main` on 25 Nov 2026 at the owner's word ("build, merge, and ship"); 196 tests pass, the typecheck
+passes, and the browser smoke test passes 54 checks.** What went live with it:
 - **Staged opening** (migration 0008): the round opens with the 36 launch questions in play and adds 24 at a time
   whenever every question in play has 12 adult comparisons. The deploy marks the draft round as staged.
-- The leaderboard shows no rating for an unranked question, says how many questions are in play and ranked, and
-  offers a role's own board once three voters in that role have voted.
-- `/start` puts the task first on a first visit.
+- **Leaderboard:** rank leads; no rating for an unranked question; the list has the full width with the charts
+  after it; a board (All adults, or a voter's own role) shows once three voters stand behind it; head-to-head counts
+  are sent added up by group.
+- **`/start`** puts the task first on a first visit and says whether voting has yet to open or has ended.
+- **Pairing:** a skipped pair that is later voted on counts as one trial toward the repeat gap.
 - One question with a cut-off bullet is held out of play; two footnote details that gave away level or year are not
   shown; five footnote slips are corrected.
-- Fixes from the code review: a rare race on a double submit, a revoke that could stop half-done, a batch issued
-  into a round that had just closed, a round opened on a half-loaded set, and a table missing from the backup.
+- Fixes from the code reviews, and the tests that guard them (`docs/AUDIT_2026-11-25_launch.md`).
 
 ## Owner: to go live
 
@@ -31,8 +32,7 @@ test passes 50 checks):**
    upgraded on 25 November; the saved API token cannot read the plan, so Claude could not check. It matters from the
    start: choosing a batch took about 8 ms in Node with 36 to 60 questions in play, 11 ms at 84, 25 ms at 108 and
    39 ms at 132, against the Free plan's 10 ms per request. On Free, voting would begin to fail as the round grows.
-1. **Say "merge".** A push to `main` deploys: the tests run, migration 0008 is applied, then the Worker goes live.
-   Nothing changes for voters until a round is open.
+1. **Done 25 Nov:** merged and deployed; production checked afterwards (see "Deploy check" below).
 2. In `/admin`, a notice at the top says the full question set has corrected footnotes to load. Press **Load it now**.
    No question is added and no question text changes.
 3. Under **Rounds**, "All questions" should read "437; opens with 36, 24 more join by themselves at 12 adult
@@ -42,7 +42,8 @@ test passes 50 checks):**
    it with your list of names. Send each person their link.
 5. **Cast a few votes yourself first** with a throwaway code, on a phone and on a computer, then revoke that code
    (the analysis and the board exclude revoked codes). Things to try: a pick, two reasons, Other with a few words,
-   Close call, Skip, Back and a changed answer, Batch done, and the leaderboard at 20 votes.
+   Close call, Skip, Back and a changed answer, and Batch done. The leaderboard needs 20 votes and three adult
+   voters behind it, so with your throwaway code alone it will say it opens once three people have voted.
 6. **Send Claude page 1 of CCE's 2019-20 State questions PDF** (Unit 1). Question 1's second bullet was cut off in
    transcription ("...taught us about"), so that question is held out of play until its full text is added.
 
@@ -75,9 +76,10 @@ test passes 50 checks):**
   audit report, "Question texts").
 - After a week of votes: read the vote counts and the pace, and tell the owner whether 24 at 12 comparisons is the
   right step. Both numbers are in `src/worker/staging.ts`.
-- Open, none urgent: `GET /api/batch` reads the whole vote log through a view (fine below about 20,000 votes); the
-  leaderboard's reasons query does the same; the page ignores `duplicate` from another device; a skipped pair later
-  voted on counts as two trials toward the repeat gap; `/start` says nothing special after the last round closes.
+- Before any merge that touches `src/web`: `npm run premerge` (the browser test cannot run in Cloudflare's build).
+- Open, none urgent: the leaderboard's reasons query reads the round's votes through the views on each view (fine
+  below about 20,000 votes; a cache table is the fix if it is ever needed); five footnote addresses recorded as
+  dead could not be rechecked from this environment (the proxy answers 403 or 404 for hosts it refuses).
 
 ## What to expect from the data
 
@@ -124,8 +126,16 @@ set**. In a staged round that is already open, added questions come into play at
 Method A (30 judges, 3,780 judgments) and A2 (the same with the human arm's guidance and reasons; all 30 judges kept,
 a 26-judge fit beside it) cover the 36 launch questions. The registered comparison ended without a verdict when
 "Test" closed. The votes on the first 36 questions of "All questions", cast before the second group joins, can be
-compared with A and A2 as an exploratory analysis: filter the round's export to pairs among the 36, then run
-`analysis/analyze.ts` with `--llm-out llm-arm/out`, `llm-arm/out-a2` and `llm-arm/out-a2-without4`.
+compared with A and A2 as an exploratory analysis. `analysis/first_group.ts` makes that slice from the round's JSON
+export and the full backup (which says when each question joined):
+
+```
+npx tsx analysis/first_group.ts --export round.json --backup wtpqr-backup.json --out first-group.json
+npx tsx analysis/analyze.ts --export first-group.json --items items/launch_items_v1.json \
+    --llm-design llm-arm/design.json --llm-out llm-arm/out --out analysis-out/first-group
+```
+
+Run the second command again with `--llm-out llm-arm/out-a2` and `llm-arm/out-a2-without4`, each with its own `--out`.
 
 ## Later (owner decisions, 25 Nov 2026)
 

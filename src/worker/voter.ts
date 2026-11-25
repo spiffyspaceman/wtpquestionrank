@@ -120,6 +120,8 @@ voterApi.post("/signout", async (c) => {
 async function meState(db: D1Database, voter: VoterRow) {
   const votes = await firstVoteCount(db, voter.id);
   const isOpen = (await openRounds(db)).length > 0;
+  // With no round open: has voting yet to open (a round is waiting as a draft), or has it ended?
+  const waiting = isOpen ? null : await db.prepare("SELECT 1 FROM rounds WHERE state = 'draft' LIMIT 1").first();
   // A batch left part-way (closed tab, other device): how much of it is still waiting, so the home page can offer it.
   const open = isOpen ? await unfinishedPairs(db, voter.id) : null;
   return {
@@ -129,6 +131,7 @@ async function meState(db: D1Database, voter: VoterRow) {
     unlocked: votes >= QUALITY.LEADERBOARD_UNLOCK_VOTES,
     // No round names here: the site chooses the round for each batch, and a name would tell a voter the unit.
     open: isOpen,
+    ended: !isOpen && !waiting,
     batch: open && open.pairs.length ? { size: open.size, remaining: open.pairs.length } : null,
   };
 }
@@ -189,10 +192,14 @@ async function pairingState(db: D1Database, round: RoundRow, voterId: string): P
     .prepare("SELECT left_q, right_q, is_repeat, created_at, id FROM votes WHERE round_id = ? AND voter_id = ?")
     .bind(round.id, voterId)
     .all<{ left_q: string; right_q: string; is_repeat: number; created_at: string; id: number }>();
-  const skips = await db
-    .prepare("SELECT item_lo, item_hi, created_at, id FROM skips WHERE round_id = ? AND voter_id = ?")
+  const skipped = await db
+    .prepare("SELECT item_lo, item_hi, is_repeat, created_at, id FROM skips WHERE round_id = ? AND voter_id = ?")
     .bind(round.id, voterId)
-    .all<{ item_lo: string; item_hi: string; created_at: string; id: number }>();
+    .all<{ item_lo: string; item_hi: string; is_repeat: number; created_at: string; id: number }>();
+  // A pair that was skipped and then voted on (by going back within the batch) is one trial, the vote: counting
+  // the skip as well brought the swapped repeat one trial early (owner decision, 25 Nov 2026; DEVIATIONS.md).
+  const votedFirst = new Set(votes.results.filter((v) => v.is_repeat !== 1).map((v) => pairKey(v.left_q, v.right_q)));
+  const skips = { results: skipped.results.filter((s) => s.is_repeat === 1 || !votedFirst.has(pairKey(s.item_lo, s.item_hi))) };
   const repeatsIssued = await db
     .prepare(
       `SELECT bp.left_q, bp.right_q FROM batch_pairs bp JOIN batches b ON b.id = bp.batch_id
@@ -270,7 +277,12 @@ voterApi.get("/batch", requireVoter(), async (c) => {
         ),
       ]);
       if (res[0].meta.changes === 1) batchId = newBatchId;
-      else ({ batchId } = await unfinishedPairs(db, voter.id)); // another request won; serve its batch
+      else {
+        // Another request won (serve its batch), or this round closed a moment ago (try the next open round).
+        const now2 = await unfinishedPairs(db, voter.id);
+        if (!now2.pairs.length) continue;
+        batchId = now2.batchId;
+      }
       break;
     }
     if (!batchId) {
@@ -280,15 +292,31 @@ voterApi.get("/batch", requireVoter(), async (c) => {
     }
   }
   // The whole batch, answered pairs included, so the voter can go back and change an answer.
-  const all = await db
+  // Two reads: the pairs, then their current answers through the view. One query joining the pairs to the view made
+  // SQLite build the view over every vote on the site for each request (launch audit, 25 Nov 2026).
+  const issuedPairs = await db
     .prepare(
-      `SELECT bp.id, bp.left_q, bp.right_q, e.id AS vote_id, e.winner_q, e.close_call,
-              EXISTS (SELECT 1 FROM skips s WHERE s.batch_pair_id = bp.id) AS skipped
-         FROM batch_pairs bp LEFT JOIN votes_effective e ON e.batch_pair_id = bp.id
-        WHERE bp.batch_id = ? ORDER BY bp.position`,
+      `SELECT bp.id, bp.left_q, bp.right_q, EXISTS (SELECT 1 FROM skips s WHERE s.batch_pair_id = bp.id) AS skipped
+         FROM batch_pairs bp WHERE bp.batch_id = ? ORDER BY bp.position`,
     )
     .bind(batchId)
-    .all<{ id: string; left_q: string; right_q: string; vote_id: number | null; winner_q: string | null; close_call: number | null; skipped: number }>();
+    .all<{ id: string; left_q: string; right_q: string; skipped: number }>();
+  type Answered = { id: number; batch_pair_id: string; winner_q: string; close_call: number };
+  const answers: Answered[] = issuedPairs.results.length
+    ? (
+        await db
+          .prepare(`SELECT id, batch_pair_id, winner_q, close_call FROM votes_effective WHERE batch_pair_id IN (${issuedPairs.results.map(() => "?").join(",")})`)
+          .bind(...issuedPairs.results.map((p) => p.id))
+          .all<Answered>()
+      ).results
+    : [];
+  const answerOf = new Map(answers.map((a) => [a.batch_pair_id, a]));
+  const all = {
+    results: issuedPairs.results.map((p) => {
+      const a = answerOf.get(p.id);
+      return { ...p, vote_id: a?.id ?? null, winner_q: a?.winner_q ?? null, close_call: a?.close_call ?? null };
+    }),
+  };
   const text = await questionTexts(db, all.results.flatMap((p) => [p.left_q, p.right_q]));
   const why = await currentReasons(db, all.results.flatMap((p) => (p.vote_id === null ? [] : [p.vote_id])));
   const out = all.results.map((p) => {
@@ -618,6 +646,14 @@ voterApi.post("/skip", requireVoter(), async (c) => {
 
 const SOURCES = (sourcesFile as { sources: Record<string, { label: string; url: string }[]> }).sources;
 
+/** The groupings of the head-to-head chart. The labels are the ones the leaderboard page gives its groups. */
+const H2H_GROUPS: Record<string, (q: { unit: number; cycle: string; qnum: number; stem: string }) => string> = {
+  unit: (q) => `Unit ${q.unit}`,
+  year: (q) => q.cycle,
+  qnum: (q) => `Question ${q.qnum}`,
+  quote: (q) => (/[“"]/.test(q.stem) ? "Quote in stem" : "No quote"),
+};
+
 interface GroupRow {
   rank: number | null;
   rating: number | null;
@@ -657,8 +693,8 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
   if (votes < QUALITY.LEADERBOARD_UNLOCK_VOTES)
     return c.json({ error: "locked", votes, unlockAt: QUALITY.LEADERBOARD_UNLOCK_VOTES }, 403);
   const pools = visiblePools(voter.role);
-  const pool = c.req.query("pool") ?? "adults";
-  if (!(pools as string[]).includes(pool)) return c.json({ error: "pool_not_allowed" }, 403);
+  const asked = c.req.query("pool");
+  if (asked !== undefined && !(pools as string[]).includes(asked)) return c.json({ error: "pool_not_allowed" }, 403);
 
   // Which round's board: the one asked for, or else the round this voter has judged most.
   let round = rounds.find((r) => r.id === c.req.query("round"));
@@ -670,17 +706,24 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
     round = mine.results.map((m) => rounds.find((r) => r.id === m.round_id)).find(Boolean) ?? rounds[0];
   }
 
-  // A role's own board waits until enough voters in that role have voted in this round: with two or three, each
-  // could work out the others' picks from it (owner decision, 25 Nov 2026). The pooled adults board always shows.
-  const inRole = await db
+  // A board waits until enough voters stand behind it in this round: with one or two, each could work out the
+  // other's picks from it. That holds for a role's own board and for the pooled adults board alike (owner
+  // decisions, 25 Nov 2026).
+  const who = await db
     .prepare(
-      `SELECT count(DISTINCT v.voter_id) AS n FROM votes v JOIN voters u ON u.id = v.voter_id
-        WHERE v.round_id = ? AND v.role = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL`,
+      `SELECT v.role, count(DISTINCT v.voter_id) AS n FROM votes v JOIN voters u ON u.id = v.voter_id
+        WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL GROUP BY v.role`,
     )
-    .bind(round.id, voter.role)
-    .first<{ n: number }>();
-  const roleBoardOpen = (inRole?.n ?? 0) >= MIN_ROLE_BOARD_VOTERS;
-  if (pool !== "adults" && !roleBoardOpen) return c.json({ error: "pool_too_small", need: MIN_ROLE_BOARD_VOTERS }, 403);
+    .bind(round.id)
+    .all<{ role: string; n: number }>();
+  const votersIn = (p: string) => who.results.filter((w) => (p === "adults" ? (POOLED_ROLES as readonly string[]).includes(w.role) : w.role === p)).reduce((s, w) => s + w.n, 0);
+  const openPools = pools.filter((p) => votersIn(p) >= MIN_ROLE_BOARD_VOTERS);
+  const poolName = (p: string) => (p === "adults" ? "All adults" : ROLE_NAMES[p] ?? p);
+  const waitingFor = pools.filter((p) => !openPools.includes(p)).map((p) => ({ name: poolName(p), need: MIN_ROLE_BOARD_VOTERS }));
+  // No board yet: nothing is shown, so nothing is marked as seen.
+  if (!openPools.length) return c.json({ error: "too_few_voters", need: MIN_ROLE_BOARD_VOTERS }, 403);
+  if (asked !== undefined && !openPools.includes(asked as (typeof pools)[number])) return c.json({ error: "pool_too_small", need: MIN_ROLE_BOARD_VOTERS }, 403);
+  const pool: string = asked ?? openPools[0];
 
   // Seen, round by round: later votes in this round carry after_board = 1 (migration 0005).
   const seenAt = nowIso();
@@ -698,17 +741,6 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
   ];
   const index = new Map(rows.map((r, i) => [r.id, i]));
 
-  // Head-to-head counts for the browser's charts, by row position (never by question id), unordered (i < j).
-  const h2h = new Map<string, [number, number, number, number]>();
-  for (const pc of await pairCounts(db, round.id, pool)) {
-    let i = index.get(pc.left)!, j = index.get(pc.right)!, iw = pc.leftWins;
-    if (i > j) [i, j, iw] = [j, i, pc.n - pc.leftWins];
-    const k = `${i}:${j}`;
-    const cur = h2h.get(k) ?? [i, j, 0, 0];
-    cur[2] += iw;
-    cur[3] += pc.n;
-    h2h.set(k, cur);
-  }
 
   // Reasons voters gave when each question won, in this pool (owner decision, 25 Nov 2026). Codes only: an Other
   // note is counted as "other" and its words are never sent.
@@ -728,6 +760,26 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
   // The leaderboard (never the voting page) also shows each question's level, year, unit, number and quoted sources.
   // Owner decision, 25 Nov 2026; logged in DEVIATIONS.md. Question ids still never leave the server.
   const meta = new Map((await questionRows(db, rows.map((r) => r.id))).map((q) => [q.id, q]));
+
+  // Head-to-head counts for the browser's chart, already added up by group (unit, year, question number, quote in
+  // the stem): how often a question of group a beat one of group b. Nothing per question is sent, so the counts
+  // cannot be traced back to a question that is not ranked yet, or to one voter's picks.
+  const h2h: Record<string, Map<string, { a: string; b: string; aw: number; n: number }>> = {};
+  const counts = await pairCounts(db, round.id, pool);
+  for (const [dim, label] of Object.entries(H2H_GROUPS)) {
+    const cells = (h2h[dim] = new Map());
+    for (const pc of counts) {
+      const l = meta.get(pc.left), r = meta.get(pc.right);
+      if (!l || !r) continue;
+      let a = label(l), b = label(r), aw = pc.leftWins;
+      if (a === b) continue;
+      if (a > b) [a, b, aw] = [b, a, pc.n - pc.leftWins];
+      const cur = cells.get(a + "\u0000" + b) ?? { a, b, aw: 0, n: 0 };
+      cur.aw += aw;
+      cur.n += pc.n;
+      cells.set(a + "\u0000" + b, cur);
+    }
+  }
   const out = rows.map((r) => {
     const q = meta.get(r.id)!;
     // A question with fewer than ten comparisons has no rank, and its rating so far is mostly chance: the page gets
@@ -749,9 +801,9 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
   });
   return c.json({
     pool,
-    pools: pools.filter((p) => p === "adults" || roleBoardOpen).map((p) => ({ id: p, name: p === "adults" ? "All adults" : ROLE_NAMES[p] ?? p })),
-    // The voter's own role board, while it is still waiting for voters.
-    roleBoard: roleBoardOpen ? null : { name: ROLE_NAMES[voter.role] ?? voter.role, need: MIN_ROLE_BOARD_VOTERS },
+    pools: openPools.map((p) => ({ id: p, name: poolName(p) })),
+    // Boards this voter may see that are still waiting for voters.
+    waiting: waitingFor,
     round: { id: round.id, name: round.name, state: round.state },
     // A staged round: how many of its questions are in play so far (the rows), out of how many in all.
     staged: round.staged ? { inPlay: rows.length, total: (await roundItems(db, round.item_set_id)).filter((id) => !HELD.has(id) || index.has(id)).length } : null,
@@ -759,7 +811,7 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
     votes: fit.nVotes,
     intervalsAsOf: snapshot?.computed_at ?? null,
     rows: out,
-    pairs: [...h2h.values()],
+    h2h: Object.fromEntries(Object.entries(h2h).map(([dim, cells]) => [dim, [...cells.values()]])),
     groups: { units: groupBy(out, (r) => `Unit ${r.about.unit}`, (r) => r.about.unit), years: groupBy(out, (r) => r.about.cycle, (r) => r.about.cycle) },
   });
 });

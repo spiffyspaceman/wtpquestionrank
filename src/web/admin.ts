@@ -442,6 +442,7 @@ $("#voterSearch").addEventListener("input", renderVoters);
 // ---------- study health (report only) ----------
 
 interface Health {
+  round: { id: string; name: string; state: string; itemSetId: string; staged: boolean };
   forecast: {
     itemsShort: { id: string; games: number }[];
     adultVotesNeeded: number;
@@ -505,9 +506,14 @@ async function loadHealth(): Promise<void> {
   if (!round) return show($("#health"), false);
   const h = await api<Health>(`/admin/api/rounds/${round}/health`);
   const g = h.gate;
-  $("#gateLine").textContent = g.passed
-    ? "The data gate is met: the analysis may run (PREREG §9)."
-    : `The data gate is not met yet (PREREG §9). ${g.adultVotes} adult first-presentation votes so far.`;
+  // The gate is the pre-registered one only for a round on the launch set. For any other round its numbers are a
+  // guide to coverage of the questions in play.
+  const registered = h.round.itemSetId === "state-launch-v1";
+  $("#gateLine").textContent = registered
+    ? g.passed
+      ? "The data gate is met: the analysis may run (PREREG §9)."
+      : `The data gate is not met yet (PREREG §9). ${g.adultVotes} adult first-presentation votes so far.`
+    : `Coverage of the ${g.items} questions in play, against the pre-registered thresholds as a guide (this round has no gate). ${g.adultVotes} adult first-presentation votes so far.`;
   $("#gateRaters").textContent = `Adult raters with ${g.MIN_VOTES_PER_COUNTED_RATER}+ votes: ${g.countedAdultRaters} of ${g.MIN_ADULT_RATERS}`;
   meter("#gateRatersBar", g.countedAdultRaters, g.MIN_ADULT_RATERS);
   $("#gateItems").textContent =

@@ -1,7 +1,7 @@
 // Questions added to a round that is already running (owner decision, 25 Nov 2026; migration 0006).
 import { env } from "cloudflare:test";
 import { beforeEach, describe, expect, it } from "vitest";
-import { admin, call, getBatch, itemsRaw, json, loadItems, mockOutbound, voteN, voter } from "./helpers";
+import { admin, call, getBatch, itemsRaw, json, loadItems, mockOutbound, quorum, voteN, voter } from "./helpers";
 
 const q = (k: number, stem = `Stem ${k}?`) => ({
   id: `grow-${String(k).padStart(2, "0")}`, level: "State", cycle: "2020-21", unit: 1, q: (k % 3) + 1, published: true,
@@ -36,6 +36,7 @@ describe("open-ended item sets", () => {
     expect(inBatch!.n).toBeGreaterThan(0);
 
     // The board lists all ten; the newcomers have no rank until they have 10 comparisons.
+    await quorum("other");
     const board = await json(call("/api/leaderboard", { cookie: v.cookie }));
     expect(board.rows).toHaveLength(10);
     expect(board.rows.filter((r: { games: number; rank: number | null }) => r.games === 0).every((r: { rank: number | null }) => r.rank === null)).toBe(true);

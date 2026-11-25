@@ -34,6 +34,7 @@ A change needs the owner's agreement and an entry in `DEVIATIONS.md` first.
 | `npm run typecheck` | TypeScript for the Node code, the Worker, the pages and the Worker tests. |
 | `npm run build` | Typecheck, then build the pages into `dist/`. |
 | `npm run dev` | Build, then `wrangler dev` with a local D1. |
+| `npm run premerge` | `npm test`, `npm run build` and `npm run test:ui`, in order. |
 | `npm run test:ui` | Browser smoke test of the voting flow against a local copy (needs Playwright and a built `dist/`). Not part of `npm test`. |
 | `node scripts/dev-local.mjs` | Like `wrangler dev`, but the Worker's outbound fetches go through Node (for sandboxes where only Node can reach the internet). |
 
@@ -68,8 +69,9 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
   - `/api/correct` changes an answer in the voter's newest batch. It refuses a vote cast before the voter first
     opened the leaderboard once they have opened it.
   - `/api/signout` ends the session on that device only.
-  - `/api/leaderboard` sends a rating, range and win count only for ranked questions (10 comparisons). A voter's own
-    role board is offered once three voters in that role have voted in the round.
+  - `/api/leaderboard` sends a rating, range and win count only for ranked questions (10 comparisons). A board (the
+    pooled adults board, or a voter's own role board) is offered once three voters stand behind it in the round.
+    Head-to-head counts are sent added up by group, never per pair of questions.
 - Pairs go to the browser as an opaque pair id with "L" and "R" sides. Question ids, cycle, unit and source never
   leave the server.
 

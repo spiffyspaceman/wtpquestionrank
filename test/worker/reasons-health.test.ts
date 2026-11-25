@@ -171,8 +171,10 @@ describe("study health", () => {
     expect(h.gate.passed).toBe(false);
     expect(h.gate.items).toBe(36);
     expect(h.gate.adultVotes).toBeGreaterThanOrEqual(26);
-    expect(h.perDay).toHaveLength(1);
-    expect(h.perDay[0].voters).toBe(3);
+    // One day's worth, or two when the run crosses midnight UTC: the days hold every vote between them.
+    expect([1, 2]).toContain(h.perDay.length);
+    expect(h.perDay.reduce((s: number, d: { votes: number }) => s + d.votes, 0)).toBe(h.reasons.votes);
+    if (h.perDay.length === 1) expect(h.perDay[0].voters).toBe(3);
     expect(h.reasons.votesWithReason).toBe(1);
     expect(h.reasons.counts.map((x: { reason: string }) => x.reason).sort()).toEqual(["current", "position"]);
 

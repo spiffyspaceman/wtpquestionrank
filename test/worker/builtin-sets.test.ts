@@ -2,7 +2,7 @@
 import { env } from "cloudflare:test";
 import { beforeEach, describe, expect, it } from "vitest";
 import { BUILTIN_SETS } from "../../src/worker/builtin-sets";
-import { admin, call, getBatch, json, loadItems, mockOutbound, voteN, voter } from "./helpers";
+import { admin, call, getBatch, json, loadItems, mockOutbound, quorum, voteN, voter } from "./helpers";
 
 const SET = BUILTIN_SETS[0];
 
@@ -62,14 +62,15 @@ describe("built-in question set", () => {
     const launch = await env.DB.prepare("SELECT notes_json FROM questions WHERE id = 'st-2019-20-u5-q3'").first<{ notes_json: string }>();
     expect(JSON.parse(launch!.notes_json).notes[0].text).toMatch(/Madison/);
     await voteN(v.cookie, 20);
+    await quorum("other");
     const board = await json(call("/api/leaderboard", { cookie: v.cookie }));
     expect(board.rows.some((r: { notes: unknown[] }) => r.notes.length > 0)).toBe(true);
     expect(board.round.name).toBe("All questions");
     // The round is staged (migration 0008): the board lists the questions in play, the 36 launch questions first.
     expect(board.rows).toHaveLength(36);
     expect(board.staged).toEqual({ inPlay: 36, total: SET.questions - 1 }); // one question is held out of play
-    expect(board.votes).toBe(20);
+    expect(board.votes).toBe(22);
     const ex = await json(admin(`/admin/api/rounds/${first.roundCreated}/export.json`));
-    expect(ex.votes).toHaveLength(20);
+    expect(ex.votes).toHaveLength(22);
   });
 });

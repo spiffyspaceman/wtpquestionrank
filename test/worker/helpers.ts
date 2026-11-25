@@ -28,12 +28,15 @@ async function keys(): Promise<CryptoKeyPair> {
 /** Turnstile passes for token "pass" and fails otherwise. Access certs are served from a test key pair. */
 export function mockOutbound(): void {
   resetAccessCertCache();
-  vi.spyOn(globalThis, "fetch").mockImplementation(async (input: RequestInfo | URL) => {
+  vi.spyOn(globalThis, "fetch").mockImplementation(async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
     if (url.startsWith("https://challenges.cloudflare.com/turnstile/v0/siteverify")) {
-      const req = input instanceof Request ? input : null;
-      void req;
-      return Response.json({ success: lastTurnstileOk, hostname: lastTurnstileHost });
+      // Like the real service, the stand-in reads what it is sent: the site's secret and the visitor's token must be
+      // there under their documented names, or the check fails whatever the test asked for.
+      const form = init?.body instanceof FormData ? init.body : input instanceof Request ? await input.clone().formData() : null;
+      lastSiteverify = form ? Object.fromEntries([...form.entries()].map(([k, v]) => [k, String(v)])) : null;
+      const wellFormed = lastSiteverify?.secret === env.TURNSTILE_SECRET && Boolean(lastSiteverify?.response);
+      return Response.json({ success: wellFormed && lastTurnstileOk, hostname: lastTurnstileHost });
     }
     if (url === `https://${env.ACCESS_TEAM_DOMAIN}/cdn-cgi/access/certs`) {
       const jwk = await crypto.subtle.exportKey("jwk", (await keys()).publicKey);
@@ -43,6 +46,8 @@ export function mockOutbound(): void {
   });
 }
 
+/** The form fields of the last siteverify call the Worker made, for tests that check what was sent. */
+export let lastSiteverify: Record<string, string> | null = null;
 let lastTurnstileOk = true;
 let lastTurnstileHost = HOST;
 /** Turnstile's answer for the next redeems: pass or fail, and the hostname the token was solved on. */
@@ -203,4 +208,18 @@ export async function voteN(cookie: string, n: number, pick: (p: ClientPair, k: 
     }
   }
   return done;
+}
+
+/**
+ * A board is shown once three voters stand behind it (owner decisions, 25 Nov 2026). This adds `n` voters of `role`
+ * with one vote each (left side wins), so a test's own voter makes the third. Each adds one vote to the round.
+ */
+export async function quorum(role = "judge", n = 2): Promise<{ cookie: string; label: string; code: string }[]> {
+  const made: { cookie: string; label: string; code: string }[] = [];
+  for (let k = 0; k < n; k++) {
+    const v = await voter(role);
+    await voteN(v.cookie, 1);
+    made.push(v);
+  }
+  return made;
 }

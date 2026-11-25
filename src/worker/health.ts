@@ -147,7 +147,7 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
       adultsUnderThreshold: adultsUnder.length,
       adultVotesToThreshold: adultsUnder.reduce((s, r) => s + (GATE.MIN_VOTES_PER_COUNTED_RATER - r.votes), 0),
     },
-    round: { id: round.id, name: round.name, state: round.state },
+    round: { id: round.id, name: round.name, state: round.state, itemSetId: round.item_set_id, staged: round.staged === 1 },
     corrections: { rows: corrected?.rows ?? 0, winnerChanged: corrected?.votes ?? 0 },
     gate: {
       ...GATE,

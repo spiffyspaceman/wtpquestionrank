@@ -13,8 +13,8 @@ expects fewer than 25 voters in the first two weeks. With all 438 questions in p
 a single question to a rank, and every voter would unlock an empty leaderboard. The round now opens in stages: the 36
 launch questions first, then 24 at a time as the questions in play settle. Everything else the audit found is
 smaller: five correctness defects in the Worker (all fixed), one question with a cut-off bullet (held out of play),
-footnote slips (fixed), and gaps in the automated tests (the worst ones closed). `npm test` runs 184 tests and
-passes; the typecheck passes; the browser smoke test passes 50 checks; an accessibility scan of every page reports
+footnote slips (fixed), and gaps in the automated tests (the worst ones closed). `npm test` runs 196 tests and
+passes; the typecheck passes; the browser smoke test passes 54 checks; an accessibility scan of every page reports
 nothing.
 
 ## How the audit was done
@@ -293,3 +293,41 @@ inside them.
    the adults' order of those 36 tracks method A, an LLM order of all 438 becomes defensible, which 25 people cannot
    produce by voting. That comparison is exploratory now that "Test" is closed, and should be reported as such.
 3. Recruit. Every design above improves faster with voters than with any change to the code.
+
+## Built after this report, at the owner's word ("implement all the recommendations")
+
+The sections above are as first written. The owner then asked for every remaining recommendation to be built, and
+answered four questions first: merge and deploy but leave the admin steps to him; keep repeats and fix the trial
+count; give the list the full width; make the adults board wait for three voters.
+
+| Item left open above | Now |
+|---|---|
+| `GET /api/batch` read every vote through a view | Two indexed reads through the same view; a test checks the query plan |
+| The adults board had no floor | Waits for three adult voters; a voter with no open board is told so and nothing is marked seen |
+| Head-to-head counts let a reader work out an unranked question's wins | Sent added up by group; nothing per pair of questions leaves the server |
+| A batch refused by a round that just closed was not retried in another open round | It is |
+| Two requests for codes at once collided on a label | The loser reads the labels again and retries |
+| The page ignored "already answered on another device" | It reloads the batch and says the first answer stands |
+| A skipped pair later voted on counted as two trials | One trial (DEVIATIONS.md) |
+| `/start` said "Voting is closed right now" in every closed state | "Voting has not opened yet" or "Voting has ended" |
+| Top 10 beside the charts, eight words a question | Full-width list, charts after it |
+| Study health called its lines a "data gate (PREREG §9)" in every round | Only for a round on the launch set; otherwise "coverage ... as a guide" |
+| `server_ms` and the per-round correction lock passed every mutant | Tests for both |
+| Migrations tested only on an empty database | `test/node/migration-0008.test.ts` replays 0001 to 0007, adds rounds, then applies 0008 |
+| The Turnstile stand-in accepted anything | It checks the secret and token the Worker sends, and a test checks the field names |
+| Header changes passed | A test pins the content policy, HSTS and the other fixed headers |
+| A 54 s test against a 120 s limit; two date-dependent assertions | Limit is 300 s; the assertions hold across midnight UTC |
+| Comparing the first 36 with method A needed a hand-made slice | `analysis/first_group.ts`, with a test |
+| The browser test is not in the deploy path | Still not: Cloudflare's build has no Chromium. `npm run premerge` runs it with the rest |
+
+**Not built, and why:**
+- **The leaderboard's reasons query** still reads the round's votes through the views on each view. The owner's
+  rule is to read answers through those views, and a cache table would add a write to every vote on the night
+  before launch. At this turnout the cost is a few milliseconds.
+- **The cut-off bullet and the seven doubtful wordings** need CCE's PDFs, which are not in this session.
+- **The five addresses recorded as dead** could not be rechecked: from here a refused host answers 403 or 404
+  through the proxy, which says nothing about the page. One (Norton) opens, and was dropped on purpose because the
+  page no longer holds the quoted words.
+- **Workers Paid** is the owner's to confirm; the saved token cannot read the plan.
+
+Each of the first six rows was checked by putting the old behaviour back and watching the new test fail.
