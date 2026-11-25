@@ -163,6 +163,9 @@
   "questions": [
    "st-2021-22-u6-q2"
   ],
+  "replacement": "https://www.abrahamlincolnonline.org/lincoln/speeches/congress.htm",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
   "status": "dead",
   "why": "the network here refused the host"
  },
@@ -591,6 +594,9 @@
   "questions": [
    "st-2023-24-u2-q2"
   ],
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/Brutus_I1.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the same file at the site's new address; the quoted words could not be matched by machine",
   "status": "dead",
   "why": "the network here refused the host"
  },
@@ -612,6 +618,9 @@
   "questions": [
    "st-2023-24-u2-q2"
   ],
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/Publius_10.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the same file at the site's new address; the quoted words could not be matched by machine",
   "status": "dead",
   "why": "the network here refused the host"
  },
@@ -656,6 +665,9 @@
   "questions": [
    "nf-2023-24-u2-q1"
   ],
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/centinel_iii_11.08.87.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the same file at the site's new address; the quoted words could not be matched by machine",
   "status": "dead",
   "why": "the network here refused the host"
  },
@@ -749,6 +761,9 @@
   "questions": [
    "nf-2025-26-u2-q1"
   ],
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2024/04/DC2-04-01-16_Morris-to-LaCaze_21Feb88.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the same file at the site's new address; the quoted words could not be matched by machine",
   "status": "dead",
   "why": "the network here refused the host"
  },
@@ -758,6 +773,9 @@
   "questions": [
    "st-2025-26-u2-q3"
   ],
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2024/04/DC3-01-01-01_Centinel-IV_30Nov87.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the same file at the site's new address; the quoted words could not be matched by machine",
   "status": "dead",
   "why": "the network here refused the host"
  },
@@ -803,6 +821,9 @@
   "questions": [
    "nf-2025-26-u5-q3"
   ],
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2024/04/DC3-06-01-01_Federalist-84_28May88.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the same file at the site's new address; the quoted words could not be matched by machine",
   "status": "dead",
   "why": "the network here refused the host"
  },
@@ -812,6 +833,9 @@
   "questions": [
    "st-2026-27-u2-q1"
   ],
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2025/05/5.-Dickinson-22-aug-1787.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the same file at the site's new address; the quoted words could not be matched by machine",
   "status": "dead",
   "why": "the network here refused the host"
  },
@@ -821,6 +845,9 @@
   "questions": [
    "nf-2025-26-u2-q2"
   ],
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2025/05/6-Massachusetts-Centinel-14-June-1788.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the same file at the site's new address; the quoted words could not be matched by machine",
   "status": "dead",
   "why": "the network here refused the host"
  },
@@ -1760,7 +1787,7 @@
   "questions": [
    "nf-2025-26-u5-q1"
   ],
-  "quote_found": false,
+  "quote_found": true,
   "status": "ok",
   "why": "the network here refused the host"
  },
