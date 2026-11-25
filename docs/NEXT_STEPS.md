@@ -108,19 +108,28 @@ export on all 438.
 shows CCE's published source notes: the asterisk in the text, the note under the bullets, on the voting page and the
 leaderboard, with "accessed <date>" left out. 341 notes on 317 of the 438 questions. Migration 0007.
 
-**Link check, 25 Nov, from this environment** (`items/links.json`, 189 addresses):
+**Link check, 25 Nov** (`items/links.json`, 189 addresses; the owner opened this environment's network for it):
 
 | Result | Count | Shown as |
 |---|---|---|
-| Page opened | 34 (30 hold the quoted words) | a link |
-| Confirmed dead | 0 | |
-| Could not be checked | 155 | plain text, not a link |
+| Page opened | 89 (70 hold the quoted words) | a link |
+| Dead, replaced | 42 | a link to the replacement |
+| Dead, no replacement | 6 | the address is dropped; the citation stays |
+| The site refuses automated readers | 52 | plain text, not a link |
 
-Of the 155, 143 sit on 74 hosts this environment's network refuses (two requests to allow them were rejected by the
-service), and 12 are Founders Online, which turns away automated readers. The four pages that opened without the
-quoted words: `avalon.law.yale.edu/18th_century/mchenry.asp` (State 2026-27 U1Q1),
-`press-pubs.uchicago.edu/founders/documents/v1ch14s47.html` (NF 2021-22 U6Q2), the Journal of Democracy article
-(State 2018-19 U6Q2; the page shows only the opening), and a Cornell syllabus page (State 2024-25 U5Q2).
+- **Replacements.** 29 are files the Center for the Study of the American Constitution moved to a new folder (21
+  opened with the quoted words found; 8 are the same file at the new address whose words could not be matched by
+  machine). 13 are the same speech, column or document at its publisher's new address, over https, or on a scholarly
+  host; each was opened and the quoted words found (`items/replacement_candidates.json`, `items/find_replacements.py`).
+  Two are newspaper reprints of Lee Hamilton's syndicated columns, because the original pages are gone.
+- **No replacement found (address dropped):** the Norton page for *Our Declaration* (the live page no longer has the
+  quoted sentence); Chicago Unbound article 11819; the short link `pewrsr.ch/2vXBBR2`; a Founders Early Access letter
+  (Madison, December 1834); American Presidency Project `pid=65388` (Wilson, 10 May 1915); and
+  `faculty.uml.edu/sgallagher/Anti-Federalists.pdf`.
+- **Refused automated readers (unconfirmed, probably live):** Justia (17), Founders Online (13), Project Gutenberg
+  (4) and others. A real-browser check was blocked by the session's safety rules and was not worked around. To make
+  them links, someone opens each by hand and marks it `ok` in `items/links.json`.
+- `web.archive.org` is still unreachable from here, so no archived copy was used.
 
 ### Owner: now
 
@@ -130,10 +139,8 @@ quoted words: `avalon.law.yale.edu/18th_century/mchenry.asp` (State 2026-27 U1Q1
    too). Closing it ends the registered comparison without a verdict and cannot be undone.
 3. Press **Load or update the full question set** (438 questions with their footnotes; it makes a draft round "All
    questions", which you can rename). Open it, make the codes by role, and send the links.
-4. **To finish the link check**, either allow the hosts in this environment's settings (Network access > Allowed
-   domains; the list is in `items/links.json` under "the network here refused the host") and tell Claude, or run
-   `python3 items/check_links.py` on your own computer from a copy of the repo and send back `items/links.json`.
-   Until then those addresses show as plain text.
+4. Optional: open the 52 unconfirmed addresses by hand (list: `items/links.json`, status `unchecked`) and tell
+   Claude which are live; they then become links.
 5. Weekly: **Download full backup**, and the JSON, reasons and corrections exports.
 
 ### Adding questions later (for example National Finals 2026-27)
