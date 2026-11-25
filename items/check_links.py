@@ -48,16 +48,18 @@ def words(s):
 def quotes_for(item):
     """Quotations in the question (text between curly quotes), longest first."""
     text = " ".join([item["stem"]] + item["bullets"])
-    return sorted(re.findall(r"“([^”]{25,})”", text), key=len, reverse=True)
+    return sorted((q for q in re.findall(r"“([^”]+)”", text) if len(q.split()) >= 4), key=len, reverse=True)
 
 
 def quote_on_page(page_words, quotes):
     page = " " + " ".join(page_words) + " "
     for q in quotes:
         w = [x for x in words(q.replace("…", " ").replace("[", " ").replace("]", " "))]
-        # Any run of six consecutive words from the quotation, to allow for ellipses and edition differences.
-        for k in range(0, max(1, len(w) - 5)):
-            if " " + " ".join(w[k:k + 6]) + " " in page:
+        # Any run of six consecutive words from the quotation (fewer for a short one), to allow for ellipses and
+        # edition differences.
+        n = min(6, len(w))
+        for k in range(0, max(1, len(w) - n + 1)):
+            if n >= 4 and " " + " ".join(w[k:k + n]) + " " in page:
                 return True
     return False
 

@@ -61,7 +61,7 @@
   "questions": [
    "st-2015-16-u1-q3"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://centeroncongress.org/ten-things-i-wish-political-scientists-would-teach-about-congress": {
@@ -70,7 +70,7 @@
   "questions": [
    "st-2016-17-u4-q3"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://chicagounbound.uchicago.edu/cgi/viewcontent.cgi?article=11819&context=journal_articles": {
@@ -79,7 +79,7 @@
   "questions": [
    "nf-2016-17-u5-q1"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://corg.indiana.edu/talking-the-other-side": {
@@ -88,7 +88,7 @@
   "questions": [
    "st-2017-18-u4-q2"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://founders.archives.gov/documents/Jefferson/99-01-02-0348": {
@@ -106,7 +106,7 @@
   "questions": [
    "nf-2016-17-u4-q2"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://millercenter.org/president/speeches/speech-4034": {
@@ -115,7 +115,7 @@
   "questions": [
    "st-2016-17-u3-q1"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://pdfserver.amlaw.com/nlj/11-20-15%20en%20banc%20denial%20kavanaugh.pdf": {
@@ -124,7 +124,10 @@
   "questions": [
    "st-2018-19-u5-q1"
   ],
-  "status": "unchecked",
+  "replacement": "https://pdfserver.amlaw.com/nlj/11-20-15%20en%20banc%20denial%20kavanaugh.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://pewrsr.ch/2vXBBR2": {
@@ -133,7 +136,7 @@
   "questions": [
    "st-2018-19-u6-q1"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://press-pubs.uchicago.edu/founders/documents/amendIIs10.html": {
@@ -151,7 +154,7 @@
   "questions": [
    "nf-2016-17-u4-q3"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://www.abrahamlincolnonline.org/lincoln/speeches/congress.htm": {
@@ -160,7 +163,7 @@
   "questions": [
    "st-2021-22-u6-q2"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://www.armed-services.senate.gov/imo/media/doc/Rogers_04-05-16.pdf": {
@@ -169,7 +172,10 @@
   "questions": [
    "nf-2016-17-u6-q1"
   ],
-  "status": "unchecked",
+  "replacement": "https://www.armed-services.senate.gov/imo/media/doc/Rogers_04-05-16.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://www.climaterealityproject.org/blog/road-forward": {
@@ -178,7 +184,10 @@
   "questions": [
    "nf-2016-17-u6-q2"
   ],
-  "status": "unchecked",
+  "replacement": "https://www.climaterealityproject.org/blog/road-forward",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://www.dallasnews.com/opinion/latest-columns/20140319-specific-ways-in-which-congress-can-fix-itself.ece": {
@@ -187,7 +196,7 @@
   "questions": [
    "st-2015-16-u4-q2"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://www.lbjlibrary.org/lyndon-baines-johnson/speeches-films/president-johnsons-special-message-to-the-congress-the-american-promise": {
@@ -196,7 +205,7 @@
   "questions": [
    "nf-2017-18-u3-q2"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://www.loc.gov/teachers/classroommaterials/presentationsandactivities/presentations/timeline/newnatn/usconst/debates.html": {
@@ -205,7 +214,7 @@
   "questions": [
    "nf-2017-18-u2-q2"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://www.newyorker.com/magazine/2015/04/20/the-rule-of-history": {
@@ -214,7 +223,10 @@
   "questions": [
    "st-2015-16-u6-q2"
   ],
-  "status": "unchecked",
+  "replacement": "https://www.newyorker.com/magazine/2015/04/20/the-rule-of-history",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "http://www.presidency.ucsb.edu/ws/?pid=65388": {
@@ -223,43 +235,47 @@
   "questions": [
    "st-2016-17-u4-q2"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://archive.csac.history.wisc.edu/georgemasonspeech11june.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2021-22-u3-q3"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://archive.org/details/cu31924022604734": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2018-19-u3-q2"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://archive.org/details/in.ernet.dli.2015.262385": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2026-27-u1-q3"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://archive.org/details/in.ernet.dli.2015.499346": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2026-27-u4-q2"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://avalon.law.yale.edu/17th_century/va01.asp": {
@@ -418,344 +434,412 @@
  },
  "https://catalog.hathitrust.org/Record/008616178": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2020-21-u3-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://cisac.fsi.stanford.edu/content/armed-non-state-actor-governance-and-rule-law": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2026-27-u6-q2"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://constitutioncenter.org/the-constitution/historic-document-library/detail/abraham-lincoln-the-gettysburg-address-1863": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2025-26-u6-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://constitutioncenter.org/the-constitution/historic-document-library/detail/george-washington-farewell-address-1796": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2025-26-u3-q2"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://constitutioncenter.org/the-constitution/historic-document-library/detail/john-adams-thoughts-on-government-1776": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2022-23-u2-q3"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://constitutioncenter.org/the-constitution/historic-document-library/detail/mercy-otis-warren-observations-on-the-new-constitution-1788": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2022-23-u2-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/2020/12/11/the-northwest-ordinance-13-july-1787/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2023-24-u2-q3"
   ],
-  "status": "unchecked",
-  "why": "the network here refused the host"
- },
- "https://csac.history.wisc.edu/wp-THE": {
-  "checked": "2026-11-25",
-  "http": "000",
-  "questions": [
-   "nf-2023-24-u2-q2"
-  ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/1.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2021-22-u3-q2"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/1.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/3_James_Wilson_Speech.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2021-22-u2-q2"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/3_James_Wilson_Speech.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/59.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2021-22-u4-q1"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/59.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/7._Benjamin_Lincoln_to_Daniel_Shays_30_Jan.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2021-22-u6-q1"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/7._Benjamin_Lincoln_to_Daniel_Shays_30_Jan.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/78.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2023-24-u4-q1"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/78.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/A_Federal_Republican.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2022-23-u5-q1"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/A_Federal_Republican.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/An_Old_Whig_III2.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2021-22-u5-q3"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/An_Old_Whig_III2.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/Brutus_I1.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2023-24-u2-q2"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/Brutus_III1.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2021-22-u2-q3"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/Brutus_III1.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/Publius_10.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2023-24-u2-q2"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/an_oldwhig_viii.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2023-24-u2-q3"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/an_oldwhig_viii.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
+ },
+ "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/assessments_41.pdf": {
+  "checked": "2026-11-25",
+  "http": "404",
+  "questions": [
+   "nf-2023-24-u2-q2"
+  ],
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/assessments_41.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/assessments_90.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2019-20-u2-q3"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/assessments_90.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/centinel_iii_11.08.87.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2023-24-u2-q1"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/delegate_inst2.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2019-20-u2-q1"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/delegate_inst2.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/revise9.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2021-22-u2-q2"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/revise9.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/separate_conf7.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2022-23-u2-q2"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2017/07/separate_conf7.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2024/04/DC1-01-02-04_Harrington-To-the-Freemen-of-the-U.S._30May87.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2024-25-u2-q1"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2024/04/DC1-01-02-04_Harrington-To-the-Freemen-of-the-U.S._30May87.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2024/04/DC2-02-01-01_Virginia-Plan_29May87.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2025-26-u2-q2"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2024/04/DC2-02-01-01_Virginia-Plan_29May87.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2024/04/DC2-04-01-05_Pennsylvania-Packet_22Sep87.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2025-26-u2-q3"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2024/04/DC2-04-01-05_Pennsylvania-Packet_22Sep87.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2024/04/DC2-04-01-14_Federalist-37_11Jan88.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2024-25-u2-q2"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2024/04/DC2-04-01-14_Federalist-37_11Jan88.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2024/04/DC2-04-01-16_Morris-to-LaCaze_21Feb88.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2025-26-u2-q1"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2024/04/DC3-01-01-01_Centinel-IV_30Nov87.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2025-26-u2-q3"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2024/04/DC3-02-02-01_Cato-V_22Nov87.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2026-27-u2-q2"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2024/04/DC3-02-02-01_Cato-V_22Nov87.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2024/04/DC3-03-01-07_Cincinnatus-IV_22Nov87.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2026-27-u2-q3"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2024/04/DC3-03-01-07_Cincinnatus-IV_22Nov87.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2024/04/DC3-04-03-04_Fabius-IX_1May88.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2024-25-u2-q1"
   ],
-  "status": "unchecked",
+  "replacement": "https://csac.history.wisc.edu/wp-content/uploads/sites/1026/2024/04/DC3-04-03-04_Fabius-IX_1May88.pdf",
+  "replacement_checked": "2026-11-25",
+  "replacement_note": "opened; the quoted words are on the page",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2024/04/DC3-06-01-01_Federalist-84_28May88.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2025-26-u5-q3"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2025/05/5.-Dickinson-22-aug-1787.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "st-2026-27-u2-q1"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2025/05/6-Massachusetts-Centinel-14-June-1788.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2025-26-u2-q2"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://digital.library.cornell.edu/catalog/may854321": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "202",
   "questions": [
    "nf-2024-25-u6-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 202"
  },
  "https://faculty.uml.edu/sgallagher/Anti-Federalists.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "404",
   "questions": [
    "nf-2024-25-u2-q2"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://founders.archives.gov/documents/Adams/06-10-02-0113": {
@@ -859,20 +943,22 @@
  },
  "https://gjia.georgetown.edu/2024/03/29/understanding-sports-diplomacy-with-dr-stuart-murray-co-founder-of-the-sports-diplomacy-alliance": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2024-25-u6-q3"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://history.hanover.edu/courses/excerpts/165tocqueville.html": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2026-27-u6-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://jeffersonpapers.princeton.edu/selected-documents/wilson-cary-nicholas-0": {
@@ -882,106 +968,111 @@
    "st-2020-21-u3-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "curl: (92) HTTP/2 stream 1 was not closed cleanly: PROTOCOL_ERROR (err 1)"
  },
  "https://kinginstitute.stanford.edu/chapter-19-freedom-now": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2019-20-u6-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://law.justia.com/cases/federal/appellate-courts/ca10/21-1247/21-1247-2022-07-11.html": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2026-27-u5-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://law.justia.com/cases/hawaii/supreme-court/2024/scap-22-0000561.html": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2026-27-u4-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://lawfilesext.leg.wa.gov/biennium/2019-20/Pdf/Bills/House%20Bills/1509.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2024-25-u3-q3"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://malegislature.gov/laws/constitution": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2022-23-u5-q3"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://memory.loc.gov/ammem/amlaw/lwcglink.html": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2022-23-u3-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://memory.loc.gov/ammem/amlaw/lwcglink.html#anchor39": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2016-17-u3-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://news.bloomberglaw.com/us-law-week/congress-cant-force-ethics-code-on-supreme-court-alito-says": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2023-24-u4-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://oll.libertyfund.org/titles/democracy-in-america-english-edition-vol-1": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2024-25-u4-q1"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://oll.libertyfund.org/titles/hamilton-the-pacificus-helvidius-debates-of-1793-1794": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2019-20-u4-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://pen.org/report/banned-in-the-usa-state-laws-supercharge-book-suppression-in-schools": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2023-24-u5-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://press-pubs.uchicago.edu/founders/documents/amendI_religions43.html": {
   "checked": "2026-11-25",
@@ -1039,399 +1130,417 @@
  },
  "https://repository.law.umich.edu/cgi/viewcontent.cgi?article=4901": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2023-24-u3-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://scholarsjunction.msstate.edu/fvw-pamphlets/924/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2026-27-u3-q2"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://supreme.justia.com/cases/federal/us/109/3/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2025-26-u3-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/217/349/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2023-24-u5-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/277/438/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2025-26-u5-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/285/262/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2023-24-u4-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/343/579/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2025-26-u3-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/344/443/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2024-25-u4-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/354/178/#tab-opinion-1941547": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2021-22-u4-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/401/37/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2025-26-u4-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/461/171/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2025-26-u5-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/481/739/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2025-26-u4-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/5/137/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2025-26-u4-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/531/98/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2025-26-u3-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/586/17-1091/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2018-19-u3-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/591/18-1195/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2026-27-u5-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/600/20-1199/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2023-24-u5-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/603/23-175/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2024-25-u5-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://supreme.justia.com/cases/federal/us/609/24-1046/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2026-27-u4-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://teachingamericanhistory.org/document/an-old-whig-ii/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2021-22-u2-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://teachingamericanhistory.org/library/document/address-to-the-people-of-the-united-states/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2020-21-u1-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://teachingamericanhistory.org/library/document/centinel-xii/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2020-21-u2-q2"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://teachingamericanhistory.org/library/document/genuine-information-ix/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2019-20-u2-q2"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://tminstituteldf.org/tmi-explains/thurgood-marshall-institute-briefs/tmi-briefs-the-14th-amendment/14th-amendment-equal-protection/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "429",
   "questions": [
    "nf-2021-22-u3-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 429"
  },
  "https://wwnorton.com/college/history/archive/resources/documents/ch04_03.htm": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "410",
   "questions": [
    "st-2022-23-u1-q1"
   ],
-  "status": "unchecked",
+  "status": "dead",
   "why": "the network here refused the host"
  },
  "https://www.americanimmigrationcouncil.org/research/how-united-states-immigration-system-works": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2018-19-u6-q3"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.americanrhetoric.com/speeches/mlkivebeentothemountaintop.htm": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2021-22-u6-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.amishheritage.org/services/education/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2020-21-u5-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.archives.gov/founding-docs/virginia-declaration-of-rights": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2019-20-u5-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.archives.gov/publications/prologue/2010/spring/newnation.html": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2018-19-u3-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.bartleby.com/73/1593.html": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2022-23-u6-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://www.cnn.com/videos/tv/2016/02/13/scalia-burning-flag-piers-intv.cnn/video/playlists/supreme-court-justice-antonin-scalia-dead/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2017-18-u5-q3"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.consource.org/document/a-federal-republican-a-review-of-the-constitution-1787-11-28/#16": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2020-21-u2-q3"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.consource.org/document/james-madisons-notes-of-the-constitutional-convention-1787-7-5/20180514160636": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2023-24-u4-q2"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.consource.org/document/richard-henry-lee-to-edmund-pendleton-1788-5-26/20130122083153/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2019-20-u2-q3"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.encyclopedia.com/law/legal-and-political-magazines/free-speech-great-bulwark-liberty": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2022-23-u5-q2"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.foreignaffairs.com/articles/united-states/2014-08-18/america-decay": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2016-17-u4-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.google.com/books/edition/The_Theory_of_Moral_Sentiments/d-UUAAAAQAAJ?hl=en&gbpv=0": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2019-20-u6-q3"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.gpo.gov/fdsys/pkg/GPO-CDOC-106sdoc21/pdf/GPO-CDOC-106sdoc21.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2017-18-u6-q2"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.gutenberg.org/files/1497/1497-h/1497-h.htm": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "503",
   "questions": [
    "nf-2022-23-u1-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 503"
  },
  "https://www.gutenberg.org/files/575/575-h/575-h.htm#link2H_4_0056": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "503",
   "questions": [
    "st-2022-23-u4-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 503"
  },
  "https://www.gutenberg.org/files/7370/7370-h/7370-h.htm": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "503",
   "questions": [
    "st-2018-19-u4-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 503"
  },
  "https://www.gutenberg.org/files/815/815-h/815-h.htm": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "503",
   "questions": [
    "nf-2023-24-u6-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 503"
  },
  "https://www.huffpost.com/entry/john-lewis-social-change-voting-rights_n_57f2bd99e4b0703f7590753e": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "406",
   "questions": [
    "nf-2023-24-u6-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 406"
  },
  "https://www.journalofdemocracy.org/article/eroding-norms-and-democratic-deconsolidation": {
   "checked": "2026-11-25",
@@ -1444,12 +1553,13 @@
  },
  "https://www.jstor.org/stable/pdf/1321160.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2020-21-u5-q2",
    "st-2021-22-u5-q2"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.law.cornell.edu/supct/html/02-1315.ZS.html": {
@@ -1481,227 +1591,246 @@
  },
  "https://www.loc.gov/exhibits/jefferson/60.html": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2025-26-u6-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.masshist.org/digitaladams/archive/doc?id=L17760703jasecond": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2025-26-u6-q3"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.migrationpolicy.org/programs/data-hub/charts/immigrant-population-over-time": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2018-19-u6-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://www.npr.org/2023/09/28/1202310781/exposing-the-secretive-company-at-the-forefront-of-facial-recognition-technology": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2023-24-u5-q2"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.npr.org/2026/03/03/nx-s1-5641025/roger-bennetts-world-revolves-around-the-world-cup-and-it-always-has": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2026-27-u6-q3"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.nps.gov/stli/learn/historyculture/colossus.htm": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2017-18-u6-q3"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.nytimes.com/roomfordebate/2013/06/18/ballot-initiatives-at-the-local-level/voter-initiatives-are-a-time-tested-part-of-our-democracy": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2022-23-u6-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.opn.ca6.uscourts.gov/opinions.pdf/21a0166p-06.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2025-26-u4-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.oxfordreference.com/view/10.1093/acref/9780191826719.001.0001/q-oro-ed4-00008130": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "302",
   "questions": [
    "st-2021-22-u6-q3"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 302"
  },
  "https://www.oyez.org/cases/2021/20-1530": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2025-26-u4-q2"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.oyez.org/cases/2024/24-297": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2025-26-u5-q2"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.pbs.org/newshour/show/intelligence-fusion-centers-under-scrutiny-accused-of-undermining-civil-rights": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2022-23-u5-q3"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.presidency.ucsb.edu/documents/remarks-accepting-the-presidential-nomination-the-democratic-national-convention-chicago": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "nf-2022-23-u6-q2"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://www.rstreet.org/commentary/congress-must-invest-in-its-own-capacity-again/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2025-26-u4-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.senate.gov/artandhistory/history/resources/pdf/Washingtons_Farewell_Address.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2024-25-u4-q2"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.ssa.gov/history/paine4.html": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "403",
   "questions": [
    "st-2019-20-u3-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 403"
  },
  "https://www.state.gov/about/about-the-u-s-department-of-state/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "405",
   "questions": [
    "st-2020-21-u6-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 405"
  },
  "https://www.supremecourt.gov/opinions/19pdf/18-5924_n6io.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2025-26-u5-q1"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.supremecourt.gov/opinions/20pdf/20-255_g3bi.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "st-2021-22-u5-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.supremecourt.gov/opinions/21pdf/19-1392_6j37.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2024-25-u3-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.thirteen.org/programs/the-roosevelts-an-intimate-history/roosevelts-education-clip-fdr-faces-great-crises/": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2022-23-u4-q2"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.westfield.ma.edu/historical-journal/wp-content/uploads/2018/06/Langston-winter-2006-combined.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2025-26-u1-q2"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.wnycstudios.org/podcasts/takeaway/segments/transcript-interview-justice-ruth-bader-ginsburg": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2022-23-u6-q3"
   ],
-  "status": "unchecked",
+  "quote_found": false,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://www.yalelawjournal.org/pdf/976_2zxk72cx.pdf": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "200",
   "questions": [
    "nf-2024-25-u5-q1"
   ],
-  "status": "unchecked",
+  "quote_found": true,
+  "status": "ok",
   "why": "the network here refused the host"
  },
  "https://youtu.be/YAG1N4a84Dk": {
   "checked": "2026-11-25",
-  "http": "000",
+  "http": "429",
   "questions": [
    "nf-2018-19-u5-q1"
   ],
   "status": "unchecked",
-  "why": "the network here refused the host"
+  "why": "HTTP 429"
  }
 }

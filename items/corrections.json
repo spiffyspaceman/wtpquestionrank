@@ -295,5 +295,12 @@
    }
   ],
   "reason": "The text layer's repeated fragments displaced the footnote marker; it is placed where the printed page (read from the page image) has it."
+ },
+ {
+  "id": "nf-2023-24-u2-q2",
+  "note": "*",
+  "find": "https://csac.history.wisc.edu/wp-THE PRESIDENT OF THE CONVENTION TO THE PRESIDENT OF CONGRESS, 17 September 1787content/uploads/sites/281/2017/07/assessments_41.pdf",
+  "replace": "https://csac.history.wisc.edu/wp-content/uploads/sites/281/2017/07/assessments_41.pdf",
+  "reason": "The owner's text extract has the linked document's title pasted into the middle of the web address; the address is restored by removing it. No PDF of this cycle was available to check against."
  }
 ]
