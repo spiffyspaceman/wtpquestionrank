@@ -15,41 +15,42 @@ steps finish.*
 - A Cloudflare API token "wtpquestionrank D1 setup" (D1 Edit plus Workers Scripts Read) is saved on the Claude
   environment "wtpquestionrank". It expires 2 December 2026. Delete it in My Profile > API Tokens once launch is done.
 
-## Owner: quick re-check after the 25 Nov deploy
+## Done on 25 November 2026
 
-0. Sign-in now also checks that the Turnstile token was solved on `wtpquestionrank.spiffyspaceman.com`. In a private
-   window, enter `AAAA-AAAA-AAAA`: expect "That code was not recognized." If it says "The check did not pass", tell
-   Claude.
+- Item set `state-launch-v1` loaded: 36 published questions; stored file hash equals the pre-registered
+  `8cb28a9e…53510d0` (Claude checked in D1).
+- `Round 1` created as a **draft** (not yet open, so the item set is not yet frozen).
+- Test codes `Other 01` and `Other 02` created; their links were shared with Claude. No votes yet.
+- The live invite link fills the code and shows the Turnstile check. Turnstile does not pass a headless browser, so
+  the test votes are the owner's to cast on a phone.
 
-## Owner: admin clicks (about 5 minutes)
+## Owner: now
 
-1. **Items.** On GitHub, open `items/launch_items_v1.json` and use **Download raw file**; don't copy and paste. In
-   `/admin` under **Items**, choose the file and select **Load**. Expect "It matches the pre-registered hash"
-   (`8cb28a9e…53510d0`).
-2. **Round.** Under **Rounds**, create `Round 1` on `state-launch-v1 (36 items)` as a draft, then select **Open**. The
-   item set freezes when the round opens. Test votes go in Round 1 itself; the test codes are revoked afterward, and
-   the analysis excludes revoked codes (owner decision, 24 Nov 2026).
-3. **Test codes.** Under **Codes**: role **Other**, How many **2**, **My own code** unticked, **Create codes**. Paste
-   the two codes to Claude. They are throwaway.
+1. **Turn off Cloudflare Web Analytics for this hostname only.** The zone's automatic Web Analytics injects
+   `static.cloudflareinsights.com/beacon.min.js` into this site's pages. The site's CSP blocks it, so nothing is sent,
+   but the rule is "no analytics". In the dashboard: **Web Analytics** > `spiffyspaceman.com` > **Manage site** >
+   **Advanced options** > **Add rule**: Action **Exclude**, hostname `wtpquestionrank.spiffyspaceman.com`, all paths >
+   **Update**. Leave the zone-wide setting alone (it also covers other subdomains). Claude then confirms the beacon
+   is gone.
+2. **Check the 24 added question texts** against CCE's PDFs (BUILD_STEPS §9 step 6) before opening the round.
+3. **Open Round 1** in `/admin` (Rounds > Open). The item set freezes.
+4. **Test votes on your phone** with the two links:
+   - `Other 01` link: judge 20 pairs (tick one close call, skip one); the Leaderboard link appears. Open it.
+   - Same link on a laptop: you should land where the phone left off.
+   - `Other 02` link: judge one batch of ten.
 
-## Claude: checks, test votes, analysis
+## Claude: after the test votes
 
-4. Check in D1, read-only: the item set hash equals the pre-registered one, there are 36 items, Round 1 is open and
-   the item set is frozen.
-5. Vote on the live site with a headless browser:
-   - `Other 01`: 20 votes plus a skip and a close call, so the leaderboard unlocks; then resume on a second "device".
-   - `Other 02`: one batch.
-   - If Turnstile refuses the headless browser, the owner casts these on a phone instead.
-6. Build the round export from D1 and run `analysis/analyze.ts` on it with the method A outputs in `llm-arm/`.
+5. Build the round export from D1 and run `analysis/analyze.ts` on it with the method A outputs in `llm-arm/`.
 
 ## Owner: finish
 
-7. In `/admin`, select **Refresh intervals** and then **JSON** (it downloads in pages and saves one file). Upload the JSON to Claude, who compares it with the
-   export from step 6.
-8. **Revoke** `Other 01` and `Other 02`. Their sessions end, the caches rebuild and saved intervals are dropped.
-9. Make the real codes by role, ticking **My own code** for the owner's. Download each CSV (label, role, code, link)
+6. In `/admin`, select **Refresh intervals** and then **JSON** (it downloads in pages and saves one file). Upload the JSON to Claude, who compares it with the
+   export from step 5.
+7. **Revoke** `Other 01` and `Other 02`. Their sessions end, the caches rebuild and saved intervals are dropped.
+8. Make the real codes by role, ticking **My own code** for the owner's. Download each CSV (label, role, code, link)
    and keep it with the list of names. Send each person their link; they tap it and are in. The typed code still
    works as a fallback.
-10. As votes come in, select **Refresh intervals** now and then, and export the JSON at least weekly. Time Travel keeps
+9. As votes come in, select **Refresh intervals** now and then, and export the JSON at least weekly. Time Travel keeps
     only 7 days on Free, and the admin banner reminds you.
-11. At freeze: export the JSON and run the analysis command in BUILD_STEPS §10 step 5.
+10. At freeze: export the JSON and run the analysis command in BUILD_STEPS §10 step 5.
