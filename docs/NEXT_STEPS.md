@@ -70,6 +70,18 @@ changing nothing:
   plain http redirects to https; the content policy, HSTS and `no-store` headers are as tested.
 - Not checked, because they need a sign-in: a real vote, the leaderboard, and the admin page on the live site.
 
+## Deploy check for email sign-up (Claude, 25 Nov 2026, 20:40 UTC)
+
+`main` is at `ad7572d`. The new build was live about two minutes after the push. Read from production afterwards,
+changing nothing:
+- Migration `0009_email_signup.sql` is applied: `voters` has `email`, `name` and `join_link_id`, and the one-voter-
+  per-address index exists. The four existing voters (all revoked) have no address. There is no sign-up link yet.
+- The rounds are as they were: "Test" closed, "All questions" a staged draft with no vote.
+- `/join` answers 200 and serves the file this branch builds; the sign-in box reads "Your invite code or email";
+  `/api/join` refuses an empty request; `/admin/api/join-links` redirects to Cloudflare Access.
+- Not checked, because they need a sign-in and a real Turnstile check: a real sign-up, signing back in by email, and
+  the admin panel on the live site. Try one sign-up yourself before sharing the link.
+
 ## Owner: while the round runs
 
 - **Weekly:** **Download full backup**, and the JSON, reasons CSV and corrections CSV exports. The backup is the only
