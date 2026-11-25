@@ -9,32 +9,65 @@
     <link rel="preload" href="/fonts/wtpqr-schola-regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
+  <body class="board-page">
     <main>
       <header class="top">
         <a class="brand" href="/start">WTP Question Rank</a>
         <nav><a href="/vote">Back to voting</a></nav>
       </header>
-      <h1>Leaderboard</h1>
       <p id="msg" class="notice" role="alert" hidden></p>
       <div id="content" hidden>
-        <div class="tabs" id="tabs" role="group" aria-label="Whose votes"></div>
+        <div class="board-head">
+          <h1>Leaderboard</h1>
+          <div class="tabs" id="tabs" role="group" aria-label="Whose votes"></div>
+        </div>
         <p id="summary" class="scale-note" aria-live="polite"></p>
-        <p class="scale-note">The average question is 1000. A 400-point lead wins about 10 times in 11. <span id="intervals"></span></p>
-        <section id="groups" aria-labelledby="groupsH">
-          <h2 id="groupsH">By unit and year</h2>
-          <div class="chart-controls">
-            <div class="tabs" role="group" aria-label="Group by"><button type="button" id="byUnit" aria-pressed="true">Units</button><button type="button" id="byYear" aria-pressed="false">Years</button></div>
-            <div class="tabs" role="group" aria-label="Sort"><button type="button" id="sortStrength" aria-pressed="true">Strongest first</button><button type="button" id="sortOrder" aria-pressed="false">In order</button></div>
-          </div>
-          <div id="chart" class="chart"></div>
-          <details class="chart-table"><summary>Table</summary><div class="table-wrap"><table id="groupTable"></table></div></details>
+
+        <section id="topSection" class="hero" aria-labelledby="topH" hidden>
+          <h2 id="topH" class="eyebrow">Top question</h2>
+          <div id="top"></div>
         </section>
-        <h2 id="rankedH">Ranked</h2>
-        <ol class="board" id="rows" aria-labelledby="rankedH"></ol>
-        <p id="noneRanked" class="muted" hidden>No question has 10 comparisons yet.</p>
-        <h2 id="unrankedH">Fewer than 10 comparisons</h2>
-        <ol class="board unranked" id="unrankedRows" aria-labelledby="unrankedH"></ol>
+
+        <div class="board-grid">
+        <section aria-labelledby="top10H">
+          <h2 id="top10H">Top 10</h2>
+          <ol class="ranklist" id="top10"></ol>
+          <p id="noneRanked" class="muted" hidden>No question has 10 comparisons yet. Questions are ranked once they have 10.</p>
+        </section>
+
+        <section id="explore" class="explore" aria-labelledby="exploreH">
+          <h2 id="exploreH">Explore</h2>
+          <div class="tabs charttabs" role="tablist" aria-label="Chart">
+            <button type="button" role="tab" id="tab-groups" aria-selected="true" aria-controls="panel">Groups</button>
+            <button type="button" role="tab" id="tab-scatter" aria-selected="false" aria-controls="panel">Any two</button>
+            <button type="button" role="tab" id="tab-dist" aria-selected="false" aria-controls="panel">Distribution</button>
+            <button type="button" role="tab" id="tab-h2h" aria-selected="false" aria-controls="panel">Head to head</button>
+          </div>
+          <div id="panel" role="tabpanel">
+            <div id="controls" class="controls"></div>
+            <div id="chart" class="chart"></div>
+            <p id="chartNote" class="muted small"></p>
+            <details id="chartTableWrap" class="chart-table"><summary>Table</summary><div class="table-wrap"><table id="chartTable"></table></div></details>
+          </div>
+          <div id="tip" class="tip" role="status" hidden></div>
+        </section>
+        </div>
+
+        <section aria-labelledby="allH">
+          <h2 id="allH">All questions</h2>
+          <div class="filters">
+            <div class="grow"><label for="q">Search</label><input id="q" type="search" autocomplete="off" spellcheck="false" /></div>
+            <div><label for="fUnit">Unit</label><select id="fUnit"></select></div>
+            <div><label for="fYear">Year</label><select id="fYear"></select></div>
+            <label class="check"><input id="fRanked" type="checkbox" /> Ranked only</label>
+          </div>
+          <p id="allCount" class="muted small" aria-live="polite"></p>
+          <div class="table-wrap"><table id="all" class="qtable"></table></div>
+          <div class="pager"><button id="prevPage" type="button">Previous</button><span id="pageInfo" class="muted small"></span><button id="nextPage" type="button">Next</button></div>
+        </section>
+
+        <p class="scale-note">The average question is 1000. A 400-point lead wins about 10 times in 11. Questions are ranked
+          after 10 comparisons. <span id="intervals"></span></p>
       </div>
     </main>
     <script type="module" src="./board.ts"></script>

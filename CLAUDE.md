@@ -52,13 +52,14 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov | "Other" pill (counts as one of the two reasons) with an optional explanation of at most 20 words, for every voter, in `vote_other` (migration 0003). The owner lifted the no-free-text rule for this field only. |
 | 25 Nov | Back and Forward within the current batch; a changed answer is appended to `vote_corrections` (migration 0004) and counts everywhere through the views `votes_effective` and `vote_reasons_effective`. Read votes through those views, never `votes` directly, wherever the winner, close call or reasons matter. |
 | 25 Nov | Reason pills are comparative ("Why is A better?"; "Forces a clearer position"); codes unchanged. |
+| 25 Nov | Leaderboard: top question in full, #2–#10 beside an Explore panel (groups, any two variables, distribution, head-to-head), then a searchable, sortable, paged list. Tags read "2024-25 U4Q1". Per-question reason counts are shown to voters; Other notes never are. |
 | 25 Nov | Admin "Study health": data gate, votes per day, reasons given, rater flags. Report only; no §7 measure (no repeat agreement) before the analysis. |
 
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 127 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 128 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # pages into dist/
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)

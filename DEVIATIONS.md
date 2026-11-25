@@ -76,3 +76,12 @@ better than the other (for example "Forces a clearer position" instead of "Force
 "Why is A better?" or "Why is B better?", because both questions may be weak or both strong. The stored codes are
 unchanged. Six reasons were recorded under the earlier wording, all from the owner's test code `Other 04`, which will
 be revoked before launch.
+
+**25 November 2026: leaderboard redesign with per-question reasons and charts (owner decision).** The leaderboard,
+still reached only after 20 first-presentation votes, now shows: the top question in full; #2 to #10 with each
+question's tag ("2024-25 U4Q1"); for each question the reasons voters gave when it won (codes and counts only, never
+Other notes); win shares; head-to-head counts by row position (never question ids) for a unit, year or question-number
+matrix; and charts the viewer can adjust in the browser. Effect: a voter who keeps voting after opening the board
+has seen the crowd's ratings and reasons, which may shape later picks and reason choices. Those votes are already
+marked `after_board = 1`, and the §8 sensitivity analysis restricted to pre-board votes reports the result without
+them. No frozen file, threshold, item or measure changes.

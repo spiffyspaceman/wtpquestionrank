@@ -50,3 +50,37 @@ describe("leaderboard question info and groups", () => {
     expect(JSON.stringify(b)).not.toMatch(/"(about|cycle|unit|question|sources)"/);
   });
 });
+
+describe("leaderboard data for the charts", () => {
+  beforeEach(() => mockOutbound());
+
+  it("sends wins, head-to-head counts by row position, and reason counts without any Other words", async () => {
+    await openNewRound();
+    const v = await voter("judge");
+    const b0 = await getBatch(v.cookie);
+    await call("/api/vote", { cookie: v.cookie, body: { pairId: b0.pairs[0].pairId, pick: "L", reasons: ["position"], other: "secret words here" } });
+    await voteN(v.cookie, 19);
+    const res = await call("/api/leaderboard", { cookie: v.cookie });
+    const text = await res.text();
+    for (const it of items) expect(text).not.toContain(it.id);
+    expect(text).not.toContain("secret words");
+    const b = JSON.parse(text);
+    // Every comparison appears once in pairs, and pair totals match each row's games and wins.
+    const games = new Array(b.rows.length).fill(0), wins = new Array(b.rows.length).fill(0);
+    for (const [i, j, iw, n] of b.pairs) {
+      expect(i).toBeLessThan(j);
+      games[i] += n;
+      games[j] += n;
+      wins[i] += iw;
+      wins[j] += n - iw;
+    }
+    b.rows.forEach((r: any, k: number) => {
+      expect(r.games).toBe(games[k]);
+      expect(r.wins).toBe(wins[k]);
+    });
+    expect(b.pairs.reduce((s: number, p: number[]) => s + p[3], 0)).toBe(b.votes);
+    const given = b.rows.flatMap((r: any) => r.reasons);
+    expect(given.map((x: any) => x.code).sort()).toEqual(["other", "position"]);
+    for (const x of given) expect(Object.keys(x).sort()).toEqual(["code", "n"]);
+  });
+});

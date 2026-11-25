@@ -1,6 +1,6 @@
 // Voter API. Question ids never leave the server: pairs go out as an opaque pair id with "L" and "R" sides.
 import { Hono, type Context } from "hono";
-import { QUALITY } from "../rating/config";
+import { POOLED_ROLES, QUALITY } from "../rating/config";
 import { pairKey, selectBatch, type PairingState } from "../rating/pairs";
 import { fitBTCounts, makeRng } from "../rating/rating";
 import {
@@ -607,6 +607,35 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
     await db.prepare("UPDATE voters SET board_seen_at = ? WHERE id = ? AND board_seen_at IS NULL").bind(nowIso(), voter.id).run();
 
   const { fit, rows, snapshot } = await (await board(db, round))(pool);
+  const index = new Map(rows.map((r, i) => [r.id, i]));
+
+  // Head-to-head counts for the browser's charts, by row position (never by question id), unordered (i < j).
+  const h2h = new Map<string, [number, number, number, number]>();
+  for (const pc of await pairCounts(db, round.id, pool)) {
+    let i = index.get(pc.left)!, j = index.get(pc.right)!, iw = pc.leftWins;
+    if (i > j) [i, j, iw] = [j, i, pc.n - pc.leftWins];
+    const k = `${i}:${j}`;
+    const cur = h2h.get(k) ?? [i, j, 0, 0];
+    cur[2] += iw;
+    cur[3] += pc.n;
+    h2h.set(k, cur);
+  }
+
+  // Reasons voters gave when each question won, in this pool (owner decision, 25 Nov 2026). Codes only: an Other
+  // note is counted as "other" and its words are never sent.
+  const roles = pool === "all" ? null : pool === "adults" ? [...POOLED_ROLES] : [pool];
+  const why = await db
+    .prepare(
+      `SELECT v.winner_q AS q, x.reason, count(*) AS n
+         FROM vote_reasons_effective x JOIN votes_effective v ON v.id = x.vote_id JOIN voters u ON u.id = v.voter_id
+        WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL
+          ${roles ? `AND v.role IN (${roles.map(() => "?").join(",")})` : ""}
+        GROUP BY v.winner_q, x.reason`,
+    )
+    .bind(round.id, ...(roles ?? []))
+    .all<{ q: string; reason: string; n: number }>();
+  const reasonsBy = new Map<string, { code: string; n: number }[]>();
+  for (const w of why.results) reasonsBy.set(w.q, [...(reasonsBy.get(w.q) ?? []), { code: w.reason, n: w.n }]);
   // The leaderboard (never the voting page) also shows each question's level, year, unit, number and quoted sources.
   // Owner decision, 25 Nov 2026; logged in DEVIATIONS.md. Question ids still never leave the server.
   const meta = new Map((await questionRows(db, rows.map((r) => r.id))).map((q) => [q.id, q]));
@@ -618,6 +647,8 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
       lo: r.lo === null ? null : Math.round(r.lo),
       hi: r.hi === null ? null : Math.round(r.hi),
       games: r.games,
+      wins: r.wins,
+      reasons: (reasonsBy.get(r.id) ?? []).sort((a, b) => b.n - a.n || (a.code < b.code ? -1 : 1)),
       stem: q.stem,
       bullets: JSON.parse(q.bullets_json) as string[],
       about: { level: q.level, cycle: q.cycle, unit: q.unit, question: q.qnum, sources: SOURCES[r.id] ?? [] },
@@ -630,6 +661,7 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
     votes: fit.nVotes,
     intervalsAsOf: snapshot?.computed_at ?? null,
     rows: out,
+    pairs: [...h2h.values()],
     groups: { units: groupBy(out, (r) => `Unit ${r.about.unit}`, (r) => r.about.unit), years: groupBy(out, (r) => r.about.cycle, (r) => r.about.cycle) },
   });
 });
