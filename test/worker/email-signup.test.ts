@@ -85,7 +85,6 @@ describe("email sign-up", () => {
     for (const email of ["", "not-an-address", "a@b", "two@@example.org", "x@example..org", "a".repeat(250) + "@example.org", 7])
       expect((await join(l.word, { email })).status, String(email)).toBe(400);
     expect(await (await join(l.word, { email: "n@example.org", name: "x".repeat(61) })).json()).toMatchObject({ error: "bad_name" });
-    expect((await join(l.word, { email: "n@example.org", role: undefined })).status).toBe(400);
     turnstileWill(false);
     expect(await (await join(l.word, { email: "n@example.org" })).json()).toMatchObject({ error: "turnstile_failed" });
     turnstileWill(true);
@@ -99,6 +98,31 @@ describe("email sign-up", () => {
     expect(await late.json()).toMatchObject({ error: "link_closed" });
     expect((await join(l.word, { email: "early@example.org" })).status).toBe(200);
     expect((await call("/api/redeem", { body: { code: "early@example.org", turnstileToken: "tok" } })).status).toBe(200);
+  });
+
+  it("asks for the email first: a known address is signed in, a new one is asked for the rest and nothing is stored yet", async () => {
+    const l = await link();
+    const before = await env.DB.prepare("SELECT COALESCE(SUM(count), 0) AS n FROM attempts").first<{ n: number }>();
+    // A new address with no role: no voter, no session, and not a wrong attempt.
+    const first = await call("/api/join", { body: { word: l.word, email: "new.person@example.org", turnstileToken: "tok" } });
+    expect(first.status).toBe(200);
+    expect(await first.json()).toEqual({ ok: true, needProfile: true });
+    expect(first.headers.get("set-cookie")).toBeNull();
+    expect(await row("new.person@example.org")).toBeNull();
+    for (const role of [null, ""]) expect(await (await join(l.word, { email: "new.person@example.org", role })).json()).toMatchObject({ needProfile: true });
+    expect((await env.DB.prepare("SELECT COALESCE(SUM(count), 0) AS n FROM attempts").first<{ n: number }>())!.n).toBe(before!.n);
+    // The second step, with a role, signs them up.
+    const second = await join(l.word, { email: "new.person@example.org", role: "alumni", name: "New Person" });
+    expect(await second.json()).toEqual({ ok: true, created: true });
+    // From then on the email alone is enough, through the sign-up link as well as the sign-in box.
+    const back = await call("/api/join", { body: { word: l.word, email: "New.Person@example.org", turnstileToken: "tok" } });
+    expect(await back.json()).toEqual({ ok: true, created: false });
+    expect(await json(call("/api/me", { cookie: sessionCookie(back) }))).toMatchObject({ role: "Alumni" });
+    // A role that is named must still be an adult role, and a closed link still asks nothing of a stranger.
+    expect((await join(l.word, { email: "x@example.org", role: "student" })).status).toBe(400);
+    await admin(`/admin/api/join-links/${l.id}/close`, { body: {} });
+    expect(await (await call("/api/join", { body: { word: l.word, email: "stranger@example.org", turnstileToken: "tok" } })).json()).toMatchObject({ error: "link_closed" });
+    expect((await call("/api/join", { body: { word: l.word, email: "new.person@example.org", turnstileToken: "tok" } })).status).toBe(200);
   });
 
   it("a revoked address cannot sign in or sign up again", async () => {

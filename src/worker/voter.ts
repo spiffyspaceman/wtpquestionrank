@@ -134,8 +134,10 @@ voterApi.post("/join", async (c) => {
   if (!email) return c.json({ error: "bad_email", message: "Enter your email address." }, 400);
   const name = cleanName(body?.name);
   if (name === false) return c.json({ error: "bad_name", message: "Keep the name to 60 characters." }, 400);
-  const role = body?.role;
-  if (typeof role !== "string" || !(SIGNUP_ROLES as readonly string[]).includes(role))
+  // The page asks for the email alone first, and for a role only when the address is new (owner decision,
+  // 26 Nov 2026). So a request may come without a role; one that names a role must name an adult role.
+  const role = body?.role === undefined || body?.role === null || body?.role === "" ? null : body.role;
+  if (role !== null && (typeof role !== "string" || !(SIGNUP_ROLES as readonly string[]).includes(role)))
     return c.json({ error: "bad_role", message: "Choose the role that fits you best." }, 400);
   if (!c.env.CODE_PEPPER || !c.env.TURNSTILE_SECRET) return c.json({ error: "not_configured" }, 503);
 
@@ -156,13 +158,15 @@ voterApi.post("/join", async (c) => {
   let voter = await known();
   // A closed link takes no new sign-ups; someone who signed up before it closed still gets in.
   if (!voter && link.closed_at) return c.json({ error: "link_closed", message: "This sign-up link is closed. Ask for a new one." }, 403);
+  // A new address with no role yet: nothing is stored and nobody is signed in; the page now asks for the rest.
+  if (!voter && role === null) return c.json({ ok: true, needProfile: true });
   let created = false;
   for (let attempt = 0; !voter; attempt++) {
     const id = randomId();
     try {
       await db
         .prepare("INSERT INTO voters (id, code_hash, role, label, is_owner, created_at, email, name, join_link_id) VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?)")
-        .bind(id, await codeHash(c.env, await inviteCode(c.env, id)), role, await nextLabel(db, role), nowIso(), email, name, link.id)
+        .bind(id, await codeHash(c.env, await inviteCode(c.env, id)), role, await nextLabel(db, role!), nowIso(), email, name, link.id)
         .run();
       voter = { id, revoked_at: null };
       created = true;

@@ -24,16 +24,17 @@
 
       <p id="msg" class="notice" role="alert" hidden></p>
 
-      <!-- Shown once the voter's count is known. A first-time voter gets the task first and the Start button after it
-           (start.ts moves the tally below the guidance); a returning voter gets the tally first. -->
+      <!-- Shown once the voter's count is known. A returning voter gets the count with the Start button right under
+           it. A first-time voter gets the task first, then the button, then the guidance (start.ts moves this block
+           to sit after the task). Owner decisions, 25 and 26 Nov 2026. -->
       <div id="page" hidden>
       <section class="tally" id="tally" aria-labelledby="tallyH">
         <h1 id="tallyH"><span id="votes" class="figure">0</span> <span id="votesWord">pairs judged</span></h1>
         <p id="roundLine" class="muted"></p>
-        <p id="unlockLine"></p>
-        <div id="unlockMeter" class="meter" hidden><progress id="unlockBar" max="20" value="0" aria-hidden="true"></progress></div>
         <p id="resumeLine" hidden></p>
         <div class="actions"><a id="startBtn" class="button primary" href="/vote" hidden>Start a batch of ten</a></div>
+        <p id="unlockLine"></p>
+        <div id="unlockMeter" class="meter" hidden><progress id="unlockBar" max="20" value="0" aria-hidden="true"></progress></div>
       </section>
 
       <section class="guide" id="task" aria-labelledby="taskH">

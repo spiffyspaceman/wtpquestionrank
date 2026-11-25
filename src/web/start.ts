@@ -56,9 +56,10 @@ async function init(): Promise<void> {
 
   const start = $<HTMLAnchorElement>("#startBtn");
   // A first visit: what the task is comes before the button that starts it (owner decision, 25 Nov 2026). The words
-  // are the same; the count of zero and its meter are left out, and the Start button follows the guidance.
+  // are the same; the count of zero and its meter are left out. The button follows the task itself and comes before
+  // the longer guidance, so it is not far down the page (owner decision, 26 Nov 2026).
   if (me.votes === 0 && open) {
-    $("#strong").after($("#tally"));
+    $("#task").after($("#tally"));
     show($("#tallyH"), false);
     show($("#unlockMeter"), false);
     unlock.textContent = `The leaderboard opens after ${me.unlockAt} pairs.`;

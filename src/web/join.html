@@ -14,7 +14,7 @@
     <main class="narrow">
       <header class="top"><a class="brand" href="/">WTP Question Rank</a><nav><button id="themeToggle" class="switch" type="button" role="switch" aria-checked="false"><span class="switch-label">Night</span><span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span></button></nav></header>
       <h1>Which hearing question is better?</h1>
-      <p class="intro">Compare two published We the People hearing questions at a time and pick the better one. Sign up once; after that your email is your login on any device.</p>
+      <p class="intro">Compare two published We the People hearing questions at a time and pick the better one. Enter your email to start. The first time, you will also be asked for your role.</p>
 
       <p id="msg" class="notice" role="alert" hidden></p>
 
@@ -22,6 +22,9 @@
         <label for="email">Your email</label>
         <input id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required />
 
+        <!-- Asked only of an address that has not signed up before (join.ts shows this once the server says so). -->
+        <div id="profile" hidden>
+        <p id="profileNote" class="muted" tabindex="-1">This is your first time here. Add your role, and your name if you like.</p>
         <label for="name">Your name <span class="muted">(optional)</span></label>
         <input id="name" type="text" autocomplete="name" maxlength="60" />
 
@@ -33,9 +36,10 @@
           <label class="check"><input type="radio" name="role" value="alumni" /> Alumni</label>
           <label class="check"><input type="radio" name="role" value="other" /> Other</label>
         </fieldset>
+        </div>
 
         <div id="turnstile" class="turnstile"></div>
-        <button id="go" class="primary" type="submit">Sign up and start</button>
+        <button id="go" class="primary" type="submit">Continue</button>
       </form>
 
       <p class="fineprint">The site keeps your email, your name if you give one, and the role you choose. Only the organizer sees them; other voters never do. No email is sent to you. If you were given a code, <a href="/">sign in with it</a>.</p>

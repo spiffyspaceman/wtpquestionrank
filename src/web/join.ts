@@ -1,4 +1,6 @@
-// Sign-up by email through the owner's sign-up link (owner decision, 25 Nov 2026).
+// Sign-up by email through the owner's sign-up link (owner decision, 25 Nov 2026). The page asks for the email
+// alone; an address that has signed up before is signed in at once, and only a new one is asked for a name and a
+// role (owner decision, 26 Nov 2026).
 import { $, api, ApiError, say, show } from "./common";
 
 declare global {
@@ -36,14 +38,17 @@ function wordFromLink(): string {
 }
 const word = wordFromLink();
 
+const profile = $("#profile");
+
 async function join(): Promise<void> {
-  const role = form.querySelector<HTMLInputElement>('input[name="role"]:checked')?.value;
+  const asking = !profile.hidden;
+  const role = asking ? form.querySelector<HTMLInputElement>('input[name="role"]:checked')?.value : undefined;
   if (!email.value.trim() || !email.checkValidity()) {
     say(msg, "Enter your email address.", "error");
     email.focus();
     return;
   }
-  if (!role) {
+  if (asking && !role) {
     say(msg, "Choose the role that fits you best.", "error");
     form.querySelector<HTMLInputElement>('input[name="role"]')?.focus();
     return;
@@ -55,7 +60,19 @@ async function join(): Promise<void> {
   go.disabled = true;
   say(msg, "");
   try {
-    await api("/api/join", { body: { word, email: email.value.trim(), name: nameBox.value.trim(), role, turnstileToken: token } });
+    const r = await api<{ needProfile?: boolean }>("/api/join", {
+      body: { word, email: email.value.trim(), ...(asking ? { name: nameBox.value.trim(), role } : {}), turnstileToken: token },
+    });
+    if (r.needProfile) {
+      // A new address: ask for the rest. The check token is good for one request, so a fresh one is fetched.
+      show(profile);
+      go.textContent = "Sign up and start";
+      token = "";
+      window.turnstile?.reset(widgetId);
+      go.disabled = false;
+      $("#profileNote").focus();
+      return;
+    }
     location.assign("/start");
   } catch (err) {
     say(msg, err instanceof ApiError ? err.message : "Something went wrong. Try again.", "error");

@@ -330,3 +330,13 @@ He signed up through his own sign-up link as "Judge 01" and cast 20 first-presen
 ("flag it") Claude set `is_owner = 1` on that voter through the D1 API at 21:53 UTC and added an `admin_audit` row
 (`mark_owner`, actor `claude-d1-token`). Nothing else about the voter or the votes changed. The export carries the
 flag per voter, so the "voters other than the owner" analysis (PREREG §8) can set all of his votes aside.
+
+**26 November 2026: the Start button sits higher, and sign-up asks for the email first (owner decisions).**
+- **Home page.** On a first visit the Start button now follows the task (the hearing format, the criterion and how
+  to answer) and comes before "What strong hearing questions do"; it used to come after that guidance. For a
+  returning voter it sits directly under the count, above the leaderboard line. Effect: a new voter can start
+  without scrolling past the guidance, so some may read less of it before their first batch.
+- **Sign-up page.** The page asks for the email alone. An address that has signed up before is signed in at once,
+  through the sign-up link as well as the sign-in box; only a new address is then asked for a role and an optional
+  name. Nothing is stored for a new address until it gives a role. No change to what is kept or who sees it.
+No frozen file, threshold, item or measure changes.

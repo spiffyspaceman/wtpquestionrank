@@ -87,15 +87,17 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov (audit) | The adults board, like a role board, waits for three voters in the round; a voter with no open board is told so and nothing is marked seen. |
 | 25 Nov (audit) | Leaderboard layout: the list of #2 to #10 has the full width and the Explore charts follow it. Head-to-head counts go to the page added up by group, never per pair of questions. |
 | 25 Nov (evening) | **Supersedes "No email or phone accounts" and owner-assigned roles, for adults.** Sign-up by email through a sign-up link the owner makes in admin (`/join#WORD`; `src/worker/signup.ts`, migration 0009): address, optional name, and a self-chosen role (Judge, Coach, Teacher, Alumni, Other). No verification: the address is a username and the sign-in box takes a code or an email. The role is fixed once chosen; the owner can change it in admin. Students keep codes. Addresses appear in admin, the voters CSV and the backup only (DEVIATIONS.md). |
+| 26 Nov | `/start`: on a first visit the Start button follows the task and comes before the guidance; for a returning voter it sits right under the count. |
+| 26 Nov | Sign-up asks for the email alone; a known address is signed in at once, and only a new one is asked for a role and an optional name (`needProfile` from `/api/join`). |
 
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 209 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 210 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # typecheck, then pages into dist/ (so the deploy cannot ship a type error)
-npm run test:ui        # browser smoke test, 63 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
+npm run test:ui        # browser smoke test, 66 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
 npm run premerge       # all of the above in order; run it before merging anything that touches src/web
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)
 ```

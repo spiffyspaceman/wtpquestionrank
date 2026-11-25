@@ -66,7 +66,9 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
 - `POST /api/join`. Sign-up by email (owner decision, 25 Nov 2026; migration 0009): the word of an open sign-up link,
   an email address, an optional name and one of the adult roles. Turnstile and the same throttle apply. It creates a
   voter (with a label and a personal code like any other) and signs them in; an address that has already signed up is
-  signed in and keeps its role. The address is not verified and no email is sent: it works as a username.
+  signed in and keeps its role. The address is not verified and no email is sent: it works as a username. The page
+  sends the email alone first; for an address that is new the answer is `needProfile` (nothing is stored), and the
+  page then asks for the role and optional name.
   - The throttle is 10 a day per SHA-256 of a daily salt and the client IP.
   - The cookie is `__Host-wtpqr`: HttpOnly, Secure, SameSite=Lax, 90 days.
 - `GET /api/me`, `GET /api/batch`, `POST /api/vote`, `POST /api/correct`, `POST /api/skip`, `POST /api/signout`,

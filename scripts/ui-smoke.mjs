@@ -113,8 +113,12 @@ try {
   // typed in the sign-in box is the way back in.
   const joinLink = (await post("/admin/api/join-links", {}, adm)).json;
   const joinCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  // The stand-in issues a fresh token after reset(), as the real widget does: the page needs one for each request.
   await joinCtx.route("https://challenges.cloudflare.com/**", (route) =>
-    route.fulfill({ contentType: "text/javascript", body: "window.turnstile={render:function(el,o){setTimeout(function(){o.callback('smoke-token')},0);return 'w'},reset:function(){}};" }),
+    route.fulfill({
+      contentType: "text/javascript",
+      body: "window.turnstile={render:function(el,o){window.__o=o;setTimeout(function(){o.callback('smoke-token')},0);return 'w'},reset:function(){setTimeout(function(){window.__o.callback('smoke-token-again')},0)}};",
+    }),
   );
   const joinPage = await joinCtx.newPage();
   joinPage.on("pageerror", (e) => failures.push("join page: " + e.message));
@@ -124,9 +128,15 @@ try {
   await joinPage.goto(`${B}/join#${joinLink.word}`);
   await joinPage.waitForSelector("#join");
   check(!joinPage.url().includes(joinLink.word), "the sign-up link's word is not left in the address bar");
+  check(!(await joinPage.isVisible("#profile")) && (await joinPage.textContent("#go")) === "Continue", "sign-up asks for the email alone at first");
+  if (SHOTS) (fs.mkdirSync(SHOTS, { recursive: true }), await joinPage.screenshot({ path: `${SHOTS}/join-first.png`, fullPage: true }));
   await joinPage.fill("#email", "Smoke.Tester@Example.org");
   await joinPage.click("#go");
-  check((await joinPage.textContent("#msg")).includes("Choose the role"), "sign-up asks for a role before it sends anything");
+  await joinPage.waitForSelector("#profile:not([hidden])");
+  check((await joinPage.textContent("#go")) === "Sign up and start" && (await joinPage.evaluate(() => document.activeElement?.id)) === "profileNote", "a new address is then asked for a name and a role");
+  await joinPage.waitForTimeout(100);
+  await joinPage.click("#go");
+  check((await joinPage.textContent("#msg")).includes("Choose the role"), "sign-up asks for a role before it finishes");
   await joinPage.fill("#name", "Smoke Tester");
   await joinPage.check('input[name="role"][value="teacher"]');
   if (SHOTS) (fs.mkdirSync(SHOTS, { recursive: true }), await joinPage.screenshot({ path: `${SHOTS}/join.png`, fullPage: true }));
@@ -144,6 +154,17 @@ try {
   await joinPage.click("#go");
   await joinPage.waitForURL(B + "/start");
   check(true, "the address typed in the sign-in box signs back in");
+  // Opening the sign-up link again later: the email alone signs in, and nothing more is asked.
+  await joinPage.click("#signOut");
+  await joinPage.waitForURL(B + "/");
+  await joinPage.goto(`${B}/join#${joinLink.word}`);
+  await joinPage.waitForSelector("#join");
+  await joinPage.waitForFunction(() => window.turnstile);
+  await joinPage.fill("#email", "smoke.tester@example.org");
+  await joinPage.waitForTimeout(100);
+  await joinPage.click("#go");
+  await joinPage.waitForURL(B + "/start");
+  check(true, "through the sign-up link again, a known address signs in with the email alone");
   const listed = (await get("/admin/api/codes", adm)).voters.find((v) => v.email === "smoke.tester@example.org");
   check(Boolean(listed) && listed.name === "Smoke Tester" && listed.role === "teacher", "the owner's list shows the address, the name and the role");
   await joinCtx.close();
@@ -164,9 +185,9 @@ try {
   // A first visit: the task comes before the Start button, and the zero count is not the headline.
   const order = await page.evaluate(() => {
     const before = (a, b) => Boolean(document.querySelector(a).compareDocumentPosition(document.querySelector(b)) & Node.DOCUMENT_POSITION_FOLLOWING);
-    return { taskFirst: before("#taskH", "#startBtn") && before("#strongH", "#startBtn"), countHidden: document.querySelector("#tallyH").hidden };
+    return { taskFirst: before("#taskH", "#startBtn") && before("#criterion", "#startBtn") && before("#startBtn", "#strongH"), countHidden: document.querySelector("#tallyH").hidden };
   });
-  check(order.taskFirst && order.countHidden, "first visit: the task and the guidance come before Start, without the zero count");
+  check(order.taskFirst && order.countHidden, "first visit: the task comes first, then Start, then the guidance, without the zero count");
   await shot("start");
 
   // Day and night: the toggle switches the colours, names the scheme it leads to, and the choice follows the reader.
@@ -234,7 +255,9 @@ try {
     tallyFirst: Boolean(document.querySelector("#startBtn").compareDocumentPosition(document.querySelector("#taskH")) & Node.DOCUMENT_POSITION_FOLLOWING),
     count: document.querySelector("#tallyH").hidden,
   }));
-  check(back.tallyFirst && !back.count, "a returning voter sees the count and Continue first");
+  const high = await page.evaluate(() => Boolean(document.querySelector("#startBtn").compareDocumentPosition(document.querySelector("#unlockLine")) & Node.DOCUMENT_POSITION_FOLLOWING) && document.querySelector("#startBtn").getBoundingClientRect().top < 260);
+  check(back.tallyFirst && !back.count && high, "a returning voter sees the count with Continue right under it");
+  await shot("start-returning");
   check((await text("#resumeLine")).includes("8 pairs left"), "home offers the part-done batch (8 pairs left)");
 
   // Finish the batch
