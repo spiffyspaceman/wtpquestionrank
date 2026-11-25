@@ -18,16 +18,16 @@
 
 :root {
   --font: "WTPQR Schola", "Century Schoolbook", "New Century Schoolbook", Georgia, serif;
-  --paper: #f6f4ee;
-  --surface: #fffdf8;
-  --ink: #1d201e;
-  --muted: #565d58;
-  --line: #d8d6cc;
-  --line-strong: #b3b0a3;
-  --accent: #23463d;
-  --accent-ink: #f6f4ee;
-  --accent-soft: #e4ebe7;
-  --rule: #23463d;
+  --paper: #f7f4ef;
+  --surface: #fffdf9;
+  --ink: #1e1b1b;
+  --muted: #5f5857;
+  --line: #dbd4cc;
+  --line-strong: #b8ada1;
+  --accent: #6e1f26;
+  --accent-ink: #fbf7f2;
+  --accent-soft: #f1e6e4;
+  --rule: #6e1f26;
   --warn-bg: #fbf1d9;
   --warn-line: #a8741a;
   --ok: #1f6b3a;
@@ -38,16 +38,16 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #121614;
-    --surface: #1a1f1d;
-    --ink: #e6e9e4;
-    --muted: #9fa8a2;
-    --line: #2f3733;
-    --line-strong: #46504b;
-    --accent: #9cc7b6;
-    --accent-ink: #10201a;
-    --accent-soft: #1f2b26;
-    --rule: #9cc7b6;
+    --paper: #171313;
+    --surface: #201a1a;
+    --ink: #ede6e3;
+    --muted: #ab9f9c;
+    --line: #3a3030;
+    --line-strong: #524545;
+    --accent: #e0a3a3;
+    --accent-ink: #2a0d10;
+    --accent-soft: #2e2222;
+    --rule: #e0a3a3;
     --warn-bg: #352c16;
     --warn-line: #d9aa4c;
     --ok: #74c792;
