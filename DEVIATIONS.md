@@ -47,3 +47,10 @@ text), exported as `reasons.csv`, and are not part of the JSON export or the reg
 name qualities a voter might then weigh, and they add a step to each pair. Reasons are optional, the pick is unchanged,
 and every vote still counts the same. Also on the voting page, tapping anywhere on a question's card now picks it, as
 its button does. No frozen file, threshold, item or measure changes.
+
+**25 November 2026: "Other" reason with a short explanation (owner decision).** A tenth pill, Other, counts as one of
+the two reasons and opens a text box for the voter's own explanation, at most 20 words (the limit the LLM judges had on
+their reasons). It is open to every voter, students included; the owner lifted the brief's no-free-text rule for this
+field only. Notes are stored in `vote_other` (migration 0003, append-only), shown only to the owner, exported in
+`reasons.csv`, and are not part of the JSON export or the registered analysis. Effect: as with the pills, an extra
+optional step per pair. No frozen file, threshold, item or measure changes.

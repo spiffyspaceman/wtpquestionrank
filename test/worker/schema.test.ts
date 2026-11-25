@@ -37,11 +37,11 @@ describe("schema on local D1", () => {
     await d.prepare("INSERT INTO admin_audit (at,actor,action,detail_json) VALUES (?,?,?,?)").bind(now, "sub", "x", "{}").run();
   });
 
-  it("creates every table and all eleven triggers (nine in 0001, two in 0002)", async () => {
+  it("creates every table and all thirteen triggers (nine in 0001, two each in 0002 and 0003)", async () => {
     const t = await db().prepare("SELECT type, count(*) AS n FROM sqlite_schema WHERE type IN ('table','trigger') AND name NOT LIKE '\\_%' ESCAPE '\\' AND name NOT LIKE 'sqlite%' AND name <> 'd1_migrations' GROUP BY type").all<{ type: string; n: number }>();
     const by = Object.fromEntries(t.results.map((r) => [r.type, r.n]));
-    expect(by.trigger).toBe(11);
-    expect(by.table).toBe(15);
+    expect(by.trigger).toBe(13);
+    expect(by.table).toBe(16);
   });
 
   it("rejects UPDATE and DELETE on votes", async () => {
@@ -64,6 +64,14 @@ describe("schema on local D1", () => {
     expect(await fails("INSERT INTO vote_reasons VALUES (1, 'nice wording')")).toMatch(/CHECK/);
     expect(await fails("UPDATE vote_reasons SET reason = 'source'")).toMatch(/append-only/);
     expect(await fails("DELETE FROM vote_reasons")).toMatch(/append-only/);
+  });
+
+  it("vote_other holds one note per vote, at most 200 characters, append-only", async () => {
+    expect(await fails("INSERT INTO vote_other VALUES (1, 'too vague')")).toBe(false);
+    expect(await fails("INSERT INTO vote_other VALUES (1, 'again')")).toMatch(/UNIQUE|PRIMARY/);
+    expect(await fails("INSERT INTO vote_other VALUES (2, ?)", "x".repeat(201))).toMatch(/CHECK/);
+    expect(await fails("UPDATE vote_other SET note = 'x'")).toMatch(/append-only/);
+    expect(await fails("DELETE FROM vote_other")).toMatch(/append-only/);
   });
 
   it("allows only one open round (partial unique index)", async () => {

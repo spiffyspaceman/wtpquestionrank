@@ -111,17 +111,30 @@ export async function votersCsv(db: D1Database): Promise<string> {
   return toCsv(["label", "role", "revoked_at"], r.results.map((x) => [x.label, x.role, x.revoked_at]));
 }
 
-/** One row per reason a voter gave, with the vote it belongs to. Reasons are fixed codes (src/worker/reasons.ts). */
+/** A note opens as text in a spreadsheet, never as a formula. */
+function sheetSafe(s: string): string {
+  return /^[=+\-@\t\r]/.test(s) ? "'" + s : s;
+}
+
+/**
+ * One row per reason a voter gave, with the vote it belongs to. Listed reasons are fixed codes
+ * (src/worker/reasons.ts); "other" rows carry the voter's own note.
+ */
 export async function reasonsCsv(db: D1Database, round: RoundRow): Promise<string> {
   const r = await db
     .prepare(
       `SELECT v.id AS vote_id, v.created_at, u.label, v.voter_id, v.role, v.is_repeat, v.left_q, v.right_q, v.winner_q,
-              v.close_call, x.reason
-         FROM vote_reasons x JOIN votes v ON v.id = x.vote_id JOIN voters u ON u.id = v.voter_id
+              v.close_call, x.reason, x.note
+         FROM (SELECT vote_id, reason, NULL AS note FROM vote_reasons
+               UNION ALL SELECT vote_id, 'other' AS reason, note FROM vote_other) x
+         JOIN votes v ON v.id = x.vote_id JOIN voters u ON u.id = v.voter_id
         WHERE v.round_id = ? ORDER BY v.id, x.reason`,
     )
     .bind(round.id)
     .all<Record<string, unknown>>();
-  const cols = ["vote_id", "created_at", "label", "voter_id", "role", "is_repeat", "left_q", "right_q", "winner_q", "close_call", "reason"];
-  return toCsv(cols, r.results.map((x) => cols.map((k) => x[k])));
+  const cols = ["vote_id", "created_at", "label", "voter_id", "role", "is_repeat", "left_q", "right_q", "winner_q", "close_call", "reason", "note"];
+  return toCsv(
+    cols,
+    r.results.map((x) => cols.map((k) => (k === "note" && typeof x.note === "string" ? sheetSafe(x.note) : x[k]))),
+  );
 }

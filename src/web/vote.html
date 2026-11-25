@@ -43,6 +43,11 @@
           <div class="reasons" role="group" aria-labelledby="reasonsH">
             <p id="reasonsH" class="reasons-h">Why, if you like <span class="muted">(up to two)</span></p>
             <div id="pills" class="pills"></div>
+            <div id="otherRow" class="other-row" hidden>
+              <label for="otherText" class="sr-only">Other reason</label>
+              <input id="otherText" type="text" maxlength="200" autocomplete="off" aria-describedby="otherCount otherNote" />
+              <p class="other-meta"><span id="otherNote">No names or personal details.</span> <span id="otherCount" aria-live="polite"></span></p>
+            </div>
           </div>
           <div class="close-row"><label class="check"><input type="checkbox" id="close" aria-keyshortcuts="c" /> Close call</label></div>
           <div class="picks">

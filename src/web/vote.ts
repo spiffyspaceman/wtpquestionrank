@@ -1,4 +1,4 @@
-import { REASONS, MAX_REASONS, type ReasonCode } from "../worker/reasons";
+import { MAX_REASONS, OTHER_LABEL, OTHER_MAX_WORDS, REASONS, wordCount, type ReasonCode } from "../worker/reasons";
 import { $, api, ApiError, CRITERION, el, say, show } from "./common";
 
 interface Side {
@@ -46,28 +46,58 @@ const chosen = new Set<ReasonCode>();
 
 $("#criterion").textContent = CRITERION;
 
-// Reason pills: optional, at most MAX_REASONS, cleared with each new pair. Keys 1-9 toggle them in order.
+// Reason pills: optional, at most MAX_REASONS counting "Other", cleared with each new pair. Keys 1-9 toggle the listed
+// reasons in order and 0 toggles "Other", which opens a short text box (at most OTHER_MAX_WORDS words).
 const pills = REASONS.map((r, i) => {
   const b = el("button", { type: "button", class: "pill", "aria-pressed": "false", "aria-keyshortcuts": String(i + 1) }, r.label);
   b.addEventListener("click", () => toggleReason(r.code));
   return b;
 });
-$("#pills").replaceChildren(...pills);
+const otherPill = el("button", { type: "button", class: "pill", "aria-pressed": "false", "aria-keyshortcuts": "0", "aria-controls": "otherRow" }, OTHER_LABEL);
+otherPill.addEventListener("click", () => toggleOther());
+$("#pills").replaceChildren(...pills, otherPill);
+const otherRow = $("#otherRow");
+const otherText = $<HTMLInputElement>("#otherText");
+const otherCount = $("#otherCount");
+let otherOn = false;
+
+function picked(): number {
+  return chosen.size + (otherOn ? 1 : 0);
+}
 
 function renderPills(): void {
-  const full = chosen.size >= MAX_REASONS;
+  const full = picked() >= MAX_REASONS;
   REASONS.forEach((r, i) => {
     const on = chosen.has(r.code);
     pills[i].setAttribute("aria-pressed", String(on));
     pills[i].disabled = full && !on;
   });
+  otherPill.setAttribute("aria-pressed", String(otherOn));
+  otherPill.disabled = full && !otherOn;
+  show(otherRow, otherOn);
+  renderCount();
+}
+
+function renderCount(): void {
+  const n = wordCount(otherText.value);
+  otherCount.textContent = `${n} of ${OTHER_MAX_WORDS} words`;
+  otherCount.classList.toggle("over", n > OTHER_MAX_WORDS);
 }
 
 function toggleReason(code: ReasonCode): void {
   if (chosen.has(code)) chosen.delete(code);
-  else if (chosen.size < MAX_REASONS) chosen.add(code);
+  else if (picked() < MAX_REASONS) chosen.add(code);
   renderPills();
 }
+
+function toggleOther(): void {
+  if (otherOn) otherOn = false;
+  else if (picked() < MAX_REASONS) otherOn = true;
+  renderPills();
+  if (otherOn) otherText.focus();
+}
+
+otherText.addEventListener("input", renderCount);
 
 function renderMe(): void {
   $("#who").textContent = me.role;
@@ -86,6 +116,8 @@ function showPair(): void {
   fill("right", p.right);
   closeBox.checked = false;
   chosen.clear();
+  otherOn = false;
+  otherText.value = "";
   renderPills();
   const n = size - queue.length + 1;
   $("#position").textContent = `Pair ${n} of ${size}`;
@@ -142,6 +174,12 @@ function batchDone(): void {
 
 async function answer(kind: "L" | "R" | "skip"): Promise<void> {
   if (busy || !queue.length) return;
+  if (kind !== "skip" && otherOn && wordCount(otherText.value) > OTHER_MAX_WORDS) {
+    say(msg, `Keep the Other reason to ${OTHER_MAX_WORDS} words.`, "error");
+    otherText.focus();
+    return;
+  }
+  say(msg, "");
   busy = true;
   [pickL, pickR, skipBtn].forEach((b) => (b.disabled = true));
   judge.classList.add("busy");
@@ -152,7 +190,14 @@ async function answer(kind: "L" | "R" | "skip"): Promise<void> {
       kind === "skip"
         ? await api<AfterAnswer>("/api/skip", { body: { pairId: p.pairId, clientMs } })
         : await api<AfterAnswer>("/api/vote", {
-            body: { pairId: p.pairId, pick: kind, closeCall: closeBox.checked, reasons: [...chosen], clientMs },
+            body: {
+              pairId: p.pairId,
+              pick: kind,
+              closeCall: closeBox.checked,
+              reasons: [...chosen],
+              ...(otherOn ? { other: otherText.value } : {}),
+              clientMs,
+            },
           });
     me.votes = r.votes;
     me.unlocked = r.unlocked;
@@ -197,6 +242,7 @@ document.addEventListener("keydown", (e) => {
   else if (e.key === "ArrowRight") (e.preventDefault(), void answer("R"));
   else if (e.key === "c" || e.key === "C") (e.preventDefault(), (closeBox.checked = !closeBox.checked));
   else if (e.key === "s" || e.key === "S") (e.preventDefault(), void answer("skip"));
+  else if (e.key === "0") (e.preventDefault(), toggleOther());
   else if (/^[1-9]$/.test(e.key) && REASONS[Number(e.key) - 1]) (e.preventDefault(), toggleReason(REASONS[Number(e.key) - 1].code));
 });
 

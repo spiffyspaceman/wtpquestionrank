@@ -287,7 +287,12 @@ interface Health {
   };
   flagRules: { minVotes: number; tooFastMedianMs: number; sideShare: number };
   perDay: { day: string; votes: number; voters: number; adult_votes: number }[];
-  reasons: { votesWithReason: number; votes: number; counts: { reason: string; n: number }[] };
+  reasons: {
+    votesWithReason: number;
+    votes: number;
+    counts: { reason: string; n: number }[];
+    notes: { created_at: string; label: string; role: string; note: string }[];
+  };
   raters: {
     label: string;
     role: string;
@@ -300,7 +305,7 @@ interface Health {
   }[];
 }
 
-const REASON_LABEL = new Map<string, string>(REASONS.map((r) => [r.code, r.label]));
+const REASON_LABEL = new Map<string, string>([...REASONS.map((r) => [r.code, r.label] as [string, string]), ["other", "Other"]]);
 const FLAG_TEXT: Record<string, string> = { too_fast: "Fast", one_side: "One side" };
 const pct = (x: number) => `${Math.round(x * 100)}%`;
 
@@ -351,6 +356,13 @@ async function loadHealth(): Promise<void> {
     r.counts.map((x) => [REASON_LABEL.get(x.reason) ?? x.reason, x.n, pct(x.n / given)]),
     [1, 2],
   );
+
+  table(
+    $<HTMLTableElement>("#otherNotes"),
+    ["Time", "Voter", "Role", "Other reason"],
+    r.notes.map((x) => [fmtDate(x.created_at), x.label, x.role, x.note]),
+  );
+  show($("#otherNotesWrap"), r.notes.length > 0);
 
   const f = h.flagRules;
   $("#flagRules").textContent =

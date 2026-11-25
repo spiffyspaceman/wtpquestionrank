@@ -22,7 +22,10 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
   level, number or source to the voting page. Votes are append-only; "reset" means a new round. A change to what
   voters see or when (unlock threshold, items, pairing) is a deviation: ask first, then log it.
 - **Privacy:** store no names, emails, phone numbers or free text about voters (some are students). Names stay on the
-  owner's own list, keyed by label ("Judge 07"). The owner reconfirmed this on 25 Nov 2026.
+  owner's own list, keyed by label ("Judge 07"). The owner reconfirmed this on 25 Nov 2026. **One exception (owner,
+  25 Nov 2026):** the "Other" reason may carry the voter's own explanation of a pick, at most 20 words, for every
+  voter, students included. It lives only in `vote_other`, is shown only in admin and `reasons.csv`, and never on a
+  voter page. No other free-text field without the owner's yes.
 - **No analytics, no third-party scripts except Turnstile.** The CSP enforces it.
 - **The news reader is off limits:** `reader.spiffyspaceman.com`, repo `spiffyspaceman/reader`, the Cloudflare Worker
   `reader-email` and its Vultr server. Don't read, fetch, touch or reuse any of it, even to compare.
@@ -46,13 +49,14 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov | Every published WTP question becomes Round 2, after Round 1; Round 1 stays the pre-registered 36. |
 | 25 Nov | After sign-in, voters land on `/start`: votes cast, unlock progress, start or continue a batch, hearing format, criterion, and judging guidance paraphrased from CCE's Toolkit without attribution (DEVIATIONS.md). |
 | 25 Nov | Optional reason pills, up to two of nine fixed codes per vote, in `vote_reasons` (migration 0002), exported as `reasons.csv` (DEVIATIONS.md). Tapping a question card picks it. |
+| 25 Nov | "Other" pill (counts as one of the two reasons) with an optional explanation of at most 20 words, for every voter, in `vote_other` (migration 0003). The owner lifted the no-free-text rule for this field only. |
 | 25 Nov | Admin "Study health": data gate, votes per day, reasons given, rater flags. Report only; no §7 measure (no repeat agreement) before the analysis. |
 
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 118 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 121 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # pages into dist/
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)

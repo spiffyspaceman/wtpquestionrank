@@ -25,7 +25,7 @@ import {
 } from "./data";
 import type { AppEnv, RoundRow, VoterRow } from "./env";
 import sourcesFile from "../../items/sources_v1.json";
-import { parseReasons } from "./reasons";
+import { MAX_REASONS, parseOther, parseReasons } from "./reasons";
 import { verifyTurnstile } from "./turnstile";
 import { isUniqueViolation, nowIso, optInt, randomId, randomSeed, readJsonObject } from "./util";
 
@@ -333,7 +333,9 @@ voterApi.post("/vote", requireVoter(), async (c) => {
   if (!body || (body.pick !== "L" && body.pick !== "R")) return c.json({ error: "bad_request" }, 400);
   const closeCall = body.closeCall === true ? 1 : 0;
   const reasons = parseReasons(body.reasons);
-  if (!reasons) return c.json({ error: "bad_request" }, 400);
+  const other = parseOther(body.other);
+  if (!reasons || !other) return c.json({ error: "bad_request" }, 400);
+  if (reasons.length + (other.chosen ? 1 : 0) > MAX_REASONS) return c.json({ error: "bad_request" }, 400);
   const clientMs = optInt(body.clientMs, 0, MAX_CLIENT_MS);
   const found = await pairFor(db, body.pairId, voter.id);
   if ("error" in found) return c.json({ error: found.error }, PAIR_ERRORS[found.error!]);
@@ -373,6 +375,9 @@ voterApi.post("/vote", requireVoter(), async (c) => {
     ...reasons.map((r) =>
       db.prepare("INSERT INTO vote_reasons (vote_id, reason) SELECT id, ?2 FROM votes WHERE batch_pair_id = ?1").bind(p.id, r),
     ),
+    ...(other.chosen
+      ? [db.prepare("INSERT INTO vote_other (vote_id, note) SELECT id, ?2 FROM votes WHERE batch_pair_id = ?1").bind(p.id, other.note)]
+      : []),
     // Repeats measure consistency only; they never feed the ratings.
     ...(p.is_repeat ? [] : pairCountUpserts(db, p.round_id, voter.role, p.left_q, p.right_q, winner === p.left_q, p.id)),
   ];

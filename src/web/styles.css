@@ -177,6 +177,10 @@ button.pill {
 }
 button.pill[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--accent); }
 button.pill:disabled { opacity: 0.45; }
+.other-row { max-width: 560px; margin: 10px auto 0; }
+.other-meta { display: flex; justify-content: space-between; gap: 12px; margin: 4px 2px 0; font-size: 0.82rem; color: var(--muted); }
+.other-meta .over { color: var(--error); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 .decide { margin: 16px 0 8px; }
 .decide .close-row { display: flex; justify-content: center; }

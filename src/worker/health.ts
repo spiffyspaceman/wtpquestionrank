@@ -94,20 +94,25 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
     .bind(round.id)
     .all<{ day: string; votes: number; voters: number; adult_votes: number }>();
 
+  const ALL_REASONS = `(SELECT vote_id, reason FROM vote_reasons UNION ALL SELECT vote_id, 'other' FROM vote_other)`;
+  const LIVE_FIRST = `JOIN votes v ON v.id = x.vote_id JOIN voters u ON u.id = v.voter_id
+        WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL`;
   const reasons = await db
-    .prepare(
-      `SELECT x.reason, count(*) AS n FROM vote_reasons x JOIN votes v ON v.id = x.vote_id JOIN voters u ON u.id = v.voter_id
-        WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL GROUP BY x.reason ORDER BY n DESC, x.reason`,
-    )
+    .prepare(`SELECT x.reason, count(*) AS n FROM ${ALL_REASONS} x ${LIVE_FIRST} GROUP BY x.reason ORDER BY n DESC, x.reason`)
     .bind(round.id)
     .all<{ reason: string; n: number }>();
   const withReason = await db
-    .prepare(
-      `SELECT count(DISTINCT x.vote_id) AS n FROM vote_reasons x JOIN votes v ON v.id = x.vote_id JOIN voters u ON u.id = v.voter_id
-        WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL`,
-    )
+    .prepare(`SELECT count(DISTINCT x.vote_id) AS n FROM ${ALL_REASONS} x ${LIVE_FIRST}`)
     .bind(round.id)
     .first<{ n: number }>();
+  // The newest "Other" explanations, for the owner only.
+  const notes = await db
+    .prepare(
+      `SELECT v.created_at, u.label, u.role, x.note FROM vote_other x ${LIVE_FIRST} AND x.note <> ''
+        ORDER BY v.id DESC LIMIT 50`,
+    )
+    .bind(round.id)
+    .all<{ created_at: string; label: string; role: string; note: string }>();
 
   return {
     round: { id: round.id, name: round.name, state: round.state },
@@ -126,7 +131,7 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
       sideShare: QUALITY.SIDE_SHARE_FLAG,
     },
     perDay: perDay.results,
-    reasons: { votesWithReason: withReason?.n ?? 0, votes: first.results.length, counts: reasons.results },
+    reasons: { votesWithReason: withReason?.n ?? 0, votes: first.results.length, counts: reasons.results, notes: notes.results },
     raters,
   };
 }
