@@ -54,3 +54,16 @@ steps finish.*
 9. As votes come in, select **Refresh intervals** now and then, and export the JSON at least weekly. Time Travel keeps
     only 7 days on Free, and the admin banner reminds you.
 10. At freeze: export the JSON and run the analysis command in BUILD_STEPS §10 step 5.
+
+## Later (owner decisions, 25 Nov 2026)
+
+- **Round 2: every published WTP question.** After Round 1 freezes, Claude builds a full item set (State and National
+  Finals, every cycle) from CCE's published PDFs and adds a one-click "Load" in admin, so no JSON file is needed.
+  `items/corpus.csv` lists 420 questions (216 State, 204 NF) but holds scores only, not text. Round 1 stays the
+  pre-registered 36.
+- **Two quoted sources found but not yet confirmed**, so not linked on the leaderboard: John Adams to Richard Price,
+  19 April 1790 (Founders Online, Adams/06-20-02-0188), and Paul Howe, "Eroding Norms and Democratic
+  Deconsolidation," *Journal of Democracy* 28:4 (2017). Founders Online blocks automated readers, and the journal page
+  shows only the opening. If the owner opens them and sees the quoted words, add them to `items/sources_v1.json`.
+- Leaderboard unlock stays at 20 votes (pre-registered).
+

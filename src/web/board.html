@@ -21,6 +21,15 @@
         <div class="tabs" id="tabs" role="group" aria-label="Whose votes"></div>
         <p id="summary" class="scale-note" aria-live="polite"></p>
         <p class="scale-note">The average question is 1000. A 400-point lead wins about 10 times in 11. <span id="intervals"></span></p>
+        <section id="groups" aria-labelledby="groupsH">
+          <h2 id="groupsH">By unit and year</h2>
+          <div class="chart-controls">
+            <div class="tabs" role="group" aria-label="Group by"><button type="button" id="byUnit" aria-pressed="true">Units</button><button type="button" id="byYear" aria-pressed="false">Years</button></div>
+            <div class="tabs" role="group" aria-label="Sort"><button type="button" id="sortStrength" aria-pressed="true">Strongest first</button><button type="button" id="sortOrder" aria-pressed="false">In order</button></div>
+          </div>
+          <div id="chart" class="chart"></div>
+          <details class="chart-table"><summary>Table</summary><div class="table-wrap"><table id="groupTable"></table></div></details>
+        </section>
         <h2 id="rankedH">Ranked</h2>
         <ol class="board" id="rows" aria-labelledby="rankedH"></ol>
         <p id="noneRanked" class="muted" hidden>No question has 10 comparisons yet.</p>

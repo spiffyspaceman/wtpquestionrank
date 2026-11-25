@@ -24,6 +24,7 @@ import {
   visiblePools,
 } from "./data";
 import type { AppEnv, RoundRow, VoterRow } from "./env";
+import sourcesFile from "../../items/sources_v1.json";
 import { verifyTurnstile } from "./turnstile";
 import { isUniqueViolation, nowIso, optInt, randomId, randomSeed, readJsonObject } from "./util";
 
@@ -36,16 +37,19 @@ interface QuestionText {
   bullets: string[];
 }
 
-async function questionTexts(db: D1Database, ids: string[]): Promise<Map<string, QuestionText>> {
-  const out = new Map<string, QuestionText>();
-  if (!ids.length) return out;
+async function questionRows(db: D1Database, ids: string[]) {
+  if (!ids.length) return [];
   const uniq = [...new Set(ids)];
   const r = await db
-    .prepare(`SELECT id, stem, bullets_json FROM questions WHERE id IN (${uniq.map(() => "?").join(",")})`)
+    .prepare(`SELECT id, stem, bullets_json, level, cycle, unit, qnum FROM questions WHERE id IN (${uniq.map(() => "?").join(",")})`)
     .bind(...uniq)
-    .all<{ id: string; stem: string; bullets_json: string }>();
-  for (const q of r.results) out.set(q.id, { stem: q.stem, bullets: JSON.parse(q.bullets_json) });
-  return out;
+    .all<{ id: string; stem: string; bullets_json: string; level: string; cycle: string; unit: number; qnum: number }>();
+  return r.results;
+}
+
+/** Stem and bullets only: what a voter sees while judging. */
+async function questionTexts(db: D1Database, ids: string[]): Promise<Map<string, QuestionText>> {
+  return new Map((await questionRows(db, ids)).map((q) => [q.id, { stem: q.stem, bullets: JSON.parse(q.bullets_json) }]));
 }
 
 // ---------- config and redeem (no session) ----------
@@ -402,6 +406,38 @@ voterApi.post("/skip", requireVoter(), async (c) => {
 
 // ---------- leaderboard: 404 without a session ----------
 
+const SOURCES = (sourcesFile as { sources: Record<string, { label: string; url: string }[]> }).sources;
+
+interface GroupRow {
+  rank: number | null;
+  rating: number;
+}
+
+/**
+ * Average rating per unit or year over ranked questions only (10+ comparisons), so an unplayed question's starting
+ * 1000 cannot pull an average. `n` counts every question in the group; `ranked` those that count.
+ */
+function groupBy<T extends GroupRow>(rows: T[], label: (r: T) => string, order: (r: T) => string | number) {
+  const groups = new Map<string, { label: string; order: string | number; n: number; ratings: number[] }>();
+  for (const r of rows) {
+    const k = label(r);
+    const g = groups.get(k) ?? { label: k, order: order(r), n: 0, ratings: [] };
+    g.n++;
+    if (r.rank !== null) g.ratings.push(r.rating);
+    groups.set(k, g);
+  }
+  return [...groups.values()]
+    .sort((a, b) => (a.order < b.order ? -1 : a.order > b.order ? 1 : 0))
+    .map((g) => ({
+      label: g.label,
+      n: g.n,
+      ranked: g.ratings.length,
+      mean: g.ratings.length ? Math.round(g.ratings.reduce((s, x) => s + x, 0) / g.ratings.length) : null,
+      min: g.ratings.length ? Math.min(...g.ratings) : null,
+      max: g.ratings.length ? Math.max(...g.ratings) : null,
+    }));
+}
+
 voterApi.get("/leaderboard", requireVoter(404), async (c) => {
   const db = c.env.DB;
   const voter = c.get("voter");
@@ -418,21 +454,30 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
     await db.prepare("UPDATE voters SET board_seen_at = ? WHERE id = ? AND board_seen_at IS NULL").bind(nowIso(), voter.id).run();
 
   const { fit, rows, snapshot } = await (await board(db, round))(pool);
-  const text = await questionTexts(db, rows.map((r) => r.id));
+  // The leaderboard (never the voting page) also shows each question's level, year, unit, number and quoted sources.
+  // Owner decision, 25 Nov 2026; logged in DEVIATIONS.md. Question ids still never leave the server.
+  const meta = new Map((await questionRows(db, rows.map((r) => r.id))).map((q) => [q.id, q]));
+  const out = rows.map((r) => {
+    const q = meta.get(r.id)!;
+    return {
+      rank: r.rank,
+      rating: Math.round(r.rating),
+      lo: r.lo === null ? null : Math.round(r.lo),
+      hi: r.hi === null ? null : Math.round(r.hi),
+      games: r.games,
+      stem: q.stem,
+      bullets: JSON.parse(q.bullets_json) as string[],
+      about: { level: q.level, cycle: q.cycle, unit: q.unit, question: q.qnum, sources: SOURCES[r.id] ?? [] },
+    };
+  });
   return c.json({
     pool,
     pools: pools.map((p) => ({ id: p, name: p === "adults" ? "All adults" : ROLE_NAMES[p] ?? p })),
     round: { name: round.name, state: round.state },
     votes: fit.nVotes,
     intervalsAsOf: snapshot?.computed_at ?? null,
-    rows: rows.map((r) => ({
-      rank: r.rank,
-      rating: Math.round(r.rating),
-      lo: r.lo === null ? null : Math.round(r.lo),
-      hi: r.hi === null ? null : Math.round(r.hi),
-      games: r.games,
-      ...text.get(r.id)!,
-    })),
+    rows: out,
+    groups: { units: groupBy(out, (r) => `Unit ${r.about.unit}`, (r) => r.about.unit), years: groupBy(out, (r) => r.about.cycle, (r) => r.about.cycle) },
   });
 });
 

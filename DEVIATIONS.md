@@ -16,3 +16,14 @@ where `issued_at` is the time the whole batch was sent. SPEC §2 calls the measu
 `analysis/analyze.ts` applies the pre-registered 20-second "too fast" flag to it. The Worker therefore measures each
 pair from the later of the batch's `issued_at` and the voter's previous answer (vote or skip) in the same batch.
 This changes no frozen file and no threshold. A batch resumed after a break carries the break on its next pair.
+
+## Deviations
+
+**25 November 2026: question details on the leaderboard (owner decision).** PREREG §2 says voters see only the stem
+and two bullets; cycle, unit, level, number and source are hidden. That still holds on the voting page: batches carry
+stem and bullets only. The leaderboard, which a voter reaches only after 20 first-presentation votes, now also shows
+each question's level, cycle, unit and number behind an Info button, links to quoted sources that were opened and
+confirmed (`items/sources_v1.json`), and average ratings by unit and by year. Effect: votes cast after a voter first
+opens the leaderboard may be influenced by recognising cycles and units. Such votes are already flagged
+(`after_board = 1`), and the §8 sensitivity analysis restricted to pre-board votes reports the result without them.
+No frozen file, threshold, item or measure changes. The 20-vote unlock is unchanged (owner decision, same day).

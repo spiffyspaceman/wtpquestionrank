@@ -7,7 +7,8 @@
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "types": []
   },
-  "include": ["./**/*.ts", "../rating/config.ts", "../rating/rating.ts", "../rating/pairs.ts"]
+  "include": ["./**/*.ts", "../rating/config.ts", "../rating/rating.ts", "../rating/pairs.ts", "../../items/sources_v1.json"]
 }

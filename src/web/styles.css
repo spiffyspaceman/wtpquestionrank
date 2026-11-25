@@ -189,15 +189,15 @@ ol.board .rank { font-size: 1.6rem; line-height: 1.15; font-variant-numeric: tab
 ol.board .score { text-align: right; font-variant-numeric: tabular-nums; }
 ol.board .score strong { display: block; font-size: 1.3rem; }
 ol.board .score span { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
-ol.board details.text summary { cursor: pointer; list-style: none; }
-ol.board details.text summary::-webkit-details-marker { display: none; }
-ol.board details.text .stem { display: block; }
-ol.board details.text:not([open]) .stem {
+ol.board .text details summary { cursor: pointer; list-style: none; }
+ol.board .text details summary::-webkit-details-marker { display: none; }
+ol.board .text details .stem { display: block; }
+ol.board .text details:not([open]) .stem {
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
 }
-ol.board details.text .more { display: inline-block; margin-top: 4px; font-size: 0.85rem; color: var(--accent); text-decoration: underline; text-underline-offset: 0.15em; min-height: 24px; }
-ol.board details.text[open] .more { display: none; }
-ol.board details.text ul { margin: 8px 0 0; padding-left: 1.15em; font-size: 0.95rem; }
+ol.board .text details .more { display: inline-block; margin-top: 4px; font-size: 0.85rem; color: var(--accent); text-decoration: underline; text-underline-offset: 0.15em; min-height: 24px; }
+ol.board .text details[open] .more { display: none; }
+ol.board .text details ul { margin: 8px 0 0; padding-left: 1.15em; font-size: 0.95rem; }
 ol.board.unranked li { grid-template-columns: 1fr auto; }
 @media (max-width: 719.98px) {
   ol.board li { grid-template-columns: 2.4rem 1fr; }
@@ -206,6 +206,25 @@ ol.board.unranked li { grid-template-columns: 1fr auto; }
   ol.board.unranked li { grid-template-columns: 1fr; }
   ol.board.unranked .score { grid-column: 1; }
 }
+
+ol.board .about-wrap { margin-top: 2px; }
+button.link.info { min-height: 32px; font-size: 0.85rem; }
+.about { font-size: 0.9rem; color: var(--muted); }
+.about p { margin: 2px 0; }
+
+/* ---------- by unit and year ---------- */
+.chart-controls { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.chart-controls .tabs { margin: 4px 0; }
+.chart-controls .tabs button { min-height: 40px; padding: 6px 14px; font-size: 0.9rem; }
+.chart svg { width: 100%; height: auto; display: block; font-family: var(--font); }
+.chart .tick { font-size: 11px; fill: var(--muted); }
+.chart .ref { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 3; }
+.chart .glabel { font-size: 13px; fill: var(--ink); }
+.chart .gvalue, .chart .gnote { font-size: 12px; fill: var(--muted); }
+.chart .span { stroke: var(--accent); stroke-width: 2; stroke-linecap: round; opacity: 0.45; }
+.chart .dot { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.chart .grow:hover .dot { r: 7; }
+.chart-table summary { cursor: pointer; color: var(--accent); min-height: 32px; font-size: 0.9rem; }
 
 /* ---------- admin ---------- */
 .admin main { max-width: 1200px; }

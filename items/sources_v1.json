@@ -1,0 +1,34 @@
+{
+  "about": "Sources quoted in the launch questions, shown only on the leaderboard (never while voting). Each link was opened on 25 Nov 2026 and the quoted words found on the page. Questions whose source could not be confirmed have no entry.",
+  "verified": "2026-11-25",
+  "sources": {
+    "st-2024-25-u2-q2": [
+      { "label": "The Federalist No. 37 (Madison, 1788)", "url": "https://avalon.law.yale.edu/18th_century/fed37.asp" }
+    ],
+    "st-2015-16-u3-q3": [
+      { "label": "The Federalist No. 57 (Madison, 1788)", "url": "https://avalon.law.yale.edu/18th_century/fed57.asp" }
+    ],
+    "st-2015-16-u4-q1": [
+      { "label": "James Madison to Thomas Jefferson, 2 April 1798", "url": "https://press-pubs.uchicago.edu/founders/documents/a1_8_11s8.html" }
+    ],
+    "st-2018-19-u4-q1": [
+      { "label": "The Federalist No. 51 (1788)", "url": "https://avalon.law.yale.edu/18th_century/fed51.asp" },
+      { "label": "John Locke, Second Treatise of Government (1690)", "url": "https://press-pubs.uchicago.edu/founders/documents/v1ch17s5.html" }
+    ],
+    "st-2019-20-u5-q3": [
+      { "label": "James Madison, Memorial and Remonstrance against Religious Assessments (1785)", "url": "https://press-pubs.uchicago.edu/founders/documents/amendI_religions43.html" }
+    ],
+    "st-2021-22-u5-q1": [
+      { "label": "Mahanoy Area School District v. B.L. (2021)", "url": "https://www.law.cornell.edu/supremecourt/text/20-255" }
+    ],
+    "st-2022-23-u5-q3": [
+      { "label": "Massachusetts Constitution of 1780, Declaration of Rights, Art. XVI", "url": "https://press-pubs.uchicago.edu/founders/documents/v1ch1s6.html" }
+    ],
+    "st-2019-20-u6-q3": [
+      { "label": "Cas Mudde, \"The Populist Zeitgeist,\" Government and Opposition (2004)", "url": "https://www.cambridge.org/core/journals/government-and-opposition/article/populist-zeitgeist/2CD34F8B25C4FFF4F322316833DB94B7" }
+    ],
+    "st-2020-21-u6-q3": [
+      { "label": "Worcester v. Georgia (1832)", "url": "https://www.law.cornell.edu/supremecourt/text/31/515" }
+    ]
+  }
+}
