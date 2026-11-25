@@ -504,8 +504,10 @@ voterApi.post("/correct", requireVoter(), async (c) => {
   const OPEN = `EXISTS (SELECT 1 FROM rounds WHERE id = ?2 AND state = 'open') AND EXISTS (SELECT 1 FROM voters WHERE id = ?3 AND revoked_at IS NULL)`;
   const token = randomId();
   const stmts: D1PreparedStatement[] = [];
-  // The cache moves first, by (new winner is left) - (current winner is left), read inside the transaction.
-  if (!v.is_repeat && winner !== v.winner_q)
+  // The cache moves first, by (new winner is left) - (current winner is left), read inside the transaction. It is
+  // sent even when the winner looks unchanged: another correction of the same vote (a second device) may land between
+  // the read above and this write, and then the difference is not zero.
+  if (!v.is_repeat)
     for (const pool of poolsForRole(v.role))
       stmts.push(
         db
