@@ -322,3 +322,11 @@ No frozen file, threshold, item or measure changes.
 role the owner changes has votes under two roles; the three-voter rule for showing a board now counts people, so
 such a voter is one person behind the adults board, not two. And a voter who signed up by email cannot be given the
 Student role, because no address or name is kept for a student; a student gets a code.
+
+**25 November 2026: the round "All questions" is open, and the owner votes in it (record).** The owner loaded the
+corrected footnotes and opened the round at 21:13 UTC with the 36 launch questions in play; the item set froze then.
+He signed up through his own sign-up link as "Judge 01" and cast 20 first-presentation votes between 21:14 and
+21:50 UTC. They are real judgments and stay in the data. Email sign-up has no "my own code" tick, so at his request
+("flag it") Claude set `is_owner = 1` on that voter through the D1 API at 21:53 UTC and added an `admin_audit` row
+(`mark_owner`, actor `claude-d1-token`). Nothing else about the voter or the votes changed. The export carries the
+flag per voter, so the "voters other than the owner" analysis (PREREG §8) can set all of his votes aside.

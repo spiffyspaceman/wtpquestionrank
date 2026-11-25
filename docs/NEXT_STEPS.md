@@ -29,6 +29,14 @@ live:
   shown; five footnote slips are corrected.
 - Fixes from the code reviews, and the tests that guard them (`docs/AUDIT_2026-11-25_launch.md`).
 
+## Voting is open (25 Nov 2026, 21:13 UTC)
+
+Read from production at 21:55 UTC: the corrected footnotes are loaded, "All questions" is open with 36 questions in
+play, one sign-up link is open, and one voter is live: the owner, "Judge 01", signed up by email, 20 votes, marked
+as the owner's account (set by Claude through the D1 API at his word; `admin_audit` has the row). Steps 2, 3 and 5
+below are done, and step 4 is under way. Still open: step 0 (confirm Workers Paid), inviting people, and step 6.
+The owner's leaderboard opens once two more adults have each cast a vote.
+
 ## Owner: to go live
 
 0. **Confirm the Worker is on Workers Paid** (Cloudflare dashboard > Workers & Pages > Plans). The notes say you
