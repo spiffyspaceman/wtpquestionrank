@@ -86,11 +86,11 @@ function isNight(): boolean {
   return t ? t === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 
-/** Wire the masthead toggle, if the page has one. The button names the scheme it switches to. */
+/** Wire the masthead switch, if the page has one: "Night", off in day colours and on in night colours. */
 export function initTheme(): void {
   const b = document.querySelector<HTMLButtonElement>("#themeToggle");
   if (!b) return;
-  const label = () => (b.textContent = isNight() ? "Day" : "Night");
+  const label = () => b.setAttribute("aria-checked", String(isNight()));
   label();
   b.addEventListener("click", () => {
     const next = isNight() ? "light" : "dark";

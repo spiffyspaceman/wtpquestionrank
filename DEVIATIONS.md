@@ -217,5 +217,5 @@ reach the voting page. The round "Test" would show the notes too once the full s
 before then.
 
 **25 November 2026: day and night toggle (owner decision; built, takes effect when merged).** Every page has a
-"Night" / "Day" control in the masthead. Until now the colours followed the device's setting only. The choice is kept
+sliding "Night" switch in the masthead. Until now the colours followed the device's setting only. The choice is kept
 in the reader's browser and nowhere else. Effect on votes: none expected; recorded because voters see it.

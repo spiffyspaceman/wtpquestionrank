@@ -274,9 +274,22 @@ dl.keys { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; 
 dl.keys dt { text-align: right; }
 dl.keys dd { margin: 0; }
 header.top nav button.link { min-height: 0; padding: 0; font-size: 1rem; }
-/* The day and night toggle sits in the masthead on every page, quieter than the links beside it. */
-button.theme { min-height: 0; padding: 0; border: 0; background: none; color: var(--muted); font-size: 0.95rem; text-decoration: underline; text-underline-offset: 0.15em; }
-button.theme:hover { color: var(--accent); }
+/* The night switch in the masthead of every page: a label and a sliding thumb. On means night colours. */
+button.switch {
+  min-height: 32px; padding: 0; border: 0; background: none; color: var(--muted); font-size: 0.95rem;
+  display: inline-flex; align-items: center; gap: 8px; align-self: center;
+}
+button.switch:hover { color: var(--ink); }
+.switch-track {
+  position: relative; width: 40px; height: 22px; border-radius: 11px; flex: none;
+  border: 1px solid var(--line-strong); background: var(--surface); transition: background-color 120ms, border-color 120ms;
+}
+.switch-thumb {
+  position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--muted); transition: transform 120ms, background-color 120ms;
+}
+button.switch[aria-checked="true"] .switch-track { background: var(--accent); border-color: var(--accent); }
+button.switch[aria-checked="true"] .switch-thumb { transform: translateX(18px); background: var(--accent-ink); }
 @media (hover: none), (pointer: coarse) { .keys-help { display: none; } }
 
 /* ---------- leaderboard ---------- */

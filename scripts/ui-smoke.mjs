@@ -101,19 +101,20 @@ try {
   // Day and night: the toggle switches the colours, names the scheme it leads to, and the choice follows the reader.
   const paper = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   const day = await paper();
-  check((await text("#themeToggle")) === "Night", "in day colours the toggle offers Night");
+  const nightOn = () => page.getAttribute("#themeToggle", "aria-checked");
+  check((await nightOn()) === "false", "in day colours the Night switch is off");
   await page.click("#themeToggle");
-  check((await paper()) !== day && (await text("#themeToggle")) === "Day", "the toggle switches to night colours and then offers Day");
+  check((await paper()) !== day && (await nightOn()) === "true", "the switch turns night colours on");
   await shot("start-night");
 
   // Vote: choose, reasons, Next
   await page.goto(B + "/vote");
   await page.waitForSelector("#judge:not([hidden])");
   check((await text("#position")).startsWith("Pair 1 of 10"), "voting opens on pair 1 of 10");
-  check((await paper()) !== day, "the night choice carries over to the voting page");
+  check((await paper()) !== day && (await page.getAttribute("#themeToggle", "aria-checked")) === "true", "the night choice carries over to the voting page");
   await shot("vote-night");
   await page.click("#themeToggle");
-  check((await paper()) === day, "and the toggle switches back to day");
+  check((await paper()) === day, "and the switch turns it off again");
   check(!(await page.isVisible("#after")), "reasons and Next are hidden before a pick");
   await page.keyboard.press("ArrowRight");
   check((await page.getAttribute("#pickR", "aria-pressed")) === "true", "Right arrow chooses B");
