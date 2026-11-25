@@ -91,7 +91,12 @@ interface ItemIn {
 export const questionTextHash = (stem: string, bullets: string[]) => sha256Hex(JSON.stringify([stem, bullets]));
 
 /** Load an item file: the checks, the writes and the audit row. Returns the JSON answer and its status. */
-async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array): Promise<[Record<string, unknown>, 200 | 400 | 409]> {
+/** Statements per database batch when loading items. Small on purpose: production D1 refused one batch of 1,300. */
+const WRITE_CHUNK = 40;
+/** Stands in for a set's file hash while its load is under way. */
+const LOADING = "loading";
+
+async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array): Promise<[Record<string, unknown>, 200 | 400 | 409 | 500]> {
   const db = c.env.DB;
   const fileSha = await sha256Hex(bytes);
   let file: { item_set?: unknown; version?: unknown; items?: unknown };
@@ -138,9 +143,11 @@ async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array)
     .bind(setId)
     .first<{ file_sha256: string; open_ended: number }>();
   let have: Set<string> | null = null;
+  // A set whose load stopped part-way (see LOADING below) is carried on, whether or not it is open-ended.
+  const resumed = existing?.file_sha256 === LOADING;
   if (existing) {
     if (existing.file_sha256 === fileSha) return [{ ok: true, itemSet: setId, fileSha256: fileSha, already: true }, 200];
-    if (!existing.open_ended) return [{ error: "item_set_exists", message: `${setId} is already loaded from a different file.` }, 409];
+    if (!existing.open_ended && !resumed) return [{ error: "item_set_exists", message: `${setId} is already loaded from a different file.` }, 409];
     // An open-ended set takes a newer file that holds everything it already has, plus more (migration 0006).
     have = new Set(await roundItems(db, setId));
     const ids = new Set(items.map((i) => i.id));
@@ -173,44 +180,52 @@ async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array)
   if (conflicts.length)
     return [{ error: "text_conflict", message: "A loaded question has different text. Give the corrected text a new id.", ids: conflicts }, 409];
 
+  // The writes go out in small batches, each safe to repeat, so a large file never rides on one oversized
+  // transaction and a load that stops part-way can simply be run again. Until the last step the set carries the
+  // marker LOADING in place of its file hash; a set found in that state is resumed, not refused.
   const now = nowIso();
-  if (have) {
-    const added = items.map((i, k) => ({ i, hash: hashes[k] })).filter((x) => !have.has(x.i.id));
-    await db.batch([
-      ...added.map(({ i, hash }) =>
+  const fresh = !existing || resumed;
+  const members = have ?? new Set<string>();
+  const added = items.filter((i) => !members.has(i.id));
+  const inChunks = async (stmts: D1PreparedStatement[]) => {
+    for (const part of chunks(stmts, WRITE_CHUNK)) await db.batch(part);
+  };
+  try {
+    if (!existing)
+      await db
+        .prepare("INSERT INTO item_sets (id, name, version, display_mode, file_sha256, created_at, open_ended) VALUES (?, ?, ?, 'full_text', ?, ?, ?)")
+        .bind(setId, file.item_set, file.version, LOADING, now, openEnded ? 1 : 0)
+        .run();
+    await inChunks(
+      items.map((i, k) =>
         db
           .prepare(
             `INSERT INTO questions (id, level, cycle, unit, qnum, published, stem, bullets_json, source, source_url,
                                     text_sha256, val_id, created_at)
              VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO NOTHING`,
           )
-          .bind(i.id, i.level, i.cycle, i.unit, i.q, i.stem, JSON.stringify(i.bullets), i.source, i.source_url ?? null, hash, i.val_id ?? null, now),
+          .bind(i.id, i.level, i.cycle, i.unit, i.q, i.stem, JSON.stringify(i.bullets), i.source, i.source_url ?? null, hashes[k], i.val_id ?? null, now),
       ),
-      ...added.map(({ i }) => db.prepare("INSERT INTO item_set_items (item_set_id, question_id, added_at) VALUES (?, ?, ?)").bind(setId, i.id, now)),
-      db.prepare("UPDATE item_sets SET file_sha256 = ? WHERE id = ?").bind(fileSha, setId),
-      ...noteUpdates,
-    ]);
-    await audit(c, "add_items", { itemSet: setId, fileSha256: fileSha, was: existing!.file_sha256, added: added.map((x) => x.i.id) });
-    return [{ ok: true, itemSet: setId, fileSha256: fileSha, n: items.length, added: added.length }, 200];
+    );
+    // Questions that join a set already in use are dated; those of a first load are not.
+    await inChunks(
+      added.map((i) =>
+        db.prepare("INSERT OR IGNORE INTO item_set_items (item_set_id, question_id, added_at) VALUES (?, ?, ?)").bind(setId, i.id, fresh ? null : now),
+      ),
+    );
+    await inChunks(noteUpdates);
+    await db.prepare("UPDATE item_sets SET file_sha256 = ? WHERE id = ?").bind(fileSha, setId).run();
+  } catch (e) {
+    console.error(e);
+    // Admin only: say what the database said, and that pressing the button again carries on from here.
+    return [{ error: "db_error", message: `The load stopped part-way: ${String((e as Error)?.message ?? e).slice(0, 300)}. Nothing is lost; run it again to carry on.` }, 500];
   }
-  await db.batch([
-    ...items.map((i, k) =>
-      db
-        .prepare(
-          `INSERT INTO questions (id, level, cycle, unit, qnum, published, stem, bullets_json, source, source_url,
-                                  text_sha256, val_id, created_at)
-           VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (id) DO NOTHING`,
-        )
-        .bind(i.id, i.level, i.cycle, i.unit, i.q, i.stem, JSON.stringify(i.bullets), i.source, i.source_url ?? null, hashes[k], i.val_id ?? null, now),
-    ),
-    db
-      .prepare("INSERT INTO item_sets (id, name, version, display_mode, file_sha256, created_at, open_ended) VALUES (?, ?, ?, 'full_text', ?, ?, ?)")
-      .bind(setId, file.item_set, file.version, fileSha, now, openEnded ? 1 : 0),
-    ...items.map((i) => db.prepare("INSERT INTO item_set_items (item_set_id, question_id) VALUES (?, ?)").bind(setId, i.id)),
-    ...noteUpdates,
-  ]);
-  await audit(c, "load_items", { itemSet: setId, fileSha256: fileSha, n: items.length });
-  return [{ ok: true, itemSet: setId, fileSha256: fileSha, n: items.length }, 200];
+  if (fresh) {
+    await audit(c, "load_items", { itemSet: setId, fileSha256: fileSha, n: items.length, ...(resumed ? { resumed: true } : {}) });
+    return [{ ok: true, itemSet: setId, fileSha256: fileSha, n: items.length }, 200];
+  }
+  await audit(c, "add_items", { itemSet: setId, fileSha256: fileSha, was: existing!.file_sha256, added: added.map((x) => x.id) });
+  return [{ ok: true, itemSet: setId, fileSha256: fileSha, n: items.length, added: added.length }, 200];
 }
 
 adminApi.post("/items", async (c) => {

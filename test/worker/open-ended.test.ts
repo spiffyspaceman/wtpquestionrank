@@ -54,6 +54,29 @@ describe("open-ended item sets", () => {
     expect((await env.DB.prepare("SELECT count(*) AS n FROM item_set_items WHERE item_set_id = 'grow-v1'").first<{ n: number }>())!.n).toBe(10);
   });
 
+  it("a load that stopped part-way is carried on by running it again", async () => {
+    // As the database would be after a first load died mid-way: the set marked as loading, some questions and members in.
+    const items = Array.from({ length: 95 }, (_, k) => ({ ...q(k), id: `part-${String(k).padStart(2, "0")}` }));
+    const raw = JSON.stringify({ item_set: "part", version: 1, items });
+    const now = new Date().toISOString();
+    await env.DB.prepare("INSERT INTO item_sets (id, name, version, display_mode, file_sha256, created_at, open_ended) VALUES ('part-v1','part',1,'full_text','loading',?,0)").bind(now).run();
+    for (const it of items.slice(0, 30)) {
+      await env.DB.prepare("INSERT INTO questions (id, level, cycle, unit, qnum, published, stem, bullets_json, source, text_sha256, created_at) VALUES (?,?,?,?,?,1,?,?,?,?,?)")
+        .bind(it.id, it.level, it.cycle, it.unit, it.q, it.stem, JSON.stringify(it.bullets), it.source, "to-be-checked", now).run();
+    }
+    // The half-written questions carry a wrong hash here, so the loader must refuse rather than paper over them.
+    expect((await load(raw)).status).toBe(409);
+    await env.DB.prepare("DELETE FROM questions WHERE id LIKE 'part-%'").run();
+    for (const it of items.slice(0, 10)) await env.DB.prepare("INSERT INTO item_set_items (item_set_id, question_id) VALUES ('part-v1', ?)").bind(it.id).run().catch(() => undefined);
+    const done = await json(load(raw));
+    expect(done).toMatchObject({ ok: true, n: 95 });
+    expect(done.added).toBeUndefined(); // a first load, resumed: not an addition
+    const set = await env.DB.prepare("SELECT file_sha256, (SELECT count(*) FROM item_set_items WHERE item_set_id = 'part-v1') AS n, (SELECT count(*) FROM item_set_items WHERE item_set_id = 'part-v1' AND added_at IS NOT NULL) AS dated FROM item_sets WHERE id = 'part-v1'").first<{ file_sha256: string; n: number; dated: number }>();
+    expect(set!.file_sha256).not.toBe("loading");
+    expect([set!.n, set!.dated]).toEqual([95, 0]);
+    expect((await json(load(raw))).already).toBe(true);
+  });
+
   it("the launch set is not open-ended: a different file under its name is refused", async () => {
     await loadItems();
     const f = JSON.parse(itemsRaw);

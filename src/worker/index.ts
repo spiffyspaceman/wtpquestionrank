@@ -29,7 +29,9 @@ app.all("*", (c) => c.env.ASSETS.fetch(c.req.raw));
 
 app.onError((err, c) => {
   console.error(err);
-  return c.json({ error: "server_error" }, 500);
+  // A signed-in admin is told what went wrong; everyone else gets no detail.
+  const admin = Boolean(c.get("actor"));
+  return c.json({ error: "server_error", ...(admin ? { message: `Server error: ${String(err?.message ?? err).slice(0, 300)}` } : {}) }, 500);
 });
 
 export default app;

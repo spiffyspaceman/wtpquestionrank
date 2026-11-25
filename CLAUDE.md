@@ -74,7 +74,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 161 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 162 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # pages into dist/
 npm run test:ui        # browser smoke test of the voting flow (needs Playwright; not part of npm test or the deploy)
@@ -108,6 +108,9 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
 - Turnstile does not pass a headless browser on the live site; live test votes are the owner's to cast.
 - D1 allows 100 bound parameters per query and local D1 does not enforce it: send id lists through `chunks()` in
   `src/worker/util.ts`.
+- Production D1 refused the first full-set load, which sent about 1,300 statements in one `db.batch()`; local D1
+  took it. The item loader now writes in batches of 40 that are each safe to repeat, and a set whose load stopped
+  part-way (file hash `loading`) is resumed by running the load again. Keep database batches small.
 - This environment's network reaches only a few hosts, and requests to widen it have been refused by the service.
   `items/check_links.py` marks a link "unchecked" when the host is refused; never read that as "dead". A plain-http
   request to a refused host can come back 403 or 404 from the proxy itself.
