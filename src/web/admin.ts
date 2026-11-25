@@ -130,7 +130,6 @@ function roundActions(r: Round): Node {
 async function pagedExport(r: Round, kind: "json" | "votes"): Promise<void> {
   say(msg, "Exporting...");
   try {
-    const meta = await api<Parameters<typeof buildRoundExport>[0]>(`/admin/api/rounds/${r.id}/export-meta?kind=${kind}`);
     const votes: ExportVoteRow[] = [];
     let after = 0;
     for (;;) {
@@ -139,6 +138,8 @@ async function pagedExport(r: Round, kind: "json" | "votes"): Promise<void> {
       if (page.next === null) break;
       after = page.next;
     }
+    // Voters and skips come last, so a voter whose first vote landed while the pages were being read is in the list.
+    const meta = await api<Parameters<typeof buildRoundExport>[0]>(`/admin/api/rounds/${r.id}/export-meta?kind=${kind}`);
     if (kind === "json") download(`wtpqr-round-${r.id}.json`, JSON.stringify(buildRoundExport(meta, votes)), "application/json");
     else download(`wtpqr-votes-${r.id}.csv`, votesCsvFrom(votes), "text/csv");
     say(msg, `Exported ${votes.length} votes.`, "ok");
