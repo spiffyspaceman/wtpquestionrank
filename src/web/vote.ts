@@ -35,7 +35,12 @@ const between = $("#between");
 const pickL = $<HTMLButtonElement>("#pickL");
 const pickR = $<HTMLButtonElement>("#pickR");
 const skipBtn = $<HTMLButtonElement>("#skip");
+const nextBtn = $<HTMLButtonElement>("#next");
 const closeBox = $<HTMLInputElement>("#close");
+const after = $("#after");
+
+/** The side the voter has chosen for this pair; the vote is sent only with Next. */
+let pick: "L" | "R" | null = null;
 
 let queue: Pair[] = [];
 let size = 0;
@@ -115,6 +120,8 @@ function showPair(): void {
   fill("left", p.left);
   fill("right", p.right);
   closeBox.checked = false;
+  pick = null;
+  renderPick();
   chosen.clear();
   otherOn = false;
   otherText.value = "";
@@ -172,16 +179,36 @@ function batchDone(): void {
   $("#betweenH").focus();
 }
 
-async function answer(kind: "L" | "R" | "skip"): Promise<void> {
+/** Choose a side, or change the choice. Nothing is sent yet: the reasons and Next appear below. */
+function choose(kind: "L" | "R"): void {
   if (busy || !queue.length) return;
-  if (kind !== "skip" && otherOn && wordCount(otherText.value) > OTHER_MAX_WORDS) {
+  const first = pick === null;
+  pick = kind;
+  renderPick();
+  if (first) renderPills();
+}
+
+function renderPick(): void {
+  $("#pair").classList.toggle("chosen", pick !== null);
+  $("#picks").classList.toggle("chosen", pick !== null);
+  $("#leftCard").classList.toggle("selected", pick === "L");
+  $("#rightCard").classList.toggle("selected", pick === "R");
+  pickL.setAttribute("aria-pressed", String(pick === "L"));
+  pickR.setAttribute("aria-pressed", String(pick === "R"));
+  show(after, pick !== null);
+}
+
+async function answer(kind: "vote" | "skip"): Promise<void> {
+  if (busy || !queue.length) return;
+  if (kind === "vote" && !pick) return;
+  if (kind === "vote" && otherOn && wordCount(otherText.value) > OTHER_MAX_WORDS) {
     say(msg, `Keep the Other reason to ${OTHER_MAX_WORDS} words.`, "error");
     otherText.focus();
     return;
   }
   say(msg, "");
   busy = true;
-  [pickL, pickR, skipBtn].forEach((b) => (b.disabled = true));
+  [pickL, pickR, skipBtn, nextBtn].forEach((b) => (b.disabled = true));
   judge.classList.add("busy");
   const p = queue[0];
   const clientMs = Math.round(performance.now() - shownAt);
@@ -192,7 +219,7 @@ async function answer(kind: "L" | "R" | "skip"): Promise<void> {
         : await api<AfterAnswer>("/api/vote", {
             body: {
               pairId: p.pairId,
-              pick: kind,
+              pick,
               closeCall: closeBox.checked,
               reasons: [...chosen],
               ...(otherOn ? { other: otherText.value } : {}),
@@ -214,34 +241,37 @@ async function answer(kind: "L" | "R" | "skip"): Promise<void> {
   } finally {
     busy = false;
     judge.classList.remove("busy");
-    [pickL, pickR, skipBtn].forEach((b) => (b.disabled = false));
+    [pickL, pickR, skipBtn, nextBtn].forEach((b) => (b.disabled = false));
   }
 }
 
-pickL.addEventListener("click", () => void answer("L"));
-pickR.addEventListener("click", () => void answer("R"));
+pickL.addEventListener("click", () => choose("L"));
+pickR.addEventListener("click", () => choose("R"));
+nextBtn.addEventListener("click", () => void answer("vote"));
 skipBtn.addEventListener("click", () => void answer("skip"));
 $("#more").addEventListener("click", () => void loadBatch());
 
-// Tapping anywhere on a question card picks it, like its button. Ignored while text is selected (someone copying a
-// line), and for a moment after a new pair appears, so a quick double tap cannot vote on the next pair unread.
-const CARD_TAP_GUARD_MS = 700;
+// Tapping anywhere on a question card chooses it, like its button; the vote still waits for Next. Ignored while text
+// is selected (someone copying a line).
 for (const [id, kind] of [["#leftCard", "L"], ["#rightCard", "R"]] as const) {
   $(id).addEventListener("click", () => {
-    if (performance.now() - shownAt < CARD_TAP_GUARD_MS) return;
     if (window.getSelection()?.toString()) return;
-    void answer(kind);
+    choose(kind);
   });
 }
 
 document.addEventListener("keydown", (e) => {
   if (judge.hidden || e.altKey || e.ctrlKey || e.metaKey) return;
   const t = e.target as HTMLElement;
-  if (t.tagName === "INPUT" && (t as HTMLInputElement).type === "text") return;
-  if (e.key === "ArrowLeft") (e.preventDefault(), void answer("L"));
-  else if (e.key === "ArrowRight") (e.preventDefault(), void answer("R"));
-  else if (e.key === "c" || e.key === "C") (e.preventDefault(), (closeBox.checked = !closeBox.checked));
+  const typing = t.tagName === "INPUT" && (t as HTMLInputElement).type === "text";
+  // Enter sends the vote, from the Other box too. On a focused button, Enter already presses that button.
+  if (e.key === "Enter" && pick && t.tagName !== "BUTTON") return (e.preventDefault(), void answer("vote"));
+  if (typing) return;
+  if (e.key === "ArrowLeft") (e.preventDefault(), choose("L"));
+  else if (e.key === "ArrowRight") (e.preventDefault(), choose("R"));
   else if (e.key === "s" || e.key === "S") (e.preventDefault(), void answer("skip"));
+  else if (!pick) return;
+  else if (e.key === "c" || e.key === "C") (e.preventDefault(), (closeBox.checked = !closeBox.checked));
   else if (e.key === "0") (e.preventDefault(), toggleOther());
   else if (/^[1-9]$/.test(e.key) && REASONS[Number(e.key) - 1]) (e.preventDefault(), toggleReason(REASONS[Number(e.key) - 1].code));
 });

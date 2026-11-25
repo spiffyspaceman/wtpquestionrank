@@ -48,7 +48,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov | Leaderboard unlock stays at 20 votes. |
 | 25 Nov | Every published WTP question becomes Round 2, after Round 1; Round 1 stays the pre-registered 36. |
 | 25 Nov | After sign-in, voters land on `/start`: votes cast, unlock progress, start or continue a batch, hearing format, criterion, and judging guidance paraphrased from CCE's Toolkit without attribution (DEVIATIONS.md). |
-| 25 Nov | Optional reason pills, up to two of nine fixed codes per vote, in `vote_reasons` (migration 0002), exported as `reasons.csv` (DEVIATIONS.md). Tapping a question card picks it. |
+| 25 Nov | Optional reason pills, up to two of nine fixed codes per vote, in `vote_reasons` (migration 0002), exported as `reasons.csv` (DEVIATIONS.md). Tapping a question card or its button chooses it; the other side fades, reasons appear, and Next sends the vote. |
 | 25 Nov | "Other" pill (counts as one of the two reasons) with an optional explanation of at most 20 words, for every voter, in `vote_other` (migration 0003). The owner lifted the no-free-text rule for this field only. |
 | 25 Nov | Admin "Study health": data gate, votes per day, reasons given, rater flags. Report only; no §7 measure (no repeat agreement) before the analysis. |
 

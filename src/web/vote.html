@@ -27,7 +27,7 @@
           <span id="position" aria-live="polite"></span>
           <progress id="bar" max="10" value="0" aria-hidden="true"></progress>
         </div>
-        <div class="pair">
+        <div class="pair" id="pair">
           <article class="card pickable" id="leftCard" aria-labelledby="leftH">
             <h2 id="leftH">Question A</h2>
             <p class="stem" id="leftStem"></p>
@@ -40,19 +40,22 @@
           </article>
         </div>
         <div class="decide">
-          <div class="reasons" role="group" aria-labelledby="reasonsH">
-            <p id="reasonsH" class="reasons-h">Why, if you like <span class="muted">(up to two)</span></p>
-            <div id="pills" class="pills"></div>
-            <div id="otherRow" class="other-row" hidden>
-              <label for="otherText" class="sr-only">Other reason</label>
-              <input id="otherText" type="text" maxlength="200" autocomplete="off" aria-describedby="otherCount otherNote" />
-              <p class="other-meta"><span id="otherNote">No names or personal details.</span> <span id="otherCount" aria-live="polite"></span></p>
-            </div>
+          <div class="picks" id="picks">
+            <button class="pick" id="pickL" type="button" aria-pressed="false" aria-keyshortcuts="ArrowLeft">A is better</button>
+            <button class="pick" id="pickR" type="button" aria-pressed="false" aria-keyshortcuts="ArrowRight">B is better</button>
           </div>
-          <div class="close-row"><label class="check"><input type="checkbox" id="close" aria-keyshortcuts="c" /> Close call</label></div>
-          <div class="picks">
-            <button class="primary" id="pickL" type="button" aria-keyshortcuts="ArrowLeft">A is better</button>
-            <button class="primary" id="pickR" type="button" aria-keyshortcuts="ArrowRight">B is better</button>
+          <div id="after" hidden>
+            <div class="reasons" role="group" aria-labelledby="reasonsH">
+              <p id="reasonsH" class="reasons-h">Why, if you like <span class="muted">(up to two)</span></p>
+              <div id="pills" class="pills"></div>
+              <div id="otherRow" class="other-row" hidden>
+                <label for="otherText" class="sr-only">Other reason</label>
+                <input id="otherText" type="text" maxlength="200" autocomplete="off" aria-describedby="otherCount otherNote" />
+                <p class="other-meta"><span id="otherNote">No names or personal details.</span> <span id="otherCount" aria-live="polite"></span></p>
+              </div>
+            </div>
+            <div class="close-row"><label class="check"><input type="checkbox" id="close" aria-keyshortcuts="c" /> Close call</label></div>
+            <div class="next-row"><button class="primary" id="next" type="button" aria-keyshortcuts="Enter">Next</button></div>
           </div>
           <div class="skip-row"><button id="skip" class="link" type="button" aria-keyshortcuts="s">Skip</button></div>
         </div>

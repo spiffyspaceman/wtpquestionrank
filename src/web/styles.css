@@ -162,11 +162,18 @@ label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
 .card ul { margin: 0; padding-left: 1.15em; }
 .card li { margin: 0.45em 0; }
 
-/* A whole card picks it, like its button. */
+/* A whole card chooses it, like its button; the chosen side is outlined and the other fades. */
 .card.pickable { cursor: pointer; }
 .card.pickable:hover { border-color: var(--accent); }
-.card.pickable:active { background: var(--accent-soft); }
+.card.selected { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.pair.chosen .card:not(.selected), .picks.chosen .pick[aria-pressed="false"] { opacity: 0.45; }
+.pair.chosen .card:not(.selected):hover { opacity: 0.7; }
 .busy .card.pickable { cursor: progress; }
+button.pick { border-color: var(--accent); color: var(--accent); }
+button.pick[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+#after { margin-top: 14px; }
+.next-row { display: flex; justify-content: center; margin: 8px 0 2px; }
+.next-row button { width: 100%; max-width: 420px; min-height: 56px; font-size: 1.05rem; }
 
 .reasons { margin: 4px 0 10px; }
 .reasons-h { margin: 0 0 6px; font-size: 0.9rem; text-align: center; }
@@ -183,7 +190,7 @@ button.pill:disabled { opacity: 0.45; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 .decide { margin: 16px 0 8px; }
-.decide .close-row { display: flex; justify-content: center; }
+.decide .close-row { display: flex; justify-content: center; margin-top: 4px; }
 .picks { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 6px 0 4px; }
 .picks button { width: 100%; min-height: 56px; font-size: 1.05rem; }
 .skip-row { display: flex; justify-content: center; }

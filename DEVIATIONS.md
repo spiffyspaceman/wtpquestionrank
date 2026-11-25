@@ -45,8 +45,9 @@ Hard trade-offs on every side; Competing ways to read the Constitution; Who shou
 Ties to current issues. They are stored as codes in a new append-only table `vote_reasons` (migration 0002, never free
 text), exported as `reasons.csv`, and are not part of the JSON export or the registered analysis. Effect: the labels
 name qualities a voter might then weigh, and they add a step to each pair. Reasons are optional, the pick is unchanged,
-and every vote still counts the same. Also on the voting page, tapping anywhere on a question's card now picks it, as
-its button does. No frozen file, threshold, item or measure changes.
+and every vote still counts the same. Also on the voting page, tapping a question's card or its button now chooses it
+without sending the vote: the other side fades, the reasons and Close call appear, and Next sends the vote (amended
+the same day at the owner's request). No frozen file, threshold, item or measure changes.
 
 **25 November 2026: "Other" reason with a short explanation (owner decision).** A tenth pill, Other, counts as one of
 the two reasons and opens a text box for the voter's own explanation, at most 20 words (the limit the LLM judges had on
@@ -54,3 +55,8 @@ their reasons). It is open to every voter, students included; the owner lifted t
 field only. Notes are stored in `vote_other` (migration 0003, append-only), shown only to the owner, exported in
 `reasons.csv`, and are not part of the JSON export or the registered analysis. Effect: as with the pills, an extra
 optional step per pair. No frozen file, threshold, item or measure changes.
+
+**25 November 2026: choose, then Next (owner decision; timing note).** Because the vote is now sent with Next, after
+any reasons, `client_ms` and `server_ms` include the time spent on reasons. That can only lengthen a voter's median
+time, so the pre-registered 20-second "too fast" flag (PREREG §4) becomes slightly less likely to fire. The threshold
+is unchanged.

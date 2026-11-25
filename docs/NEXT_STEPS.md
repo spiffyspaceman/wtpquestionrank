@@ -27,7 +27,7 @@ steps finish.*
 - Turnstile does not pass a headless browser, so live test votes are the owner's to cast.
 
 - Built 25 Nov, live once pushed: the voter home page `/start` (sign-in and invite links land there; it offers
-  "Continue your batch" when one is part-done), optional reason pills (up to two of nine), tap-a-card to pick, and
+  "Continue your batch" when one is part-done), optional reason pills (up to two of nine, plus Other with up to 20 words), choose-then-Next voting, and
   the admin **Study health** panel (data gate, votes per day, reasons given, rater flags). The deploy applies
   migration 0002 (`vote_reasons`) to D1 before the Worker goes live. Both voter-facing changes are logged in
   DEVIATIONS.md.
@@ -35,7 +35,7 @@ steps finish.*
 ## Owner: now
 
 1. **Finish the test with `Other 04`** (Show link in admin if needed): judge 10 more pairs to reach 20, ticking one
-   close call, skipping one, tapping a reason or two (once with Other and a few words), and picking at least once by tapping a card; the Leaderboard
+   close call, skipping one, tapping a reason or two (once with Other and a few words), and choosing at least once by tapping a card (the vote goes only with Next); the Leaderboard
    link appears. Check that the home page counts the votes and, if you stop mid-batch, offers to continue it. Open it, try **Info** and the unit/year chart. Then open
    the same link on a second device: you should land where the first left off.
 2. Confirm whether the **24 added question texts** were checked against CCE's PDFs. The item set is now frozen, so a
