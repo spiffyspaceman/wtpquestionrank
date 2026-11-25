@@ -55,14 +55,18 @@ describe("footnotes as shown", () => {
   it("no footnote in the full set shows an access date, and every link shown was checked", () => {
     const root = path.join(import.meta.dirname, "../..");
     const items = JSON.parse(fs.readFileSync(path.join(root, "items/rounds/all.json"), "utf8")).items as { id: string; notes: { text: string }[] }[];
-    const status = JSON.parse(fs.readFileSync(path.join(root, "items/links.json"), "utf8")) as Record<string, { status: string }>;
+    const status = JSON.parse(fs.readFileSync(path.join(root, "items/links.json"), "utf8")) as Record<string, { status: string; replacement?: string }>;
+    // A link shown is either a published address whose page opened, or the checked replacement of a dead one.
+    const replacements = new Set(Object.values(status).filter((r) => r.status === "dead" && r.replacement).map((r) => r.replacement));
     let linked = 0;
     for (const it of items)
       for (const n of it.notes) {
         const p = shownNote(n.text);
         expect(/accessed|last modified/i.test(text(p)), `${it.id}: ${text(p)}`).toBe(false);
+        // No dead address is ever printed.
+        for (const [u, r] of Object.entries(status)) if (r.status === "dead") expect(text(p).includes(u), u).toBe(false);
         for (const href of links(p)) {
-          expect(status[href!]?.status, href!).toBe("ok");
+          expect(status[href!]?.status === "ok" || replacements.has(href!), href!).toBe(true);
           linked++;
         }
       }
