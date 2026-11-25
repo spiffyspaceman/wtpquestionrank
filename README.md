@@ -68,6 +68,8 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
   - `/api/correct` changes an answer in the voter's newest batch. It refuses a vote cast before the voter first
     opened the leaderboard once they have opened it.
   - `/api/signout` ends the session on that device only.
+  - `/api/leaderboard` sends a rating, range and win count only for ranked questions (10 comparisons). A voter's own
+    role board is offered once three voters in that role have voted in the round.
 - Pairs go to the browser as an opaque pair id with "L" and "R" sides. Question ids, cycle, unit and source never
   leave the server.
 
@@ -81,6 +83,12 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
 - **Rounds.** Draft, open, frozen, closed. Several rounds can be open at once (migration 0005): each new batch goes
   to the open round with the fewest batches issued, and a part-done batch is served first. The item set freezes when
   its first round opens.
+- **Staged rounds** (migration 0008, `src/worker/staging.ts`). A staged round puts its questions in play in groups,
+  so that a few voters still fill a leaderboard: the 36 launch questions first, then 24 at a time in a fixed shuffled
+  order that stays even across units and levels, whenever every question in play has 12 adult comparisons. Pairs are
+  drawn only from the questions in play (`round_in_play`, append-only), and the leaderboard lists only those. The
+  pairing code is unchanged. In admin a draft round can be switched between staged and all at once; an open staged
+  round can stop growing by itself or take its next group by hand. A question listed in `HELD` never joins.
 - **The full question set.** `items/rounds/all.json` holds every question transcribed from CCE's published PDFs by
   `items/transcribe.py`. It is bundled into the Worker (`src/worker/builtin-sets.ts`) and loaded from the admin page
   with a draft round. It is never served as a static file. Each question carries its published

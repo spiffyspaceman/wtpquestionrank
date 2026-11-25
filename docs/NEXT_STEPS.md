@@ -1,214 +1,130 @@
-# Next steps (launch, BUILD_STEPS §10)
+# Next steps
 
-*Saved 24 November 2026. When the owner asks "what are the next steps", answer from this file and update it as
-steps finish.*
+*Rewritten 25 November 2026 after the launch audit (`docs/AUDIT_2026-11-25_launch.md`). When the owner asks "what are
+the next steps", answer from this file and update it as steps finish.*
 
 ## Where things stand
 
-- Live at `https://wtpquestionrank.spiffyspaceman.com`. Pushes to `main` deploy through Workers Builds after the tests pass.
-- D1 `wtpquestionrank` (id `de56eb48-…10dc`): each deploy applies any new migration before the Worker goes live
-  (0001 to 0004 exist in the repo; production was not read during the 25 Nov audit).
-- Turnstile, `CODE_PEPPER` and `TURNSTILE_SECRET` are set and verified on the live site.
-- Cloudflare Access protects `/admin` (team `falling-mouse-d5eb.cloudflareaccess.com`, one-time PIN), and the Worker
-  verifies the Access token itself.
-- A Cloudflare API token "wtpquestionrank D1 setup" (D1 Edit plus Workers Scripts Read) is saved on the Claude
-  environment "wtpquestionrank". It expires 2 December 2026. Delete it in My Profile > API Tokens once launch is done.
+**Production, read on 25 Nov 2026 at about 05:50 UTC (counts only, through the D1 API):**
+- Migrations 0001 to 0007 are applied.
+- The first round ("Test", id `C5TW5gelpkQa`, the pre-registered Round 1) is **closed** (05:33 UTC). It holds 20 votes,
+  all from the owner's revoked test code, so the registered comparison has ended without a verdict (PREREG §9).
+- The full set `all-questions-v1` is loaded: 438 questions, every one with its footnotes. Its round, "All questions"
+  (id `ZF_IZnsCUnZU`), is a **draft**: no batch, no vote.
+- Four codes exist, all revoked. No live code.
 
-## Done on 25 November 2026
+**On the dev branch `claude/lucid-cannon-64slmj`, not on `main` (173 tests pass; typecheck passes; the browser smoke
+test passes 35 checks):**
+- **Staged opening** (migration 0008): the round opens with the 36 launch questions in play and adds 24 at a time
+  whenever every question in play has 12 adult comparisons. The deploy marks the draft round as staged.
+- The leaderboard shows no rating for an unranked question, says how many questions are in play and ranked, and
+  offers a role's own board once three voters in that role have voted.
+- `/start` puts the task first on a first visit.
+- One question with a cut-off bullet is held out of play; two footnote details that gave away level or year are not
+  shown; five footnote slips are corrected.
+- Fixes from the code review: a rare race on a double submit, a revoke that could stop half-done, a batch issued
+  into a round that had just closed, a round opened on a half-loaded set, and a table missing from the backup.
 
-- Item set `state-launch-v1` loaded: 36 published questions; stored file hash equals the pre-registered
-  `8cb28a9e…53510d0` (Claude checked in D1).
-- **Round 1 opened at 01:39 UTC**; the item set froze then.
-- Test codes `Other 01`, `Other 02`, `Other 03` revoked unused (no votes). **`Other 04`** (made 01:39, so **Show link**
-  works for it) is the live test code: one batch of 10 votes so far, leaderboard not yet opened. Claude checked in D1
-  (state as of the owner's "next steps" question on 25 Nov).
-- From 25 Nov the admin Voters table has **Show link** for any active code (recomputed from `CODE_PEPPER`, audited;
-  only the hash is stored).
-- Cloudflare's zone-wide Web Analytics beacon: left in place, blocked by the site's CSP (owner decision).
-- Turnstile does not pass a headless browser, so live test votes are the owner's to cast.
+## Owner: to go live
 
-- Built 25 Nov, live once pushed: the voter home page `/start` (sign-in and invite links land there; it offers
-  "Continue your batch" when one is part-done), optional reason pills (up to two of nine, plus Other with up to 20 words), choose-then-Next voting, Back and Forward within a batch (changed answers count; `corrections.csv`), and
-  the admin **Study health** panel (data gate, votes per day, reasons given, rater flags). The deploy applies
-  migration 0002 (`vote_reasons`) to D1 before the Worker goes live. Both voter-facing changes are logged in
-  DEVIATIONS.md.
+1. **Say "merge".** A push to `main` deploys: the tests run, migration 0008 is applied, then the Worker goes live.
+   Nothing changes for voters until a round is open.
+2. In `/admin`, a notice at the top says the full question set has corrected footnotes to load. Press **Load it now**.
+   No question is added and no question text changes.
+3. Under **Rounds**, "All questions" should read "438; opens with 36, 24 more join by themselves at 12 adult
+   comparisons each". Press **Open**. The item set freezes then.
+4. **Make the codes by role**, ticking **My own code** for yours. Download each CSV (label, role, code, link) and keep
+   it with your list of names. Send each person their link.
+5. **Cast a few votes yourself first** with a throwaway code, on a phone and on a computer, then revoke that code
+   (the analysis and the board exclude revoked codes). Things to try: a pick, two reasons, Other with a few words,
+   Close call, Skip, Back and a changed answer, Batch done, and the leaderboard at 20 votes.
+6. **Send Claude page 1 of CCE's 2019-20 State questions PDF** (Unit 1). Question 1's second bullet was cut off in
+   transcription ("...taught us about"), so that question is held out of play until its full text is added.
 
-- **Leaderboard redesigned (25 Nov, live):** top question, #2–#10 beside four adjustable charts, searchable and
-  sortable list. The owner reached 20 test votes with `Other 04` the same day (20 votes in D1 when checked).
+## Owner: while the round runs
 
-## Owner: now
+- **Weekly:** **Download full backup**, and the JSON, reasons CSV and corrections CSV exports. The backup is the only
+  export that holds the batches, the pairing trail and which questions were in play when.
+- **Study health** shows votes per day and flagged raters. Its "data gate" lines are the pre-registered numbers
+  applied to the questions in play; they are a guide to coverage, not a verdict.
+- **Rounds > Questions** lets you stop the round adding questions by itself, or add the next 24 now. A group that has
+  joined cannot be taken out.
+- **Refresh intervals** now and then, so the board shows ranges.
+- If a voter reports a dead footnote link, tell Claude. The 52 addresses on sites that refuse automated readers are
+  the likeliest.
 
-1. **Test with `Other 04`: 20 votes done (25 Nov).** If not tried yet: tick a close call, skip a pair, give a
-   reason (once with Other and a few words), go Back and change an answer, and open the new leaderboard (top
-   question, Explore charts, search). Then open the same link on a second device: it should land where the first
-   left off.
-2. Confirm whether the **24 added question texts** were checked against CCE's PDFs. The item set is now frozen, so a
-   wrong text found later is a logged deviation, not a fix.
+## Owner: Cloudflare (yours; the saved token cannot change these)
 
-## Claude: after the test votes (done 25 Nov 2026)
+- Workers & Pages > `wtpquestionrank` > Settings > Build > Build command:
+  `npm ci && npm run typecheck && npm test && npm run build`. Today the deploy runs the tests but not the typecheck.
+- Delete the API token "wtpquestionrank D1 setup" (D1 Edit plus Workers Scripts Read) once launch is done. It expires
+  2 December 2026 anyway.
+- Always Use HTTPS is zone-wide, so it also changes `reader.spiffyspaceman.com`. Optional: the Worker redirects http
+  itself.
 
-3. **Done.** Built the Round 1 export from D1 (read-only, through `votes_effective`, as the admin export does): 1 voter
-   (`Other 04`), 20 votes, 0 skips, 0 repeats, 1 close call, 0 corrections, all cast before the leaderboard was
-   opened. SHA-256 `f06bf630…54c7`. `analysis/analyze.ts` ran on it with the method A files in `llm-arm/` and returned
-   the expected verdict: the data gate fails (1 adult rater of 15; fewest comparisons on any item 0 of 30). The live
-   rating cache matches the log (20 comparisons, 13 left wins, in every pool). Method B was not run:
-   `Validation_Machine_Records_2026-11-24.jsonl` is not in the repo.
+## Claude: next
 
-## Owner: finish
+- When the PDF page arrives: add State 2019-20 U1Q1 under a new id with its full text, rebuild the set, merge at the
+  owner's word; the owner presses **Load**.
+- Check against a PDF, when one is in hand, the wording the audit could not settle from the text alone (list in the
+  audit report, "Question texts").
+- After a week of votes: read the vote counts and the pace, and tell the owner whether 24 at 12 comparisons is the
+  right step. Both numbers are in `src/worker/staging.ts`.
+- Open, none urgent: `GET /api/batch` reads the whole vote log through a view (fine below about 20,000 votes); the
+  leaderboard's reasons query does the same; the page ignores `duplicate` from another device; a skipped pair later
+  voted on counts as two trials toward the repeat gap; `/start` says nothing special after the last round closes.
 
-4. In `/admin`, select **Refresh intervals** and then **JSON** (it downloads in pages and saves one file). Upload the
-   JSON to Claude, who compares it with the export from step 3.
-5. **Revoke `Other 04`.** Its sessions end, the caches rebuild and saved intervals are dropped; the analysis excludes
-   revoked codes.
-6. Make the real codes by role, ticking **My own code** for the owner's. Download each CSV (label, role, code, link)
-   and keep it with the list of names (any code can be shown again with **Show link**). Send each person their link.
-7. As votes come in, select **Refresh intervals** now and then, and export the JSON, **reasons CSV** and
-   **corrections CSV** at least weekly (neither is in the JSON). Glance at **Study health** for the gate and for flagged raters. Time Travel keeps
-   only 7 days on Free, and the admin banner reminds you.
-8. At freeze: export the JSON and run the analysis command in BUILD_STEPS §10 step 5.
-9. After launch, delete the Cloudflare API token "wtpquestionrank D1 setup" (expires 2 December 2026 anyway).
+## What to expect from the data
 
-## All published questions in one standing round (owner decisions, 25 Nov 2026)
+From a simulation with the site's own pairing and rating code (22 voters; details in the audit report):
 
-The owner chose: every published State and National Finals question he has, **in one round** that keeps growing as
-questions are added, on **Workers Paid** (upgraded 25 Nov); the first round renamed **"Test"** (done in production
-25 Nov) and ended when the big round opens, which ends the registered comparison without a verdict (DEVIATIONS.md).
-
-**Texts: 438 questions, the owner's full set** (`items/transcribed.json`; bundled as `items/rounds/all.json`).
-
-| Level | Cycles | Questions | Source |
+| Votes cast | Questions in play | Ranked | How well the ranked order tracks the truth |
 |---|---|---|---|
-| State | 2014-15 to 2026-27 (13) | 234 | CCE's PDFs |
-| National Finals | 2014-15 to 2019-20 (6) | 108 | CCE's PDFs |
-| National Finals | 2020-21 to 2025-26 (6; two cycles have 2 questions a unit) | 96 | the owner's text extracts of CCE's PDFs |
+| 250 | 36 | about 35 | about 0.7 to 0.9 |
+| 500 | 60 | about 50 | about 0.85 |
+| 1,000 | 84 | 84 | about 0.87 |
+| 2,000 | 132 | 132 | about 0.9 |
 
-How far to trust them:
-- The transcriber reproduces all 36 launch texts exactly.
-- For the 17 cycles with both a PDF and a usable extract, the two agree on every question (after joining words
-  hyphenated across a line, which both got wrong in five places).
-- The 2014-15 State PDF has a faulty text layer (fragments repeated). Claude read all six page images and corrected
-  27 places; one more correction in 2025-26. Each is listed in `items/corrections.json`.
-- **Not checked against a PDF:** the 96 National Finals questions from 2020-21 on. They come from the owner's
-  extracts alone. A wrong text found after loading cannot be edited; the corrected text would be a new question.
-- Nothing before 2014-15 is in hand, so the set covers 13 years, not 20.
+With all 438 in play at once the same 1,000 votes rank nothing, and 2,000 votes rank about 175 at about 0.7. At this
+pace the round reaches all 438 questions after roughly 8,000 votes (my extrapolation from the two rows above).
 
-**What a round this size costs** (Node timings; the plan is now Workers Paid): about 0.45 s of CPU for a new batch
-and 0.1 s for a leaderboard view at 438 questions. Every question reaches 10 comparisons (a rank) after about 2,200
-votes and 30 comparisons after about 6,600.
+## The question set
 
-**Live on `main` since 25 Nov, 04:54 UTC (`d980440`; 154 tests pass).** Checked in production after the deploy:
-migrations 0005 and 0006 applied; the one earlier leaderboard view carried over to the round "Test"; the launch set
-is not open-ended; 20 votes, one round ("Test", open). What went live: migrations 0005 (several open
-rounds; `after_board` and the correction lock per round) and 0006 (open-ended sets: questions can join the running
-round); batch assignment; no round name on voter pages; the bundled 438-question set and the admin button **Load or
-update the full question set**; **Rename** for rounds; a test that runs a batch, 20 votes, the leaderboard and the
-export on all 438.
+**438 questions** (`items/transcribed.json`; bundled as `items/rounds/all.json`): State 2014-15 to 2026-27 (234, from
+CCE's PDFs), National Finals 2014-15 to 2019-20 (108, from CCE's PDFs) and National Finals 2020-21 to 2025-26 (96, from
+the owner's text extracts; two cycles have two questions a unit).
 
-**Footnotes (owner decision, 25 Nov; built on the dev branch, not on `main`; 161 tests pass).** Each question
-shows CCE's published source notes: the asterisk in the text, the note under the bullets, on the voting page and the
-leaderboard, with "accessed <date>" left out. 341 notes on 317 of the 438 questions. Migration 0007.
+How far to trust the texts:
+- The transcriber reproduces all 36 launch texts exactly, and for the 17 cycles with both a PDF and an extract the
+  two agree on every question.
+- The 2014-15 State PDF has a faulty text layer; 27 places were corrected against the page images, and one more in
+  2025-26 (`items/corrections.json`).
+- The 96 National Finals questions from 2020-21 on were not checked against a PDF.
+- The audit read all 438 questions and 339 footnotes. It found no duplicate question, one cut-off bullet (held out
+  of play), one question whose opening quotation uses two single quote marks in place of a double one, and seven
+  places where a word may be missing that only the PDF can settle.
+- Nothing before 2014-15 is in hand.
 
-**Link check, 25 Nov** (`items/links.json`, 189 addresses; the owner opened this environment's network for it):
+**Footnote links** (`items/links.json`, 189 addresses): 89 pages opened and are links; 42 dead ones show a replacement
+that was opened first; 6 dead ones are dropped and the citation stays; 52 on sites that refuse automated readers are
+linked at the owner's word. Five of the six "dropped" records carry the note "the network here refused the host", so
+they were not proven dead from this environment; recheck them when the network allows.
 
-| Result | Count | Shown as |
-|---|---|---|
-| Page opened | 89 (70 hold the quoted words) | a link |
-| Dead, replaced | 42 | a link to the replacement |
-| Dead, no replacement | 6 | the address is dropped; the citation stays |
-| The site refuses automated readers | 52 | a link, at the owner's word (not machine-checked) |
+**Adding questions later** (for example National Finals 2026-27): send Claude the PDF or a text extract. Claude
+transcribes it, checks it, rebuilds the set and merges at your word; you press **Load or update the full question
+set**. In a staged round that is already open, added questions come into play at once.
 
-- **Replacements.** 29 are files the Center for the Study of the American Constitution moved to a new folder (21
-  opened with the quoted words found; 8 are the same file at the new address whose words could not be matched by
-  machine). 13 are the same speech, column or document at its publisher's new address, over https, or on a scholarly
-  host; each was opened and the quoted words found (`items/replacement_candidates.json`, `items/find_replacements.py`).
-  Two are newspaper reprints of Lee Hamilton's syndicated columns, because the original pages are gone.
-- **No replacement found (address dropped):** the Norton page for *Our Declaration* (the live page no longer has the
-  quoted sentence); Chicago Unbound article 11819; the short link `pewrsr.ch/2vXBBR2`; a Founders Early Access letter
-  (Madison, December 1834); American Presidency Project `pid=65388` (Wilson, 10 May 1915); and
-  `faculty.uml.edu/sgallagher/Anti-Federalists.pdf`.
-- **Refused automated readers (unconfirmed, probably live):** Justia (17), Founders Online (13), Project Gutenberg
-  (4) and others. A real-browser check was blocked by the session's safety rules and was not worked around. To make
-  them links, someone opens each by hand and marks it `ok` in `items/links.json`.
-- `web.archive.org` is still unreachable from here, so no archived copy was used.
+## Method A and A2 (on file)
 
-### Owner: now
-
-1. **Say "merge"** for the footnotes build (migration 0007; voters will see footnotes under questions) and the
-   day and night toggle in the masthead of every page (built 25 Nov; the choice stays in the reader's browser).
-2. In `/admin`: revoke `Other 04` and **Close** the round "Test" first (otherwise its 36 questions show footnotes
-   too). Closing it ends the registered comparison without a verdict and cannot be undone.
-3. Press **Load or update the full question set** (438 questions with their footnotes; it makes a draft round "All
-   questions", which you can rename). Open it, make the codes by role, and send the links.
-4. Optional: if a voter reports a dead footnote link, tell Claude; the 52 unconfirmed ones are the likeliest.
-5. Weekly: **Download full backup**, and the JSON, reasons and corrections exports.
-
-### Adding questions later (for example National Finals 2026-27)
-
-1. Send Claude the new PDF (or a text extract of it) when CCE publishes it.
-2. Claude transcribes it, checks it against the file, rebuilds the set, checks the new links, and merges at your word.
-3. You press **Load or update the full question set** in `/admin`. The new questions join the running round at
-   once, dated, and are paired first until they catch up. Nothing already loaded changes.
-
-Without Claude: the Items form in `/admin` takes a JSON item file. Uploading a newer `all.json` (the whole set plus
-the new questions, same ids and texts for the old ones) does the same thing. The file format is in
-`items/rounds/all.json`.
-
-### Claude: next
-
-- After the merge: time a batch on the deployed Worker; cut the cost of "Refresh intervals" for a round this size.
-- When the links can be checked: rerun `items/check_links.py`; for each dead one, look for the same source elsewhere,
-  open it, find the quoted words, and record it as the replacement; otherwise the address is dropped.
-
-## After the audit of 25 Nov 2026 (`docs/AUDIT_2026-11-25.md`)
-
-**Live on `main` (merged 25 Nov at the owner's word):** chunked question lookups, the correction cache fix, https
-only, long caching for hashed files, two new `corrections.csv` columns, keyboard fixes on the voting page, the export
-order.
-
-**Also live on `main` (merged 25 Nov at the owner's word, `6873a9a`):**
-- a vote from before the leaderboard cannot be changed once the voter has opened it (DEVIATIONS.md);
-- Sign out on `/start`; the unchosen question stays readable; a switch for letter and number keys; four short
-  status lines (DEVIATIONS.md);
-- admin: **Download full backup**, the invitation tracker in the Voters table, the gate forecast in Study health;
-- `npm run test:ui`, a browser smoke test of the voting flow (not part of the deploy).
-
-### Owner: now
-
-A. **Look at the live voting page once** with `Other 04` before revoking it: pick a side (the other question should
-   stay readable on a dashed outline), choose two reasons ("Two chosen"), go Back ("Next saves the change"), and try
-   Sign out on `/start`. In `/admin`, try **Download full backup** and look at the Voters table and Study health.
-B. **Cloudflare, two settings.** The saved API token cannot read or change either (it holds D1 Edit and Workers
-   Scripts Read only), so these are yours:
-   1. Workers & Pages > `wtpquestionrank` > Settings > Build > Build command: set it to
-      `npm ci && npm run typecheck && npm test && npm run build`.
-   2. Always Use HTTPS (zone `spiffyspaceman.com` > SSL/TLS > Edge Certificates). It is zone-wide, so it also changes
-      `reader.spiffyspaceman.com`. Optional: the Worker now redirects http to https by itself.
-C. **Method A2 is done** (25 Nov): 30 judges, 3,780 judgments, none invalid. Four judges appear to have ranked the
-   questions first; by your decision all 30 stay and a 26-judge fit is reported beside it (`DEVIATIONS.md`). At the
-   analysis (step 8), run `analysis/analyze.ts` three times: with `--llm-out llm-arm/out` (method A, the verdict),
-   `--llm-out llm-arm/out-a2`, and `--llm-out llm-arm/out-a2-without4`, each with its own `--out` folder.
-D. Add to the weekly routine in step 7: **Download full backup** (it holds the batches and pairing trail that no
-   other export has).
-
-### Claude: later
-
-- **Round 2 as six rounds by unit** (owner decision, 25 Nov), after Round 1 freezes. Before it opens: migration 0005
-  so `after_board` is kept per round, not per voter (audit finding 6); the item sets per unit; the offline linked
-  fit.
-- Audit items still open, none urgent: a skipped pair later voted on counts as two trials (finding 17); the
-  leaderboard's reasons query reads every vote on each view (finding 20); the page ignores `duplicate` from another
-  device (finding 21); `/start` says "No round yet" after the last round closes (finding 22); the leaderboard layout
-  notes in the design review.
+Method A (30 judges, 3,780 judgments) and A2 (the same with the human arm's guidance and reasons; all 30 judges kept,
+a 26-judge fit beside it) cover the 36 launch questions. The registered comparison ended without a verdict when
+"Test" closed. The votes on the first 36 questions of "All questions", cast before the second group joins, can be
+compared with A and A2 as an exploratory analysis: filter the round's export to pairs among the 36, then run
+`analysis/analyze.ts` with `--llm-out llm-arm/out`, `llm-arm/out-a2` and `llm-arm/out-a2-without4`.
 
 ## Later (owner decisions, 25 Nov 2026)
 
-- **Round 2: every published WTP question.** After Round 1 freezes, Claude builds a full item set (State and National
-  Finals, every cycle) from CCE's published PDFs and adds a one-click "Load" in admin, so no JSON file is needed.
-  `items/corpus.csv` lists 420 questions (216 State, 204 NF) but holds scores only, not text. Round 1 stays the
-  pre-registered 36.
-- **Two quoted sources found but not yet confirmed**, so not linked on the leaderboard: John Adams to Richard Price,
-  19 April 1790 (Founders Online, Adams/06-20-02-0188), and Paul Howe, "Eroding Norms and Democratic
-  Deconsolidation," *Journal of Democracy* 28:4 (2017). Founders Online blocks automated readers, and the journal page
-  shows only the opening. If the owner opens them and sees the quoted words, add them to `items/sources_v1.json`.
-- Leaderboard unlock stays at 20 votes (pre-registered).
-
+- Two quoted sources found but not confirmed, so not linked: John Adams to Richard Price, 19 April 1790 (Founders
+  Online, Adams/06-20-02-0188), and Paul Howe, "Eroding Norms and Democratic Deconsolidation," *Journal of Democracy*
+  28:4 (2017). If the owner opens them and sees the quoted words, add them to `items/sources_v1.json`.
+- Leaderboard unlock stays at 20 votes.

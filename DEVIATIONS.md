@@ -225,3 +225,51 @@ addresses whose pages opened are links; 42 dead ones show a replacement that was
 site's new address, or the same speech, column or document on its publisher's new page or a scholarly host); 6 dead
 ones with no replacement are dropped and the citation stays; 52 on sites that refuse automated readers are linked
 unconfirmed, at the owner's word. A replacement address is not the one CCE printed; `items/links.json` records both.
+
+**25 November 2026: the full round opens in stages (owner decision, after the launch audit; built, takes effect when
+merged).** The owner expects fewer than 25 voters in the first two weeks. A simulation with the registered pairing
+and rating code (22 voters, true spread 0.8 logits; `docs/AUDIT_2026-11-25_launch.md`) showed that with all 438
+questions in play at once no question reaches 10 comparisons before about 1,500 votes, so every early voter would
+unlock an empty leaderboard. The round "All questions" therefore opens with part of its set in play and adds the rest
+in groups (migration 0008, `src/worker/staging.ts`):
+- **First group:** the 36 pre-registered launch questions.
+- **Later groups:** 24 questions at a time, in a fixed shuffled order that keeps the questions in play even across
+  the six units and across State and National Finals. Each group's joining time is stored (`round_in_play.joined_at`).
+- **When:** a group joins when every question in play has 12 first-presentation comparisons from adults. The owner
+  can switch this off and add groups by hand in `/admin`; a group that has joined never leaves.
+- **Unchanged:** one round, one rating scale, the registered pairing and rating code (it is handed the questions in
+  play), the 20-vote unlock, and the 10-comparison rank threshold. The leaderboard lists only the questions in play.
+Effects to keep in mind when reading that round's results: early votes compare only the launch questions, so those
+36 gather more comparisons than later arrivals; each group is compared mostly with itself and with what was already
+in play; ratings are centred on the questions in play, so every rating shifts a little when a group joins; and votes
+on the first 36 before the second group joined are the nearest thing this round holds to the closed Round 1, under
+today's conditions (guidance, reasons, footnotes). Any comparison of those votes with method A or A2 is exploratory.
+
+**25 November 2026: one question is held out of play (owner decision).** State 2019-20, Unit 1, Question 1 was
+loaded with its second bullet cut off mid-sentence ("...taught us about"): the transcriber dropped the bullet's last
+line. A loaded text cannot be edited, so the question never joins a staged round (`HELD` in `src/worker/staging.ts`).
+When the owner supplies that page of CCE's PDF, the full text is added as a new question under a new id.
+
+**25 November 2026: what the leaderboard shows (owner decisions, after the launch audit).**
+- **No rating for an unranked question.** A question with fewer than 10 comparisons used to show a rating, a win
+  share and a range; with two or three comparisons those are mostly chance. It now shows only its comparison count
+  ("3 of 10"), and the Worker no longer sends the other numbers. The charts always use ranked questions only.
+- **A role's own board waits for three voters.** A voter sees the pooled adults board and, once three voters in
+  their own role have voted in the round, that role's board. With one or two voters behind it, a role board would
+  let each work out the others' picks.
+- The page says how many votes the board rests on, how many questions are in play and how many are ranked.
+Effect on votes: a voter who keeps voting after opening the board sees less noise than before; such votes are
+already marked `after_board = 1`.
+
+**25 November 2026: the home page puts the task first on a first visit (owner decision).** A voter with no votes
+yet sees the hearing format, the criterion and the guidance before the Start button; the count of zero is left out.
+A returning voter sees the count and Continue first, as before. The words are unchanged.
+
+**25 November 2026: two footnote details are not shown (owner decision).** As with "accessed <date>": the note
+"This question is sponsored by the Bill of Rights Institute. The class providing the best response to this question
+will receive the Special Question Award" (National Finals 2016-17, Unit 1, Question 3) and its marker are not shown,
+because the line gives away the question's level; and the download stamp `?q=20240728143454` is left off one web
+address (National Finals 2024-25, Unit 3, Question 3), because it gives away the year. Five extraction slips in
+footnotes were also corrected (an address cut short at "&", three spacing slips, and stray punctuation left where an
+access date or a dead address was taken out). Each data change is listed in `items/corrections.json`. No stem or
+bullet changed.

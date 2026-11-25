@@ -25,8 +25,9 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 - **Privacy:** store no names, emails, phone numbers or free text about voters (some are students). Names stay on the
   owner's own list, keyed by label ("Judge 07"). The owner reconfirmed this on 25 Nov 2026. **One exception (owner,
   25 Nov 2026):** the "Other" reason may carry the voter's own explanation of a pick, at most 20 words, for every
-  voter, students included. It lives only in `vote_other`, is shown only in admin and `reasons.csv`, and never on a
-  voter page. No other free-text field without the owner's yes.
+  voter, students included. It lives only in `vote_other`, is shown only in admin and `reasons.csv`, and never on
+  another voter's page (a voter sees their own note when they go Back within their current batch; owner, 25 Nov
+  2026). No other free-text field without the owner's yes.
 - **No analytics, no third-party scripts except Turnstile.** The CSP enforces it.
 - **The news reader is off limits:** `reader.spiffyspaceman.com`, repo `spiffyspaceman/reader`, the Cloudflare Worker
   `reader-email` and its Vultr server. Don't read, fetch, touch or reuse any of it, even to compare.
@@ -70,11 +71,18 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov | Admin gets a full backup (every table but caches, sessions, attempts and code hashes), an invitation tracker in the Voters table, and a gate forecast in Study health (counts only). |
 | 25 Nov | Method A2: re-run the LLM judges with the human arm's guidance and reasons, as a registered addendum. `PREREG_Addendum_A2.md`, approved and hashed 25 Nov (DEVIATIONS.md); A2 is secondary and never enters the verdict. It ran 25 Nov (`llm-arm/out-a2/`); all 30 judges stay, with a 26-judge fit (`out-a2-without4/`) reported beside it. |
 
+| 25 Nov (audit) | **The full round opens in stages** (migration 0008, `src/worker/staging.ts`), because the owner expects fewer than 25 voters: the 36 launch questions first, then 24 at a time in a balanced shuffled order, whenever every question in play has 12 adult comparisons. One round, one scale; the frozen pairing code is handed the questions in play. The owner can stop the automatic growth or add a group by hand in admin; a question in play never leaves. The leaderboard lists only questions in play. |
+| 25 Nov (audit) | An unranked question (under 10 comparisons) shows its comparison count only; the Worker sends no rating, range or win count for it. |
+| 25 Nov (audit) | A role's own board appears once three voters in that role have voted in the round; the adults board always shows. |
+| 25 Nov (audit) | On a first visit `/start` puts the task and guidance before the Start button; returning voters see the count first. |
+| 25 Nov (audit) | State 2019-20 U1Q1 is held out of play (`HELD` in `staging.ts`): its second bullet was cut off in transcription. The corrected text goes in under a new id when the owner sends the PDF page. |
+| 25 Nov (audit) | Footnotes: the "sponsored by" line of a special question and its marker are not shown; one address loses its download stamp. Both gave away level or year. |
+
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 162 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 173 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # pages into dist/
 npm run test:ui        # browser smoke test of the voting flow (needs Playwright; not part of npm test or the deploy)
@@ -85,7 +93,8 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
 
 - `src/worker/`: the Hono Worker. `voter.ts` (voting API), `admin.ts` (admin API), `data.ts` (rounds, caches,
   board), `access.ts`, `auth.ts`, `guards.ts`, `exports.ts` and `export-shape.ts` (must match `RoundExport`),
-  `pools.ts`, `reasons.ts` (pill codes), `health.ts` and `gate.ts` (study health).
+  `pools.ts`, `reasons.ts` (pill codes), `health.ts` and `gate.ts` (study health), `staging.ts` (which questions
+  are in play in a staged round, and which are held back).
 - `src/web/`: the pages (sign-in `index`, voter home `start`, vote, board, admin) and `styles.css`. Fonts in `src/web/public/fonts/`.
 - `items/`: the frozen launch item file, `sources_v1.json` (confirmed quoted sources), `corpus.csv` (scores only),
   `transcribe.py` and `transcribed.json` (every question transcribed from CCE's PDFs; the PDFs themselves are not in
@@ -118,5 +127,10 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
   then `items/build_round_sets.py` and `items/check_links.py`, run the tests, merge; the owner then presses **Load or
   update the full question set** in admin. The uploaded PDFs live outside the repo and are gone when a session ends,
   so the owner sends them again or `transcribed.json` is extended from the new file alone.
+- A footnote correction changes `items/rounds/all.json` but adds no question, so admin shows "corrected footnotes to
+  load"; the owner presses the same Load button. Footnotes may change after loading; stems and bullets may not.
+- Tests in one file share a database (rounds and sets made by an earlier test are still there). Close other rounds
+  first, and never assume a set's round is new.
+- `.dev.vars` is read by `npm run test:ui` as it stands: a `PROD_HOST` on another port makes that script fail.
 - Always Use HTTPS is a zone-wide setting, so it also changes `reader.spiffyspaceman.com`. It is the owner's to flip;
   the Worker redirects http itself.
