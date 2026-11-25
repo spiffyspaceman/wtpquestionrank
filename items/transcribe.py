@@ -20,7 +20,7 @@ UNIT_WORD = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6}
 BULLET = re.compile(r"^\s*[••●○◦o·▪■-]\s+(?=\S)")
 QNUM = re.compile(r"^\s{0,6}([1-9])\.\s+(?=\S)")
 STAR = "*\u2217\uff0a\u204e"
-FOOT = re.compile(r"^\s*([" + STAR + r"]{1,3}|†|‡|\d{1,2})\s*(?=[A-Z“\"‘(])")
+FOOT = re.compile(r"^\s*([" + STAR + r"]{1,3}|†|‡)\s*(?=[A-Z“\"‘(])")
 ADDRESS = re.compile(r"Center for Civic Education|www\.civiced\.org|Douglas Fir|Calabasas|civiced\.org|^\s*\d+\s*$|Page \d+", re.I)
 TITLE = re.compile(r"HEARING QUESTIONS|NATIONAL FINALS|NATIONAL INVITATIONAL|WE THE PEOPLE|ACADEMIC YEAR|^\s*\*Source:", re.I)
 
@@ -38,18 +38,44 @@ def pages(pdf):
         yield p, raw.decode("utf-8").replace("\r\n", "\n").replace("\r", " ").replace("\f", "")
 
 
-def clean(parts):
-    # A compound word broken after its hyphen at the end of a line ("Anti-" / "Federalists") is joined without a
-    # space. A hanging hyphen before "and" or "or" ("civil- and political") keeps its space. The owner's text extracts
-    # mark the same break with a control character; that becomes the hyphen it stands for.
+MARK = re.compile(r"(?<=[\w”’\"'.,;:?!)\]])\s?([" + STAR + r"]{1,3}|†|‡)(?=[\s.,;:?!)]|$)")
+
+
+def join(parts):
+    """Lines joined as the page reads. A compound word broken after its hyphen at the end of a line ("Anti-" /
+    "Federalists") is joined without a space; a hanging hyphen before "and" or "or" ("civil- and political") keeps its
+    space. The owner's text extracts mark the same break with a control character; that becomes the hyphen it stands
+    for. A web address broken across lines is joined without a space."""
     s = ""
     for x in (y.strip().replace("\x02", "-") for y in parts if y.strip()):
-        glue = "" if re.search(r"\w-$", s) and not re.match(r"(and|or)\b", x) else " "
+        # A web address still open at the end of a line (no closing full stop yet) carries on at the next line.
+        in_url = re.search(r"https?://\S*$", s) and not s.endswith(".")
+        glue = "" if in_url or (re.search(r"\w-$", s) and not re.match(r"(and|or)\b", x)) else " "
         s = x if not s else s + glue + x
-    s = re.sub(r"\s+", " ", s).strip()
-    # Footnote markers: asterisks or daggers after a word, quote or punctuation mark.
-    s = re.sub(r"(?<=[\w”’\"'.,;:?!)\]])\s?([" + STAR + r"]{1,3}|†|‡)(?=[\s.,;:?!)]|$)", "", s)
     return re.sub(r"\s+", " ", s).strip()
+
+
+def clean_marked(parts):
+    """The text without its footnote markers, and where each marker stood: [(offset in the clean text, marker)]."""
+    s = join(parts)
+    out, marks, last = "", [], 0
+    for m in MARK.finditer(s):
+        out += s[last:m.start()]
+        marks.append((len(out), m.group(1).replace("\u2217", "*").replace("\uff0a", "*").replace("\u204e", "*")))
+        last = m.end()
+    out += s[last:]
+    # Removing a marker can leave two spaces; closing them must not move a later marker.
+    fixed, shift, k = "", 0, 0
+    for i, ch in enumerate(out):
+        if ch == " " and fixed.endswith(" "):
+            marks = [(o - 1 if o > len(fixed) else o, mk) for o, mk in marks]
+            continue
+        fixed += ch
+    return fixed.strip(), [(min(o, len(fixed.strip())), mk) for o, mk in marks]
+
+
+def clean(parts):
+    return clean_marked(parts)[0]
 
 
 FURNITURE = re.compile(r"Unit continues on the next page|^\s*Page \d+ of \d+\s*$|^\s*>\s*\*\*Extraction note", re.I)
@@ -89,7 +115,7 @@ def parse(pdf, level, cycle):
                 continue
             m = QNUM.match(ln)
             if m and int(m.group(1)) == len(units[unit]) + 1:
-                cur = dict(q=int(m.group(1)), stem=[ln[m.end():]], bullets=[], page=pno)
+                cur = dict(q=int(m.group(1)), stem=[ln[m.end():]], bullets=[], notes=[], page=pno)
                 units[unit].append(cur)
                 mode, heading = "stem", False
                 continue
@@ -105,10 +131,14 @@ def parse(pdf, level, cycle):
                 cur["bullets"].append([BULLET.sub("", ln)])
                 mode = "bullet"
                 continue
-            if FOOT.match(ln) and mode in ("bullet", None, "foot") and cur["bullets"]:
+            fm = FOOT.match(ln)
+            if fm and mode in ("bullet", None, "foot") and cur["bullets"]:
                 mode = "foot"
+                mark = fm.group(1).replace("\u2217", "*").replace("\uff0a", "*").replace("\u204e", "*")
+                cur["notes"].append([mark, [ln[fm.end():]]])
                 continue
             if mode == "foot":
+                cur["notes"][-1][1].append(ln)
                 continue
             if mode == "stem":
                 cur["stem"].append(ln)
@@ -124,14 +154,20 @@ def parse(pdf, level, cycle):
         if [q["q"] for q in qs] not in ([1, 2, 3], [1, 2]):
             notes.append(f"unit {unit}: found questions {[q['q'] for q in qs]}, expected 1, 2, 3 (or 1, 2)")
         for q in qs:
-            stem, bullets = clean(q["stem"]), [clean(b) for b in q["bullets"]]
+            parts = [clean_marked(q["stem"])] + [clean_marked(b) for b in q["bullets"]]
+            stem, bullets = parts[0][0], [x[0] for x in parts[1:]]
+            # Footnotes as published: the marker's place in the text, and the note it points to.
+            marks = [[k, off, mk] for k, (_, ms) in enumerate(parts) for off, mk in ms]
+            fnotes = [dict(mark=mk, text=join(lines)) for mk, lines in q["notes"]]
+            # A footnote with no marker in the text is published that way in a few questions; a marker with no
+            # footnote is not, and is reported after corrections.
             if len(bullets) != 2:
                 notes.append(f"unit {unit} q{q['q']}: {len(bullets)} bullets")
             if re.search(r"[" + STAR + r"†‡]|https?://|\baccessed\b", stem + " ".join(bullets)):
                 notes.append(f"unit {unit} q{q['q']}: a footnote marker or citation may remain")
             prefix = {"State": "st", "NF": "nf"}[level]
             out.append(dict(id=f"{prefix}-{cycle}-u{unit}-q{q['q']}", val_id=None, level=level, cycle=cycle, unit=unit, q=q["q"],
-                            published=True, stem=stem, bullets=bullets,
+                            published=True, stem=stem, bullets=bullets, marks=marks, notes=fnotes,
                             source=f"CCE {'State' if level == 'State' else 'National Finals'} Hearing Questions {cycle}, Unit {unit}, Question {q['q']}",
                             text_source=f"{os.path.basename(pdf)} (sha256 {hashlib.sha256(open(pdf, 'rb').read()).hexdigest()[:16]}), "
                                         + (f"page {q['page']}, pdftotext" if not flat else "the owner's text extract of CCE's PDF")
@@ -181,17 +217,42 @@ if __name__ == "__main__":
         it = by_id.get(fx["id"])
         if not it:
             continue
-        parts = [it["stem"]] + it["bullets"]
-        hits = [k for k, part in enumerate(parts) if fx["find"] in part]
-        if len(hits) != 1 or parts[hits[0]].count(fx["find"]) != 1:
-            sys.exit(f"correction for {fx['id']} does not match exactly once: {fx['find']!r}")
-        fixed = parts[hits[0]].replace(fx["find"], fx["replace"])
-        if hits[0] == 0:
-            it["stem"] = fixed
+        if "stem_marks" in fx:
+            # Where the footnote markers stand in the stem, given as the words each one follows.
+            marks = [m for m in it["marks"] if m[0] != 0]
+            for sm in fx["stem_marks"]:
+                if it["stem"].count(sm["after"]) != 1:
+                    sys.exit(f"marker place for {fx['id']} does not match exactly once: {sm['after']!r}")
+                marks.append([0, it["stem"].index(sm["after"]) + len(sm["after"]), sm["mark"]])
+            it["marks"] = sorted(marks)
+        elif "note" in fx:
+            hit = [n for n in it["notes"] if n["mark"] == fx["note"] and n["text"].count(fx["find"]) == 1]
+            if len(hit) != 1:
+                sys.exit(f"footnote correction for {fx['id']} does not match exactly once: {fx['find']!r}")
+            hit[0]["text"] = hit[0]["text"].replace(fx["find"], fx["replace"])
         else:
-            it["bullets"][hits[0] - 1] = fixed
+            parts = [it["stem"]] + it["bullets"]
+            hits = [k for k, part in enumerate(parts) if fx["find"] in part]
+            if len(hits) != 1 or parts[hits[0]].count(fx["find"]) != 1:
+                sys.exit(f"correction for {fx['id']} does not match exactly once: {fx['find']!r}")
+            k, at = hits[0], parts[hits[0]].index(fx["find"])
+            fixed = parts[k].replace(fx["find"], fx["replace"])
+            if k == 0:
+                it["stem"] = fixed
+            else:
+                it["bullets"][k - 1] = fixed
+            # Markers after the corrected words move with the text; one inside them must be placed by a stem_marks entry.
+            delta, end = len(fx["replace"]) - len(fx["find"]), at + len(fx["find"])
+            it["marks"] = [[p, o + delta if p == k and o >= end else o, m] for p, o, m in it["marks"]]
         if "corrected by eye" not in it["text_source"]:
             it["text_source"] += "; corrected by eye against the page image (items/corrections.json)"
+    # Every marker must sit inside its text and point to a footnote that exists.
+    for it in items:
+        parts = [it["stem"]] + it["bullets"]
+        have = {n["mark"] for n in it["notes"]}
+        for p, o, m in it["marks"]:
+            if not (0 < o <= len(parts[p])) or m not in have:
+                report.append(f"{it['id']}: marker {m!r} at {o} in part {p} is out of place or has no footnote")
     report.append(f"corrections applied: {sum(1 for fx in fixes if fx['id'] in by_id)}")
     json.dump(items, open(os.path.join(here, "transcribed.json"), "w"), ensure_ascii=False, indent=1)
     print("\n".join(report))

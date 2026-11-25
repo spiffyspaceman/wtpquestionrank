@@ -18,8 +18,9 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
   pre-registration hashes them and `test/node/frozen-hashes.test.ts` fails the build if a byte changes. If one truly
   must change: stop, tell the owner why, and log it in `DEVIATIONS.md` only after he agrees. Schema changes go in
   `migrations/0002_*.sql`.
-- **Pre-registered design:** while voting, voters see only stem and bullets. Never send question ids, cycle, unit,
-  level, number or source to the voting page. Votes are append-only; "reset" means a new round. A change to what
+- **What voters see while voting:** the stem, the bullets and, since 25 Nov 2026 (owner decision), the question's
+  published footnotes with access dates removed. Never send question ids, cycle, unit, level, number or the CCE
+  source line to the voting page. Votes are append-only; "reset" means a new round. A change to what
   voters see or when (unlock threshold, items, pairing) is a deviation: ask first, then log it.
 - **Privacy:** store no names, emails, phone numbers or free text about voters (some are students). Names stay on the
   owner's own list, keyed by label ("Judge 07"). The owner reconfirmed this on 25 Nov 2026. **One exception (owner,
@@ -63,6 +64,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov (latest) | **Supersedes "rounds of about 35" above.** Every question goes in one round ("All questions"), for one ranking on one scale, and the owner moves the Worker to the Workers Paid plan to carry it: a new batch costs about 0.2 s of CPU at 324 questions, 0.65 s at 540 and 2 s at 720 (Node timings), against 10 ms on Free. Do not open that round on the Free plan. Several-open-rounds support stays (Round 1 beside it until frozen). |
 | 25 Nov (latest) | The "All questions" set is open-ended (migration 0006): later PDFs are transcribed and added to the same set and round, dated; a set only grows and loaded text never changes. The launch set can never be opened up. So the missing cycles do not block opening the round. |
 | 25 Nov (latest) | The first round ("Round 1" in older notes, id `C5TW5gelpkQa`) is renamed **"Test"**. The big round is one standing round that keeps growing; voters never see its name while it is the only round with a board, so close (not freeze) "Test" when the big round opens. Admin can rename any round. |
+| 25 Nov (latest) | Each question shows its published footnotes (voting page and leaderboard): marker in the text, note under the bullets, "accessed <date>" left out. A web address is a link only if `items/links.json` says the page opened; dead ones are replaced (only by a page opened and found to hold the quoted words) or dropped; unchecked ones are plain text. Stored in `questions.notes_json` (migration 0007), which may be corrected after loading; stem and bullets may not. |
 | 25 Nov (later) | Question texts come from CCE's PDFs through `items/transcribe.py` (owner uploads the files, or his text extracts of them; where a PDF's text layer is faulty the fix is made by eye from the page image and listed in `items/corrections.json`); the full set in `items/rounds/all.json` is bundled into the Worker and loaded from admin. Never serve it as a static file. |
 | 25 Nov | Admin gets a full backup (every table but caches, sessions, attempts and code hashes), an invitation tracker in the Voters table, and a gate forecast in Study health (counts only). |
 | 25 Nov | Method A2: re-run the LLM judges with the human arm's guidance and reasons, as a registered addendum. `PREREG_Addendum_A2.md`, approved and hashed 25 Nov (DEVIATIONS.md); A2 is secondary and never enters the verdict. It ran 25 Nov (`llm-arm/out-a2/`); all 30 judges stay, with a 26-judge fit (`out-a2-without4/`) reported beside it. |
@@ -71,7 +73,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 154 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 161 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # pages into dist/
 npm run test:ui        # browser smoke test of the voting flow (needs Playwright; not part of npm test or the deploy)
@@ -87,7 +89,8 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
 - `items/`: the frozen launch item file, `sources_v1.json` (confirmed quoted sources), `corpus.csv` (scores only),
   `transcribe.py` and `transcribed.json` (every question transcribed from CCE's PDFs; the PDFs themselves are not in
   the repo), `build_round_sets.py` and `rounds/all.json` (every question in one item file, bundled by
-  `src/worker/builtin-sets.ts`).
+  `src/worker/builtin-sets.ts`), `corrections.json` (fixes made by eye against page images), `check_links.py` and
+  `links.json` (which footnote links were checked; read by `src/worker/notes.ts`).
 - `test/worker/` (workerd, local D1) and `test/node/` (hashes, export shape, end-to-end with Miniflare).
 - Production: Cloudflare Worker `wtpquestionrank`, D1 database `wtpquestionrank` (id in `wrangler.jsonc`), secrets
   `CODE_PEPPER` and `TURNSTILE_SECRET` (values never in the repo). Never change `CODE_PEPPER` mid-round: every code
@@ -104,5 +107,12 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
 - Turnstile does not pass a headless browser on the live site; live test votes are the owner's to cast.
 - D1 allows 100 bound parameters per query and local D1 does not enforce it: send id lists through `chunks()` in
   `src/worker/util.ts`.
+- This environment's network reaches only a few hosts, and requests to widen it have been refused by the service.
+  `items/check_links.py` marks a link "unchecked" when the host is refused; never read that as "dead". A plain-http
+  request to a refused host can come back 403 or 404 from the proxy itself.
+- Adding questions: put the new PDF (or text extract) with the others, run `items/transcribe.py` on all of them,
+  then `items/build_round_sets.py` and `items/check_links.py`, run the tests, merge; the owner then presses **Load or
+  update the full question set** in admin. The uploaded PDFs live outside the repo and are gone when a session ends,
+  so the owner sends them again or `transcribed.json` is extended from the new file alone.
 - Always Use HTTPS is a zone-wide setting, so it also changes `reader.spiffyspaceman.com`. It is the owner's to flip;
   the Worker redirects http itself.

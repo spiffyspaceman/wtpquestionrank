@@ -24,7 +24,7 @@ doc = dict(item_set="all-questions", version=VERSION, round_name="All questions"
            frame="Published CCE hearing questions: " + "; ".join(f"{lv} {c[0]} to {c[-1]} ({len(c)} cycles)" for lv, c in cover.items()),
            cycles=cover, shown_to_voters=["stem", "bullets"],
            hidden_from_voters=["id", "val_id", "cycle", "unit", "q", "level", "source"],
-           items=[{k: i[k] for k in ("id", "val_id", "level", "cycle", "unit", "q", "published", "stem", "bullets", "source", "text_source")} for i in items])
+           items=[{k: i[k] for k in ("id", "val_id", "level", "cycle", "unit", "q", "published", "stem", "bullets", "marks", "notes", "source", "text_source")} for i in items])
 json.dump(doc, open(os.path.join(HERE, "rounds", "all.json"), "w"), ensure_ascii=False, indent=1)
 index = [dict(file="all.json", item_set=f"all-questions-v{VERSION}", round_name="All questions", questions=len(items), frame=doc["frame"])]
 json.dump(index, open(os.path.join(HERE, "rounds", "index.json"), "w"), indent=1)

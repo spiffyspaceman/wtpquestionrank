@@ -171,6 +171,15 @@ label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
 }
 .card .stem { margin: 0 0 10px; }
 .card ul { margin: 0; padding-left: 1.15em; }
+/* Published footnotes: small, under the bullets, set off by a short rule as on the printed page. */
+.fnmark { font-size: 0.8em; line-height: 0; color: var(--muted); }
+sup.fnmark { vertical-align: super; padding-left: 1px; }
+.fnotes { margin-top: 12px; padding-top: 8px; font-size: 0.8rem; line-height: 1.4; color: var(--muted); position: relative; }
+.fnotes::before { content: ""; position: absolute; top: 0; left: 0; width: 4.5rem; border-top: 1px solid var(--line-strong); }
+.fnotes p { margin: 0 0 4px; overflow-wrap: anywhere; }
+.fnotes a { color: inherit; }
+.card .fnotes { margin-top: auto; padding-top: 10px; }
+.card ul + div:has(.fnotes) { margin-top: 14px; }
 .card li { margin: 0.45em 0; }
 
 /* A whole card chooses it, like its button. The chosen side is outlined; the other side recedes (flat, on the page

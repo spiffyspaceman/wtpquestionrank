@@ -45,8 +45,18 @@ describe("built-in question set", () => {
     const b = await getBatch(v.cookie);
     expect(b.pairs).toHaveLength(10);
     expect(JSON.stringify(b.all)).not.toMatch(/"(id|cycle|unit|level|q|source)"/);
+    // Footnotes travel with the questions: on the voting page as marks and notes, with no access date.
+    const withNotes = b.all.flatMap((p) => [p.left, p.right] as { notes?: { mark: string; parts: [string, string | null][] }[]; marks?: unknown[] }[]).filter((s) => s.notes?.length);
+    expect(withNotes.length).toBeGreaterThan(0);
+    expect(JSON.stringify(withNotes)).not.toMatch(/accessed [A-Z]/);
+    const stored = await env.DB.prepare("SELECT count(*) AS n FROM questions WHERE notes_json LIKE '%\"mark\"%'").first<{ n: number }>();
+    expect(stored!.n).toBeGreaterThan(300);
+    // The 36 launch questions were loaded first, without notes; loading the full set filled theirs in.
+    const launch = await env.DB.prepare("SELECT notes_json FROM questions WHERE id = 'st-2019-20-u5-q3'").first<{ notes_json: string }>();
+    expect(JSON.parse(launch!.notes_json).notes[0].text).toMatch(/Madison/);
     await voteN(v.cookie, 20);
     const board = await json(call("/api/leaderboard", { cookie: v.cookie }));
+    expect(board.rows.some((r: { notes: unknown[] }) => r.notes.length > 0)).toBe(true);
     expect(board.round.name).toBe("All questions");
     expect(board.rows).toHaveLength(SET.questions);
     expect(board.votes).toBe(20);

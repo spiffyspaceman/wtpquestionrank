@@ -1,7 +1,7 @@
 // Leaderboard: the top question, the top 10, adjustable charts, and a searchable, sortable list of every question.
 // Everything after the one fetch runs in this browser; nothing the viewer does is sent back.
 import { OTHER_LABEL, REASONS } from "../worker/reasons";
-import { $, api, ApiError, el, fmtDate, say, show } from "./common";
+import { $, api, ApiError, el, fmtDate, footnotes, marked, say, show, type Marks, type ShownNote } from "./common";
 
 interface Row {
   rank: number | null;
@@ -13,6 +13,8 @@ interface Row {
   reasons: { code: string; n: number }[];
   stem: string;
   bullets: string[];
+  marks?: Marks;
+  notes?: ShownNote[];
   about: { level: string; cycle: string; unit: number; question: number; sources: { label: string; url: string }[] };
 }
 interface Board {
@@ -91,7 +93,15 @@ function statLine(r: Row): string {
 }
 
 function detail(r: Row): HTMLElement {
-  return el("div", { class: "detail" }, el("ul", {}, ...r.bullets.map((b) => el("li", {}, b))), sourcesLine(r), reasonsLine(r));
+  return el(
+    "div",
+    { class: "detail" },
+    el("ul", {}, ...r.bullets.map((b, k) => el("li", {}, ...marked(b, k + 1, r.marks)))),
+    footnotes(r.notes),
+    // The separately confirmed sources are shown only where the question carries no footnote of its own.
+    r.notes?.length ? null : sourcesLine(r),
+    reasonsLine(r),
+  );
 }
 
 function renderTop(): void {
@@ -104,7 +114,7 @@ function renderTop(): void {
         "article",
         { class: "hero-card" },
         el("div", { class: "score big" }, el("span", { class: "rank" }, "#1"), el("strong", {}, String(t.rating)), el("span", {}, statLine(t))),
-        el("div", { class: "body" }, el("p", { class: "tag" }, tag(t)), el("p", { class: "stem" }, t.stem), detail(t)),
+        el("div", { class: "body" }, el("p", { class: "tag" }, tag(t)), el("p", { class: "stem" }, ...marked(t.stem, 0, t.marks)), detail(t)),
       ),
     );
   }
@@ -688,7 +698,7 @@ function renderAll(): void {
         el(
           "tr",
           { class: "detailrow" },
-          el("td", { colspan: String(COLS.length) }, el("p", { class: "stem" }, r.stem), detail(r), el("p", { class: "meta muted" }, statLine(r))),
+          el("td", { colspan: String(COLS.length) }, el("p", { class: "stem" }, ...marked(r.stem, 0, r.marks)), detail(r), el("p", { class: "meta muted" }, statLine(r))),
         ),
       );
   }

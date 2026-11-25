@@ -29,6 +29,7 @@ import {
 import type { AppEnv, RoundRow, VoterRow } from "./env";
 import sourcesFile from "../../items/sources_v1.json";
 import { poolsForRole } from "./pools";
+import { shownNotes, type ShownNote } from "./notes";
 import { MAX_REASONS, parseOther, parseReasons, type ReasonCode } from "./reasons";
 import { verifyTurnstile } from "./turnstile";
 import { chunks, isUniqueViolation, nowIso, optInt, randomId, randomSeed, readJsonObject } from "./util";
@@ -40,16 +41,19 @@ const MAX_CLIENT_MS = 6 * 3600 * 1000;
 interface QuestionText {
   stem: string;
   bullets: string[];
+  /** Published footnote markers, [part, offset, mark], and the footnotes (owner decision, 25 Nov 2026). */
+  marks: [number, number, string][];
+  notes: ShownNote[];
 }
 
 async function questionRows(db: D1Database, ids: string[]) {
   if (!ids.length) return [];
-  type Q = { id: string; stem: string; bullets_json: string; level: string; cycle: string; unit: number; qnum: number };
+  type Q = { id: string; stem: string; bullets_json: string; level: string; cycle: string; unit: number; qnum: number; notes_json: string | null };
   const out: Q[] = [];
   // In chunks: D1 allows 100 bound parameters per query, and a leaderboard can list more questions than that.
   for (const part of chunks([...new Set(ids)])) {
     const r = await db
-      .prepare(`SELECT id, stem, bullets_json, level, cycle, unit, qnum FROM questions WHERE id IN (${part.map(() => "?").join(",")})`)
+      .prepare(`SELECT id, stem, bullets_json, level, cycle, unit, qnum, notes_json FROM questions WHERE id IN (${part.map(() => "?").join(",")})`)
       .bind(...part)
       .all<Q>();
     out.push(...r.results);
@@ -57,9 +61,9 @@ async function questionRows(db: D1Database, ids: string[]) {
   return out;
 }
 
-/** Stem and bullets only: what a voter sees while judging. */
+/** What a voter sees while judging: the stem, the bullets and the published footnotes. Never ids, cycle, unit or level. */
 async function questionTexts(db: D1Database, ids: string[]): Promise<Map<string, QuestionText>> {
-  return new Map((await questionRows(db, ids)).map((q) => [q.id, { stem: q.stem, bullets: JSON.parse(q.bullets_json) }]));
+  return new Map((await questionRows(db, ids)).map((q) => [q.id, { stem: q.stem, bullets: JSON.parse(q.bullets_json), ...shownNotes(q.notes_json) }]));
 }
 
 // ---------- config and redeem (no session) ----------
@@ -701,6 +705,7 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
       reasons: (reasonsBy.get(r.id) ?? []).sort((a, b) => b.n - a.n || (a.code < b.code ? -1 : 1)),
       stem: q.stem,
       bullets: JSON.parse(q.bullets_json) as string[],
+      ...shownNotes(q.notes_json),
       about: { level: q.level, cycle: q.cycle, unit: q.unit, question: q.qnum, sources: SOURCES[r.id] ?? [] },
     };
   });

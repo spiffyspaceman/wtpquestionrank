@@ -78,6 +78,46 @@ export function setShortcuts(on: boolean): void {
   }
 }
 
+// ---------- published footnotes (owner decision, 25 Nov 2026) ----------
+
+/** A footnote as the server sends it: text pieces, each with a link target or null. */
+export interface ShownNote {
+  mark: string;
+  parts: [string, string | null][];
+}
+export type Marks = [number, number, string][];
+
+/** A question's text with its footnote markers set back in, as superscripts, where CCE printed them. */
+export function marked(text: string, part: number, marks: Marks | undefined): (Node | string)[] {
+  const here = (marks ?? []).filter((m) => m[0] === part && m[1] > 0 && m[1] <= text.length).sort((a, b) => a[1] - b[1]);
+  const out: (Node | string)[] = [];
+  let last = 0;
+  for (const [, at, mark] of here) {
+    out.push(text.slice(last, at), el("sup", { class: "fnmark" }, mark));
+    last = at;
+  }
+  out.push(text.slice(last));
+  return out;
+}
+
+/** The footnotes under a question, or null when it has none. Web addresses that were checked are links. */
+export function footnotes(notes: ShownNote[] | undefined): HTMLElement | null {
+  if (!notes?.length) return null;
+  return el(
+    "div",
+    { class: "fnotes" },
+    ...notes.map((n) =>
+      el(
+        "p",
+        {},
+        el("span", { class: "fnmark" }, n.mark),
+        " ",
+        ...n.parts.map(([text, href]) => (href ? el("a", { href, target: "_blank", rel: "noopener noreferrer" }, text) : text)),
+      ),
+    ),
+  );
+}
+
 export const CRITERION =
   "Which is the better hearing question: the one that more clearly lets a panel separate a strong, well-prepared team from a weak one, across a 4-minute opening and 6–10 minutes of follow-up?";
 

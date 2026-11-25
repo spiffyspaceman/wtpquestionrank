@@ -8,6 +8,7 @@ import { board, openRounds, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems } f
 import type { AppEnv, RoundRow } from "./env";
 import { correctionsCsv, exportMeta, reasonsCsv, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
 import { studyHealth } from "./health";
+import { storedNotes } from "./notes";
 import { chunks, isUniqueViolation, nowIso, optInt, randomId, readJsonObject, sha256Hex } from "./util";
 
 export const adminApi = new Hono<AppEnv>();
@@ -81,6 +82,9 @@ interface ItemIn {
   bullets: string[];
   source: string;
   source_url?: string | null;
+  /** Published footnotes: where each marker stands, and the notes (migration 0007). Optional. */
+  marks?: unknown;
+  notes?: unknown;
 }
 
 /** text_sha256 = SHA-256 of JSON.stringify([stem, bullets]) as loaded. */
@@ -146,6 +150,16 @@ async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array)
   }
 
   const hashes = await Promise.all(items.map((i) => questionTextHash(i.stem, i.bullets)));
+  // Footnotes, checked for shape. A file that says nothing about notes leaves a stored question's notes alone.
+  const noteJson = items.map((i) => (i.marks === undefined && i.notes === undefined ? undefined : storedNotes(i.marks, i.notes, [i.stem.length, ...i.bullets.map((b) => b.length)])));
+  const badNotes = items.filter((_, k) => noteJson[k] === null).map((i) => i.id);
+  if (badNotes.length) return [{ error: "bad_notes", message: "A footnote or its marker is malformed.", ids: badNotes }, 400];
+  // Notes are display material and may be filled in or corrected for a question already loaded (its text may not).
+  const noteUpdates = items.flatMap((i, k) =>
+    noteJson[k] === undefined
+      ? []
+      : [db.prepare("UPDATE questions SET notes_json = ?1 WHERE id = ?2 AND COALESCE(notes_json, '') <> ?1").bind(noteJson[k] as string, i.id)],
+  );
   // In chunks: D1 allows 100 bound parameters per query, and an item file can hold more questions than that.
   const loadedHash = new Map<string, string>();
   for (const part of chunks(items.map((i) => i.id))) {
@@ -174,6 +188,7 @@ async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array)
       ),
       ...added.map(({ i }) => db.prepare("INSERT INTO item_set_items (item_set_id, question_id, added_at) VALUES (?, ?, ?)").bind(setId, i.id, now)),
       db.prepare("UPDATE item_sets SET file_sha256 = ? WHERE id = ?").bind(fileSha, setId),
+      ...noteUpdates,
     ]);
     await audit(c, "add_items", { itemSet: setId, fileSha256: fileSha, was: existing!.file_sha256, added: added.map((x) => x.i.id) });
     return [{ ok: true, itemSet: setId, fileSha256: fileSha, n: items.length, added: added.length }, 200];
@@ -192,6 +207,7 @@ async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array)
       .prepare("INSERT INTO item_sets (id, name, version, display_mode, file_sha256, created_at, open_ended) VALUES (?, ?, ?, 'full_text', ?, ?, ?)")
       .bind(setId, file.item_set, file.version, fileSha, now, openEnded ? 1 : 0),
     ...items.map((i) => db.prepare("INSERT INTO item_set_items (item_set_id, question_id) VALUES (?, ?)").bind(setId, i.id)),
+    ...noteUpdates,
   ]);
   await audit(c, "load_items", { itemSet: setId, fileSha256: fileSha, n: items.length });
   return [{ ok: true, itemSet: setId, fileSha256: fileSha, n: items.length }, 200];

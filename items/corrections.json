@@ -166,5 +166,134 @@
   "find": "in itself ? Why or why not?",
   "replace": "in itself? Why or why not?",
   "reason": "The PDF's text layer puts a space before the question mark; the printed page (read from the page image) has none."
+ },
+ {
+  "id": "st-2014-15-u3-q3",
+  "note": "*",
+  "find": "Bellevue, vue, Washington",
+  "replace": "Bellevue, Washington",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u4-q3",
+  "note": "*",
+  "find": "Pennsylvania Press. al.,",
+  "replace": "Pennsylvania Press.",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u5-q1",
+  "note": "*",
+  "find": "160, 180 180-81 (1949)",
+  "replace": "160, 180-81 (1949)",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u5-q1",
+  "note": "**",
+  "find": "160, 180 180-81 (1949)",
+  "replace": "160, 180-81 (1949)",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u6-q3",
+  "note": "*",
+  "find": "1787-1788. 1788. (New York",
+  "replace": "1787-1788. (New York",
+  "reason": "The PDF's text layer repeats a fragment here; the printed page (read from the page image) does not."
+ },
+ {
+  "id": "st-2014-15-u2-q3",
+  "stem_marks": [
+   {
+    "mark": "*",
+    "after": "principle-ridden.”"
+   }
+  ],
+  "reason": "The text layer's repeated fragments displaced the footnote marker; it is placed where the printed page (read from the page image) has it."
+ },
+ {
+  "id": "st-2014-15-u3-q1",
+  "stem_marks": [
+   {
+    "mark": "*",
+    "after": "in broad language.”"
+   }
+  ],
+  "reason": "The text layer's repeated fragments displaced the footnote marker; it is placed where the printed page (read from the page image) has it."
+ },
+ {
+  "id": "st-2014-15-u3-q3",
+  "stem_marks": [
+   {
+    "mark": "*",
+    "after": "in their proper places.”"
+   }
+  ],
+  "reason": "The text layer's repeated fragments displaced the footnote marker; it is placed where the printed page (read from the page image) has it."
+ },
+ {
+  "id": "st-2014-15-u4-q3",
+  "stem_marks": [
+   {
+    "mark": "*",
+    "after": "guarding court”"
+   },
+   {
+    "mark": "**",
+    "after": "“last resort”."
+   }
+  ],
+  "reason": "The text layer's repeated fragments displaced the footnote marker; it is placed where the printed page (read from the page image) has it."
+ },
+ {
+  "id": "st-2014-15-u5-q2",
+  "stem_marks": [
+   {
+    "mark": "*",
+    "after": "clash with the other.”"
+   }
+  ],
+  "reason": "The text layer's repeated fragments displaced the footnote marker; it is placed where the printed page (read from the page image) has it."
+ },
+ {
+  "id": "st-2014-15-u5-q3",
+  "stem_marks": [
+   {
+    "mark": "*",
+    "after": "original Bill of Rights.”"
+   }
+  ],
+  "reason": "The text layer's repeated fragments displaced the footnote marker; it is placed where the printed page (read from the page image) has it."
+ },
+ {
+  "id": "st-2014-15-u6-q1",
+  "stem_marks": [
+   {
+    "mark": "*",
+    "after": "government policy.”"
+   }
+  ],
+  "reason": "The text layer's repeated fragments displaced the footnote marker; it is placed where the printed page (read from the page image) has it."
+ },
+ {
+  "id": "st-2014-15-u6-q2",
+  "stem_marks": [
+   {
+    "mark": "*",
+    "after": "society in the world.”"
+   }
+  ],
+  "reason": "The text layer's repeated fragments displaced the footnote marker; it is placed where the printed page (read from the page image) has it."
+ },
+ {
+  "id": "st-2014-15-u6-q3",
+  "stem_marks": [
+   {
+    "mark": "*",
+    "after": "a work in progress.”"
+   }
+  ],
+  "reason": "The text layer's repeated fragments displaced the footnote marker; it is placed where the printed page (read from the page image) has it."
  }
 ]

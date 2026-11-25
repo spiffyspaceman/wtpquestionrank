@@ -1,9 +1,11 @@
 import { MAX_REASONS, OTHER_LABEL, OTHER_MAX_WORDS, REASONS, wordCount, type ReasonCode } from "../worker/reasons";
-import { $, api, ApiError, CRITERION, el, say, shortcutsOn, show } from "./common";
+import { $, api, ApiError, CRITERION, el, footnotes, marked, say, shortcutsOn, show, type Marks, type ShownNote } from "./common";
 
 interface Side {
   stem: string;
   bullets: string[];
+  marks?: Marks;
+  notes?: ShownNote[];
 }
 interface Given {
   pick: "L" | "R";
@@ -123,9 +125,12 @@ function renderMe(): void {
 }
 
 function fill(prefix: "left" | "right", side: Side): void {
-  $(`#${prefix}Stem`).textContent = side.stem;
+  $(`#${prefix}Stem`).replaceChildren(...marked(side.stem, 0, side.marks));
   const ul = $(`#${prefix}Bullets`);
-  ul.replaceChildren(...side.bullets.map((b) => el("li", {}, b)));
+  ul.replaceChildren(...side.bullets.map((b, k) => el("li", {}, ...marked(b, k + 1, side.marks))));
+  // The published footnotes, under the bullets.
+  const notes = footnotes(side.notes);
+  $(`#${prefix}Notes`).replaceChildren(...(notes ? [notes] : []));
 }
 
 function frontier(): number {
@@ -312,7 +317,9 @@ $("#backFromDone").addEventListener("click", () => pairs.length && showPair(pair
 // Tapping anywhere on a question card chooses it, like its button; the vote still waits for Next. Ignored while text
 // is selected (someone copying a line).
 for (const [id, kind] of [["#leftCard", "L"], ["#rightCard", "R"]] as const) {
-  $(id).addEventListener("click", () => {
+  $(id).addEventListener("click", (e) => {
+    // A link in a footnote opens the source; it does not choose the question.
+    if (e.target instanceof Element && e.target.closest("a")) return;
     if (window.getSelection()?.toString()) return;
     choose(kind);
   });

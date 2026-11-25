@@ -28,14 +28,15 @@ async function pairCountsTable(): Promise<string[]> {
 describe("batches", () => {
   beforeEach(() => mockOutbound());
 
-  it("hand out ten pairs with stems and bullets only: no question ids, cycle, unit or source", async () => {
+  it("hand out ten pairs with stems, bullets and footnotes only: no question ids, cycle, unit or source", async () => {
     await openNewRound();
     const v = await voter("judge");
     const res = await call("/api/batch", { cookie: v.cookie });
     const text = await res.text();
     const b = JSON.parse(text);
     expect(b.pairs).toHaveLength(10);
-    expect([...keysOf(b)].sort()).toEqual(["answer", "bullets", "done", "left", "pairId", "pairs", "right", "size", "start", "stem"]);
+    // Stem, bullets and the published footnotes (marks, notes); nothing that names the question, its year or its unit.
+    expect([...keysOf(b)].sort()).toEqual(["answer", "bullets", "done", "left", "marks", "notes", "pairId", "pairs", "right", "size", "start", "stem"]);
     expect(b.start).toBe(0);
     for (const it of items) {
       expect(text).not.toContain(it.id);

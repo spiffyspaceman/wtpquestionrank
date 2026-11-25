@@ -203,3 +203,15 @@ the name "Round 1" (id `C5TW5gelpkQa`, item set `state-launch-v1`) is now named 
 production through the D1 API at the owner's request and added an `admin_audit` row (`rename_round`, actor
 `claude-d1-token`). Nothing else about the round changed: 20 votes from one voter, the owner's test code. Where this
 file and the pre-registration say "Round 1" or "the first round", they mean this round.
+
+**25 November 2026: published footnotes are shown with each question (owner decision; built, takes effect when
+merged).** PREREG §2 says voters see only the stem and the two bullets. From this change a question also carries the
+source notes CCE prints under it: the asterisk stands in the text where CCE put it, and the note appears in small type
+under the bullets, on the voting page and on the leaderboard. Two adjustments to the published notes, both the
+owner's: the phrase "accessed <date>" is left out, because the date gives away the question's year; and a web address
+is a link only where the page was checked and opened (`items/links.json`), is replaced or dropped where the page is
+gone, and is plain text where it could not be checked. Effects: voters now know who is quoted and where from, which
+the LLM judges of method A and A2 did not; a note can still hint at a question's era (a book published in 2016).
+The stem and bullets are unchanged and are hashed as before. Cycle, unit, level, number and question ids still never
+reach the voting page. The round "Test" would show the notes too once the full set is loaded; it is to be closed
+before then.

@@ -104,25 +104,53 @@ round); batch assignment; no round name on voter pages; the bundled 438-question
 update the full question set**; **Rename** for rounds; a test that runs a batch, 20 votes, the leaderboard and the
 export on all 438.
 
+**Footnotes (owner decision, 25 Nov; built on the dev branch, not on `main`; 161 tests pass).** Each question
+shows CCE's published source notes: the asterisk in the text, the note under the bullets, on the voting page and the
+leaderboard, with "accessed <date>" left out. 341 notes on 317 of the 438 questions. Migration 0007.
+
+**Link check, 25 Nov, from this environment** (`items/links.json`, 189 addresses):
+
+| Result | Count | Shown as |
+|---|---|---|
+| Page opened | 34 (30 hold the quoted words) | a link |
+| Confirmed dead | 0 | |
+| Could not be checked | 155 | plain text, not a link |
+
+Of the 155, 143 sit on 74 hosts this environment's network refuses (two requests to allow them were rejected by the
+service), and 12 are Founders Online, which turns away automated readers. The four pages that opened without the
+quoted words: `avalon.law.yale.edu/18th_century/mchenry.asp` (State 2026-27 U1Q1),
+`press-pubs.uchicago.edu/founders/documents/v1ch14s47.html` (NF 2021-22 U6Q2), the Journal of Democracy article
+(State 2018-19 U6Q2; the page shows only the opening), and a Cornell syllabus page (State 2024-25 U5Q2).
+
 ### Owner: now
 
-1. Merged and deployed (done).
-2. In `/admin`: press **Load or update the full question set** (438 questions, the 96 extract-only National Finals
-   questions included, as you decided; it makes a draft round "All questions", which you can rename).
-3. Revoke `Other 04`. **Close** the round "Test" (close, not freeze: a frozen round's board stays visible to voters
-   and would put a round picker on the leaderboard). This ends the registered comparison without a verdict and
-   cannot be undone.
-4. Open the big round, make the real codes by role, and send the links.
+1. **Say "merge"** for the footnotes build (migration 0007; voters will see footnotes under questions).
+2. In `/admin`: revoke `Other 04` and **Close** the round "Test" first (otherwise its 36 questions show footnotes
+   too). Closing it ends the registered comparison without a verdict and cannot be undone.
+3. Press **Load or update the full question set** (438 questions with their footnotes; it makes a draft round "All
+   questions", which you can rename). Open it, make the codes by role, and send the links.
+4. **To finish the link check**, either allow the hosts in this environment's settings (Network access > Allowed
+   domains; the list is in `items/links.json` under "the network here refused the host") and tell Claude, or run
+   `python3 items/check_links.py` on your own computer from a copy of the repo and send back `items/links.json`.
+   Until then those addresses show as plain text.
 5. Weekly: **Download full backup**, and the JSON, reasons and corrections exports.
-6. Later questions (National Finals 2026-27 when CCE posts it, any earlier years you find): send the files; after
-   the next merge the same admin button adds them to the running round.
+
+### Adding questions later (for example National Finals 2026-27)
+
+1. Send Claude the new PDF (or a text extract of it) when CCE publishes it.
+2. Claude transcribes it, checks it against the file, rebuilds the set, checks the new links, and merges at your word.
+3. You press **Load or update the full question set** in `/admin`. The new questions join the running round at
+   once, dated, and are paired first until they catch up. Nothing already loaded changes.
+
+Without Claude: the Items form in `/admin` takes a JSON item file. Uploading a newer `all.json` (the whole set plus
+the new questions, same ids and texts for the old ones) does the same thing. The file format is in
+`items/rounds/all.json`.
 
 ### Claude: next
 
-- After the merge: time a batch on the deployed Worker; cut the cost of "Refresh intervals" for a round this size
-  (1,000 refits per pool in the browser will take minutes per pool).
-- If the owner wants the 96 extract-only National Finals questions checked, he sends those six PDFs and the
-  transcriber compares them.
+- After the merge: time a batch on the deployed Worker; cut the cost of "Refresh intervals" for a round this size.
+- When the links can be checked: rerun `items/check_links.py`; for each dead one, look for the same source elsewhere,
+  open it, find the quoted words, and record it as the replacement; otherwise the address is dropped.
 
 ## After the audit of 25 Nov 2026 (`docs/AUDIT_2026-11-25.md`)
 
