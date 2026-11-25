@@ -413,7 +413,7 @@ function renderVoters(): void {
   const toGo = (v: Record<string, any>) => (v.revoked_at ? "" : Math.max(0, tracker.unlockAt - v.round_votes));
   table(
     $<HTMLTableElement>("#voters"),
-    ["Label", "Role", "Issued", "Owner", "Signed in", "Votes", `To ${tracker.unlockAt}`, "Last vote", "Board seen", "Revoked", "Invite", ""],
+    ["Label", "Role", "Issued", "Owner", "Signed in", "Votes", `To ${tracker.unlockAt}`, "Last vote", "Board seen", "Revoked", "Invite", "Revoke"],
     shown.map((v) => [
       v.label,
       v.role,
@@ -536,7 +536,7 @@ async function loadHealth(): Promise<void> {
   const peak = Math.max(1, ...h.perDay.map((d) => d.votes));
   table(
     $<HTMLTableElement>("#perDay"),
-    ["Day (UTC)", "Votes", "Adult", "Voters", ""],
+    ["Day (UTC)", "Votes", "Adult", "Voters", "Share of the busiest day"],
     h.perDay.map((d) => [d.day, d.votes, d.adult_votes, d.voters, dayBar(d.votes / peak)]),
     [1, 2, 3],
   );

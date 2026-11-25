@@ -392,7 +392,8 @@ table.heat { font-size: 0.85rem; }
 table.heat th { white-space: nowrap; }
 table.heat td.heatcell { min-width: 64px; text-align: center; }
 table.heat td.heatcell .v { display: block; font-variant-numeric: tabular-nums; }
-table.heat td.heatcell .n { display: block; font-size: 0.75rem; opacity: 0.75; }
+/* The count under each share: smaller, at full ink (at 75% it fell just under 4.5:1 on the strongest cells at night). */
+table.heat td.heatcell .n { display: block; font-size: 0.75rem; }
 table.heat td.heatcell.strong { color: var(--heat-strong-ink); }
 table.heat td.na { background: var(--paper); }
 
