@@ -147,6 +147,8 @@ export async function correctionsCsv(db: D1Database, round: RoundRow): Promise<s
     .prepare(
       `SELECT c.id AS correction_id, c.vote_id, c.created_at, u.label, v.voter_id, v.role, v.is_repeat, v.left_q, v.right_q,
               v.winner_q AS first_winner_q, v.close_call AS first_close_call, c.winner_q, c.close_call, c.client_ms,
+              v.after_board AS vote_after_board,
+              (u.board_seen_at IS NOT NULL AND c.created_at >= u.board_seen_at) AS correction_after_board,
               (SELECT group_concat(reason, ' ') FROM correction_reasons WHERE correction_id = c.id) AS reasons,
               (SELECT note FROM correction_other WHERE correction_id = c.id) AS other_note
          FROM vote_corrections c JOIN votes v ON v.id = c.vote_id JOIN voters u ON u.id = v.voter_id
@@ -157,6 +159,9 @@ export async function correctionsCsv(db: D1Database, round: RoundRow): Promise<s
   const cols = [
     "correction_id", "vote_id", "created_at", "label", "voter_id", "role", "is_repeat", "left_q", "right_q",
     "first_winner_q", "first_close_call", "winner_q", "close_call", "client_ms", "reasons", "other_note",
+    // The vote's own flag, and whether this change was made after the voter first opened the leaderboard. A row with
+    // 0 then 1 is a pre-board vote whose current answer was given after the board was seen.
+    "vote_after_board", "correction_after_board",
   ];
   return toCsv(cols, r.results.map((x) => cols.map((k) => (k === "other_note" && typeof x[k] === "string" ? sheetSafe(x[k] as string) : x[k]))));
 }
