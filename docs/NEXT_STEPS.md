@@ -131,16 +131,18 @@ leaderboard, with "accessed <date>" left out. 341 notes on 317 of the 438 questi
   them links, someone opens each by hand and marks it `ok` in `items/links.json`.
 - `web.archive.org` is still unreachable from here, so no archived copy was used.
 
+**State of production, checked 25 Nov 05:41 UTC:** the full set `all-questions-v1` is loaded (438 questions, 317
+with footnotes; its hash equals the bundled file's), the round "All questions" exists as a draft, "Test" is closed,
+`Other 04` is revoked, and there are no live codes. Everything built on 25 Nov is on `main`.
+
 ### Owner: now
 
-1. **Say "merge"** for the footnotes build (migration 0007; voters will see footnotes under questions) and the
-   day and night toggle in the masthead of every page (built 25 Nov; the choice stays in the reader's browser).
-2. In `/admin`: revoke `Other 04` and **Close** the round "Test" first (otherwise its 36 questions show footnotes
-   too). Closing it ends the registered comparison without a verdict and cannot be undone.
-3. Press **Load or update the full question set** (438 questions with their footnotes; it makes a draft round "All
-   questions", which you can rename). Open it, make the codes by role, and send the links.
-4. Optional: if a voter reports a dead footnote link, tell Claude; the 52 unconfirmed ones are the likeliest.
-5. Weekly: **Download full backup**, and the JSON, reasons and corrections exports.
+1. In `/admin`, under Rounds: **Open** "All questions" (rename it first if you like; voters do not see the name).
+2. Make one code for yourself (tick **My own code**) and judge a batch: check the footnotes, the Night switch and
+   how long a new batch takes to load. Tell Claude if anything looks wrong before the links go out.
+3. Make the codes by role, download each CSV, and send each person their link.
+4. Weekly: **Download full backup**, and the JSON, reasons and corrections exports.
+5. If a voter reports a dead footnote link, tell Claude; the 52 unconfirmed ones are the likeliest.
 
 ### Adding questions later (for example National Finals 2026-27)
 
