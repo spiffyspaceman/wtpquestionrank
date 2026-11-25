@@ -32,9 +32,12 @@ steps finish.*
   migration 0002 (`vote_reasons`) to D1 before the Worker goes live. Both voter-facing changes are logged in
   DEVIATIONS.md.
 
+- **Leaderboard redesigned (25 Nov, live):** top question, #2–#10 beside four adjustable charts, searchable and
+  sortable list. The owner reached 20 test votes with `Other 04` the same day (20 votes in D1 when checked).
+
 ## Owner: now
 
-1. **Finish the test with `Other 04`** (Show link in admin if needed): judge 10 more pairs to reach 20, ticking one
+1. **Test with `Other 04`: 20 votes done (25 Nov).** Still to try if not done: (Show link in admin if needed): judge 10 more pairs to reach 20, ticking one
    close call, skipping one, tapping a reason or two (once with Other and a few words), and choosing at least once by tapping a card (the vote goes only with Next); the Leaderboard
    link appears. Check that the home page counts the votes and, if you stop mid-batch, offers to continue it. Open it, try **Info** and the unit/year chart. Then open
    the same link on a second device: you should land where the first left off.
