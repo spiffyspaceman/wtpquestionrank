@@ -28,7 +28,11 @@ export function visiblePools(role: string): Pool[] {
 }
 
 /**
- * A role's own board is shown once this many voters in that role have voted in the round. With fewer, each of them
- * could work out the others' picks from it (owner decision, 25 Nov 2026).
+ * How many voters must stand behind a board before it is shown. With one or two, each could work out the other's
+ * picks from it, so on 25 Nov 2026 the owner set this to three; later the same day he chose to show every board at
+ * once, among people he trusts. The wait is therefore off unless the Worker is given BOARD_MIN_VOTERS.
  */
-export const MIN_ROLE_BOARD_VOTERS = 3;
+export function boardFloor(value: string | undefined): number {
+  const n = Number(value ?? 0);
+  return Number.isInteger(n) && n > 0 ? n : 0;
+}

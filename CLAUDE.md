@@ -90,15 +90,16 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov (late) | `/start`: on a first visit the Start button follows the task and comes before the guidance; for a returning voter it sits right under the count. |
 | 25 Nov (late) | Sign-up asks for the email alone; a known address is signed in at once, and only a new one is asked for a role and an optional name (`needProfile` from `/api/join`). |
 | 25 Nov (late) | **Colour: supersedes burgundy.** The navy, white, grey-blue and gold of the Nevada Center for Civic Engagement's mark (`#142954`, `#ffffff`, `#d0d9e2`, `#e49f33`), from the logo the owner supplied. By day navy is the working colour and gold is the masthead rule; at night the page is navy and gold does the work. Type and layout are unchanged. The Center's logo and name are not on the site; do not add them without the owner's yes. Tokens are at the top of `src/web/styles.css`; any change must pass the contrast scan. |
+| 25 Nov (late) | **Supersedes the two "waits for three voters" rows above.** Every board a voter may see (All adults and their own role) shows as soon as they have 20 votes; no wait for other voters. The wait is still in the code, off unless the Worker is given `BOARD_MIN_VOTERS` (the tests set it). |
 
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 210 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 212 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # typecheck, then pages into dist/ (so the deploy cannot ship a type error)
-npm run test:ui        # browser smoke test, 66 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
+npm run test:ui        # browser smoke test, 65 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
 npm run premerge       # all of the above in order; run it before merging anything that touches src/web
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)
 ```
@@ -116,7 +117,8 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
   `src/worker/builtin-sets.ts`), `corrections.json` (fixes made by eye against page images), `check_links.py` and
   `links.json` (which footnote links were checked; read by `src/worker/notes.ts`).
 - `test/worker/` (workerd, local D1) and `test/node/` (hashes, export shape, end-to-end with Miniflare). In a test, a
-  voter sees a board only once three voters stand behind it: `quorum()` in `test/worker/helpers.ts` adds two.
+  request can switch the old wait back on with `env: { BOARD_MIN_VOTERS: "3" }`; `quorum()` in
+  `test/worker/helpers.ts` adds two voters (it dates from when the wait was on, and many counts rest on it).
 - `analysis/first_group.ts` (not frozen): cuts a staged round's export down to the votes among the 36 launch
   questions cast before the second group joined, for an exploratory run of `analyze.ts` beside method A and A2.
 - Production: Cloudflare Worker `wtpquestionrank`, D1 database `wtpquestionrank` (id in `wrangler.jsonc`), secrets

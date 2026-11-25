@@ -14,7 +14,7 @@ the next steps", answer from this file and update it as steps finish.*
 - Four codes exist, all revoked. No live code.
 
 **Merged to `main` on 25 Nov 2026 at the owner's word ("build, merge, and ship", and later "build and ship that"
-for email sign-up); 210 tests pass, the typecheck passes, and the browser smoke test passes 66 checks.** What went
+for email sign-up); 212 tests pass, the typecheck passes, and the browser smoke test passes 65 checks.** What went
 live:
 - **Sign-up by email** (migration 0009, evening of 25 Nov): a sign-up link from admin, an address, an optional name
   and a self-chosen adult role; the address is then the login. Not verified; students keep codes. Since late on 25 Nov the
@@ -37,7 +37,7 @@ Read from production at 21:55 UTC: the corrected footnotes are loaded, "All ques
 play, one sign-up link is open, and one voter is live: the owner, "Judge 01", signed up by email, 20 votes, marked
 as the owner's account (set by Claude through the D1 API at his word; `admin_audit` has the row). Steps 2, 3 and 5
 below are done, and step 4 is under way. Still open: step 0 (confirm Workers Paid), inviting people, and step 6.
-The owner's leaderboard opens once two more adults have each cast a vote.
+Since late on 25 Nov no board waits for other voters, so the owner can open the leaderboard now.
 
 ## Owner: to go live
 
@@ -61,8 +61,8 @@ The owner's leaderboard opens once two more adults have each cast a vote.
    it with your list of names. Send each person their link.
 5. **Cast a few votes yourself first** with a throwaway code, on a phone and on a computer, then revoke that code
    (the analysis and the board exclude revoked codes). Things to try: a pick, two reasons, Other with a few words,
-   Close call, Skip, Back and a changed answer, and Batch done. The leaderboard needs 20 votes and three adult
-   voters behind it, so with your throwaway code alone it will say it opens once three people have voted.
+   Close call, Skip, Back and a changed answer, and Batch done. The leaderboard opens at 20 votes; since late on
+   25 Nov it no longer waits for other voters.
 6. **Send Claude page 1 of CCE's 2019-20 State questions PDF** (Unit 1). Question 1's second bullet was cut off in
    transcription ("...taught us about"), so that question is held out of play until its full text is added.
 

@@ -347,3 +347,11 @@ layout and wording are unchanged, apart from the head-to-head chart's note (blue
 where it lost more). Every text and control pairing was checked for contrast in day and night colours. Effect on
 votes: none expected; recorded because voters see it, and because votes cast before about 22:20 UTC on 25 November
 were cast on the old colours.
+
+**25 November 2026 (late): no wait for other voters before a leaderboard shows (owner decision).** Earlier the same
+day a board was shown only once three voters stood behind it, for a role's own board and then for the adults board
+too. The owner removed the wait: a voter with 20 votes sees the adults board and their own role's board at once.
+Effect: with one or two voters behind a board, each can work out the other's picks from it, which the owner accepted
+among people he trusts; and the first voters see a board built from very few votes, though no question shows a rank
+or rating before it has 10 comparisons. Votes cast after a voter opens a board are marked `after_board = 1` as
+before. The owner's own first 20 votes were cast while the wait was on, so none of them is marked.

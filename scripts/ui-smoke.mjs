@@ -312,16 +312,7 @@ try {
     const more = await get("/api/batch", session);
     for (const p of more.pairs.filter((x) => x.answer === null)) await post("/api/vote", { pairId: p.pairId, pick: "L", closeCall: false, clientMs: 30000 }, session);
   }
-  // One adult has voted: no board yet. Two more adults with a vote each, and it opens.
-  await page.goto(B + "/board");
-  await page.waitForFunction(() => !document.querySelector("#msg").hidden && document.querySelector("#msg").textContent.includes("opens once"));
-  check((await text("#msg")).includes("opens once 3 people have voted") && !(await page.isVisible("#content")), "with one voter the leaderboard waits for three");
-  for (let j = 0; j < 2; j++) {
-    const c = (await post("/admin/api/codes", { role: "other", count: 1 }, adm)).json.codes[0];
-    const s = (await post("/api/redeem", { code: c.code, turnstileToken: "smoke-token" })).cookie;
-    const one = (await get("/api/batch", s)).pairs[0];
-    await post("/api/vote", { pairId: one.pairId, pick: "L", closeCall: false, clientMs: 30000 }, s);
-  }
+  // One voter's twenty votes open the board at once: there is no wait for other voters.
   await page.goto(B + "/board");
   await page.waitForSelector("#content:not([hidden])");
   check(/\d+ votes\./.test(await text("#summary")), "the leaderboard opens after twenty votes and says how many votes it rests on");
@@ -329,7 +320,7 @@ try {
   check(!(await page.isVisible("#explore")), "with nothing ranked, the charts are left out");
   const cells = await page.$$eval("#all tbody tr td:nth-child(2)", (tds) => tds.map((td) => td.textContent));
   check(cells.length > 0 && cells.every((c) => /^\d+ of 10$/.test(c)), "an unranked question shows its comparison count, not a rating");
-  check((await text("#roleNote")).includes("opens once 3"), "the voter's own role board waits for three voters");
+  check(!(await page.isVisible("#roleNote")) && (await page.locator("#tabs button").count()) === 2, "the voter's own role board is offered beside All adults, with no wait for other voters");
   await page.setViewportSize({ width: 390, height: 844 });
   check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "the leaderboard fits a phone's width");
   await shot("board-phone");
@@ -355,7 +346,7 @@ try {
   check(await page.isVisible("#explore") && (await page.locator("#chart svg").count()) === 1, "the charts appear once questions are ranked");
   for (const t of ["scatter", "dist", "h2h"]) await page.click(`#tab-${t}`);
   check((await page.locator("#chart table.heat").count()) === 1, "each chart tab draws, the head-to-head table last");
-  check((await page.locator("#tabs button").count()) === 2 && !(await page.isVisible("#roleNote")), "with six judges, the judges' own board is offered");
+  check((await page.locator("#tabs button").count()) === 2 && !(await page.isVisible("#roleNote")), "both boards are still offered once more judges have voted");
   check((await text("#all tbody tr >> nth=0 >> td >> nth=0")) === "#1", "the table lists ranks first");
   // Whether the first 36 have all settled by now depends on the pairs drawn, so the round may or may not have taken
   // its next group; either way the page and the admin table must agree on the number in play.

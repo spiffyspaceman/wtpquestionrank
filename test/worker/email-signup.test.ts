@@ -253,24 +253,24 @@ describe("email sign-up", () => {
     expect(a!.label).not.toBe(b!.label);
   });
 
-  it("a voter whose role was changed is still one person behind the adults board", async () => {
+  it("with a wait switched on, a voter whose role was changed is still one person behind the adults board", async () => {
     await openNewRound();
     const l = await link();
     const a = sessionCookie(await join(l.word, { email: "one@example.org", role: "judge" }));
     const b = sessionCookie(await join(l.word, { email: "two@example.org", role: "coach" }));
     await voteN(a, 20);
     await voteN(b, 1);
-    expect(await (await call("/api/leaderboard", { cookie: a })).json()).toMatchObject({ error: "too_few_voters" });
+    expect(await (await call("/api/leaderboard", { cookie: a, env: { BOARD_MIN_VOTERS: "3" } })).json()).toMatchObject({ error: "too_few_voters" });
     // The owner moves the first voter to coach, and they vote again: votes under two roles, still two people.
     const v = await row("one@example.org");
     await admin("/admin/api/voters/role", { body: { label: v!.label, role: "coach" } });
     await voteN(a, 1);
-    const still = await call("/api/leaderboard", { cookie: a });
+    const still = await call("/api/leaderboard", { cookie: a, env: { BOARD_MIN_VOTERS: "3" } });
     expect(still.status).toBe(403);
     expect(await still.json()).toMatchObject({ error: "too_few_voters" });
     // A third person opens it.
     await voteN(sessionCookie(await join(l.word, { email: "three@example.org", role: "other" })), 1);
-    expect((await call("/api/leaderboard", { cookie: a })).status).toBe(200);
+    expect((await call("/api/leaderboard", { cookie: a, env: { BOARD_MIN_VOTERS: "3" } })).status).toBe(200);
   });
 
   it("a voter who signed up by email cannot be made a student; a voter with a code can", async () => {

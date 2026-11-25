@@ -16,11 +16,11 @@ import {
 } from "./auth";
 import {
   board,
+  boardFloor,
   boardRounds,
   boardSeen,
   firstVoteCount,
   growIfSettled,
-  MIN_ROLE_BOARD_VOTERS,
   openRounds,
   pairCounts,
   pairCountUpserts,
@@ -778,26 +778,30 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
     round = mine.results.map((m) => rounds.find((r) => r.id === m.round_id)).find(Boolean) ?? rounds[0];
   }
 
-  // A board waits until enough voters stand behind it in this round: with one or two, each could work out the
-  // other's picks from it. That holds for a role's own board and for the pooled adults board alike (owner
-  // decisions, 25 Nov 2026).
-  const who = await db
-    .prepare(
-      `SELECT DISTINCT v.role, v.voter_id FROM votes v JOIN voters u ON u.id = v.voter_id
-        WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL`,
-    )
-    .bind(round.id)
-    .all<{ role: string; voter_id: string }>();
+  // Every board the voter may see is shown at once (owner decision, late 25 Nov 2026). A wait for a minimum number
+  // of voters behind a board can be switched back on with BOARD_MIN_VOTERS: with one or two voters, each can work
+  // out the other's picks from it, which the owner accepted among people he trusts.
+  const floor = boardFloor(c.env.BOARD_MIN_VOTERS);
+  const who = floor
+    ? (
+        await db
+          .prepare(
+            `SELECT DISTINCT v.role, v.voter_id FROM votes v JOIN voters u ON u.id = v.voter_id
+              WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL`,
+          )
+          .bind(round.id)
+          .all<{ role: string; voter_id: string }>()
+      ).results
+    : [];
   // People, not rows: a voter whose role the owner changed has votes under two roles and is still one person
   // behind the adults board.
-  const votersIn = (p: string) =>
-    new Set(who.results.filter((w) => (p === "adults" ? (POOLED_ROLES as readonly string[]).includes(w.role) : w.role === p)).map((w) => w.voter_id)).size;
-  const openPools = pools.filter((p) => votersIn(p) >= MIN_ROLE_BOARD_VOTERS);
+  const votersIn = (p: string) => new Set(who.filter((w) => (p === "adults" ? (POOLED_ROLES as readonly string[]).includes(w.role) : w.role === p)).map((w) => w.voter_id)).size;
+  const openPools = floor ? pools.filter((p) => votersIn(p) >= floor) : [...pools];
   const poolName = (p: string) => (p === "adults" ? "All adults" : ROLE_NAMES[p] ?? p);
-  const waitingFor = pools.filter((p) => !openPools.includes(p)).map((p) => ({ name: poolName(p), need: MIN_ROLE_BOARD_VOTERS }));
+  const waitingFor = pools.filter((p) => !openPools.includes(p)).map((p) => ({ name: poolName(p), need: floor }));
   // No board yet: nothing is shown, so nothing is marked as seen.
-  if (!openPools.length) return c.json({ error: "too_few_voters", need: MIN_ROLE_BOARD_VOTERS }, 403);
-  if (asked !== undefined && !openPools.includes(asked as (typeof pools)[number])) return c.json({ error: "pool_too_small", need: MIN_ROLE_BOARD_VOTERS }, 403);
+  if (!openPools.length) return c.json({ error: "too_few_voters", need: floor }, 403);
+  if (asked !== undefined && !openPools.includes(asked as (typeof pools)[number])) return c.json({ error: "pool_too_small", need: floor }, 403);
   const pool: string = asked ?? openPools[0];
 
   // Seen, round by round: later votes in this round carry after_board = 1 (migration 0005).

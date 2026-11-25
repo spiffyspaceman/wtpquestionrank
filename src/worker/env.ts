@@ -16,6 +16,11 @@ export interface Env {
   TURNSTILE_SECRET?: string;
   /** Secret, optional. Used only when Access is not configured. */
   ADMIN_SECRET?: string;
+  /**
+   * Optional. How many voters must stand behind a leaderboard before it is shown. Unset in production: every board
+   * shows at once (owner decision, late 25 Nov 2026). Setting it in `vars` brings the wait back; the tests set it.
+   */
+  BOARD_MIN_VOTERS?: string;
 }
 
 export interface VoterRow {

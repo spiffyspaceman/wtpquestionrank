@@ -5,7 +5,7 @@ import type { RoundRow } from "./env";
 import { firstGroup, HELD, nextGroup, STAGE, type StageItem } from "./staging";
 import { nowIso } from "./util";
 
-export { isAdultRole, MIN_ROLE_BOARD_VOTERS, POOLS, poolsForRole, ROLE_NAMES, visiblePools, type Pool } from "./pools";
+export { boardFloor, isAdultRole, POOLS, poolsForRole, ROLE_NAMES, visiblePools, type Pool } from "./pools";
 import { poolsForRole } from "./pools";
 
 /** Every open round, oldest first. Several can be open at once (migration 0005). */
