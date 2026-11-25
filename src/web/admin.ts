@@ -192,6 +192,36 @@ async function refreshIntervals(r: Round): Promise<void> {
   }
 }
 
+// ---------- full backup ----------
+
+/** Every table that is not a cache or a credential, read a page at a time and saved as one JSON file. */
+async function fullBackup(): Promise<void> {
+  say(msg, "Backing up...");
+  try {
+    const head = await api<{ exportedAt: string; migrations: string[]; tables: { name: string; rows: number }[] }>("/admin/api/backup");
+    const tables: Record<string, unknown[]> = {};
+    for (const t of head.tables) {
+      const rows: unknown[] = [];
+      let after = 0;
+      for (;;) {
+        const page = await api<{ rows: unknown[]; next: number | null }>(`/admin/api/backup/${t.name}?after=${after}`);
+        rows.push(...page.rows);
+        if (page.next === null) break;
+        after = page.next;
+      }
+      tables[t.name] = rows;
+      say(msg, `Backing up... ${t.name}`);
+    }
+    download(`wtpqr-backup-${head.exportedAt.slice(0, 10)}.json`, JSON.stringify({ exportedAt: head.exportedAt, migrations: head.migrations, tables }), "application/json");
+    const total = Object.values(tables).reduce((s, r) => s + r.length, 0);
+    say(msg, `Backup saved: ${total} rows in ${head.tables.length} tables.`, "ok");
+    await refresh();
+  } catch (err) {
+    say(msg, err instanceof ApiError ? err.message : String(err), "error");
+  }
+}
+$("#backupBtn").addEventListener("click", () => void fullBackup());
+
 // ---------- codes ----------
 
 /** One-tap invite link: the code rides after "#", which browsers never send to the server. */
@@ -233,11 +263,16 @@ function revealCell(label: string): HTMLElement {
 }
 
 let voters: Record<string, any>[] = [];
+let tracker: { round: { id: string; name: string } | null; unlockAt: number } = { round: null, unlockAt: 20 };
 
 async function loadVoters(): Promise<void> {
-  voters = (await api<{ voters: Record<string, any>[] }>("/admin/api/codes")).voters;
+  const r = await api<{ voters: Record<string, any>[]; round: { id: string; name: string } | null; unlockAt: number }>("/admin/api/codes");
+  voters = r.voters;
+  tracker = { round: r.round, unlockAt: r.unlockAt };
   renderVoters();
 }
+
+const dayOf = (iso: string | null | undefined) => (iso ? new Date(iso).toLocaleDateString(undefined, { dateStyle: "medium" }) : "");
 
 /** Newest codes first (server order). Search matches label, role, status or issue date, case-insensitive. */
 function renderVoters(): void {
@@ -247,15 +282,26 @@ function renderVoters(): void {
     ? voters.filter((v) => [v.label, v.role, status(v), fmtDate(v.created_at)].join(" ").toLowerCase().includes(q))
     : voters;
   $("#voterCount").textContent = q ? `${shown.length} of ${voters.length}` : `${voters.length} codes`;
+  // Who still needs a nudge: codes not used yet, and voters short of the leaderboard (and data gate) threshold.
+  const live = voters.filter((v) => !v.revoked_at);
+  const used = live.filter((v) => v.signed_in_at || v.n_votes > 0).length;
+  const reached = live.filter((v) => v.round_votes >= tracker.unlockAt).length;
+  $("#trackerLine").textContent = tracker.round
+    ? `${tracker.round.name}: ${used} of ${live.length} live codes used; ${reached} at ${tracker.unlockAt} or more votes. "To ${tracker.unlockAt}" counts first showings in this round.`
+    : `${used} of ${live.length} live codes used.`;
+  const toGo = (v: Record<string, any>) => (v.revoked_at || !tracker.round ? "" : Math.max(0, tracker.unlockAt - v.round_votes));
   table(
     $<HTMLTableElement>("#voters"),
-    ["Label", "Role", "Issued", "Owner", "Votes", "Board seen", "Revoked", "Invite", ""],
+    ["Label", "Role", "Issued", "Owner", "Signed in", "Votes", `To ${tracker.unlockAt}`, "Last vote", "Board seen", "Revoked", "Invite", ""],
     shown.map((v) => [
       v.label,
       v.role,
       fmtDate(v.created_at),
       v.is_owner ? "yes" : "",
+      v.signed_in_at ? dayOf(v.signed_in_at) : v.n_votes > 0 ? "yes" : "not yet",
       v.n_votes,
+      toGo(v),
+      dayOf(v.last_vote_at),
       v.board_seen_at ? fmtDate(v.board_seen_at) : "",
       v.revoked_at ? fmtDate(v.revoked_at) : "",
       v.revoked_at ? null : revealCell(v.label),
@@ -266,7 +312,7 @@ function renderVoters(): void {
               void act(() => api("/admin/api/codes/revoke", { body: { label: v.label } }), `${v.label} revoked; caches rebuilt.`);
           }),
     ]),
-    [4],
+    [5, 6],
   );
 }
 
@@ -275,6 +321,15 @@ $("#voterSearch").addEventListener("input", renderVoters);
 // ---------- study health (report only) ----------
 
 interface Health {
+  forecast: {
+    itemsShort: { id: string; games: number }[];
+    adultVotesNeeded: number;
+    adultVotesPerDay: number;
+    daysAtThisPace: number | null;
+    ratersShort: number;
+    adultsUnderThreshold: number;
+    adultVotesToThreshold: number;
+  };
   corrections: { rows: number; winnerChanged: number };
   gate: {
     MIN_ADULT_RATERS: number;
@@ -338,6 +393,24 @@ async function loadHealth(): Promise<void> {
     `Fewest adult comparisons on any item: ${g.minAdultGamesPerItem} of ${g.MIN_ADULT_GAMES_PER_ITEM}` +
     (g.itemsBelow ? ` (${g.itemsBelow} of ${g.items} items short)` : "");
   meter("#gateItemsBar", g.minAdultGamesPerItem, g.MIN_ADULT_GAMES_PER_ITEM);
+
+  const fc = h.forecast;
+  const parts: string[] = [];
+  if (fc.adultVotesNeeded) {
+    const when =
+      fc.daysAtThisPace === null
+        ? "no adult votes yet to set a pace"
+        : `about ${fc.daysAtThisPace} ${fc.daysAtThisPace === 1 ? "day" : "days"} at ${fc.adultVotesPerDay} adult votes a day`;
+    parts.push(`Items: at least ${fc.adultVotesNeeded} more adult votes needed, if they fall on the short items (${when}).`);
+  }
+  if (fc.ratersShort)
+    parts.push(
+      `Raters: ${fc.ratersShort} more needed at ${g.MIN_VOTES_PER_COUNTED_RATER} votes; ${fc.adultsUnderThreshold} adults have started and are ` +
+        `${fc.adultVotesToThreshold} votes short between them.`,
+    );
+  $("#forecastLine").textContent = parts.join(" ");
+  table($<HTMLTableElement>("#shortItems"), ["Question", "Adult comparisons"], fc.itemsShort.map((x) => [el("span", { class: "mono" }, x.id), x.games]), [1]);
+  show($("#shortWrap"), fc.itemsShort.length > 0);
 
   const peak = Math.max(1, ...h.perDay.map((d) => d.votes));
   table(

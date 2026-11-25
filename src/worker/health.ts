@@ -45,6 +45,13 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
     games.set(r.right_q, (games.get(r.right_q) ?? 0) + r.n);
   }
   const perItem = [...games.values()];
+  // Items still short of the gate, fewest comparisons first. Each adult vote adds one comparison to two items, so the
+  // votes still needed are at least half the total shortfall, and at least the largest single shortfall.
+  const short = [...games.entries()]
+    .filter(([, n]) => n < GATE.MIN_ADULT_GAMES_PER_ITEM)
+    .sort((a, b) => a[1] - b[1] || (a[0] < b[0] ? -1 : 1));
+  const shortfall = short.reduce((s, [, n]) => s + (GATE.MIN_ADULT_GAMES_PER_ITEM - n), 0);
+  const votesNeeded = short.length ? Math.max(Math.ceil(shortfall / 2), GATE.MIN_ADULT_GAMES_PER_ITEM - short[0][1]) : 0;
 
   const byVoter = new Map<string, { label: string; role: string; ms: number[]; left: number; n: number; close: number }>();
   for (const v of first.results) {
@@ -122,7 +129,23 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
     .bind(round.id)
     .first<{ votes: number; rows: number }>();
 
+  // Pace: adult first votes per day over the last seven days that had any, today included.
+  const recent = perDay.results.slice(-7);
+  const adultPerDay = recent.length ? recent.reduce((s, d) => s + d.adult_votes, 0) / recent.length : 0;
+  const ratersShort = Math.max(0, GATE.MIN_ADULT_RATERS - countedAdultRaters);
+  const adultsUnder = raters.filter((r) => adult.has(r.role) && r.votes < GATE.MIN_VOTES_PER_COUNTED_RATER);
+
   return {
+    forecast: {
+      // Counts only (PREREG §9 allows watching data-quality numbers): how far the gate is, and how fast votes come.
+      itemsShort: short.slice(0, 12).map(([id, n]) => ({ id, games: n })),
+      adultVotesNeeded: votesNeeded,
+      adultVotesPerDay: Math.round(adultPerDay * 10) / 10,
+      daysAtThisPace: votesNeeded === 0 ? 0 : adultPerDay > 0 ? Math.ceil(votesNeeded / adultPerDay) : null,
+      ratersShort,
+      adultsUnderThreshold: adultsUnder.length,
+      adultVotesToThreshold: adultsUnder.reduce((s, r) => s + (GATE.MIN_VOTES_PER_COUNTED_RATER - r.votes), 0),
+    },
     round: { id: round.id, name: round.name, state: round.state },
     corrections: { rows: corrected?.rows ?? 0, winnerChanged: corrected?.votes ?? 0 },
     gate: {

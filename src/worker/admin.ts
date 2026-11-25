@@ -1,9 +1,9 @@
 // Admin API, mounted at /admin/api. Every route but /login requires the Access token (or the fallback cookie).
 import { Hono, type Context } from "hono";
-import { RATING, ROLES } from "../rating/config";
+import { QUALITY, RATING, ROLES } from "../rating/config";
 import { requireAdmin, adminSecretLogin } from "./access";
 import { codeHash, inviteCode } from "./auth";
-import { board, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems } from "./data";
+import { board, currentRound, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems } from "./data";
 import type { AppEnv, RoundRow } from "./env";
 import { correctionsCsv, exportMeta, reasonsCsv, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
 import { studyHealth } from "./health";
@@ -51,7 +51,7 @@ adminApi.get("/status", async (c) => {
     )
     .all();
   const lastExport = await db
-    .prepare("SELECT MAX(at) AS at FROM admin_audit WHERE action IN ('export_json', 'export_votes_csv')")
+    .prepare("SELECT MAX(at) AS at FROM admin_audit WHERE action IN ('export_json', 'export_votes_csv', 'export_backup')")
     .first<{ at: string | null }>();
   const anyVotes = await db.prepare("SELECT count(*) AS n FROM votes").first<{ n: number }>();
   const ageDays = lastExport?.at ? (Date.now() - Date.parse(lastExport.at)) / 86_400_000 : Infinity;
@@ -298,12 +298,23 @@ adminApi.post("/rounds/:id/snapshots", async (c) => {
 // ---------- codes ----------
 
 adminApi.get("/codes", async (c) => {
+  // With each code, how far its holder has got in the current round (open, or else the latest frozen): whether the
+  // code has been used, first-presentation votes, and the last vote. Nothing new is stored: signed_in_at is the oldest
+  // session still on file (sessions lapse after 90 days and end on sign-out, so it can be later than the first use).
+  const round = await currentRound(c.env.DB);
   const r = await c.env.DB.prepare(
-    `SELECT u.label, u.role, u.is_owner, u.created_at, u.revoked_at, u.board_seen_at, COALESCE(c.n, 0) AS n_votes
-       FROM voters u LEFT JOIN (SELECT voter_id, count(*) AS n FROM votes GROUP BY voter_id) c ON c.voter_id = u.id
+    `SELECT u.label, u.role, u.is_owner, u.created_at, u.revoked_at, u.board_seen_at, COALESCE(c.n, 0) AS n_votes,
+            COALESCE(c.round_first, 0) AS round_votes, c.last_vote_at,
+            (SELECT MIN(s.created_at) FROM sessions s WHERE s.voter_id = u.id) AS signed_in_at
+       FROM voters u
+       LEFT JOIN (SELECT voter_id, count(*) AS n, MAX(created_at) AS last_vote_at,
+                         SUM(round_id = ?1 AND is_repeat = 0) AS round_first
+                    FROM votes GROUP BY voter_id) c ON c.voter_id = u.id
       ORDER BY u.created_at DESC, CAST(substr(u.label, instr(u.label, ' ') + 1) AS INTEGER), u.label`,
-  ).all();
-  return c.json({ voters: r.results });
+  )
+    .bind(round?.id ?? "")
+    .all();
+  return c.json({ voters: r.results, round: round ? { id: round.id, name: round.name } : null, unlockAt: QUALITY.LEADERBOARD_UNLOCK_VOTES });
 });
 
 adminApi.post("/codes", async (c) => {
@@ -434,6 +445,60 @@ adminApi.get("/rounds/:id/export-votes", async (c) => {
   const after = Math.max(0, Number(c.req.query("after")) || 0);
   const limit = Math.min(EXPORT_PAGE_MAX, Math.max(1, Number(c.req.query("limit")) || EXPORT_PAGE_MAX));
   return c.json(await votePage(c.env.DB, round, after, limit));
+});
+
+// ---------- full backup: every table that is not a cache or a credential ----------
+
+/**
+ * Tables in the backup, with the columns sent. Left out on purpose: sessions and attempts (hashes of live cookies and
+ * of client addresses), voters.code_hash (a credential), and the caches pair_counts and rating_snapshots, which
+ * rebuild from the log.
+ */
+export const BACKUP_TABLES: Record<string, string> = {
+  item_sets: "*",
+  questions: "*",
+  item_set_items: "*",
+  rounds: "*",
+  voters: "id, role, label, is_owner, created_at, revoked_at, board_seen_at",
+  batches: "*",
+  batch_pairs: "*",
+  votes: "*",
+  skips: "*",
+  vote_reasons: "*",
+  vote_other: "*",
+  vote_corrections: "*",
+  correction_reasons: "*",
+  correction_other: "*",
+  admin_audit: "*",
+};
+export const BACKUP_PAGE_MAX = 1000;
+
+/** Start of a backup: the table list with row counts. Audited as the backup. */
+adminApi.get("/backup", async (c) => {
+  const names = Object.keys(BACKUP_TABLES);
+  // Audited first, so the backup's own audit row is counted and included.
+  await audit(c, "export_backup", { tables: names.length });
+  const counts = await c.env.DB.batch(names.map((t) => c.env.DB.prepare(`SELECT count(*) AS n FROM ${t}`)));
+  const tables = names.map((t, i) => ({ name: t, rows: (counts[i].results[0] as { n: number }).n }));
+  const migrations = await c.env.DB.prepare("SELECT name FROM d1_migrations ORDER BY id").all<{ name: string }>().then(
+    (r) => r.results.map((m) => m.name),
+    () => [] as string[],
+  );
+  return c.json({ exportedAt: nowIso(), migrations, tables, pageMax: BACKUP_PAGE_MAX });
+});
+
+/** One page of one table, in rowid order, at most BACKUP_PAGE_MAX rows, so no request grows with the data. */
+adminApi.get("/backup/:table", async (c) => {
+  const t = c.req.param("table");
+  const cols = BACKUP_TABLES[t];
+  if (!cols) return c.json({ error: "not_found" }, 404);
+  const after = Math.max(0, Number(c.req.query("after")) || 0);
+  const r = await c.env.DB.prepare(`SELECT rowid AS _rowid, ${cols} FROM ${t} WHERE rowid > ? ORDER BY rowid LIMIT ?`)
+    .bind(after, BACKUP_PAGE_MAX)
+    .all<Record<string, unknown>>();
+  const rows = r.results;
+  const next = rows.length === BACKUP_PAGE_MAX ? (rows[rows.length - 1]._rowid as number) : null;
+  return c.json({ table: t, rows: rows.map(({ _rowid, ...row }) => row), next });
 });
 
 adminApi.get("/rounds/:id/export.json", async (c) => {
