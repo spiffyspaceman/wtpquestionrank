@@ -36,7 +36,14 @@ describe("built-in question set", () => {
     expect(first.roundCreated).toBeTruthy();
     const again = await json(admin(`/admin/api/builtin-sets/${SET.id}`, { body: {} }));
     expect(again).toMatchObject({ already: true, roundCreated: null });
-    expect((await json(admin("/admin/api/builtin-sets"))).sets[0]).toMatchObject({ loaded: true, rounds: ["draft"] });
+    expect((await json(admin("/admin/api/builtin-sets"))).sets[0]).toMatchObject({ loaded: true, current: true, rounds: ["draft"] });
+    // An older build of the same set on the site (same questions, footnotes since corrected) is reported as not current,
+    // and loading again brings the footnotes up to date without touching any text.
+    await env.DB.prepare("UPDATE item_sets SET file_sha256 = 'older-build' WHERE id = ?").bind(SET.id).run();
+    await env.DB.prepare("UPDATE questions SET notes_json = '{\"marks\":[],\"notes\":[]}' WHERE id = 'st-2019-20-u5-q3'").run();
+    expect((await json(admin("/admin/api/builtin-sets"))).sets[0]).toMatchObject({ loaded: true, current: false, toAdd: 0 });
+    expect(await json(admin(`/admin/api/builtin-sets/${SET.id}`, { body: {} }))).toMatchObject({ ok: true, added: 0 });
+    expect((await json(admin("/admin/api/builtin-sets"))).sets[0]).toMatchObject({ current: true });
     expect((await admin("/admin/api/builtin-sets/nope-v1", { body: {} })).status).toBe(404);
 
     // The whole flow on a round of this size: a batch, twenty votes, the leaderboard with every question.

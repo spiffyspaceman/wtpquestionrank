@@ -252,25 +252,31 @@ interface BuiltinSet {
   questions: number;
   cycles: string;
   loaded: boolean;
+  /** False when the site holds an older build of the file: its footnotes have corrections waiting. */
+  current: boolean;
   toAdd: number;
   rounds: string[];
 }
+/** A set with something still to load: the set itself, its round, more questions, or corrected footnotes. */
+const builtinWaiting = (b: BuiltinSet) => !b.loaded || !b.rounds.length || b.toAdd > 0 || !b.current;
 
 async function loadBuiltin(): Promise<BuiltinSet[]> {
   const sets = (await api<{ sets: BuiltinSet[] }>("/admin/api/builtin-sets")).sets;
   table(
     $<HTMLTableElement>("#builtin"),
     ["Round", "Item set", "Questions", "Covers", "Loaded", "Round state"],
-    sets.map((b) => [b.roundName, el("span", { class: "mono" }, b.id), b.questions, b.cycles, b.loaded ? (b.toAdd ? `yes; ${b.toAdd} more to add` : "yes") : "no", b.rounds.join(", ") || "none"]),
+    sets.map((b) => [b.roundName, el("span", { class: "mono" }, b.id), b.questions, b.cycles, b.loaded ? (b.toAdd ? `yes; ${b.toAdd} more to add` : b.current ? "yes" : "yes; corrected footnotes to load") : "no", b.rounds.join(", ") || "none"]),
     [2],
   );
   // Say so at the top of the page when the bundled questions are not all on the site yet: the button itself sits far
   // down, under Items.
-  const waiting = sets.filter((b) => !b.loaded || !b.rounds.length || b.toAdd > 0);
+  const waiting = sets.filter(builtinWaiting);
   const n = waiting.reduce((sum, b) => sum + (b.loaded ? b.toAdd : b.questions), 0);
-  $("#builtinBannerText").textContent = waiting.some((b) => b.loaded)
-    ? `${n} more questions are ready to add to the full question set.`
-    : `The full question set (${n} questions) is not loaded yet.`;
+  $("#builtinBannerText").textContent = !waiting.some((b) => b.loaded)
+    ? `The full question set (${n} questions) is not loaded yet.`
+    : n > 0
+      ? `${n} more questions are ready to add to the full question set.`
+      : "The full question set has corrected footnotes to load. No question text changes.";
   show($("#builtinBanner"), waiting.length > 0);
   return sets;
 }
@@ -279,16 +285,26 @@ function loadOrUpdateBuiltin(): void {
   void (async () => {
     try {
       const sets = await loadBuiltin();
-      const todo = sets.filter((b) => !b.loaded || !b.rounds.length || b.toAdd > 0);
+      const todo = sets.filter(builtinWaiting);
       if (!todo.length) return say(msg, "The full question set is loaded and up to date, and has a round.", "ok");
       const n = todo.reduce((sum, b) => sum + (b.loaded ? b.toAdd : b.questions), 0);
       const adding = todo.some((b) => b.loaded);
-      if (!confirm(adding ? `Add ${n} more questions to the set? They join the round at once. A loaded question's text can never change.` : `Load ${n} questions and make a draft round? More can be added later; a loaded question's text can never change.`)) return;
+      const notesOnly = adding && n === 0;
+      if (
+        !confirm(
+          notesOnly
+            ? "Load the corrected footnotes? No question is added and no question text changes."
+            : adding
+              ? `Add ${n} more questions to the set? They join the round at once. A loaded question's text can never change.`
+              : `Load ${n} questions and make a draft round? More can be added later; a loaded question's text can never change.`,
+        )
+      )
+        return;
       for (const b of todo) {
         say(msg, `Loading ${b.roundName}...`);
         await api(`/admin/api/builtin-sets/${b.id}`, { body: {} });
       }
-      say(msg, adding ? `${n} questions added to the set.` : `${n} questions loaded; the round is a draft under Rounds.`, "ok");
+      say(msg, notesOnly ? "Footnotes updated." : adding ? `${n} questions added to the set.` : `${n} questions loaded; the round is a draft under Rounds.`, "ok");
       await refresh();
     } catch (err) {
       say(msg, err instanceof ApiError ? err.message : String(err), "error");

@@ -96,6 +96,12 @@ try {
   await page.waitForSelector("#startBtn:not([hidden])");
   check((await text("#votes")) === "0", "home shows 0 pairs judged for a new code");
   check(await page.isVisible("#signOut"), "home offers Sign out");
+  // A first visit: the task comes before the Start button, and the zero count is not the headline.
+  const order = await page.evaluate(() => {
+    const before = (a, b) => Boolean(document.querySelector(a).compareDocumentPosition(document.querySelector(b)) & Node.DOCUMENT_POSITION_FOLLOWING);
+    return { taskFirst: before("#taskH", "#startBtn") && before("#strongH", "#startBtn"), countHidden: document.querySelector("#tallyH").hidden };
+  });
+  check(order.taskFirst && order.countHidden, "first visit: the task and the guidance come before Start, without the zero count");
   await shot("start");
 
   // Day and night: the toggle switches the colours, names the scheme it leads to, and the choice follows the reader.
@@ -159,6 +165,11 @@ try {
   await page.keyboard.press("Enter");
   await page.waitForURL(B + "/start");
   check(true, "Enter on the masthead link goes home instead of voting");
+  const back = await page.evaluate(() => ({
+    tallyFirst: Boolean(document.querySelector("#startBtn").compareDocumentPosition(document.querySelector("#taskH")) & Node.DOCUMENT_POSITION_FOLLOWING),
+    count: document.querySelector("#tallyH").hidden,
+  }));
+  check(back.tallyFirst && !back.count, "a returning voter sees the count and Continue first");
   check((await text("#resumeLine")).includes("8 pairs left"), "home offers the part-done batch (8 pairs left)");
 
   // Finish the batch
@@ -172,6 +183,25 @@ try {
   check(await page.isVisible("#between"), "the batch ends on Batch done");
   check((await focused()) === "betweenH", "Batch done takes focus");
   await shot("batch-done");
+
+  // Leaderboard: ten more votes through the API unlock it. Twenty votes rank nothing, and the page says so plainly.
+  // (One pair above was skipped, so a second batch alone leaves the count at nineteen.)
+  for (let k = 0; k < 3 && !(await get("/api/me", session)).unlocked; k++) {
+    const more = await get("/api/batch", session);
+    for (const p of more.pairs.filter((x) => x.answer === null)) await post("/api/vote", { pairId: p.pairId, pick: "L", closeCall: false, clientMs: 30000 }, session);
+  }
+  await page.goto(B + "/board");
+  await page.waitForSelector("#content:not([hidden])");
+  check(/\d+ votes\./.test(await text("#summary")), "the leaderboard opens after twenty votes and says how many votes it rests on");
+  check((await text("#noneRanked")).includes("furthest along"), "with nothing ranked, it says how far along the questions are");
+  check(!(await page.isVisible("#explore")), "with nothing ranked, the charts are left out");
+  const cells = await page.$$eval("#all tbody tr td:nth-child(2)", (tds) => tds.map((td) => td.textContent));
+  check(cells.length > 0 && cells.every((c) => /^\d+ of 10$/.test(c)), "an unranked question shows its comparison count, not a rating");
+  check((await text("#roleNote")).includes("opens once 3"), "the voter's own role board waits for three voters");
+  await page.setViewportSize({ width: 390, height: 844 });
+  check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "the leaderboard fits a phone's width");
+  await shot("board-phone");
+  await page.setViewportSize({ width: 1280, height: 900 });
 
   // Sign out
   await page.goto(B + "/start");

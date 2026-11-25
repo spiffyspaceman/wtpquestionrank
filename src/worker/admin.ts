@@ -255,13 +255,18 @@ adminApi.post("/items", async (c) => {
 /** The sets, with whether each is loaded and has a round yet. */
 adminApi.get("/builtin-sets", async (c) => {
   const sets = await c.env.DB.prepare(
-    "SELECT s.id, (SELECT count(*) FROM item_set_items i WHERE i.item_set_id = s.id) AS n FROM item_sets s",
-  ).all<{ id: string; n: number }>();
+    "SELECT s.id, s.file_sha256, (SELECT count(*) FROM item_set_items i WHERE i.item_set_id = s.id) AS n FROM item_sets s",
+  ).all<{ id: string; file_sha256: string; n: number }>();
+  const storedSha = new Map(sets.results.map((x) => [x.id, x.file_sha256]));
+  const bundledSha = await Promise.all(BUILTIN_SETS.map((b) => sha256Hex(new TextEncoder().encode(JSON.stringify(b.file)))));
   const rounds = await c.env.DB.prepare("SELECT item_set_id, state FROM rounds").all<{ item_set_id: string; state: string }>();
   const loaded = new Set(sets.results.map((x) => x.id));
   const held = new Map(sets.results.map((x) => [x.id, x.n]));
   return c.json({
-    sets: BUILTIN_SETS.map((b) => ({
+    sets: BUILTIN_SETS.map((b, k) => ({
+      // False when the site holds an older build of the file: the same questions, but corrected footnotes (which may
+      // be updated after loading) have not been loaded yet.
+      current: storedSha.get(b.id) === bundledSha[k],
       id: b.id,
       roundName: b.roundName,
       questions: b.questions,
