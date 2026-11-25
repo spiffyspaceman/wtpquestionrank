@@ -6,7 +6,8 @@ steps finish.*
 ## Where things stand
 
 - Live at `https://wtpquestionrank.spiffyspaceman.com`. Pushes to `main` deploy through Workers Builds after the tests pass.
-- D1 `wtpquestionrank` (id `de56eb48-…10dc`) has migration 0001 applied.
+- D1 `wtpquestionrank` (id `de56eb48-…10dc`): each deploy applies any new migration before the Worker goes live
+  (0001 to 0004 exist in the repo; production was not read during the 25 Nov audit).
 - Turnstile, `CODE_PEPPER` and `TURNSTILE_SECRET` are set and verified on the live site.
 - Cloudflare Access protects `/admin` (team `falling-mouse-d5eb.cloudflareaccess.com`, one-time PIN), and the Worker
   verifies the Access token itself.
@@ -66,6 +67,31 @@ steps finish.*
    only 7 days on Free, and the admin banner reminds you.
 8. At freeze: export the JSON and run the analysis command in BUILD_STEPS §10 step 5.
 9. After launch, delete the Cloudflare API token "wtpquestionrank D1 setup" (expires 2 December 2026 anyway).
+
+## Open from the audit of 25 Nov 2026 (`docs/AUDIT_2026-11-25.md`)
+
+Seven fixes are on branch `claude/busy-franklin-ct2lna` (not on `main`): chunked question lookups, the correction
+cache race, https-only, long caching for hashed files, two new `corrections.csv` columns, keyboard fixes on the
+voting page, and the export order. Merging deploys them.
+
+Owner decisions needed (each is a proposal in the audit; none is built):
+
+A. **Merge the audit branch** to `main`, or say which commits to drop.
+B. **Post-board corrections (finding 1):** refuse a change to a pre-leaderboard vote once the voter has opened the
+   leaderboard? It narrows Back, so it is a logged deviation. Until then, use `correction_after_board` in
+   `corrections.csv` to find such votes.
+C. **Round 2 (finding 2):** 420 questions in one round needs about 380 ms of CPU per batch against 10 ms on Free.
+   Choose: Workers Paid, six rounds by unit (recommended), or a cheaper pairing module for Round 2.
+D. **Sign out (finding 7):** add a Sign out link on `/start`?
+E. **Unchosen card and shortcuts (findings 9, 10):** keep the unchosen question readable after a pick; add a switch
+   for single-key shortcuts?
+F. **Cloudflare settings (yours):** turn on Always Use HTTPS for the zone; change the Workers Builds command to
+   `npm ci && npm run typecheck && npm test && npm run build`.
+G. **Full backup export (feature 1)** and the **invitation tracker (feature 4):** build them?
+H. **Like-for-like LLM run:** re-run method A with the human arm's guidance and reasons as a registered addendum?
+
+Claude, once decided: per-round `after_board` (migration 0005) before Round 2; a Playwright smoke test of the voting
+flow; record in DEVIATIONS.md, as a clarification, that pairing uses the `all` pool (students included).
 
 ## Later (owner decisions, 25 Nov 2026)
 
