@@ -25,6 +25,13 @@ export function expectedOrigin(prodHost: string): string {
  */
 export const hostGuard: MiddlewareHandler<AppEnv> = async (c, next) => {
   const url = new URL(c.req.url);
+  // Plain http is never served: a code typed into an http page would cross the network unencrypted. Reads are
+  // redirected; anything else is refused. Local development (http://localhost) is exempt.
+  if (url.protocol === "http:" && !isLocalHost(url.host)) {
+    if (c.req.method !== "GET" && c.req.method !== "HEAD") return c.json({ error: "https_required" }, 400);
+    url.protocol = "https:";
+    return c.redirect(url.href, 308);
+  }
   if (isDataPath(url.pathname) && url.host !== c.env.PROD_HOST) return c.json({ error: "not_found" }, 404);
   await next();
 };
@@ -92,5 +99,10 @@ export const securityHeaders: MiddlewareHandler<AppEnv> = async (c, next) => {
   set("X-Frame-Options", "DENY");
   set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), interest-cohort=()");
   set("Strict-Transport-Security", "max-age=31536000");
-  if (isDataPath(new URL(c.req.url).pathname)) set("Cache-Control", "no-store");
+  const path = new URL(c.req.url).pathname;
+  if (isDataPath(path)) set("Cache-Control", "no-store");
+  // Built files carry a content hash in their name, so a browser may keep them for good; the fonts never change
+  // under their names. Without this every page view asks the Worker again for each file (the default is max-age=0).
+  else if (c.res.status === 200 && path.startsWith("/assets/")) set("Cache-Control", "public, max-age=31536000, immutable");
+  else if (c.res.status === 200 && path.startsWith("/fonts/")) set("Cache-Control", "public, max-age=2592000");
 };
