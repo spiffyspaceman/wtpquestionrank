@@ -96,7 +96,9 @@ How far to trust them:
 and 0.1 s for a leaderboard view at 438 questions. Every question reaches 10 comparisons (a rank) after about 2,200
 votes and 30 comparisons after about 6,600.
 
-**Built on branch `claude/busy-franklin-ct2lna`, not on `main`** (154 tests pass): migrations 0005 (several open
+**Live on `main` since 25 Nov, 04:54 UTC (`d980440`; 154 tests pass).** Checked in production after the deploy:
+migrations 0005 and 0006 applied; the one earlier leaderboard view carried over to the round "Test"; the launch set
+is not open-ended; 20 votes, one round ("Test", open). What went live: migrations 0005 (several open
 rounds; `after_board` and the correction lock per round) and 0006 (open-ended sets: questions can join the running
 round); batch assignment; no round name on voter pages; the bundled 438-question set and the admin button **Load or
 update the full question set**; **Rename** for rounds; a test that runs a batch, 20 votes, the leaderboard and the
@@ -104,10 +106,9 @@ export on all 438.
 
 ### Owner: now
 
-1. **Say "merge"**. The merge applies migrations 0005 and 0006 to production. Voters see one change: `/start` stops
-   showing the round's name.
-2. In `/admin`: press **Load or update the full question set** (438 questions; it makes a draft round "All
-   questions", which you can rename).
+1. Merged and deployed (done).
+2. In `/admin`: press **Load or update the full question set** (438 questions, the 96 extract-only National Finals
+   questions included, as you decided; it makes a draft round "All questions", which you can rename).
 3. Revoke `Other 04`. **Close** the round "Test" (close, not freeze: a frozen round's board stays visible to voters
    and would put a round picker on the leaderboard). This ends the registered comparison without a verdict and
    cannot be undone.
