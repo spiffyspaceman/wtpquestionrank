@@ -44,9 +44,14 @@ steps finish.*
 2. Confirm whether the **24 added question texts** were checked against CCE's PDFs. The item set is now frozen, so a
    wrong text found later is a logged deviation, not a fix.
 
-## Claude: after the test votes
+## Claude: after the test votes (done 25 Nov 2026)
 
-3. Build the round export from D1 and run `analysis/analyze.ts` on it with the method A outputs in `llm-arm/`.
+3. **Done.** Built the Round 1 export from D1 (read-only, through `votes_effective`, as the admin export does): 1 voter
+   (`Other 04`), 20 votes, 0 skips, 0 repeats, 1 close call, 0 corrections, all cast before the leaderboard was
+   opened. SHA-256 `f06bf630…54c7`. `analysis/analyze.ts` ran on it with the method A files in `llm-arm/` and returned
+   the expected verdict: the data gate fails (1 adult rater of 15; fewest comparisons on any item 0 of 30). The live
+   rating cache matches the log (20 comparisons, 13 left wins, in every pool). Method B was not run:
+   `Validation_Machine_Records_2026-11-24.jsonl` is not in the repo.
 
 ## Owner: finish
 
