@@ -68,6 +68,32 @@ steps finish.*
 8. At freeze: export the JSON and run the analysis command in BUILD_STEPS §10 step 5.
 9. After launch, delete the Cloudflare API token "wtpquestionrank D1 setup" (expires 2 December 2026 anyway).
 
+## All published questions, last 20 years (owner decisions, 25 Nov 2026, evening)
+
+The owner chose: open every published State and National Finals question from the last 20 years now; drop Round 1
+(freeze it without reaching its gate, so the registered comparison reports no verdict; DEVIATIONS.md); rounds of
+about 35 questions, one per unit and level, on the Free plan; texts from CCE's own published files.
+
+**Blocked on the question texts.** Checked 25 Nov:
+- `www.civiced.org/competitions-hearings` publishes only the current cycle: High School State questions (a Google
+  Drive file) and "National Finals Questions (Pending)". There is no archive of earlier years on the site.
+- The Wayback Machine (`web.archive.org`) is the likely home of the older PDFs. This environment's network policy
+  blocks it, and the request to add the host was rejected by the environments service.
+- `items/corpus.csv` covers 12 cycles (State 2015-16 to 2026-27, National Finals 2014-15 to 2025-26; 420 questions)
+  with scores only. Twenty years means about eight more cycles per level, for which the repo has nothing.
+
+**Owner: one of these unblocks it**
+- add `web.archive.org` (and `drive.google.com` for CCE's current file) under Allowed domains in the environment's
+  settings, or
+- upload CCE's question PDFs here, or point Claude to the folder that holds them.
+
+**Claude: before the first large round opens**
+1. Migration 0005: `after_board` and the leaderboard lock kept per round, not per voter (audit finding 6).
+2. Item files, one per unit and level, each text checked against its PDF; a list of every cycle not found.
+3. Admin: load the item sets and create the rounds without hand-made JSON. Only one round is open at a time
+   (the database enforces it), so the rounds run one after another unless the owner asks for several at once.
+4. Then the owner revokes `Other 04`, freezes Round 1, opens the first round and sends the links.
+
 ## After the audit of 25 Nov 2026 (`docs/AUDIT_2026-11-25.md`)
 
 **Live on `main` (merged 25 Nov at the owner's word):** chunked question lookups, the correction cache fix, https

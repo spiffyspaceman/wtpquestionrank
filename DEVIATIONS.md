@@ -157,3 +157,13 @@ measure is also reported from the 26 judges other than `b1j0`, `b1j1`, `b3j4` an
 (`llm-arm/out-a2-without4/`, the same output files less those four; `analysis/analyze.ts` lists the four as missing
 and fits the rest). The addendum file itself is unchanged, so its hash above still holds. Losing those four leaves
 blocks 1, 3 and 4 with fewer than six judges, so pairs in those blocks have fewer than six judgments in that fit.
+
+**25 November 2026: Round 1 is to be closed early (owner decision; not yet carried out).** The owner decided to open
+every published question from the last 20 years to voters now and to drop Round 1. When the first of the larger
+rounds is ready, Round 1 will be frozen as it stands (20 votes when last checked, all from the owner's test code).
+Under PREREG §9 the data gate then fails and "every number is reported as descriptive and no verdict is given":
+the registered human-versus-LLM comparison ends without a verdict. Method A and A2 stay on file. The 36 launch
+questions will appear again inside the larger State rounds, under different conditions (other questions in the round,
+the guidance, reasons and leaderboard as they now are); any comparison of those votes with method A or A2 is
+exploratory and is not the registered analysis. This entry records the decision; the freeze itself will be logged
+with its time when the owner does it in `/admin`.

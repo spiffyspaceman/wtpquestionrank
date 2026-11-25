@@ -58,6 +58,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov | Voters get a Sign out link on `/start`; sessions stay 90 days. |
 | 25 Nov | The unchosen question keeps full-ink text after a pick; letter and number keys can be switched off on `/start`; four short status lines on the voting page and leaderboard (DEVIATIONS.md). |
 | 25 Nov | Round 2 runs as six rounds, one per unit (about 70 questions each), with one linked fit offline. A single 420-question round needs far more CPU per batch than the Free plan allows. |
+| 25 Nov (later) | **Supersedes the Round 2 rows above.** The owner wants every published question from the last 20 years (State and National Finals) open to voters now, and Round 1 dropped: it is frozen without reaching its gate when the first large round opens, so the pre-registered comparison reports no verdict (PREREG §9). Rounds of about 35 questions, one per unit and level, on the Free plan. Texts come from CCE's own published files only. |
 | 25 Nov | Admin gets a full backup (every table but caches, sessions, attempts and code hashes), an invitation tracker in the Voters table, and a gate forecast in Study health (counts only). |
 | 25 Nov | Method A2: re-run the LLM judges with the human arm's guidance and reasons, as a registered addendum. `PREREG_Addendum_A2.md`, approved and hashed 25 Nov (DEVIATIONS.md); A2 is secondary and never enters the verdict. It ran 25 Nov (`llm-arm/out-a2/`); all 30 judges stay, with a 26-judge fit (`out-a2-without4/`) reported beside it. |
 
