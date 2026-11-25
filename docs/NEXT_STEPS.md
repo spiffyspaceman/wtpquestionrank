@@ -47,8 +47,9 @@ steps finish.*
 7. In `/admin`, select **Refresh intervals** and then **JSON** (it downloads in pages and saves one file). Upload the JSON to Claude, who compares it with the
    export from step 6.
 8. **Revoke** `Other 01` and `Other 02`. Their sessions end, the caches rebuild and saved intervals are dropped.
-9. Make the real codes by role, ticking **My own code** for the owner's. Download each CSV and keep it with the
-   list of names. Hand out the codes.
+9. Make the real codes by role, ticking **My own code** for the owner's. Download each CSV (label, role, code, link)
+   and keep it with the list of names. Send each person their link; they tap it and are in. The typed code still
+   works as a fallback.
 10. As votes come in, select **Refresh intervals** now and then, and export the JSON at least weekly. Time Travel keeps
     only 7 days on Free, and the admin banner reminds you.
 11. At freeze: export the JSON and run the analysis command in BUILD_STEPS §10 step 5.

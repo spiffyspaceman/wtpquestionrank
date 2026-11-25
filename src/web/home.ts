@@ -16,9 +16,50 @@ const go = $<HTMLButtonElement>("#go");
 let token = "";
 let widgetId: string | undefined;
 
-async function start(): Promise<void> {
-  // Already signed in on this device: go straight to voting.
+/**
+ * An invite link carries the code after "#" (https://host/#XXXX-XXXX-XXXX). Browsers never send that part to the
+ * server. Take it, then wipe it from the address bar and history before any other script (Turnstile) loads.
+ */
+function codeFromLink(): string {
+  const raw = decodeURIComponent(location.hash.slice(1)).trim();
+  if (!raw) return "";
+  history.replaceState(null, "", location.pathname + location.search);
+  return /^[0-9A-Za-z][0-9A-Za-z -]{5,38}$/.test(raw) ? raw : "";
+}
+const linkCode = codeFromLink();
+let autoTried = false;
+
+async function redeem(): Promise<void> {
+  const code = codeInput.value.trim();
+  if (!code) {
+    say(msg, "Enter your invite code.", "error");
+    codeInput.focus();
+    return;
+  }
+  if (!token) {
+    say(msg, "Wait for the security check to finish, then press Start.", "warn");
+    return;
+  }
+  go.disabled = true;
+  say(msg, "");
   try {
+    await api("/api/redeem", { body: { code, turnstileToken: token } });
+    location.assign("/vote");
+  } catch (err) {
+    const m = err instanceof ApiError ? err.message : "Something went wrong. Try again.";
+    say(msg, m, "error");
+    token = "";
+    window.turnstile?.reset(widgetId);
+    go.disabled = false;
+    codeInput.focus();
+  }
+}
+
+async function start(): Promise<void> {
+  if (linkCode) codeInput.value = linkCode;
+  // Already signed in on this device: go straight to voting. An invite link signs in with its own code instead,
+  // since the device may belong to someone else.
+  if (!linkCode) try {
     await api("/api/me");
     location.replace("/vote");
     return;
@@ -44,7 +85,14 @@ async function start(): Promise<void> {
   s.onload = () => {
     widgetId = window.turnstile?.render($("#turnstile"), {
       sitekey,
-      callback: (t: string) => (token = t),
+      callback: (t: string) => {
+        token = t;
+        // One tap: the link already supplied the code. Only once, so a wrong code cannot loop on every new token.
+        if (linkCode && !autoTried) {
+          autoTried = true;
+          void redeem();
+        }
+      },
       "expired-callback": () => (token = ""),
       "error-callback": () => (token = ""),
     });
@@ -53,31 +101,9 @@ async function start(): Promise<void> {
   document.head.append(s);
 }
 
-form.addEventListener("submit", async (e) => {
+form.addEventListener("submit", (e) => {
   e.preventDefault();
-  const code = codeInput.value.trim();
-  if (!code) {
-    say(msg, "Enter your invite code.", "error");
-    codeInput.focus();
-    return;
-  }
-  if (!token) {
-    say(msg, "Wait for the security check to finish, then press Start.", "warn");
-    return;
-  }
-  go.disabled = true;
-  say(msg, "");
-  try {
-    await api("/api/redeem", { body: { code, turnstileToken: token } });
-    location.assign("/vote");
-  } catch (err) {
-    const m = err instanceof ApiError ? err.message : "Something went wrong. Try again.";
-    say(msg, m, "error");
-    token = "";
-    window.turnstile?.reset(widgetId);
-    go.disabled = false;
-    codeInput.focus();
-  }
+  void redeem();
 });
 
 void start();

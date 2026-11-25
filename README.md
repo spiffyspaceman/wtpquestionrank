@@ -77,6 +77,9 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
   round opens.
 - **Codes.**
   - Create codes by role, with labels like "Judge 01" and an owner flag.
+  - Each code also comes as a one-tap invite link, `https://PROD_HOST/#CODE`. The part after `#` never reaches the
+    server; the home page reads it, clears it from the address bar before Turnstile loads, and signs in once the check
+    passes (one automatic attempt only). The role is still set by the owner, and nothing new is stored.
   - Each code is shown once, with a CSV download. The database stores only the HMAC.
   - Revoke by label. Revoking ends the voter's sessions and rebuilds the caches at once.
 - **Raw votes.** Paged, filtered by role, label and repeat.

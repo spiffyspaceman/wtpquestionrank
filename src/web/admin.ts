@@ -192,9 +192,26 @@ async function refreshIntervals(r: Round): Promise<void> {
 
 // ---------- codes ----------
 
+/** One-tap invite link: the code rides after "#", which browsers never send to the server. */
+const inviteLink = (code: string) => `${location.origin}/#${code}`;
+
+function copyButton(text: string): HTMLButtonElement {
+  const b = button("Copy link", () => {
+    void navigator.clipboard.writeText(text).then(
+      () => (b.textContent = "Copied"),
+      () => (b.textContent = "Copy failed"),
+    );
+  });
+  return b;
+}
+
 function renderCodes(): void {
   show($("#newCodesOut"), lastCodes.length > 0);
-  table($<HTMLTableElement>("#codesTable"), ["Label", "Role", "Code"], lastCodes.map((c) => [c.label, c.role, el("span", { class: "mono" }, c.code)]));
+  table(
+    $<HTMLTableElement>("#codesTable"),
+    ["Label", "Role", "Code", "Invite link", ""],
+    lastCodes.map((c) => [c.label, c.role, el("span", { class: "mono" }, c.code), el("span", { class: "mono" }, inviteLink(c.code)), copyButton(inviteLink(c.code))]),
+  );
 }
 
 async function loadVoters(): Promise<void> {
@@ -344,7 +361,7 @@ $("#newCodes").addEventListener("submit", (e) => {
 });
 
 $("#codesCsv").addEventListener("click", () => {
-  const lines = ["label,role,code", ...lastCodes.map((c) => `${c.label},${c.role},${c.code}`)];
+  const lines = ["label,role,code,link", ...lastCodes.map((c) => `${c.label},${c.role},${c.code},${inviteLink(c.code)}`)];
   download(`wtpqr-codes-${new Date().toISOString().slice(0, 10)}.csv`, lines.join("\r\n") + "\r\n", "text/csv");
 });
 
