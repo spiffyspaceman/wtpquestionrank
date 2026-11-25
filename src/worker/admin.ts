@@ -571,9 +571,13 @@ adminApi.post("/voters/role", async (c) => {
   const label = body?.label;
   const role = body?.role;
   if (typeof label !== "string" || label.length > 40 || typeof role !== "string" || !(ROLES as readonly string[]).includes(role)) return c.json({ error: "bad_request" }, 400);
-  const v = await c.env.DB.prepare("SELECT id, role FROM voters WHERE label = ?").bind(label).first<{ id: string; role: string }>();
+  const v = await c.env.DB.prepare("SELECT id, role, email FROM voters WHERE label = ?").bind(label).first<{ id: string; role: string; email: string | null }>();
   if (!v) return c.json({ error: "unknown_label" }, 404);
   if (v.role === role) return c.json({ ok: true, unchanged: true });
+  // No address or name is kept for a student, so a voter who signed up by email cannot be made one. A student
+  // gets a code instead.
+  if (role === "student" && v.email !== null)
+    return c.json({ error: "student_with_email", message: `${label} signed up by email, and no email is kept for a student. Revoke ${label} and give the student a code.` }, 409);
   await c.env.DB.prepare("UPDATE voters SET role = ? WHERE id = ?").bind(role, v.id).run();
   await audit(c, "change_role", { label, was: v.role, role });
   return c.json({ ok: true, role });

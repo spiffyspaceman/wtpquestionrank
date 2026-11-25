@@ -21,7 +21,13 @@ let widgetId: string | undefined;
  * server. Take it, then wipe it from the address bar and history before any other script (Turnstile) loads.
  */
 function codeFromLink(): string {
-  const raw = decodeURIComponent(location.hash.slice(1)).trim();
+  let raw = "";
+  try {
+    raw = decodeURIComponent(location.hash.slice(1)).trim();
+  } catch {
+    // A mangled link (a stray "%"): treat it as no link at all, and still clear it from the address bar below.
+    raw = location.hash.length > 1 ? "?" : "";
+  }
   if (!raw) return "";
   history.replaceState(null, "", location.pathname + location.search);
   return /^[0-9A-Za-z][0-9A-Za-z -]{5,38}$/.test(raw) ? raw : "";

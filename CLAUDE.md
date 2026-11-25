@@ -26,7 +26,8 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
   the address, an optional name and the role they chose (`voters.email`, `voters.name`; migration 0009). Those two
   fields go to `/admin`, the voters CSV and the full backup, and nowhere else: never to a voter's browser, the round
   JSON, the votes CSV or the audit log (which names labels). **Students never sign up by email:** store no name,
-  email or free text about a student, and never offer Student on the sign-up form. No phone numbers for anyone. The
+  email or free text about a student, never offer Student on the sign-up form, and never let a voter who has an
+  address on file be given the Student role (the Worker refuses it). No phone numbers for anyone. The
   address is not verified and the site sends no email; do not add sending without the owner's yes. **One more
   exception (owner, 25 Nov 2026):** the "Other" reason may carry the voter's own explanation of a pick, at most 20 words, for every
   voter, students included. It lives only in `vote_other`, is shown only in admin and `reasons.csv`, and never on
@@ -91,7 +92,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 206 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 209 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # typecheck, then pages into dist/ (so the deploy cannot ship a type error)
 npm run test:ui        # browser smoke test, 63 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)

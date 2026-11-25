@@ -436,7 +436,9 @@ $("#newJoinLink").addEventListener("click", () => void act(() => api("/admin/api
 /** A voter's role, with a way to change it: for someone who chose the wrong one at sign-up. */
 function roleCell(v: Record<string, any>): HTMLElement | string {
   if (v.revoked_at) return v.role;
-  const s = el("select", { "aria-label": `Role of ${v.label}` }, ...status.roles.map((r) => el("option", { value: r.id }, r.name)));
+  // Student is not offered for someone who signed up by email: no address is kept for a student.
+  const roles = status.roles.filter((r) => r.id !== "student" || !v.email);
+  const s = el("select", { "aria-label": `Role of ${v.label}` }, ...roles.map((r) => el("option", { value: r.id }, r.name)));
   s.value = v.role;
   s.addEventListener("change", () => {
     const to = s.value;

@@ -317,3 +317,8 @@ What this changes for anyone reading the data:
   CSV and the full backup. They are not in the round's JSON export, the votes CSV, the audit log, or anything a
   voter's browser receives. `analysis/analyze.ts` sees the same fields as before.
 No frozen file, threshold, item or measure changes.
+
+**25 November 2026: two rules tightened after a review of the email sign-up, before it went live.** A voter whose
+role the owner changes has votes under two roles; the three-voter rule for showing a board now counts people, so
+such a voter is one person behind the adults board, not two. And a voter who signed up by email cannot be given the
+Student role, because no address or name is kept for a student; a student gets a code.

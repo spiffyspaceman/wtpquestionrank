@@ -3,6 +3,8 @@ import type { MiddlewareHandler } from "hono";
 import type { AppEnv } from "./env";
 
 export const VOTER_BODY_LIMIT = 2 * 1024;
+/** Sign-in and sign-up carry a Turnstile token (up to 2,048 characters) beside what was typed, so they get more room. */
+export const SIGNIN_BODY_LIMIT = 4 * 1024;
 export const ADMIN_BODY_LIMIT = 1024 * 1024;
 
 /** True for /api, /api/..., /admin, /admin/... */
@@ -42,7 +44,7 @@ export const originAndSize: MiddlewareHandler<AppEnv> = async (c, next) => {
   const path = new URL(c.req.url).pathname;
   if (method === "GET" || method === "HEAD" || method === "OPTIONS" || !isDataPath(path)) return next();
   if (c.req.header("origin") !== expectedOrigin(c.env.PROD_HOST)) return c.json({ error: "bad_origin" }, 403);
-  const limit = path.startsWith("/admin") ? ADMIN_BODY_LIMIT : VOTER_BODY_LIMIT;
+  const limit = path.startsWith("/admin") ? ADMIN_BODY_LIMIT : path === "/api/redeem" || path === "/api/join" ? SIGNIN_BODY_LIMIT : VOTER_BODY_LIMIT;
   const declared = Number(c.req.header("content-length") ?? "0");
   if (declared > limit) return c.json({ error: "body_too_large" }, 413);
   // Content-Length can be absent (chunked); count the body as it streams and stop at the cap.

@@ -779,12 +779,15 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
   // decisions, 25 Nov 2026).
   const who = await db
     .prepare(
-      `SELECT v.role, count(DISTINCT v.voter_id) AS n FROM votes v JOIN voters u ON u.id = v.voter_id
-        WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL GROUP BY v.role`,
+      `SELECT DISTINCT v.role, v.voter_id FROM votes v JOIN voters u ON u.id = v.voter_id
+        WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL`,
     )
     .bind(round.id)
-    .all<{ role: string; n: number }>();
-  const votersIn = (p: string) => who.results.filter((w) => (p === "adults" ? (POOLED_ROLES as readonly string[]).includes(w.role) : w.role === p)).reduce((s, w) => s + w.n, 0);
+    .all<{ role: string; voter_id: string }>();
+  // People, not rows: a voter whose role the owner changed has votes under two roles and is still one person
+  // behind the adults board.
+  const votersIn = (p: string) =>
+    new Set(who.results.filter((w) => (p === "adults" ? (POOLED_ROLES as readonly string[]).includes(w.role) : w.role === p)).map((w) => w.voter_id)).size;
   const openPools = pools.filter((p) => votersIn(p) >= MIN_ROLE_BOARD_VOTERS);
   const poolName = (p: string) => (p === "adults" ? "All adults" : ROLE_NAMES[p] ?? p);
   const waitingFor = pools.filter((p) => !openPools.includes(p)).map((p) => ({ name: poolName(p), need: MIN_ROLE_BOARD_VOTERS }));

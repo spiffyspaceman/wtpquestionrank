@@ -40,9 +40,11 @@ describe("origin and body checks", () => {
     expect((await admin("/admin/api/codes", { body: { role: "judge", count: 1 }, origin: "https://evil.example" })).status).toBe(403);
   });
 
-  it("caps voter bodies at 2 KB", async () => {
-    const r = await call("/api/redeem", { body: { code: "x", turnstileToken: "t".repeat(2100) } });
-    expect(r.status).toBe(413);
+  it("caps voter bodies at 2 KB, and sign-in and sign-up (which carry a check token) at 4 KB", async () => {
+    expect((await call("/api/skip", { body: { pairId: "x", pad: "t".repeat(2100) } })).status).toBe(413);
+    expect((await call("/api/redeem", { body: { code: "x", turnstileToken: "t".repeat(2100) } })).status).not.toBe(413);
+    expect((await call("/api/redeem", { body: { code: "x", turnstileToken: "t".repeat(4200) } })).status).toBe(413);
+    expect((await call("/api/join", { body: { word: "x", pad: "t".repeat(4200) } })).status).toBe(413);
   });
 });
 

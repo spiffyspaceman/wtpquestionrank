@@ -228,4 +228,49 @@ describe("email sign-up", () => {
     expect(b!.label).toMatch(/^Teacher \d\d$/);
     expect(a!.label).not.toBe(b!.label);
   });
+
+  it("a voter whose role was changed is still one person behind the adults board", async () => {
+    await openNewRound();
+    const l = await link();
+    const a = sessionCookie(await join(l.word, { email: "one@example.org", role: "judge" }));
+    const b = sessionCookie(await join(l.word, { email: "two@example.org", role: "coach" }));
+    await voteN(a, 20);
+    await voteN(b, 1);
+    expect(await (await call("/api/leaderboard", { cookie: a })).json()).toMatchObject({ error: "too_few_voters" });
+    // The owner moves the first voter to coach, and they vote again: votes under two roles, still two people.
+    const v = await row("one@example.org");
+    await admin("/admin/api/voters/role", { body: { label: v!.label, role: "coach" } });
+    await voteN(a, 1);
+    const still = await call("/api/leaderboard", { cookie: a });
+    expect(still.status).toBe(403);
+    expect(await still.json()).toMatchObject({ error: "too_few_voters" });
+    // A third person opens it.
+    await voteN(sessionCookie(await join(l.word, { email: "three@example.org", role: "other" })), 1);
+    expect((await call("/api/leaderboard", { cookie: a })).status).toBe(200);
+  });
+
+  it("a voter who signed up by email cannot be made a student; a voter with a code can", async () => {
+    const l = await link();
+    await join(l.word, { email: "adult@example.org", name: "An Adult", role: "other" });
+    const v = await row("adult@example.org");
+    const r = await admin("/admin/api/voters/role", { body: { label: v!.label, role: "student" } });
+    expect(r.status).toBe(409);
+    expect(await r.json()).toMatchObject({ error: "student_with_email" });
+    expect(await row("adult@example.org")).toMatchObject({ role: "other", name: "An Adult" });
+    // No student row holds an address or a name.
+    const coded = await voter("coach");
+    expect(await json(admin("/admin/api/voters/role", { body: { label: coded.label, role: "student" } }))).toMatchObject({ ok: true, role: "student" });
+    const leak = await env.DB.prepare("SELECT count(*) AS n FROM voters WHERE role = 'student' AND (email IS NOT NULL OR name IS NOT NULL)").first<{ n: number }>();
+    expect(leak!.n).toBe(0);
+  });
+
+  it("sign-up and sign-in have room for the longest check token; other voter requests keep the 2 KB cap", async () => {
+    const l = await link();
+    const long = { turnstileToken: "t".repeat(2048), email: `${"a".repeat(60)}@${"b".repeat(180)}.org`, name: "n".repeat(60) };
+    const r = await join(l.word, long);
+    expect(r.status).toBe(200);
+    expect((await call("/api/redeem", { body: { code: long.email, turnstileToken: "t".repeat(2048) } })).status).toBe(200);
+    expect((await join(l.word, { pad: "x".repeat(5000) })).status).toBe(413);
+    expect((await call("/api/vote", { cookie: sessionCookie(r), body: { pairId: "x", pick: "L", pad: "x".repeat(3000) } })).status).toBe(413);
+  });
 });
