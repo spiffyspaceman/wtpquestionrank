@@ -4,11 +4,12 @@ import { QUALITY, RATING, ROLES } from "../rating/config";
 import { requireAdmin, adminSecretLogin } from "./access";
 import { BUILTIN_SETS } from "./builtin-sets";
 import { codeHash, inviteCode } from "./auth";
-import { board, openRounds, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems } from "./data";
+import { board, firstGroupStatements, growRound, openRounds, playItems, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems, stageState } from "./data";
 import type { AppEnv, RoundRow } from "./env";
 import { correctionsCsv, exportMeta, reasonsCsv, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
 import { studyHealth } from "./health";
 import { storedNotes } from "./notes";
+import { STAGE } from "./staging";
 import { chunks, isUniqueViolation, nowIso, optInt, randomId, readJsonObject, sha256Hex } from "./util";
 
 export const adminApi = new Hono<AppEnv>();
@@ -42,7 +43,9 @@ adminApi.get("/status", async (c) => {
   const rounds = await db
     .prepare(
       `SELECT r.*, (SELECT count(*) FROM votes v WHERE v.round_id = r.id) AS n_votes,
-              (SELECT count(DISTINCT voter_id) FROM votes v WHERE v.round_id = r.id) AS n_voters
+              (SELECT count(DISTINCT voter_id) FROM votes v WHERE v.round_id = r.id) AS n_voters,
+              (SELECT count(*) FROM round_in_play p WHERE p.round_id = r.id) AS n_in_play,
+              (SELECT count(*) FROM item_set_items i WHERE i.item_set_id = r.item_set_id) AS n_items
          FROM rounds r ORDER BY r.created_at DESC`,
     )
     .all();
@@ -65,6 +68,7 @@ adminApi.get("/status", async (c) => {
     exportOverdue: (anyVotes?.n ?? 0) > 0 && ageDays > EXPORT_REMINDER_DAYS,
     roles: ROLES.map((r) => ({ id: r, name: ROLE_NAMES[r] })),
     pools: POOLS,
+    stage: STAGE,
   });
 });
 
@@ -213,6 +217,19 @@ async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array)
         db.prepare("INSERT OR IGNORE INTO item_set_items (item_set_id, question_id, added_at) VALUES (?, ?, ?)").bind(setId, i.id, fresh ? null : now),
       ),
     );
+    // Questions added to a set whose staged round is already running come into play at once (owner decision,
+    // 25 Nov 2026: later questions join the running round and are paired first until they catch up).
+    if (!fresh)
+      await inChunks(
+        added.map((i) =>
+          db
+            .prepare(
+              `INSERT OR IGNORE INTO round_in_play (round_id, question_id, joined_at)
+               SELECT r.id, ?1, ?2 FROM rounds r WHERE r.item_set_id = ?3 AND r.staged = 1 AND r.state = 'open'`,
+            )
+            .bind(i.id, now, setId),
+        ),
+      );
     await inChunks(noteUpdates);
     await db.prepare("UPDATE item_sets SET file_sha256 = ? WHERE id = ?").bind(fileSha, setId).run();
   } catch (e) {
@@ -269,10 +286,11 @@ adminApi.post("/builtin-sets/:id", async (c) => {
   let roundId: string | null = null;
   if (!(await c.env.DB.prepare("SELECT 1 FROM rounds WHERE item_set_id = ?").bind(set.id).first())) {
     roundId = randomId(9);
-    await c.env.DB.prepare("INSERT INTO rounds (id, name, item_set_id, state, created_at) VALUES (?, ?, ?, 'draft', ?)")
+    // The full set opens in stages and grows by itself (owner decision, 25 Nov 2026; migration 0008).
+    await c.env.DB.prepare("INSERT INTO rounds (id, name, item_set_id, state, created_at, staged, auto_grow) VALUES (?, ?, ?, 'draft', ?, 1, 1)")
       .bind(roundId, set.roundName, set.id, nowIso())
       .run();
-    await audit(c, "create_round", { id: roundId, name: set.roundName, itemSetId: set.id });
+    await audit(c, "create_round", { id: roundId, name: set.roundName, itemSetId: set.id, staged: true, autoGrow: true });
   }
   return c.json({ ...body, roundCreated: roundId });
 });
@@ -316,15 +334,59 @@ adminApi.post("/rounds/:id/:action{open|freeze|close}", async (c) => {
   const round = await getRound(c);
   if (!round) return c.json({ error: "unknown_round" }, 404);
   if (!t.from.includes(round.state)) return c.json({ error: "bad_state", message: `The round is ${round.state}.` }, 409);
+  // A set whose load stopped part-way must be finished first: opening would freeze it half-loaded.
+  if (t.to === "open") {
+    const set = await db.prepare("SELECT file_sha256 FROM item_sets WHERE id = ?").bind(round.item_set_id).first<{ file_sha256: string }>();
+    if (set?.file_sha256 === LOADING)
+      return c.json({ error: "set_loading", message: "This round's question set did not finish loading. Load it again, then open the round." }, 409);
+  }
   const now = nowIso();
   const stmts = [db.prepare(`UPDATE rounds SET state = ?, ${t.col} = ? WHERE id = ? AND state = ?`).bind(t.to, now, round.id, round.state)];
-  // The item set freezes when its first round opens.
-  if (t.to === "open")
+  // The item set freezes when its first round opens, and a staged round's first group of questions comes into play.
+  if (t.to === "open") {
     stmts.push(db.prepare("UPDATE item_sets SET frozen_at = ? WHERE id = ? AND frozen_at IS NULL").bind(now, round.item_set_id));
+    stmts.push(...(await firstGroupStatements(db, round, now)));
+  }
   // Several rounds may be open at once (migration 0005); each new batch goes to the one with the fewest batches.
   await db.batch(stmts);
   await audit(c, `${c.req.param("action")}_round`, { id: round.id });
   return c.json({ ok: true, state: t.to });
+});
+
+/**
+ * Staging (migration 0008). `staged` can change only while the round is a draft; `autoGrow` at any time. In a staged
+ * round the questions come into play in groups, so that a few voters still fill a leaderboard.
+ */
+adminApi.post("/rounds/:id/staging", async (c) => {
+  const round = await getRound(c);
+  if (!round) return c.json({ error: "unknown_round" }, 404);
+  const body = await readJsonObject(c.req.raw);
+  const staged = typeof body?.staged === "boolean" ? (body.staged ? 1 : 0) : round.staged;
+  const autoGrow = typeof body?.autoGrow === "boolean" ? (body.autoGrow ? 1 : 0) : round.auto_grow;
+  if (staged !== round.staged && round.state !== "draft")
+    return c.json({ error: "bad_state", message: "Staging is fixed once a round has opened." }, 409);
+  await c.env.DB.prepare("UPDATE rounds SET staged = ?, auto_grow = ? WHERE id = ?").bind(staged, staged ? autoGrow : 0, round.id).run();
+  await audit(c, "set_staging", { id: round.id, staged: staged === 1, autoGrow: staged === 1 && autoGrow === 1 });
+  return c.json({ ok: true, staged: staged === 1, autoGrow: staged === 1 && autoGrow === 1 });
+});
+
+/** Add the next group of questions to an open staged round now, whether or not the ones in play have settled. */
+adminApi.post("/rounds/:id/grow", async (c) => {
+  const round = await getRound(c);
+  if (!round) return c.json({ error: "unknown_round" }, 404);
+  if (!round.staged || round.state !== "open") return c.json({ error: "bad_state", message: "Only an open staged round can take more questions." }, 409);
+  const added = await growRound(c.env.DB, round);
+  await audit(c, "grow_round", { id: round.id, added });
+  const st = await stageState(c.env.DB, round);
+  return c.json({ ok: true, added: added.length, inPlay: st.inPlay.size, total: st.total });
+});
+
+/** How a staged round stands, for the admin page. */
+adminApi.get("/rounds/:id/staging", async (c) => {
+  const round = await getRound(c);
+  if (!round) return c.json({ error: "unknown_round" }, 404);
+  const st = await stageState(c.env.DB, round);
+  return c.json({ staged: round.staged === 1, autoGrow: round.auto_grow === 1, inPlay: st.inPlay.size, total: st.total, fewestAdultGames: st.fewest, settledAt: STAGE.SETTLED_ADULT_GAMES, step: STAGE.STEP });
 });
 
 /** Rename a round. The name is a label for the owner; voters see it only in the leaderboard's round picker. */
@@ -367,7 +429,7 @@ adminApi.get("/rounds/:id/bootstrap-input", async (c) => {
   )
     .bind(round.id)
     .all();
-  return c.json({ items: await roundItems(c.env.DB, round.item_set_id), votes: votes.results, rating: RATING });
+  return c.json({ items: await playItems(c.env.DB, round), votes: votes.results, rating: RATING });
 });
 
 adminApi.post("/rounds/:id/snapshots", async (c) => {
@@ -488,20 +550,24 @@ adminApi.post("/codes/revoke", async (c) => {
   if (typeof label !== "string" || label.length > 40) return c.json({ error: "bad_request" }, 400);
   const v = await db.prepare("SELECT id, revoked_at FROM voters WHERE label = ?").bind(label).first<{ id: string; revoked_at: string | null }>();
   if (!v) return c.json({ error: "unknown_label" }, 404);
-  if (v.revoked_at) return c.json({ ok: true, already: true });
+  // Safe to repeat: revoking a code that is already revoked runs the cache rebuild again. If an earlier revoke
+  // stopped after the first step (a database error), pressing Revoke again finishes it.
+  const already = Boolean(v.revoked_at);
   await db.batch([
     db.prepare("UPDATE voters SET revoked_at = ? WHERE id = ? AND revoked_at IS NULL").bind(nowIso(), v.id),
     db.prepare("DELETE FROM sessions WHERE voter_id = ?").bind(v.id),
   ]);
   // Take the revoked voter's votes out of the caches now, rather than waiting for a manual rebuild.
   const rounds = await db.prepare("SELECT DISTINCT round_id FROM votes WHERE voter_id = ?").bind(v.id).all<{ round_id: string }>();
+  let rowsWritten = 0;
   for (const r of rounds.results) {
-    await rebuildPairCounts(db, r.round_id);
+    const n = await rebuildPairCounts(db, r.round_id);
+    rowsWritten += n;
     // Saved intervals included this voter's votes. They are a cache: drop them until the next refresh.
-    await db.prepare("DELETE FROM rating_snapshots WHERE round_id = ?").bind(r.round_id).run();
+    if (!already || n > 0) await db.prepare("DELETE FROM rating_snapshots WHERE round_id = ?").bind(r.round_id).run();
   }
-  await audit(c, "revoke_code", { label, rebuilt: rounds.results.map((r) => r.round_id) });
-  return c.json({ ok: true });
+  if (!already || rowsWritten > 0) await audit(c, "revoke_code", { label, rebuilt: rounds.results.map((r) => r.round_id), ...(already ? { repaired: true } : {}) });
+  return c.json({ ok: true, ...(already ? { already: true } : {}) });
 });
 
 // ---------- study health (report only) ----------
@@ -584,6 +650,8 @@ export const BACKUP_TABLES: Record<string, string> = {
   correction_reasons: "*",
   correction_other: "*",
   admin_audit: "*",
+  round_board_seen: "*",
+  round_in_play: "*",
 };
 export const BACKUP_PAGE_MAX = 1000;
 

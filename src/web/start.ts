@@ -53,6 +53,20 @@ async function init(): Promise<void> {
   }
 
   const start = $<HTMLAnchorElement>("#startBtn");
+  // A first visit: what the task is comes before the button that starts it (owner decision, 25 Nov 2026). The words
+  // are the same; the count of zero and its meter are left out, and the Start button follows the guidance.
+  if (me.votes === 0 && open) {
+    $("#strong").after($("#tally"));
+    show($("#tallyH"), false);
+    show($("#unlockMeter"), false);
+    unlock.textContent = `The leaderboard opens after ${me.unlockAt} pairs.`;
+    const h = $("#taskH");
+    h.classList.add("h1");
+    h.setAttribute("role", "heading");
+    h.setAttribute("aria-level", "1");
+    $("#page").classList.add("first-visit");
+  }
+  show($("#page"));
   if (!open) {
     show(unlock, me.unlocked);
     return;

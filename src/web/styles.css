@@ -269,6 +269,10 @@ kbd { font: 0.8em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; bord
 .guide { border-top: 1px solid var(--line); padding-top: 4px; }
 .guide h2 { margin-top: 0.8em; }
 .guide .criterion { border-bottom: 0; font-style: italic; font-size: 1rem; }
+/* A first visit: the task leads, and the Start button closes the guidance. */
+.first-visit #task { border-top: 0; }
+.first-visit .tally { border-top: 1px solid var(--line); padding-top: 14px; margin-bottom: 8px; }
+.first-visit .tally .actions { margin-top: 12px; }
 ul.plain { padding-left: 1.15em; }
 ul.plain li { margin: 0.35em 0; }
 dl.keys { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 8px 0; }

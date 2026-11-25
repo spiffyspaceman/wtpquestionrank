@@ -1,15 +1,17 @@
 // Leaderboard: the top question, the top 10, adjustable charts, and a searchable, sortable list of every question.
 // Everything after the one fetch runs in this browser; nothing the viewer does is sent back.
+import { RATING } from "../rating/config";
 import { OTHER_LABEL, REASONS } from "../worker/reasons";
 import { $, api, ApiError, el, fmtDate, footnotes, marked, say, show, type Marks, type ShownNote } from "./common";
 
 interface Row {
   rank: number | null;
-  rating: number;
+  /** Null until the question is ranked: a rating from a handful of comparisons is mostly chance, so it is not sent. */
+  rating: number | null;
   lo: number | null;
   hi: number | null;
   games: number;
-  wins: number;
+  wins: number | null;
   reasons: { code: string; n: number }[];
   stem: string;
   bullets: string[];
@@ -21,6 +23,8 @@ interface Board {
   pool: string;
   pools: { id: string; name: string }[];
   round: { id: string; name: string; state: string };
+  /** A round that opens its questions in groups: how many are in play (the rows) out of how many in all. */
+  staged: { inPlay: number; total: number } | null;
   /** Every round with a board, when there is more than one. */
   rounds: { id: string; name: string }[];
   votes: number;
@@ -85,11 +89,16 @@ function reasonsLine(r: Row): HTMLElement | null {
   );
 }
 
+const RANK_AT = RATING.MIN_GAMES_RANKED;
+/** A ranked question's rating; charts and averages only ever see ranked questions. */
+const rating = (r: Row) => r.rating ?? RATING.ELO_BASE;
+
 function statLine(r: Row): string {
+  if (r.rank === null) return `${r.games} of ${RANK_AT} comparisons; ranked at ${RANK_AT}`;
   const parts = [count(r.games, "comparison", "comparisons")];
-  if (r.games) parts.push(`won ${pct(r.wins / r.games)}`);
+  if (r.games && r.wins !== null) parts.push(`won ${pct(r.wins / r.games)}`);
   if (r.lo !== null && r.hi !== null) parts.push(`range ${r.lo} to ${r.hi}`);
-  return parts.join(" · ");
+  return parts.join(", ");
 }
 
 function detail(r: Row): HTMLElement {
@@ -113,7 +122,7 @@ function renderTop(): void {
       el(
         "article",
         { class: "hero-card" },
-        el("div", { class: "score big" }, el("span", { class: "rank" }, "#1"), el("strong", {}, String(t.rating)), el("span", {}, statLine(t))),
+        el("div", { class: "score big" }, el("span", { class: "rank" }, "#1"), el("strong", {}, String(rating(t))), el("span", {}, statLine(t))),
         el("div", { class: "body" }, el("p", { class: "tag" }, tag(t)), el("p", { class: "stem" }, ...marked(t.stem, 0, t.marks)), detail(t)),
       ),
     );
@@ -128,8 +137,8 @@ function renderTop(): void {
           "div",
           { class: "score" },
           el("span", { class: "rank" }, `#${r.rank}`),
-          el("strong", {}, String(r.rating)),
-          r.games ? el("span", { class: "won" }, `won ${pct(r.wins / r.games)}`) : null,
+          el("strong", {}, String(rating(r))),
+          r.games && r.wins !== null ? el("span", { class: "won" }, `won ${pct(r.wins / r.games)}`) : null,
         ),
         el(
           "div",
@@ -146,7 +155,12 @@ function renderTop(): void {
       ),
     ),
   );
+  // Nothing ranked yet: say how far along the questions are, and leave the charts out until there is something to chart.
+  const furthest = rows.reduce((m, r) => Math.max(m, r.games), 0);
+  $("#noneRanked").textContent = `No question is ranked yet. A question is ranked after ${RANK_AT} comparisons; the furthest along has ${furthest}.`;
   show($("#noneRanked"), ranked.length === 0);
+  show($("#top10H"), ranked.length !== 1);
+  show($("#explore"), ranked.length > 0);
 }
 
 // ---------- variables and groupings for the charts ----------
@@ -162,7 +176,7 @@ const cycleOf = (y: number) => `${y - 1}-${String(y).slice(2)}`;
 const VARS: Record<string, Variable> = {
   rating: { label: "Rating", get: (r) => r.rating },
   games: { label: "Comparisons", get: (r) => r.games },
-  winShare: { label: "Win share", get: (r) => (r.games ? r.wins / r.games : null), fmt: pct },
+  winShare: { label: "Win share", get: (r) => (r.games && r.wins !== null ? r.wins / r.games : null), fmt: pct },
   width: { label: "Interval width", get: (r) => (r.lo !== null && r.hi !== null ? r.hi - r.lo : null) },
   year: { label: "Year", get: yearOf, fmt: cycleOf, discrete: true },
   unit: { label: "Unit", get: (r) => r.about.unit, discrete: true },
@@ -257,28 +271,26 @@ function chartWidth(): number {
   return Math.max(300, Math.round($("#chart").clientWidth || 640));
 }
 
-/** Rows for the charts: ranked only (the default), or every question. */
+/** Rows for the charts: ranked questions only. An unranked question has no rating to chart. */
 function pool(): Row[] {
-  return setting("rankedOnly", "true") === "true" ? rows.filter((r) => r.rank !== null) : rows;
+  return rows.filter((r) => r.rank !== null);
 }
-const rankedToggle = () =>
-  checkbox("cRanked", "Ranked questions only", setting("rankedOnly", "true") === "true", (v) => rerender("rankedOnly")(v));
 
 // ---------- chart 1: groups ----------
 
 const MEASURES: Record<string, { label: string; of: (rs: Row[]) => number | null; pct?: boolean }> = {
-  mean: { label: "Average rating", of: (rs) => (rs.length ? Math.round(rs.reduce((s, r) => s + r.rating, 0) / rs.length) : null) },
+  mean: { label: "Average rating", of: (rs) => (rs.length ? Math.round(rs.reduce((s, r) => s + rating(r), 0) / rs.length) : null) },
   median: {
     label: "Median rating",
     of: (rs) => {
       if (!rs.length) return null;
-      const s = rs.map((r) => r.rating).sort((a, b) => a - b);
+      const s = rs.map(rating).sort((a, b) => a - b);
       const m = s.length >> 1;
       return Math.round(s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2);
     },
   },
-  max: { label: "Best rating", of: (rs) => (rs.length ? Math.max(...rs.map((r) => r.rating)) : null) },
-  min: { label: "Lowest rating", of: (rs) => (rs.length ? Math.min(...rs.map((r) => r.rating)) : null) },
+  max: { label: "Best rating", of: (rs) => (rs.length ? Math.max(...rs.map(rating)) : null) },
+  min: { label: "Lowest rating", of: (rs) => (rs.length ? Math.min(...rs.map(rating)) : null) },
   top10: { label: "Share in the top 10", of: (rs) => (rs.length ? rs.filter((r) => r.rank !== null && r.rank <= 10).length / rs.length : null), pct: true },
 };
 
@@ -288,19 +300,18 @@ function renderGroups(): void {
     select("cBy", "Group by", Object.entries(GROUPS).map(([k, g]) => [k, g.label]), by, rerender("g.by")),
     select("cMeasure", "Measure", Object.entries(MEASURES).map(([k, m]) => [k, m.label]), measure, rerender("g.measure")),
     select("cSort", "Order", [["value", "Highest first"], ["natural", "In order"]], sort, rerender("g.sort")),
-    rankedToggle(),
   );
   const M = MEASURES[measure] ?? MEASURES.mean;
   const gs = grouped(pool(), GROUPS[by] ?? GROUPS.unit).map((g) => ({
     ...g,
     value: M.of(g.rows),
-    lo: g.rows.length ? Math.min(...g.rows.map((r) => r.rating)) : null,
-    hi: g.rows.length ? Math.max(...g.rows.map((r) => r.rating)) : null,
+    lo: g.rows.length ? Math.min(...g.rows.map(rating)) : null,
+    hi: g.rows.length ? Math.max(...g.rows.map(rating)) : null,
   }));
   if (sort === "value") gs.sort((a, b) => (b.value ?? -Infinity) - (a.value ?? -Infinity));
   const chart = $("#chart");
   if (!gs.length) {
-    chart.replaceChildren(el("p", { class: "muted" }, "No ranked questions yet. Untick Ranked questions only to see every question."));
+    chart.replaceChildren(el("p", { class: "muted" }, "No question is ranked yet."));
     chartTable([], []);
     return;
   }
@@ -359,7 +370,6 @@ function renderScatter(): void {
     }),
     ...(hlGroup ? [select("cHv", hlGroup.label, groupValues, hv, rerender("s.hv"))] : []),
     checkbox("cTrend", "Trend line", trend, (v) => rerender("s.trend")(v)),
-    rankedToggle(),
   );
   const X = VARS[xv] ?? VARS.games, Y = VARS[yv] ?? VARS.rating;
   const chosen = hlGroup ? hv || groupValues[0]?.[0] || "" : "";
@@ -431,7 +441,6 @@ function renderDist(): void {
     select("cVar", "Variable", Object.entries(VARS).filter(([, x]) => !x.discrete).map(([k, x]) => [k, x.label]), v, rerender("d.var")),
     select("cBins", "Bars", [["6", "6"], ["10", "10"], ["16", "16"]], String(bins), rerender("d.bins")),
     select("cSplit", "Split by", [["none", "Nothing"], ...Object.entries(GROUPS).map(([k, g]) => [k, g.label] as [string, string])], split, rerender("d.split")),
-    rankedToggle(),
   );
   const V = VARS[v] ?? VARS.rating;
   const all = pool().map((r) => ({ r, x: V.get(r) })).filter((p): p is { r: Row; x: number } => p.x !== null);
@@ -505,6 +514,7 @@ function renderH2H(): void {
     select("cH", "Compare", Object.entries(GROUPS).filter(([k]) => k !== "reason").map(([k, g]) => [k, g.label]), by, rerender("h.by")),
   );
   const G = GROUPS[by] ?? GROUPS.unit;
+  // Every question in play counts here, ranked or not: the cells are plain win counts between groups.
   const gs = grouped(rows, G);
   const of = new Map<number, number>();
   gs.forEach((g, gi) => g.rows.forEach((r) => of.set(rows.indexOf(r), gi)));
@@ -623,10 +633,10 @@ const open = new Set<Row>();
 
 const COLS: { key: string; label: string; cls?: string; get: (r: Row) => number | string }[] = [
   { key: "rank", label: "Rank", cls: "num", get: (r) => r.rank ?? Infinity },
-  { key: "rating", label: "Rating", cls: "num", get: (r) => r.rating },
+  { key: "rating", label: "Rating", cls: "num", get: (r) => r.rating ?? -Infinity },
   { key: "tag", label: "Question", get: (r) => `${r.about.cycle} ${r.about.unit} ${r.about.question}` },
   { key: "games", label: "Comparisons", cls: "num wide", get: (r) => r.games },
-  { key: "won", label: "Won", cls: "num wide", get: (r) => (r.games ? r.wins / r.games : -1) },
+  { key: "won", label: "Won", cls: "num wide", get: (r) => (r.games && r.wins !== null ? r.wins / r.games : -1) },
 ];
 
 function filtered(): Row[] {
@@ -646,7 +656,8 @@ function filtered(): Row[] {
   return out.sort((a, b) => {
     const x = col.get(a), y = col.get(b);
     const c = x < y ? -1 : x > y ? 1 : 0;
-    return c * sortDir || b.rating - a.rating;
+    // Ties: by rating, and among unranked questions the one nearest a rank first.
+    return c * sortDir || (b.rating ?? -Infinity) - (a.rating ?? -Infinity) || b.games - a.games;
   });
 }
 
@@ -687,10 +698,11 @@ function renderAll(): void {
         "tr",
         { class: isOpen ? "open" : "" },
         el("td", { class: "num" }, r.rank === null ? "" : String(r.rank)),
-        el("td", { class: "num" }, String(r.rating)),
+        // An unranked question shows how far it is from a rank, not a rating.
+        r.rating === null ? el("td", { class: "num muted" }, `${r.games} of ${RANK_AT}`) : el("td", { class: "num" }, String(r.rating)),
         el("td", { class: "q" }, toggle),
         el("td", { class: "num wide" }, String(r.games)),
-        el("td", { class: "num wide" }, r.games ? pct(r.wins / r.games) : ""),
+        el("td", { class: "num wide" }, r.games && r.wins !== null ? pct(r.wins / r.games) : ""),
       ),
     );
     if (isOpen)
@@ -761,7 +773,9 @@ async function load(p?: string, round?: string): Promise<void> {
   sel.value = b.round.id;
   show($("#roundPick"), b.rounds.length > 1);
   const ranked = rows.filter((r) => r.rank !== null).length;
-  $("#summary").textContent = `${count(b.votes, "vote", "votes")} · ${count(rows.length, "question", "questions")}, ${ranked} ranked`;
+  $("#summary").textContent = b.staged && b.staged.inPlay < b.staged.total
+    ? `${count(b.votes, "vote", "votes")}. ${b.staged.inPlay} of ${b.staged.total} questions are in play and ${ranked} ${ranked === 1 ? "is" : "are"} ranked. More join as these settle.`
+    : `${count(b.votes, "vote", "votes")}. ${count(rows.length, "question", "questions")}, ${ranked} ranked.`;
   renderTop();
   fillFilters();
   renderAll();

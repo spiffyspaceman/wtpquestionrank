@@ -3,7 +3,7 @@
 // data-quality numbers during the round but no §7 measure, so nothing here compares votes with each other or with the
 // LLM (no repeat agreement, no split-half, no correlation).
 import { POOLED_ROLES, QUALITY } from "../rating/config";
-import { roundItems } from "./data";
+import { playItems } from "./data";
 import type { RoundRow } from "./env";
 import { GATE } from "./gate";
 
@@ -34,7 +34,8 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
     .all<{ voter_id: string; n: number }>();
 
   // Adult comparisons per item, from the adults cache (first presentations, revoked voters excluded).
-  const items = await roundItems(db, round.item_set_id);
+  // In a staged round the gate and the forecast count the questions in play.
+  const items = await playItems(db, round);
   const games = new Map(items.map((id) => [id, 0]));
   const pc = await db
     .prepare("SELECT left_q, right_q, n FROM pair_counts WHERE round_id = ? AND pool = 'adults'")

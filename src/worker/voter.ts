@@ -18,9 +18,11 @@ import {
   boardRounds,
   boardSeen,
   firstVoteCount,
+  growIfSettled,
   openRounds,
   pairCounts,
   pairCountUpserts,
+  playItems,
   ROLE_NAMES,
   roundItems,
   roundsByNeed,
@@ -177,7 +179,8 @@ interface BatchPair {
 
 /** Everything selectBatch needs about the pool and this voter. */
 async function pairingState(db: D1Database, round: RoundRow, voterId: string): Promise<PairingState> {
-  const items = await roundItems(db, round.item_set_id);
+  // In a staged round, pairs come only from the questions in play (migration 0008).
+  const items = await playItems(db, round);
   const fit = fitBTCounts(items, await pairCounts(db, round.id, "all"));
   const votes = await db
     .prepare("SELECT left_q, right_q, is_repeat, created_at, id FROM votes WHERE round_id = ? AND voter_id = ?")
@@ -237,6 +240,7 @@ voterApi.get("/batch", requireVoter(), async (c) => {
     batchId = null;
     // The new batch goes to the open round with the fewest batches so far; a round this voter has finished is passed over.
     for (const round of await roundsByNeed(db)) {
+      await growIfSettled(db, round);
       const seed = randomSeed();
       const issued = selectBatch(await pairingState(db, round, voter.id), makeRng(seed));
       if (!issued.length) continue;
@@ -249,7 +253,8 @@ voterApi.get("/batch", requireVoter(), async (c) => {
         db
           .prepare(
             `INSERT INTO batches (id, round_id, voter_id, seed, created_at)
-             SELECT ?1, ?2, ?3, ?4, ?5 WHERE NOT EXISTS (${UNANSWERED_SQL})`,
+             SELECT ?1, ?2, ?3, ?4, ?5 WHERE NOT EXISTS (${UNANSWERED_SQL})
+                AND EXISTS (SELECT 1 FROM rounds WHERE id = ?2 AND state = 'open')`,
           )
           .bind(newBatchId, round.id, voter.id, seed, now),
         ...rows.map((r, i) =>
@@ -265,7 +270,11 @@ voterApi.get("/batch", requireVoter(), async (c) => {
       else ({ batchId } = await unfinishedPairs(db, voter.id)); // another request won; serve its batch
       break;
     }
-    if (!batchId) return c.json({ done: true, pairs: [], size: 0 });
+    if (!batchId) {
+      // No batch: either this voter has judged every pair, or the round closed while the batch was being chosen.
+      if (!(await openRounds(db)).length) return c.json({ error: "no_open_round", message: "Voting is closed right now." }, 409);
+      return c.json({ done: true, pairs: [], size: 0 });
+    }
   }
   // The whole batch, answered pairs included, so the voter can go back and change an answer.
   const all = await db
@@ -387,6 +396,9 @@ function parseAnswer(body: Record<string, unknown> | null): Answer | null {
   return { pick: body.pick, closeCall: body.closeCall === true ? 1 : 0, reasons, other, clientMs: optInt(body.clientMs, 0, MAX_CLIENT_MS) };
 }
 
+/** The round (?3) is open and the voter (?4) is not revoked: the conditions of a vote insert, for its companion statements. */
+const STILL_OPEN = `EXISTS (SELECT 1 FROM rounds WHERE id = ?3 AND state = 'open') AND EXISTS (SELECT 1 FROM voters WHERE id = ?4 AND revoked_at IS NULL)`;
+
 type Found = Extract<Awaited<ReturnType<typeof pairFor>>, { pair: PairContext }>;
 
 /** Write a first answer for a pair: the vote, its reasons and the cache, in one D1 batch. */
@@ -422,15 +434,17 @@ async function insertVote(c: Context<AppEnv>, voter: VoterRow, found: Found, a: 
         await serverMs(db, p, nowMs),
         new Date(nowMs).toISOString(),
       ),
-    // Optional reasons, written only if the vote above was.
+    // Optional reasons, written only if the vote above was. They repeat the vote's own conditions: if the insert
+    // above is refused (the round closed or the code was revoked a moment ago) while a vote for this pair from
+    // another request already stands, these must not attach themselves to that vote.
     ...a.reasons.map((r) =>
-      db.prepare("INSERT INTO vote_reasons (vote_id, reason) SELECT id, ?2 FROM votes WHERE batch_pair_id = ?1").bind(p.id, r),
+      db.prepare(`INSERT INTO vote_reasons (vote_id, reason) SELECT id, ?2 FROM votes WHERE batch_pair_id = ?1 AND ${STILL_OPEN}`).bind(p.id, r, p.round_id, voter.id),
     ),
     ...(a.other.chosen
-      ? [db.prepare("INSERT INTO vote_other (vote_id, note) SELECT id, ?2 FROM votes WHERE batch_pair_id = ?1").bind(p.id, a.other.note)]
+      ? [db.prepare(`INSERT INTO vote_other (vote_id, note) SELECT id, ?2 FROM votes WHERE batch_pair_id = ?1 AND ${STILL_OPEN}`).bind(p.id, a.other.note, p.round_id, voter.id)]
       : []),
     // Repeats measure consistency only; they never feed the ratings.
-    ...(p.is_repeat ? [] : pairCountUpserts(db, p.round_id, voter.role, p.left_q, p.right_q, winner === p.left_q, p.id)),
+    ...(p.is_repeat ? [] : pairCountUpserts(db, p.round_id, voter.role, p.left_q, p.right_q, winner === p.left_q, p.id, voter.id)),
   ];
   try {
     const res = await db.batch(stmts);
@@ -603,7 +617,7 @@ const SOURCES = (sourcesFile as { sources: Record<string, { label: string; url: 
 
 interface GroupRow {
   rank: number | null;
-  rating: number;
+  rating: number | null;
 }
 
 /**
@@ -616,7 +630,7 @@ function groupBy<T extends GroupRow>(rows: T[], label: (r: T) => string, order: 
     const k = label(r);
     const g = groups.get(k) ?? { label: k, order: order(r), n: 0, ratings: [] };
     g.n++;
-    if (r.rank !== null) g.ratings.push(r.rating);
+    if (r.rank !== null && r.rating !== null) g.ratings.push(r.rating);
     groups.set(k, g);
   }
   return [...groups.values()]
@@ -695,13 +709,16 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
   const meta = new Map((await questionRows(db, rows.map((r) => r.id))).map((q) => [q.id, q]));
   const out = rows.map((r) => {
     const q = meta.get(r.id)!;
+    // A question with fewer than ten comparisons has no rank, and its rating so far is mostly chance: the page gets
+    // its comparison count only (owner decision, 25 Nov 2026).
+    const ranked = r.rank !== null;
     return {
       rank: r.rank,
-      rating: Math.round(r.rating),
-      lo: r.lo === null ? null : Math.round(r.lo),
-      hi: r.hi === null ? null : Math.round(r.hi),
+      rating: ranked ? Math.round(r.rating) : null,
+      lo: !ranked || r.lo === null ? null : Math.round(r.lo),
+      hi: !ranked || r.hi === null ? null : Math.round(r.hi),
       games: r.games,
-      wins: r.wins,
+      wins: ranked ? r.wins : null,
       reasons: (reasonsBy.get(r.id) ?? []).sort((a, b) => b.n - a.n || (a.code < b.code ? -1 : 1)),
       stem: q.stem,
       bullets: JSON.parse(q.bullets_json) as string[],
@@ -713,6 +730,8 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
     pool,
     pools: pools.map((p) => ({ id: p, name: p === "adults" ? "All adults" : ROLE_NAMES[p] ?? p })),
     round: { id: round.id, name: round.name, state: round.state },
+    // A staged round: how many of its questions are in play so far (the rows), out of how many in all.
+    staged: round.staged ? { inPlay: rows.length, total: (await roundItems(db, round.item_set_id)).length } : null,
     rounds: rounds.map((r) => ({ id: r.id, name: r.name })),
     votes: fit.nVotes,
     intervalsAsOf: snapshot?.computed_at ?? null,

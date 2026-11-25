@@ -96,7 +96,8 @@ describe("leaderboard", () => {
     expect(save.status).toBe(200);
     const b = await json(call("/api/leaderboard", { cookie: v.cookie }));
     expect(b.intervalsAsOf).toBeTruthy();
-    expect(b.rows.every((r: { lo: number; hi: number }) => r.lo === 900 && r.hi === 1100)).toBe(true);
+    // Ranges, like ratings, go out only for ranked questions.
+    expect(b.rows.every((r: { rank: number | null; lo: number | null; hi: number | null }) => (r.rank === null ? r.lo === null && r.hi === null : r.lo === 900 && r.hi === 1100))).toBe(true);
   });
 
   it("drops saved intervals when a voter in the round is revoked", async () => {

@@ -2,6 +2,8 @@
 import { POOLED_ROLES, RATING } from "../rating/config";
 import { fitBTCounts, ranksOf, type BTFit, type PairCount } from "../rating/rating";
 import type { RoundRow } from "./env";
+import { firstGroup, nextGroup, STAGE, type StageItem } from "./staging";
+import { nowIso } from "./util";
 
 export { isAdultRole, POOLS, poolsForRole, ROLE_NAMES, visiblePools, type Pool } from "./pools";
 import { poolsForRole } from "./pools";
@@ -45,6 +47,81 @@ export async function roundItems(db: D1Database, itemSetId: string): Promise<str
 }
 
 /**
+ * The questions voters can be shown in this round, and that its leaderboard lists: every question of the item set,
+ * or, in a staged round (migration 0008), the questions that have come into play so far.
+ */
+export async function playItems(db: D1Database, round: RoundRow): Promise<string[]> {
+  if (!round.staged) return roundItems(db, round.item_set_id);
+  const r = await db.prepare("SELECT question_id FROM round_in_play WHERE round_id = ? ORDER BY question_id").bind(round.id).all<{ question_id: string }>();
+  return r.results.map((x) => x.question_id);
+}
+
+async function stageItems(db: D1Database, itemSetId: string): Promise<StageItem[]> {
+  const r = await db
+    .prepare("SELECT q.id, q.level, q.unit FROM item_set_items i JOIN questions q ON q.id = i.question_id WHERE i.item_set_id = ? ORDER BY q.id")
+    .bind(itemSetId)
+    .all<StageItem>();
+  return r.results;
+}
+
+/**
+ * The statement that puts `ids` in play. It inserts only while the round still holds `expected` questions in play,
+ * so two requests that add the same group at once add it once.
+ */
+function joinStatements(db: D1Database, roundId: string, ids: string[], expected: number, at: string): D1PreparedStatement[] {
+  if (!ids.length) return [];
+  // One statement, so the count is read once: a JSON list keeps it to four bound values whatever the group's size.
+  return [
+    db
+      .prepare(
+        `INSERT OR IGNORE INTO round_in_play (round_id, question_id, joined_at)
+         SELECT ?1, j.value, ?2 FROM json_each(?3) j
+          WHERE (SELECT count(*) FROM round_in_play WHERE round_id = ?1) = ?4`,
+      )
+      .bind(roundId, at, JSON.stringify(ids), expected),
+  ];
+}
+
+/** The statements that put a staged round's first group in play; none for a round that is not staged. */
+export async function firstGroupStatements(db: D1Database, round: RoundRow, at: string): Promise<D1PreparedStatement[]> {
+  if (!round.staged) return [];
+  return joinStatements(db, round.id, firstGroup(await stageItems(db, round.item_set_id)), 0, at);
+}
+
+/** How a staged round stands: questions in play, questions in its set, and the fewest adult comparisons in play. */
+export async function stageState(db: D1Database, round: RoundRow) {
+  const all = await stageItems(db, round.item_set_id);
+  const inPlay = new Set(await playItems(db, round));
+  const games = new Map([...inPlay].map((id) => [id, 0]));
+  for (const pc of await pairCounts(db, round.id, "adults")) {
+    if (games.has(pc.left)) games.set(pc.left, games.get(pc.left)! + pc.n);
+    if (games.has(pc.right)) games.set(pc.right, games.get(pc.right)! + pc.n);
+  }
+  const fewest = games.size ? Math.min(...games.values()) : 0;
+  return { all, inPlay, total: all.length, fewest, settled: games.size > 0 && fewest >= STAGE.SETTLED_ADULT_GAMES };
+}
+
+/** Add the next group to a staged round now. Returns the ids that joined (none when every question is in play). */
+export async function growRound(db: D1Database, round: RoundRow, state?: Awaited<ReturnType<typeof stageState>>): Promise<string[]> {
+  if (!round.staged) return [];
+  const st = state ?? (await stageState(db, round));
+  const ids = nextGroup(st.all, st.inPlay, STAGE.STEP);
+  if (!ids.length) return [];
+  const res = await db.batch(joinStatements(db, round.id, ids, st.inPlay.size, nowIso()));
+  return res[0].meta.changes ? ids : [];
+}
+
+/**
+ * Called before a batch is issued: in a staged round that grows by itself, the next group joins once every question
+ * in play has STAGE.SETTLED_ADULT_GAMES adult comparisons.
+ */
+export async function growIfSettled(db: D1Database, round: RoundRow): Promise<void> {
+  if (!round.staged || !round.auto_grow || round.state !== "open") return;
+  const st = await stageState(db, round);
+  if (st.inPlay.size < st.total && st.settled) await growRound(db, round, st);
+}
+
+/**
  * A voter's first-presentation votes, over every round. The leaderboard opens at 20 of these; with one round this is
  * the count it always was.
  */
@@ -70,17 +147,22 @@ export function pairCountUpserts(
   right: string,
   leftWon: boolean,
   batchPairId: string,
+  voterId: string,
 ): D1PreparedStatement[] {
-  // Counted only if the vote row for this pair was written in the same transaction.
+  // Counted only if the vote row for this pair was written in the same transaction. The round and voter conditions
+  // are the vote insert's own: when that insert is refused (round no longer open, code revoked) while another
+  // request's vote for the pair already stands, this must be refused too, or that vote would be counted twice.
   return poolsForRole(role).map((pool) =>
     db
       .prepare(
         `INSERT INTO pair_counts (round_id, pool, left_q, right_q, left_wins, n)
-         SELECT ?, ?, ?, ?, ?, 1 WHERE EXISTS (SELECT 1 FROM votes WHERE batch_pair_id = ?)
+         SELECT ?1, ?2, ?3, ?4, ?5, 1 WHERE EXISTS (SELECT 1 FROM votes WHERE batch_pair_id = ?6)
+            AND EXISTS (SELECT 1 FROM rounds WHERE id = ?1 AND state = 'open')
+            AND EXISTS (SELECT 1 FROM voters WHERE id = ?7 AND revoked_at IS NULL)
          ON CONFLICT (round_id, pool, left_q, right_q)
          DO UPDATE SET left_wins = left_wins + excluded.left_wins, n = n + 1`,
       )
-      .bind(roundId, pool, left, right, leftWon ? 1 : 0, batchPairId),
+      .bind(roundId, pool, left, right, leftWon ? 1 : 0, batchPairId, voterId),
   );
 }
 
@@ -174,7 +256,8 @@ export async function board(
   db: D1Database,
   round: RoundRow,
 ): Promise<(pool: string) => Promise<{ fit: BTFit; rows: BoardRow[]; snapshot: SnapshotRow | null }>> {
-  const items = await roundItems(db, round.item_set_id);
+  // A staged round lists only the questions in play; the rest have not been shown to anyone yet.
+  const items = await playItems(db, round);
   return async (pool: string) => {
     const fit = fitBTCounts(items, await pairCounts(db, round.id, pool), { noCov: true });
     const snapshot = await latestSnapshot(db, round.id, pool);

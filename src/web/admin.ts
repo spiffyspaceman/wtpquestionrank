@@ -20,6 +20,11 @@ interface Round {
   closed_at: string | null;
   n_votes: number;
   n_voters: number;
+  /** Staged rounds (migration 0008): questions come into play in groups. */
+  staged: number;
+  auto_grow: number;
+  n_in_play: number;
+  n_items: number;
 }
 interface ItemSet {
   id: string;
@@ -38,6 +43,7 @@ interface Status {
   exportOverdue: boolean;
   roles: { id: string; name: string }[];
   pools: string[];
+  stage: { FIRST: number; STEP: number; SETTLED_ADULT_GAMES: number };
 }
 
 const msg = $("#msg");
@@ -92,6 +98,14 @@ async function act(fn: () => Promise<unknown>, okText?: string): Promise<void> {
 
 // ---------- rounds ----------
 
+/** How many questions a round holds and, for a staged round, how many are in play and how more join. */
+function questionsCell(r: Round): string {
+  if (!r.staged) return String(r.n_items);
+  const how = r.auto_grow ? `${status.stage.STEP} more join by themselves at ${status.stage.SETTLED_ADULT_GAMES} adult comparisons each` : "more join only when you add them";
+  if (r.state === "draft") return `${r.n_items}; opens with ${Math.min(status.stage.FIRST, r.n_items)}, ${how}`;
+  return r.n_in_play >= r.n_items ? `${r.n_items}, all in play` : `${r.n_in_play} of ${r.n_items} in play; ${how}`;
+}
+
 function roundActions(r: Round): Node {
   const wrap = el("div");
   const group = (label: string, ...items: Node[]) =>
@@ -106,10 +120,43 @@ function roundActions(r: Round): Node {
       if (name && name !== r.name) void act(() => api(`/admin/api/rounds/${r.id}/rename`, { body: { name } }), "Renamed.");
     }),
   ];
-  if (r.state === "draft") state.push(confirmAct("Open", `/admin/api/rounds/${r.id}/open`, "Voters can vote as soon as it opens, and its item set freezes."));
+  const g = status.stage;
+  if (r.state === "draft")
+    state.push(
+      confirmAct(
+        "Open",
+        `/admin/api/rounds/${r.id}/open`,
+        r.staged
+          ? `Voters can vote as soon as it opens, and its item set freezes. It opens in stages: ${Math.min(g.FIRST, r.n_items)} of its ${r.n_items} questions first.`
+          : "Voters can vote as soon as it opens, and its item set freezes.",
+      ),
+    );
   if (r.state === "open") state.push(confirmAct("Freeze", `/admin/api/rounds/${r.id}/freeze`, "No more votes will be accepted."));
   if (r.state === "open" || r.state === "frozen") state.push(confirmAct("Close", `/admin/api/rounds/${r.id}/close`, "Voters will no longer see it."));
   if (state.length) wrap.append(group("Round", ...state));
+  // Staging: fixed once the round opens; whether it grows by itself can change at any time.
+  const staging = (body: Record<string, boolean>, done: string) => () => void act(() => api(`/admin/api/rounds/${r.id}/staging`, { body }), done);
+  const stage: Node[] = [];
+  if (r.state === "draft")
+    stage.push(
+      r.staged
+        ? button("Open all at once instead", staging({ staged: false }, "This round will open with every question in play."))
+        : button("Open in stages", staging({ staged: true, autoGrow: true }, `This round will open with ${Math.min(g.FIRST, r.n_items)} questions in play; more join as they settle.`)),
+    );
+  if (r.staged && (r.state === "draft" || r.state === "open"))
+    stage.push(
+      r.auto_grow
+        ? button("Stop adding by itself", staging({ autoGrow: false }, "Questions now join only when you add them."))
+        : button("Add by itself", staging({ autoGrow: true }, `${g.STEP} questions join whenever every question in play has ${g.SETTLED_ADULT_GAMES} adult comparisons.`)),
+    );
+  if (r.staged && r.state === "open" && r.n_in_play < r.n_items)
+    stage.push(
+      button(`Add ${Math.min(g.STEP, r.n_items - r.n_in_play)} now`, () => {
+        if (confirm(`Add the next ${Math.min(g.STEP, r.n_items - r.n_in_play)} questions to "${r.name}" now? Questions that join cannot be taken out again.`))
+          void act(() => api(`/admin/api/rounds/${r.id}/grow`, { body: {} }), "Added.");
+      }),
+    );
+  if (stage.length) wrap.append(group("Questions", ...stage));
   if (r.state !== "draft") {
     wrap.append(
       group(
@@ -599,9 +646,9 @@ async function refresh(): Promise<void> {
 
   table(
     $<HTMLTableElement>("#rounds"),
-    ["Round", "Item set", "State", "Votes", "Voters", "Opened", "Actions"],
-    status.rounds.map((r) => [r.name, r.item_set_id, r.state, r.n_votes, r.n_voters, fmtDate(r.opened_at), roundActions(r)]),
-    [3, 4],
+    ["Round", "Item set", "State", "Questions", "Votes", "Voters", "Opened", "Actions"],
+    status.rounds.map((r) => [r.name, r.item_set_id, r.state, questionsCell(r), r.n_votes, r.n_voters, fmtDate(r.opened_at), roundActions(r)]),
+    [4, 5],
   );
   options($<HTMLSelectElement>("#roundSet"), status.itemSets.map((s) => [s.id, `${s.id} (${s.n_items} items)`]));
   const roundOpts: [string, string][] = status.rounds.filter((r) => r.state !== "draft").map((r) => [r.id, `${r.name} (${r.state})`]);

@@ -36,6 +36,10 @@ export interface RoundRow {
   opened_at: string | null;
   frozen_at: string | null;
   closed_at: string | null;
+  /** 1 when the round's questions come into play in groups (migration 0008). */
+  staged: number;
+  /** 1 when a staged round adds its next group by itself once the questions in play have settled. */
+  auto_grow: number;
 }
 
 export type AppEnv = {

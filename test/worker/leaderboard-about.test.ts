@@ -74,9 +74,11 @@ describe("leaderboard data for the charts", () => {
       wins[i] += iw;
       wins[j] += n - iw;
     }
+    // Win counts go out only for ranked questions (10 comparisons); after 20 votes none is ranked.
     b.rows.forEach((r: any, k: number) => {
       expect(r.games).toBe(games[k]);
-      expect(r.wins).toBe(wins[k]);
+      expect(r.wins).toBe(r.rank === null ? null : wins[k]);
+      if (r.rank === null) expect(r).toMatchObject({ rating: null, lo: null, hi: null });
     });
     expect(b.pairs.reduce((s: number, p: number[]) => s + p[3], 0)).toBe(b.votes);
     const given = b.rows.flatMap((r: any) => r.reasons);

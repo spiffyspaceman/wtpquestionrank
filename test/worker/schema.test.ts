@@ -21,7 +21,7 @@ describe("schema on local D1", () => {
       await d.prepare("INSERT INTO questions VALUES (?,'State','2021-22',1,1,1,'stem','[]','src',NULL,'h',NULL,?,NULL)").bind(q, now).run();
     await d.prepare("INSERT INTO item_sets VALUES ('s1','set',1,'full_text','h',?,NULL,0)").bind(now).run();
     for (const q of ["a", "b"]) await d.prepare("INSERT INTO item_set_items VALUES ('s1',?,NULL)").bind(q).run();
-    await d.prepare("INSERT INTO rounds VALUES ('r1','R1','s1','open',?,?,NULL,NULL)").bind(now, now).run();
+    await d.prepare("INSERT INTO rounds (id, name, item_set_id, state, created_at, opened_at, frozen_at, closed_at) VALUES ('r1','R1','s1','open',?,?,NULL,NULL)").bind(now, now).run();
     await d.prepare("INSERT INTO voters VALUES ('v1','h1','judge','Judge 01',0,?,NULL,NULL)").bind(now).run();
     await d.prepare("INSERT INTO batches VALUES ('b1','r1','v1',7,?)").bind(now).run();
     await d.prepare("INSERT INTO batch_pairs VALUES ('p0','b1',0,'a','b',0,'info',?)").bind(now).run();
@@ -37,11 +37,11 @@ describe("schema on local D1", () => {
     await d.prepare("INSERT INTO admin_audit (at,actor,action,detail_json) VALUES (?,?,?,?)").bind(now, "sub", "x", "{}").run();
   });
 
-  it("creates every table, all twenty-three triggers and both views (0001 to 0007)", async () => {
+  it("creates every table, all twenty-six triggers and both views (0001 to 0008)", async () => {
     const t = await db().prepare("SELECT type, count(*) AS n FROM sqlite_schema WHERE type IN ('table','trigger','view') AND name NOT LIKE '\\_%' ESCAPE '\\' AND name NOT LIKE 'sqlite%' AND name <> 'd1_migrations' GROUP BY type").all<{ type: string; n: number }>();
     const by = Object.fromEntries(t.results.map((r) => [r.type, r.n]));
-    expect(by.trigger).toBe(23);
-    expect(by.table).toBe(20);
+    expect(by.trigger).toBe(26);
+    expect(by.table).toBe(21);
     expect(by.view).toBe(2);
   });
 
@@ -76,8 +76,8 @@ describe("schema on local D1", () => {
   });
 
   it("allows several open rounds (migration 0005 drops the one-open index)", async () => {
-    expect(await fails("INSERT INTO rounds VALUES ('r2','R2','s1','open',?,?,NULL,NULL)", now, now)).toBe(false);
-    expect(await fails("INSERT INTO rounds VALUES ('r3','R3','s1','draft',?,NULL,NULL,NULL)", now)).toBe(false);
+    expect(await fails("INSERT INTO rounds (id, name, item_set_id, state, created_at, opened_at, frozen_at, closed_at) VALUES ('r2','R2','s1','open',?,?,NULL,NULL)", now, now)).toBe(false);
+    expect(await fails("INSERT INTO rounds (id, name, item_set_id, state, created_at, opened_at, frozen_at, closed_at) VALUES ('r3','R3','s1','draft',?,NULL,NULL,NULL)", now)).toBe(false);
     await db().prepare("UPDATE rounds SET state = 'closed' WHERE id = 'r2'").run();
   });
 

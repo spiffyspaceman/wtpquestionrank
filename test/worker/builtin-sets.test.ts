@@ -58,7 +58,9 @@ describe("built-in question set", () => {
     const board = await json(call("/api/leaderboard", { cookie: v.cookie }));
     expect(board.rows.some((r: { notes: unknown[] }) => r.notes.length > 0)).toBe(true);
     expect(board.round.name).toBe("All questions");
-    expect(board.rows).toHaveLength(SET.questions);
+    // The round is staged (migration 0008): the board lists the questions in play, the 36 launch questions first.
+    expect(board.rows).toHaveLength(36);
+    expect(board.staged).toEqual({ inPlay: 36, total: SET.questions });
     expect(board.votes).toBe(20);
     const ex = await json(admin(`/admin/api/rounds/${first.roundCreated}/export.json`));
     expect(ex.votes).toHaveLength(20);
