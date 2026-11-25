@@ -3,12 +3,26 @@ import { board, POOLS } from "./data";
 import type { RoundRow } from "./env";
 import { toCsv } from "./util";
 
-import { EXPORT_SKIP_KEYS, EXPORT_VOTE_KEYS, EXPORT_VOTER_KEYS, type ExportSkip, type ExportVote, type ExportVoter, type RoundExport } from "./export-shape";
+import {
+  EXPORT_SKIP_KEYS,
+  EXPORT_VOTE_KEYS,
+  EXPORT_VOTER_KEYS,
+  votesCsvFrom,
+  type ExportSkip,
+  type ExportVote,
+  type ExportVoter,
+  type ExportVoteRow,
+  type RoundExport,
+} from "./export-shape";
 
 export { EXPORT_SKIP_KEYS, EXPORT_VOTE_KEYS, EXPORT_VOTER_KEYS };
 
 /** The full round: voters who voted or skipped in it, every vote (repeats and revoked voters included), every skip. */
 export async function roundExport(db: D1Database, round: RoundRow): Promise<RoundExport> {
+  return roundExportParts(db, round, true);
+}
+
+async function roundExportParts(db: D1Database, round: RoundRow, withVotes: boolean): Promise<RoundExport> {
   const voters = await db
     .prepare(
       `SELECT ${EXPORT_VOTER_KEYS.join(", ")} FROM voters
@@ -17,10 +31,9 @@ export async function roundExport(db: D1Database, round: RoundRow): Promise<Roun
     )
     .bind(round.id)
     .all<ExportVoter>();
-  const votes = await db
-    .prepare(`SELECT ${EXPORT_VOTE_KEYS.join(", ")} FROM votes WHERE round_id = ? ORDER BY id`)
-    .bind(round.id)
-    .all<ExportVote>();
+  const votes = withVotes
+    ? (await db.prepare(`SELECT ${EXPORT_VOTE_KEYS.join(", ")} FROM votes WHERE round_id = ? ORDER BY id`).bind(round.id).all<ExportVote>()).results
+    : [];
   const skips = await db
     .prepare(`SELECT ${EXPORT_SKIP_KEYS.join(", ")} FROM skips WHERE round_id = ? ORDER BY id`)
     .bind(round.id)
@@ -28,38 +41,34 @@ export async function roundExport(db: D1Database, round: RoundRow): Promise<Roun
   return {
     round: { id: round.id, name: round.name, item_set_id: round.item_set_id, state: round.state },
     voters: voters.results,
-    votes: votes.results,
+    votes,
     skips: skips.results,
   };
 }
 
+const VOTE_ROW_SQL = `SELECT v.id, v.round_id, v.voter_id, v.role, v.left_q, v.right_q, v.winner_q, v.close_call, v.is_repeat,
+        v.after_board, v.client_ms, v.server_ms, v.created_at, u.label, v.batch_pair_id, v.item_set_id
+   FROM votes v JOIN voters u ON u.id = v.voter_id`;
+
 export async function votesCsv(db: D1Database, round: RoundRow): Promise<string> {
+  const r = await db.prepare(`${VOTE_ROW_SQL} WHERE v.round_id = ? ORDER BY v.id`).bind(round.id).all<ExportVoteRow>();
+  return votesCsvFrom(r.results);
+}
+
+/** Up to `limit` vote rows with id > `after`, for the paged export. */
+export async function votePage(db: D1Database, round: RoundRow, after: number, limit: number) {
   const r = await db
-    .prepare(
-      `SELECT v.id, v.created_at, u.label, v.voter_id, v.role, v.left_q, v.right_q, v.winner_q, v.close_call,
-              v.is_repeat, v.after_board, v.client_ms, v.server_ms, v.batch_pair_id, v.item_set_id
-         FROM votes v JOIN voters u ON u.id = v.voter_id WHERE v.round_id = ? ORDER BY v.id`,
-    )
-    .bind(round.id)
-    .all<Record<string, unknown>>();
-  const cols = [
-    "id",
-    "created_at",
-    "label",
-    "voter_id",
-    "role",
-    "left_q",
-    "right_q",
-    "winner_q",
-    "close_call",
-    "is_repeat",
-    "after_board",
-    "client_ms",
-    "server_ms",
-    "batch_pair_id",
-    "item_set_id",
-  ];
-  return toCsv(cols, r.results.map((x) => cols.map((k) => x[k])));
+    .prepare(`${VOTE_ROW_SQL} WHERE v.round_id = ? AND v.id > ? ORDER BY v.id LIMIT ?`)
+    .bind(round.id, after, limit)
+    .all<ExportVoteRow>();
+  const votes = r.results;
+  return { votes, next: votes.length === limit ? (votes[votes.length - 1].id as number) : null };
+}
+
+/** Everything in the export but the votes. */
+export async function exportMeta(db: D1Database, round: RoundRow) {
+  const full = await roundExportParts(db, round, false);
+  return { round: full.round, voters: full.voters, skips: full.skips ?? [] };
 }
 
 export async function skipsCsv(db: D1Database, round: RoundRow): Promise<string> {

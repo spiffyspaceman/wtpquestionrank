@@ -15,6 +15,12 @@ steps finish.*
 - A Cloudflare API token "wtpquestionrank D1 setup" (D1 Edit plus Workers Scripts Read) is saved on the Claude
   environment "wtpquestionrank". It expires 2 December 2026. Delete it in My Profile > API Tokens once launch is done.
 
+## Owner: quick re-check after the 25 Nov deploy
+
+0. Sign-in now also checks that the Turnstile token was solved on `wtpquestionrank.spiffyspaceman.com`. In a private
+   window, enter `AAAA-AAAA-AAAA`: expect "That code was not recognized." If it says "The check did not pass", tell
+   Claude.
+
 ## Owner: admin clicks (about 5 minutes)
 
 1. **Items.** On GitHub, open `items/launch_items_v1.json` and use **Download raw file**; don't copy and paste. In
@@ -38,7 +44,7 @@ steps finish.*
 
 ## Owner: finish
 
-7. In `/admin`, select **Refresh intervals** and then **JSON**. Upload the JSON to Claude, who compares it with the
+7. In `/admin`, select **Refresh intervals** and then **JSON** (it downloads in pages and saves one file). Upload the JSON to Claude, who compares it with the
    export from step 6.
 8. **Revoke** `Other 01` and `Other 02`. Their sessions end, the caches rebuild and saved intervals are dropped.
 9. Make the real codes by role, ticking **My own code** for the owner's. Download each CSV and keep it with the

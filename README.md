@@ -58,7 +58,7 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
 
 **Voter API** (`/api`, JSON, production host only, POST bodies under 2 KB, POST needs `Origin: https://PROD_HOST`):
 
-- `POST /api/redeem`. Checks Turnstile, throttles wrong codes, looks up `HMAC-SHA256(CODE_PEPPER, code)` and sets the
+- `POST /api/redeem`. Checks Turnstile (success, and that the token was solved on `PROD_HOST`), throttles wrong codes, looks up `HMAC-SHA256(CODE_PEPPER, code)` and sets the
   session cookie.
   - The throttle is 10 a day per SHA-256 of a daily salt and the client IP.
   - The cookie is `__Host-wtpqr`: HttpOnly, Secure, SameSite=Lax, 90 days.
@@ -84,7 +84,9 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
   saves a snapshot for each pool.
 - **Rebuild caches.** Recomputes `pair_counts` from `votes` (first presentations, revoked voters excluded).
 - **Exports.**
-  - JSON in exactly the `RoundExport` shape of `analysis/analyze.ts`.
+  - JSON in exactly the `RoundExport` shape of `analysis/analyze.ts`. The admin page fetches JSON and votes CSV in pages
+    of at most 2,000 votes and joins them in the browser, so no request's work grows with the round (Workers Free:
+    10 ms CPU per request). A test checks that the stitched files equal the one-shot routes byte for byte.
   - CSV of votes, skips, ratings and voters (voters: label, role and revoked date only).
   - A banner appears when no export is newer than 7 days.
 

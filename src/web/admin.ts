@@ -1,5 +1,7 @@
 // Admin page. Runs the rater bootstrap in this browser with the same rating module the Worker uses.
-import { POOLED_ROLES, RATING } from "../rating/config";
+import { RATING } from "../rating/config";
+import { buildRoundExport, votesCsvFrom, type ExportVoteRow } from "../worker/export-shape";
+import { POOLS, poolsForRole } from "../worker/pools";
 import { bootstrapBT, fitBT, type Vote } from "../rating/rating";
 import { $, api, ApiError, el, fmtDate, say, show } from "./common";
 
@@ -111,12 +113,38 @@ function roundActions(r: Round): Node {
       ),
       group(
         "Export",
-        el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export.json` }, "JSON"),
-        ...["votes", "skips", "ratings", "voters"].map((k) => el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export/${k}.csv` }, `${k} CSV`)),
+        button("JSON", () => void pagedExport(r, "json")),
+        button("votes CSV", () => void pagedExport(r, "votes")),
+        ...["skips", "ratings", "voters"].map((k) => el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export/${k}.csv` }, `${k} CSV`)),
       ),
     );
   }
   return wrap;
+}
+
+/**
+ * JSON (the analysis input) and votes CSV are fetched in pages of at most 2,000 votes and joined here, so no single
+ * request's work grows with the round (Workers Free allows 10 ms of CPU per request).
+ */
+async function pagedExport(r: Round, kind: "json" | "votes"): Promise<void> {
+  say(msg, "Exporting...");
+  try {
+    const meta = await api<Parameters<typeof buildRoundExport>[0]>(`/admin/api/rounds/${r.id}/export-meta?kind=${kind}`);
+    const votes: ExportVoteRow[] = [];
+    let after = 0;
+    for (;;) {
+      const page = await api<{ votes: ExportVoteRow[]; next: number | null }>(`/admin/api/rounds/${r.id}/export-votes?after=${after}`);
+      votes.push(...page.votes);
+      if (page.next === null) break;
+      after = page.next;
+    }
+    if (kind === "json") download(`wtpqr-round-${r.id}.json`, JSON.stringify(buildRoundExport(meta, votes)), "application/json");
+    else download(`wtpqr-votes-${r.id}.csv`, votesCsvFrom(votes), "text/csv");
+    say(msg, `Exported ${votes.length} votes.`, "ok");
+    await refresh();
+  } catch (err) {
+    say(msg, err instanceof ApiError ? err.message : String(err), "error");
+  }
 }
 
 /** 1,000-rep rater bootstrap per pool, in this browser, then saved as snapshots. */
@@ -128,16 +156,10 @@ async function refreshIntervals(r: Round): Promise<void> {
       `/admin/api/rounds/${r.id}/bootstrap-input`,
     );
     const all: (Vote & { id: number })[] = input.votes.map((v) => ({ id: v.id, left: v.l, right: v.r, winner: v.w, rater: v.rater, role: v.role }));
-    const adults = new Set<string>(POOLED_ROLES);
-    const pools: [string, (v: Vote) => boolean][] = [
-      ["all", () => true],
-      ["adults", (v) => adults.has(v.role!)],
-      ...status.roles.map((x) => [x.id, (v: Vote) => v.role === x.id] as [string, (v: Vote) => boolean]),
-    ];
     const snapshots = [];
     const t0 = performance.now();
-    for (const [pool, keep] of pools) {
-      const votes = all.filter(keep);
+    for (const pool of POOLS) {
+      const votes = all.filter((v) => poolsForRole(v.role!).includes(pool));
       if (!votes.length) continue;
       say(out, `Bootstrapping ${pool} (${votes.length} votes)...`);
       await new Promise((res) => setTimeout(res, 0)); // let the message paint

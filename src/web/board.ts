@@ -30,7 +30,7 @@ function item(r: Row): HTMLLIElement {
     el(
       "details",
       { class: "text" },
-      el("summary", {}, el("span", { class: "stem" }, r.stem), el("span", { class: "more" }, "Show the full question")),
+      el("summary", {}, el("span", { class: "stem" }, r.stem), el("span", { class: "more" }, "More")),
       el("ul", {}, ...r.bullets.map((x) => el("li", {}, x))),
     ),
     el(
@@ -54,7 +54,7 @@ async function load(pool?: string): Promise<void> {
   }
   show($("#content"));
   $("#intervals").textContent = b.intervalsAsOf
-    ? `Ranges are 95% intervals as of ${fmtDate(b.intervalsAsOf)}; the ratings themselves are current.`
+    ? `Ranges are 95% intervals from ${fmtDate(b.intervalsAsOf)}.`
     : "";
   $("#tabs").replaceChildren(
     ...b.pools.map((p) => {
@@ -63,14 +63,13 @@ async function load(pool?: string): Promise<void> {
       return btn;
     }),
   );
-  $("#summary").textContent = `${b.round.name}: ${plural(b.votes, "vote", "votes")} in this board.`;
+  $("#summary").textContent = plural(b.votes, "vote", "votes");
   const ranked = b.rows.filter((r) => r.rank !== null);
   const unranked = b.rows.filter((r) => r.rank === null);
   $("#rows").replaceChildren(...ranked.map(item));
   show($("#noneRanked"), ranked.length === 0);
   $("#unrankedRows").replaceChildren(...unranked.map(item));
   show($("#unrankedH"), unranked.length > 0);
-  show($("#unrankedH").nextElementSibling as HTMLElement, unranked.length > 0);
 }
 
 void load();

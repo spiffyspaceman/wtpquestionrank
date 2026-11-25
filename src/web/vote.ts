@@ -48,9 +48,6 @@ $("#criterion").textContent = CRITERION;
 function renderMe(): void {
   $("#who").textContent = me.role;
   show($("#boardLink"), me.unlocked);
-  const lock = $("#lockNote");
-  lock.textContent = `Leaderboard after ${me.unlockAt} votes (${me.votes} so far)`;
-  show(lock, !me.unlocked);
 }
 
 function fill(prefix: "left" | "right", side: Side): void {
@@ -134,7 +131,6 @@ async function answer(kind: "L" | "R" | "skip"): Promise<void> {
     me.unlocked = r.unlocked;
     renderMe();
     queue.shift();
-    $("#saved").textContent = kind === "skip" ? "Skipped." : "Saved.";
     if (queue.length) showPair();
     else batchDone();
   } catch (err) {

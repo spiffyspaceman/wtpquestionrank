@@ -33,7 +33,7 @@ export function mockOutbound(): void {
     if (url.startsWith("https://challenges.cloudflare.com/turnstile/v0/siteverify")) {
       const req = input instanceof Request ? input : null;
       void req;
-      return Response.json({ success: lastTurnstileOk });
+      return Response.json({ success: lastTurnstileOk, hostname: lastTurnstileHost });
     }
     if (url === `https://${env.ACCESS_TEAM_DOMAIN}/cdn-cgi/access/certs`) {
       const jwk = await crypto.subtle.exportKey("jwk", (await keys()).publicKey);
@@ -44,8 +44,11 @@ export function mockOutbound(): void {
 }
 
 let lastTurnstileOk = true;
-export function turnstileWill(pass: boolean): void {
+let lastTurnstileHost = HOST;
+/** Turnstile's answer for the next redeems: pass or fail, and the hostname the token was solved on. */
+export function turnstileWill(pass: boolean, hostname = HOST): void {
   lastTurnstileOk = pass;
+  lastTurnstileHost = hostname;
 }
 
 export async function accessToken(over: Record<string, unknown> = {}, kid = KID): Promise<string> {

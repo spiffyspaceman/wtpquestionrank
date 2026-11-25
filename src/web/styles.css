@@ -15,20 +15,6 @@
   font-style: italic;
   font-display: swap;
 }
-@font-face {
-  font-family: "WTPQR Schola";
-  src: url("/fonts/wtpqr-schola-bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "WTPQR Schola";
-  src: url("/fonts/wtpqr-schola-bolditalic.woff2") format("woff2");
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
 
 :root {
   --font: "WTPQR Schola", "Century Schoolbook", "New Century Schoolbook", Georgia, serif;
@@ -82,11 +68,14 @@ body {
   line-height: 1.5;
   font-variant-numeric: lining-nums;
   font-kerning: normal;
+  font-synthesis: none;
 }
+/* One weight throughout: regular Schola. Emphasis comes from size, italic and colour. */
+h1, h2, h3, strong, b, th, label, button, .button { font-weight: 400; }
 main { max-width: 1080px; margin: 0 auto; padding: 12px 16px 72px; }
 main.narrow { max-width: 600px; }
-h1 { font-size: 1.75rem; line-height: 1.2; margin: 0.8em 0 0.4em; font-weight: 700; }
-h2 { font-size: 1.2rem; line-height: 1.3; margin: 1.4em 0 0.5em; font-weight: 700; }
+h1 { font-size: 2rem; line-height: 1.15; margin: 0.7em 0 0.4em; }
+h2 { font-size: 1.3rem; line-height: 1.3; margin: 1.4em 0 0.5em; }
 p { margin: 0.5em 0; }
 a { color: var(--accent); text-underline-offset: 0.15em; }
 .muted { color: var(--muted); }
@@ -104,8 +93,7 @@ header.top::before {
   content: ""; position: absolute; left: 0; right: 0; top: 0; border-top: 3px solid var(--rule);
 }
 .brand {
-  font-weight: 700; text-decoration: none; color: var(--ink);
-  font-variant-caps: all-small-caps; letter-spacing: 0.06em; font-size: 1.15rem;
+  text-decoration: none; color: var(--ink); font-size: 1.2rem; letter-spacing: 0.01em;
   padding-top: 6px;
 }
 header.top nav { display: flex; gap: 6px 18px; flex-wrap: wrap; align-items: baseline; padding-top: 6px; }
@@ -118,7 +106,7 @@ button, .button {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.2;
 }
 button:hover, .button:hover { border-color: var(--accent); }
-button.primary, .button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+button.primary, .button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 button.primary:hover { filter: brightness(1.08); }
 button:disabled { opacity: 0.55; cursor: not-allowed; }
 button.link { min-height: 48px; padding: 0 4px; border: 0; background: none; color: var(--accent); text-decoration: underline; text-underline-offset: 0.15em; }
@@ -129,10 +117,10 @@ input[type="text"], input[type="number"], input[type="password"], select {
 }
 input[type="file"] { font: inherit; font-size: 0.9rem; max-width: 100%; }
 input.code {
-  font-size: 1.35rem; letter-spacing: 0.12em; text-transform: uppercase; text-align: center;
+  font-size: 1.35rem; letter-spacing: 0.08em; text-align: center;
   font-variant-numeric: tabular-nums;
 }
-label { display: block; font-weight: 700; margin: 14px 0 6px; }
+label { display: block; margin: 14px 0 6px; }
 label.check { display: inline-flex; align-items: center; gap: 10px; font-weight: 400; min-height: 48px; margin: 0; cursor: pointer; }
 label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
 
@@ -156,9 +144,6 @@ label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
   margin: 10px 0 12px; padding: 8px 0 10px; border-bottom: 1px solid var(--line);
   font-size: 0.95rem; line-height: 1.4;
 }
-.criterion .eyebrow {
-  display: block; font-variant-caps: all-small-caps; letter-spacing: 0.08em; color: var(--rule); font-weight: 700; font-size: 0.95rem;
-}
 .progress { display: flex; align-items: center; gap: 12px; margin: 6px 0 14px; font-size: 0.9rem; color: var(--muted); }
 .progress progress { flex: 1; height: 6px; appearance: none; border: 0; border-radius: 3px; background: var(--line); overflow: hidden; }
 .progress progress::-webkit-progress-bar { background: var(--line); border-radius: 3px; }
@@ -171,7 +156,7 @@ label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
   padding: 14px 18px 16px; display: flex; flex-direction: column;
 }
 .card h2 {
-  margin: 0 0 8px; font-size: 0.95rem; font-variant-caps: all-small-caps; letter-spacing: 0.1em; color: var(--muted);
+  margin: 0 0 8px; font-size: 1rem; font-style: italic; color: var(--muted);
 }
 .card .stem { margin: 0 0 10px; }
 .card ul { margin: 0; padding-left: 1.15em; }
@@ -182,29 +167,27 @@ label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
 .picks { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 6px 0 4px; }
 .picks button { width: 100%; min-height: 56px; font-size: 1.05rem; }
 .skip-row { display: flex; justify-content: center; }
-.keys { font-size: 0.85rem; color: var(--muted); text-align: center; margin-top: 4px; }
 kbd { font: 0.8em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--surface); }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0; }
 
 @media (max-width: 719.98px) {
   body { font-size: 18px; }
   .pair { grid-template-columns: 1fr; gap: 12px; }
-  .keys { display: none; } /* no keyboard on phones */
   .picks { gap: 10px; }
 }
 
 /* ---------- leaderboard ---------- */
 .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
-.tabs button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+.tabs button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .scale-note { font-size: 0.9rem; color: var(--muted); }
 ol.board { list-style: none; margin: 0; padding: 0; }
 ol.board li {
   display: grid; grid-template-columns: 3.2rem 1fr auto; gap: 4px 16px; padding: 14px 0; border-bottom: 1px solid var(--line);
   align-items: start;
 }
-ol.board .rank { font-size: 1.5rem; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+ol.board .rank { font-size: 1.6rem; line-height: 1.15; font-variant-numeric: tabular-nums; }
 ol.board .score { text-align: right; font-variant-numeric: tabular-nums; }
-ol.board .score strong { display: block; font-size: 1.25rem; }
+ol.board .score strong { display: block; font-size: 1.3rem; }
 ol.board .score span { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
 ol.board details.text summary { cursor: pointer; list-style: none; }
 ol.board details.text summary::-webkit-details-marker { display: none; }
@@ -234,7 +217,7 @@ ol.board.unranked li { grid-template-columns: 1fr auto; }
 .table-wrap { overflow-x: auto; margin: 8px 0; }
 table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
 th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-th { font-weight: 700; font-variant-caps: all-small-caps; letter-spacing: 0.06em; font-size: 0.95rem; }
+th { font-style: italic; color: var(--muted); }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82em; word-break: break-all; }
 td button, td .button { min-height: 36px; padding: 4px 10px; font-size: 0.85rem; }
@@ -242,7 +225,7 @@ td button, td .button { min-height: 36px; padding: 4px 10px; font-size: 0.85rem;
 .btn-group + .btn-group { margin-top: 6px; }
 .btn-group .btns { display: flex; flex-wrap: wrap; gap: 6px; }
 #rounds td:last-child { min-width: 440px; }
-.btn-group .label { font-size: 0.8rem; color: var(--muted); font-variant-caps: all-small-caps; letter-spacing: 0.06em; }
+.btn-group .label { font-size: 0.85rem; font-style: italic; color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }

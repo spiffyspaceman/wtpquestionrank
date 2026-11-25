@@ -32,3 +32,60 @@ export interface RoundExport {
   skips?: ExportSkip[];
 }
 
+
+// ---------- builders shared by the Worker and the admin page (paged exports) ----------
+
+/** Columns of votes.csv, in order. */
+export const VOTES_CSV_COLUMNS = [
+  "id",
+  "created_at",
+  "label",
+  "voter_id",
+  "role",
+  "left_q",
+  "right_q",
+  "winner_q",
+  "close_call",
+  "is_repeat",
+  "after_board",
+  "client_ms",
+  "server_ms",
+  "batch_pair_id",
+  "item_set_id",
+] as const;
+
+/** One vote row as the paged export sends it: the RoundExport fields plus the CSV-only ones. */
+export type ExportVoteRow = Record<(typeof EXPORT_VOTE_KEYS)[number] | (typeof VOTES_CSV_COLUMNS)[number], unknown>;
+
+export function pick<K extends string>(row: Record<string, unknown>, keys: readonly K[]): Record<K, unknown> {
+  const out = {} as Record<K, unknown>;
+  for (const k of keys) out[k] = row[k];
+  return out;
+}
+
+/** The RoundExport the analysis script reads, from the export meta and every vote row in id order. */
+export function buildRoundExport(
+  meta: { round: RoundExport["round"]; voters: ExportVoter[]; skips: ExportSkip[] },
+  votes: ExportVoteRow[],
+): RoundExport {
+  return {
+    round: meta.round,
+    voters: meta.voters.map((v) => pick(v as Record<string, unknown>, EXPORT_VOTER_KEYS)),
+    votes: votes.map((v) => pick(v, EXPORT_VOTE_KEYS)),
+    skips: meta.skips.map((s) => pick(s as Record<string, unknown>, EXPORT_SKIP_KEYS)),
+  };
+}
+
+export function csvEscape(v: unknown): string {
+  if (v === null || v === undefined) return "";
+  const s = String(v);
+  return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+export function toCsv(header: readonly string[], rows: unknown[][]): string {
+  return [header, ...rows].map((r) => r.map(csvEscape).join(",")).join("\r\n") + "\r\n";
+}
+
+export function votesCsvFrom(rows: ExportVoteRow[]): string {
+  return toCsv(VOTES_CSV_COLUMNS, rows.map((x) => VOTES_CSV_COLUMNS.map((k) => x[k])));
+}

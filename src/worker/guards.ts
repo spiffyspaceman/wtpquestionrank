@@ -38,11 +38,25 @@ export const originAndSize: MiddlewareHandler<AppEnv> = async (c, next) => {
   const limit = path.startsWith("/admin") ? ADMIN_BODY_LIMIT : VOTER_BODY_LIMIT;
   const declared = Number(c.req.header("content-length") ?? "0");
   if (declared > limit) return c.json({ error: "body_too_large" }, 413);
-  // Content-Length can be absent (chunked); measure the body itself.
-  const buf = await c.req.raw.clone().arrayBuffer();
-  if (buf.byteLength > limit) return c.json({ error: "body_too_large" }, 413);
+  // Content-Length can be absent (chunked); count the body as it streams and stop at the cap.
+  if (await exceeds(c.req.raw.clone().body, limit)) return c.json({ error: "body_too_large" }, 413);
   await next();
 };
+
+async function exceeds(body: ReadableStream<Uint8Array> | null, limit: number): Promise<boolean> {
+  if (!body) return false;
+  const reader = body.getReader();
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) return false;
+    total += value.byteLength;
+    if (total > limit) {
+      await reader.cancel();
+      return true;
+    }
+  }
+}
 
 export const CSP = [
   "default-src 'self'",

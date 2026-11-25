@@ -19,10 +19,13 @@ interface Jwk extends JsonWebKey {
   kid?: string;
 }
 let certCache: { team: string; at: number; keys: Jwk[] } | null = null;
+let lastForcedFetch = 0;
+const FORCED_REFETCH_MS = 60_000;
 
 /** For tests: forget cached signing keys. */
 export function resetAccessCertCache(): void {
   certCache = null;
+  lastForcedFetch = 0;
 }
 
 async function accessKeys(team: string, force = false): Promise<Jwk[]> {
@@ -57,8 +60,9 @@ export async function verifyAccessJwt(env: Env, token: string | undefined): Prom
     if (header.alg !== "RS256" || !header.kid) return null;
     let keys = await accessKeys(env.ACCESS_TEAM_DOMAIN);
     let jwk = keys.find((k) => k.kid === header.kid);
-    if (!jwk) {
-      keys = await accessKeys(env.ACCESS_TEAM_DOMAIN, true); // key rotation
+    if (!jwk && Date.now() - lastForcedFetch > FORCED_REFETCH_MS) {
+      lastForcedFetch = Date.now(); // key rotation; at most once a minute, so bad kids cannot hammer the certs URL
+      keys = await accessKeys(env.ACCESS_TEAM_DOMAIN, true);
       jwk = keys.find((k) => k.kid === header.kid);
     }
     if (!jwk) return null;

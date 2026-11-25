@@ -71,12 +71,4 @@ export function optInt(v: unknown, min: number, max: number): number | null {
   return n < min || n > max ? null : n;
 }
 
-export function csvEscape(v: unknown): string {
-  if (v === null || v === undefined) return "";
-  const s = String(v);
-  return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-}
-
-export function toCsv(header: string[], rows: unknown[][]): string {
-  return [header, ...rows].map((r) => r.map(csvEscape).join(",")).join("\r\n") + "\r\n";
-}
+export { csvEscape, toCsv } from "./export-shape";

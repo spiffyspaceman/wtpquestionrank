@@ -96,6 +96,14 @@ describe("redeem", () => {
     expect((await redeem(c.code, "192.0.2.200")).status).toBe(200);
   });
 
+  it("refuses a Turnstile token solved on another site", async () => {
+    const [c] = await makeCodes("judge");
+    turnstileWill(true, "evil.example");
+    const r = await redeem(c.code, "192.0.2.201");
+    expect(r.status).toBe(403);
+    expect((await r.json<any>()).error).toBe("turnstile_failed");
+  });
+
   it("refuses to run without the secrets", async () => {
     const [c] = await makeCodes("judge");
     const r = await call("/api/redeem", { body: { code: c.code, turnstileToken: "t" }, env: { TURNSTILE_SECRET: undefined } });

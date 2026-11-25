@@ -1,31 +1,10 @@
 // Rounds, pools, the pair_counts cache, and ratings for a pool.
-import { POOLED_ROLES, RATING, ROLES } from "../rating/config";
+import { POOLED_ROLES, RATING } from "../rating/config";
 import { fitBTCounts, ranksOf, type BTFit, type PairCount } from "../rating/rating";
 import type { RoundRow } from "./env";
 
-export const POOLS = ["all", "adults", ...ROLES] as const;
-export type Pool = (typeof POOLS)[number];
-
-export const ROLE_NAMES: Record<string, string> = {
-  judge: "Judge",
-  coach: "Coach",
-  alumni: "Alumni",
-  teacher: "Teacher",
-  other: "Other",
-  student: "Student",
-};
-
-export const isAdultRole = (role: string): boolean => (POOLED_ROLES as readonly string[]).includes(role);
-
-/** Pools a first-presentation vote by this role counts toward. */
-export function poolsForRole(role: string): Pool[] {
-  return isAdultRole(role) ? ["all", role as Pool, "adults"] : ["all", role as Pool];
-}
-
-/** Pools a voter may see on the leaderboard: the pooled adults board and their own role's board. */
-export function visiblePools(role: string): Pool[] {
-  return ["adults", role as Pool];
-}
+export { isAdultRole, POOLS, poolsForRole, ROLE_NAMES, visiblePools, type Pool } from "./pools";
+import { poolsForRole } from "./pools";
 
 export async function openRound(db: D1Database): Promise<RoundRow | null> {
   return db.prepare("SELECT * FROM rounds WHERE state = 'open' LIMIT 1").first<RoundRow>();

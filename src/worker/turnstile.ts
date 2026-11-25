@@ -17,9 +17,18 @@ export async function verifyTurnstile(env: Env, token: string, ip: string | unde
       console.error(`turnstile siteverify: HTTP ${res.status}`);
       return false;
     }
-    const out = (await res.json()) as { success?: boolean; "error-codes"?: string[] };
-    if (out.success !== true) console.error(`turnstile siteverify: ${(out["error-codes"] ?? []).join(",")}`);
-    return out.success === true;
+    const out = (await res.json()) as { success?: boolean; hostname?: string; "error-codes"?: string[] };
+    if (out.success !== true) {
+      console.error(`turnstile siteverify: ${(out["error-codes"] ?? []).join(",")}`);
+      return false;
+    }
+    // The token must have been solved on this site. Local development uses Cloudflare's test keys, whose tokens
+    // report a placeholder hostname, so the check applies only on a real host.
+    if (!/^(localhost|127\.0\.0\.1)(:\d+)?$/.test(env.PROD_HOST) && out.hostname !== env.PROD_HOST) {
+      console.error(`turnstile siteverify: hostname ${out.hostname}`);
+      return false;
+    }
+    return true;
   } catch (e) {
     console.error(`turnstile siteverify: ${String(e)}`);
     return false;

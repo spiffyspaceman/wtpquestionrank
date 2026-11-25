@@ -16,18 +16,16 @@
         <nav>
           <span id="who" class="who"></span>
           <a id="boardLink" href="/board" hidden>Leaderboard</a>
-          <span id="lockNote" class="muted small" hidden></span>
         </nav>
       </header>
 
       <p id="msg" class="notice" role="alert" hidden></p>
 
       <section id="judge" hidden aria-labelledby="criterion">
-        <p class="criterion"><span class="eyebrow">Your task</span><span id="criterion"></span></p>
+        <p class="criterion" id="criterion"></p>
         <div class="progress">
           <span id="position" aria-live="polite"></span>
           <progress id="bar" max="10" value="0" aria-hidden="true"></progress>
-          <span id="saved" aria-live="polite"></span>
         </div>
         <div class="pair">
           <article class="card" aria-labelledby="leftH">
@@ -42,13 +40,12 @@
           </article>
         </div>
         <div class="decide">
-          <div class="close-row"><label class="check"><input type="checkbox" id="close" /> It was a close call</label></div>
+          <div class="close-row"><label class="check"><input type="checkbox" id="close" aria-keyshortcuts="c" /> Close call</label></div>
           <div class="picks">
-            <button class="primary" id="pickL" type="button">A is better</button>
-            <button class="primary" id="pickR" type="button">B is better</button>
+            <button class="primary" id="pickL" type="button" aria-keyshortcuts="ArrowLeft">A is better</button>
+            <button class="primary" id="pickR" type="button" aria-keyshortcuts="ArrowRight">B is better</button>
           </div>
-          <div class="skip-row"><button id="skip" class="link" type="button">Skip this pair</button></div>
-          <p class="keys"><kbd>Left arrow</kbd> picks A, <kbd>Right arrow</kbd> picks B, <kbd>C</kbd> marks a close call, <kbd>S</kbd> skips.</p>
+          <div class="skip-row"><button id="skip" class="link" type="button" aria-keyshortcuts="s">Skip</button></div>
         </div>
       </section>
 
@@ -63,7 +60,7 @@
 
       <section id="stopped" hidden>
         <h1 tabindex="-1" id="stoppedH">Thank you</h1>
-        <p>Your votes are saved. Come back any time: your code works on any device.</p>
+        <p>Your votes are saved. Your code works on any device.</p>
         <p id="stoppedBoard" hidden><a href="/board">See the leaderboard</a></p>
         <div class="actions"><button id="resume" type="button">Judge more pairs</button></div>
       </section>

@@ -5,7 +5,7 @@ import { requireAdmin, adminSecretLogin } from "./access";
 import { codeHash, generateCode } from "./auth";
 import { board, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems } from "./data";
 import type { AppEnv, RoundRow } from "./env";
-import { roundExport, ratingsCsv, skipsCsv, votersCsv, votesCsv } from "./exports";
+import { exportMeta, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
 import { isUniqueViolation, nowIso, optInt, randomId, readJsonObject, sha256Hex } from "./util";
 
 export const adminApi = new Hono<AppEnv>();
@@ -380,6 +380,27 @@ adminApi.get("/votes", async (c) => {
 });
 
 // ---------- exports ----------
+
+export const EXPORT_PAGE_MAX = 2000;
+
+/** Paged export, part 1: round, voters and skips. Audited as the export (kind=json or kind=votes). */
+adminApi.get("/rounds/:id/export-meta", async (c) => {
+  const round = await getRound(c);
+  if (!round) return c.json({ error: "unknown_round" }, 404);
+  const kind = c.req.query("kind") === "votes" ? "export_votes_csv" : "export_json";
+  const meta = await exportMeta(c.env.DB, round);
+  await audit(c, kind, { id: round.id, paged: true });
+  return c.json(meta);
+});
+
+/** Paged export, part 2: votes after `after`, at most EXPORT_PAGE_MAX per request so no request grows with the round. */
+adminApi.get("/rounds/:id/export-votes", async (c) => {
+  const round = await getRound(c);
+  if (!round) return c.json({ error: "unknown_round" }, 404);
+  const after = Math.max(0, Number(c.req.query("after")) || 0);
+  const limit = Math.min(EXPORT_PAGE_MAX, Math.max(1, Number(c.req.query("limit")) || EXPORT_PAGE_MAX));
+  return c.json(await votePage(c.env.DB, round, after, limit));
+});
 
 adminApi.get("/rounds/:id/export.json", async (c) => {
   const round = await getRound(c);

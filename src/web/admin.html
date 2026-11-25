@@ -12,7 +12,7 @@
   <body class="admin">
     <main>
       <header class="top">
-        <span class="brand">WTP Question Rank · Admin</span>
+        <span class="brand">WTP Question Rank, admin</span>
         <span id="actor" class="muted small"></span>
       </header>
       <p id="msg" class="notice" role="alert" hidden></p>
@@ -20,7 +20,6 @@
 
       <section id="login" hidden>
         <h2>Sign in</h2>
-        <p class="muted small">Shown only when Cloudflare Access is not set up.</p>
         <form id="loginForm" class="row">
           <div><label for="secret">Admin secret</label><input id="secret" type="password" autocomplete="current-password" /></div>
           <button class="primary" type="submit">Sign in</button>
@@ -72,7 +71,7 @@
           <form id="votesForm" class="row">
             <div><label for="vRound">Round</label><select id="vRound"></select></div>
             <div><label for="vRole">Role</label><select id="vRole"></select></div>
-            <div><label for="vLabel">Voter label</label><input id="vLabel" type="text" placeholder="Judge 07" /></div>
+            <div><label for="vLabel">Voter label</label><input id="vLabel" type="text" /></div>
             <div>
               <label for="vRepeat">Repeats</label>
               <select id="vRepeat"><option value="">All votes</option><option value="0">First showings</option><option value="1">Repeats only</option></select>

@@ -77,7 +77,7 @@ describe("export from a scripted session runs through analyze()", () => {
     });
     const mock = `export default { async fetch(req) {
       const u = new URL(req.url);
-      if (u.hostname === "challenges.cloudflare.com") return Response.json({ success: true });
+      if (u.hostname === "challenges.cloudflare.com") return Response.json({ success: true, hostname: ${JSON.stringify(HOST)} });
       if (u.hostname === ${JSON.stringify(TEAM)}) return Response.json({ keys: [${JSON.stringify(jwk)}] });
       return new Response("blocked " + u.href, { status: 599 });
     } }`;
