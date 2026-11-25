@@ -132,3 +132,21 @@ packet:
 
 State of the human data at registration: no §7 measure had been computed. Production D1 was not read that day after
 the morning check recorded in `docs/NEXT_STEPS.md` (20 votes, all from the owner's test code `Other 04`).
+
+**25 November 2026: A2 run record.** All 30 judges ran after the hashes above were logged. Output:
+`llm-arm/out-a2/` and `llm-arm/MethodA2_Records_2026-11-25.jsonl` (SHA-256
+`75aefc20e574b4a77e5c1cb504ad1b0aee6c7b618ee1d2e4e837f349d30246f2`), 3,780 judgments, none invalid under
+`llm-arm/collect_a2.py`; the first-listed question won 50.7% of pairs. No rating was fitted and nothing was compared
+with a human vote. Three facts about the run that the addendum did not foresee:
+
+1. **Four judges appear to have ranked the questions first, against packet rule 2.** `b1j0`, `b1j1`, `b3j4` and
+   `b4j2` gave one fixed reason per winning question (28 to 32 distinct reasons over 126 pairs; every other judge gave
+   126, as did all 30 method A judges). One judge's working shows a score for each of the 36 questions from which the
+   picks were generated. Other judges may have done the same with varied wording; that cannot be told from the
+   output. What to do with these four is the owner's decision and is open (see `docs/NEXT_STEPS.md`).
+2. **The judges' sessions carried this repository's `CLAUDE.md`** (the harness loads it for every subagent). It
+   describes the study and the site but holds no label key, rating or judgment of any question. Each judge opened
+   only its own packet: the tool logs show no other file read. Whether the method A judges had a comparable file in
+   context is not recorded.
+3. **Model.** Each judge was requested as `opus`, which this session lists as `claude-opus-5-5`, at default effort.
+   The serving model was not independently confirmed per judge.

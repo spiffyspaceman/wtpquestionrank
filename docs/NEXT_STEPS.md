@@ -92,10 +92,10 @@ B. **Cloudflare, two settings.** The saved API token cannot read or change eithe
       `npm ci && npm run typecheck && npm test && npm run build`.
    2. Always Use HTTPS (zone `spiffyspaceman.com` > SSL/TLS > Edge Certificates). It is zone-wide, so it also changes
       `reader.spiffyspaceman.com`. Optional: the Worker now redirects http to https by itself.
-C. **Method A2: say "run A2"** after reading `PREREG_Addendum_A2.md` and one packet, for example
-   `llm-arm/packets-a2/b0j0.md`. Your three answers (margin 0.10, no close-call flag, `claude-opus-5-5` at default
-   effort) are in it. On your word Claude removes DRAFT, hashes the file, logs it in DEVIATIONS.md and runs the 30
-   judges. Nothing has run.
+C. **Method A2 ran on 25 Nov** (30 judges, 3,780 judgments, none invalid; `DEVIATIONS.md`, "A2 run record").
+   **Decide what to do with four judges** (`b1j0`, `b1j1`, `b3j4`, `b4j2`) that appear to have ranked the questions
+   first, against packet rule 2: keep all 30 and report a fit without the four beside it, or re-run the four with
+   fresh judges and log that.
 D. Add to the weekly routine in step 7: **Download full backup** (it holds the batches and pairing trail that no
    other export has).
 
