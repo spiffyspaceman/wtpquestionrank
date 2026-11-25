@@ -115,3 +115,20 @@ because voters see them. No frozen file, threshold, item or measure changes.
 - **Trials after a skipped pair is voted on.** A pair that is skipped and later voted on (by going back) counts as
   two trials toward the 20-trial gap before a swapped repeat, so that repeat can come one real trial early.
   Unchanged for now; the audit lists it as open.
+
+## Addendum: method A2 (registered 25 November 2026)
+
+**25 November 2026: `PREREG_Addendum_A2.md` (owner approved; "run A2").** A second LLM run, A2, repeats method A with
+the human arm's guidance ("What strong hearing questions do") and the nine named reasons added to each packet. The
+design (`llm-arm/design.json`, labels, pairs, order) is the registered one; only the instructions differ. A2 is
+secondary: the §10 verdict is read from the registered method A run alone. Hashes, taken before any A2 judge saw a
+packet:
+
+| file | SHA-256 |
+|---|---|
+| `PREREG_Addendum_A2.md` | `0bf1e5ba8e89f26c6b65a3e9083e2a224f522164586e14388519a4679580e015` |
+| `llm-arm/design_a2_hashes.json` (the 30 packet hashes) | `0a37e6a6930456ba90932478eb8430e876ed5b62489d5af808960cb78f594788` |
+| `llm-arm/make_addendum_packets.py` | `a9aeab92a36a3f3bd70780051d60082911a097dfc4dae4b5729e80c92888eb48` |
+
+State of the human data at registration: no §7 measure had been computed. Production D1 was not read that day after
+the morning check recorded in `docs/NEXT_STEPS.md` (20 votes, all from the owner's test code `Other 04`).

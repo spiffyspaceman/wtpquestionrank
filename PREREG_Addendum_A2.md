@@ -1,8 +1,8 @@
-# DRAFT addendum to PREREG_Human_vs_LLM.md: method A2, the LLM judges with the human arm's guidance
+# Addendum to PREREG_Human_vs_LLM.md: method A2, the LLM judges with the human arm's guidance
 
-*Drafted 25 November 2026 by Claude at the owner's request. **Not in force.** Nothing here has run. The owner reviews
-this file and the packets in `llm-arm/packets-a2/`; on his yes, the word DRAFT comes off, the file is hashed, and the
-hash and date go in `DEVIATIONS.md` before any A2 judge sees a packet.*
+*Drafted 25 November 2026 by Claude at the owner's request. The owner approved it the same day ("run A2"), after
+answering the three points in §7. This file was hashed, and the hash logged in `DEVIATIONS.md`, before any A2 judge
+saw a packet.*
 
 ## 1. Why
 
@@ -71,4 +71,4 @@ do not appear to.
    `claude-opus-5-5`, one isolated general-purpose subagent per packet, default effort. If that model is not offered
    when A2 runs, the run stops and the owner is asked.
 
-Still needed before anything runs: the owner's go-ahead on this file as a whole.
+The owner gave the go-ahead on this file as a whole on 25 November 2026.
