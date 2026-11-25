@@ -21,20 +21,17 @@ steps finish.*
   `8cb28a9e…53510d0` (Claude checked in D1).
 - `Round 1` created as a **draft** (not yet open, so the item set is not yet frozen).
 - Test codes `Other 01` and `Other 02` created; their links were shared with Claude. No votes yet.
+- Cloudflare's zone-wide automatic Web Analytics injects its beacon script into this site's pages. The site's CSP
+  blocks it, so browsers never load it and nothing is sent. Owner decision: leave the zone setting as is and rely on
+  the CSP (no exclusion rule).
 - The live invite link fills the code and shows the Turnstile check. Turnstile does not pass a headless browser, so
   the test votes are the owner's to cast on a phone.
 
 ## Owner: now
 
-1. **Turn off Cloudflare Web Analytics for this hostname only.** The zone's automatic Web Analytics injects
-   `static.cloudflareinsights.com/beacon.min.js` into this site's pages. The site's CSP blocks it, so nothing is sent,
-   but the rule is "no analytics". In the dashboard: **Web Analytics** > `spiffyspaceman.com` > **Manage site** >
-   **Advanced options** > **Add rule**: Action **Exclude**, hostname `wtpquestionrank.spiffyspaceman.com`, all paths >
-   **Update**. Leave the zone-wide setting alone (it also covers other subdomains). Claude then confirms the beacon
-   is gone.
-2. **Check the 24 added question texts** against CCE's PDFs (BUILD_STEPS §9 step 6) before opening the round.
-3. **Open Round 1** in `/admin` (Rounds > Open). The item set freezes.
-4. **Test votes on your phone** with the two links:
+1. **Check the 24 added question texts** against CCE's PDFs (BUILD_STEPS §9 step 6) before opening the round.
+2. **Open Round 1** in `/admin` (Rounds > Open). The item set freezes.
+3. **Test votes on your phone** with the two links:
    - `Other 01` link: judge 20 pairs (tick one close call, skip one); the Leaderboard link appears. Open it.
    - Same link on a laptop: you should land where the phone left off.
    - `Other 02` link: judge one batch of ten.
