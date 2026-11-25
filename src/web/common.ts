@@ -60,6 +60,24 @@ export function fmtDate(iso: string | null | undefined): string {
   return new Date(iso).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
 }
 
+// Single-key shortcuts (S, C, 0-9) can be switched off on the home page; the choice stays in this browser only.
+const KEYS_OFF = "wtpqr-keys-off";
+export function shortcutsOn(): boolean {
+  try {
+    return localStorage.getItem(KEYS_OFF) !== "1";
+  } catch {
+    return true;
+  }
+}
+export function setShortcuts(on: boolean): void {
+  try {
+    if (on) localStorage.removeItem(KEYS_OFF);
+    else localStorage.setItem(KEYS_OFF, "1");
+  } catch {
+    /* storage unavailable: shortcuts stay on */
+  }
+}
+
 export const CRITERION =
   "Which is the better hearing question: the one that more clearly lets a panel separate a strong, well-prepared team from a weak one, across a 4-minute opening and 6–10 minutes of follow-up?";
 

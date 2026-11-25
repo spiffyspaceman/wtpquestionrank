@@ -1,4 +1,4 @@
-import { $, api, CRITERION, FORMAT, show } from "./common";
+import { $, api, CRITERION, FORMAT, setShortcuts, shortcutsOn, show } from "./common";
 
 interface Me {
   role: string;
@@ -11,6 +11,17 @@ interface Me {
 
 $("#format").textContent = FORMAT;
 $("#criterion").textContent = CRITERION;
+
+const keysOn = $<HTMLInputElement>("#keysOn");
+keysOn.checked = shortcutsOn();
+keysOn.addEventListener("change", () => setShortcuts(keysOn.checked));
+
+// Sign out on this device only. Whatever the answer, the sign-in page is the place to land.
+$("#signOut").addEventListener("click", () => {
+  void api("/api/signout", { body: {} })
+    .catch(() => undefined)
+    .then(() => location.replace("/"));
+});
 
 const plural = (n: number, one: string, many: string) => (n === 1 ? one : many);
 

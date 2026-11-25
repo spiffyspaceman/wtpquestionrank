@@ -1,5 +1,5 @@
 import { MAX_REASONS, OTHER_LABEL, OTHER_MAX_WORDS, REASONS, wordCount, type ReasonCode } from "../worker/reasons";
-import { $, api, ApiError, CRITERION, el, say, show } from "./common";
+import { $, api, ApiError, CRITERION, el, say, shortcutsOn, show } from "./common";
 
 interface Side {
   stem: string;
@@ -92,6 +92,7 @@ function renderPills(): void {
   otherPill.setAttribute("aria-pressed", String(otherOn));
   otherPill.disabled = full && !otherOn;
   show(otherRow, otherOn);
+  $("#reasonsHint").textContent = full ? "Two chosen" : "If you like, up to two";
   renderCount();
 }
 
@@ -156,6 +157,8 @@ function showPair(i: number): void {
   show($("#fwd"), a !== null);
   // A vote cannot become a skip; an unanswered or skipped pair can still be skipped past.
   show(skipBtn, !isGiven(a));
+  // On a pair already answered, Forward leaves the answer as it was; only Next sends a change.
+  show($("#saveHint"), isGiven(a));
   show(judge);
   show(between, false);
   shownAt = performance.now();
@@ -178,7 +181,8 @@ async function loadBatch(): Promise<void> {
 }
 
 async function fetchBatch(): Promise<void> {
-  say(msg, "");
+  // Nothing is on screen yet on a first load; say so instead of showing an empty page.
+  say(msg, judge.hidden && between.hidden ? "Loading the next pairs" : "");
   let b: Batch;
   try {
     b = await api<Batch>("/api/batch");
@@ -190,6 +194,7 @@ async function fetchBatch(): Promise<void> {
     }
     return say(msg, "Could not load the next pairs. Check your connection and reload.", "error");
   }
+  say(msg, "");
   if (b.done || !b.pairs.length) {
     show(judge, false);
     return say(msg, "You have judged every pair. Thank you.", "ok");
@@ -276,7 +281,11 @@ async function answer(kind: "vote" | "skip"): Promise<void> {
     advance();
   } catch (err) {
     if (err instanceof ApiError && err.status === 401) return location.replace("/");
-    if (err instanceof ApiError && err.body.error === "batch_closed") {
+    if (err instanceof ApiError && err.body.error === "board_seen") {
+      // The answer stays as it was (see /api/correct); put the saved answer back on screen.
+      showPair(idx);
+      say(msg, err.message, "warn");
+    } else if (err instanceof ApiError && err.body.error === "batch_closed") {
       say(msg, "That batch is finished, so its answers can no longer change.", "warn");
       void loadBatch();
     } else if (err instanceof ApiError && err.status === 409) {
@@ -317,6 +326,8 @@ document.addEventListener("keydown", (e) => {
   // and on a focused link it follows the link.
   if (e.key === "Enter" && pick && t.tagName !== "BUTTON" && t.tagName !== "A") return (e.preventDefault(), void answer("vote"));
   if (typing) return;
+  // Arrows and Enter always work; the letter and number keys can be switched off on the home page.
+  if (!e.key.startsWith("Arrow") && !shortcutsOn()) return;
   if (e.key === "ArrowLeft") (e.preventDefault(), choose("L"));
   else if (e.key === "ArrowRight") (e.preventDefault(), choose("R"));
   else if (e.key === "s" || e.key === "S") (e.preventDefault(), void answer("skip"));

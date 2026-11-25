@@ -716,6 +716,7 @@ function fillFilters(): void {
 // ---------- load ----------
 
 async function load(p?: string): Promise<void> {
+  if ($("#content").hidden) say(msg, "Loading the leaderboard");
   let b: Board;
   try {
     b = await api<Board>("/api/leaderboard" + (p ? `?pool=${encodeURIComponent(p)}` : ""));
@@ -725,6 +726,7 @@ async function load(p?: string): Promise<void> {
       return say(msg, `The leaderboard opens after ${err.body.unlockAt} votes. You have ${err.body.votes} so far.`, "warn");
     return say(msg, "Could not load the leaderboard. Try again.", "error");
   }
+  say(msg, "");
   board = b;
   rows = b.rows;
   open.clear();
