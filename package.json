@@ -8,7 +8,8 @@
     "typecheck": "tsc --noEmit && tsc -p src/worker && tsc -p src/web && tsc -p test/worker",
     "dev": "vite build && wrangler dev",
     "analyze": "tsx analysis/analyze.ts",
-    "cf-typegen": "wrangler types"
+    "cf-typegen": "wrangler types",
+    "test:ui": "node scripts/ui-smoke.mjs"
   },
   "dependencies": {
     "hono": "^4.13.21"
