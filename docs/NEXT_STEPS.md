@@ -92,10 +92,10 @@ B. **Cloudflare, two settings.** The saved API token cannot read or change eithe
       `npm ci && npm run typecheck && npm test && npm run build`.
    2. Always Use HTTPS (zone `spiffyspaceman.com` > SSL/TLS > Edge Certificates). It is zone-wide, so it also changes
       `reader.spiffyspaceman.com`. Optional: the Worker now redirects http to https by itself.
-C. **Method A2 ran on 25 Nov** (30 judges, 3,780 judgments, none invalid; `DEVIATIONS.md`, "A2 run record").
-   **Decide what to do with four judges** (`b1j0`, `b1j1`, `b3j4`, `b4j2`) that appear to have ranked the questions
-   first, against packet rule 2: keep all 30 and report a fit without the four beside it, or re-run the four with
-   fresh judges and log that.
+C. **Method A2 is done** (25 Nov): 30 judges, 3,780 judgments, none invalid. Four judges appear to have ranked the
+   questions first; by your decision all 30 stay and a 26-judge fit is reported beside it (`DEVIATIONS.md`). At the
+   analysis (step 8), run `analysis/analyze.ts` three times: with `--llm-out llm-arm/out` (method A, the verdict),
+   `--llm-out llm-arm/out-a2`, and `--llm-out llm-arm/out-a2-without4`, each with its own `--out` folder.
 D. Add to the weekly routine in step 7: **Download full backup** (it holds the batches and pairing trail that no
    other export has).
 

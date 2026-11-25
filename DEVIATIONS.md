@@ -150,3 +150,10 @@ with a human vote. Three facts about the run that the addendum did not foresee:
    context is not recorded.
 3. **Model.** Each judge was requested as `opus`, which this session lists as `claude-opus-5-5`, at default effort.
    The serving model was not independently confirmed per judge.
+
+**25 November 2026: the four judges stay in; a fit without them is reported beside it (owner decision).** A2 is
+reported with all 30 judges as run. No judge is re-run or replaced. As an addition to the addendum's §4, every A2
+measure is also reported from the 26 judges other than `b1j0`, `b1j1`, `b3j4` and `b4j2`
+(`llm-arm/out-a2-without4/`, the same output files less those four; `analysis/analyze.ts` lists the four as missing
+and fits the rest). The addendum file itself is unchanged, so its hash above still holds. Losing those four leaves
+blocks 1, 3 and 4 with fewer than six judges, so pairs in those blocks have fewer than six judgments in that fit.
