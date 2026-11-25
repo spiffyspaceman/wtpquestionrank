@@ -230,14 +230,28 @@ function revealCell(label: string): HTMLElement {
   return cell;
 }
 
+let voters: Record<string, any>[] = [];
+
 async function loadVoters(): Promise<void> {
-  const r = await api<{ voters: Record<string, any>[] }>("/admin/api/codes");
+  voters = (await api<{ voters: Record<string, any>[] }>("/admin/api/codes")).voters;
+  renderVoters();
+}
+
+/** Newest codes first (server order). Search matches label, role, status or issue date, case-insensitive. */
+function renderVoters(): void {
+  const q = $<HTMLInputElement>("#voterSearch").value.trim().toLowerCase();
+  const status = (v: Record<string, any>) => (v.revoked_at ? "revoked" : "active") + (v.is_owner ? " owner" : "");
+  const shown = q
+    ? voters.filter((v) => [v.label, v.role, status(v), fmtDate(v.created_at)].join(" ").toLowerCase().includes(q))
+    : voters;
+  $("#voterCount").textContent = q ? `${shown.length} of ${voters.length}` : `${voters.length} codes`;
   table(
     $<HTMLTableElement>("#voters"),
-    ["Label", "Role", "Owner", "Votes", "Board seen", "Revoked", "Invite", ""],
-    r.voters.map((v) => [
+    ["Label", "Role", "Issued", "Owner", "Votes", "Board seen", "Revoked", "Invite", ""],
+    shown.map((v) => [
       v.label,
       v.role,
+      fmtDate(v.created_at),
       v.is_owner ? "yes" : "",
       v.n_votes,
       v.board_seen_at ? fmtDate(v.board_seen_at) : "",
@@ -250,9 +264,11 @@ async function loadVoters(): Promise<void> {
               void act(() => api("/admin/api/codes/revoke", { body: { label: v.label } }), `${v.label} revoked; caches rebuilt.`);
           }),
     ]),
-    [3],
+    [4],
   );
 }
+
+$("#voterSearch").addEventListener("input", renderVoters);
 
 // ---------- board and raw votes ----------
 

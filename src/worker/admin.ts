@@ -296,7 +296,7 @@ adminApi.get("/codes", async (c) => {
   const r = await c.env.DB.prepare(
     `SELECT u.label, u.role, u.is_owner, u.created_at, u.revoked_at, u.board_seen_at, COALESCE(c.n, 0) AS n_votes
        FROM voters u LEFT JOIN (SELECT voter_id, count(*) AS n FROM votes GROUP BY voter_id) c ON c.voter_id = u.id
-      ORDER BY u.role, u.label`,
+      ORDER BY u.created_at DESC, CAST(substr(u.label, instr(u.label, ' ') + 1) AS INTEGER), u.label`,
   ).all();
   return c.json({ voters: r.results });
 });
