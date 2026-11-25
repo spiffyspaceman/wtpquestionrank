@@ -21,11 +21,12 @@
 
       <p id="msg" class="notice" role="alert" hidden></p>
 
+      <h1 class="sr-only">Vote</h1>
       <section id="judge" hidden aria-labelledby="criterion">
         <p class="criterion" id="criterion"></p>
         <div class="progress">
           <button id="back" class="link nav" type="button" hidden>Back</button>
-          <span id="position" aria-live="polite"></span>
+          <span id="position" tabindex="-1" aria-live="polite"></span>
           <progress id="bar" max="10" value="0" aria-hidden="true"></progress>
           <button id="fwd" class="link nav" type="button" hidden>Forward</button>
         </div>
@@ -64,7 +65,7 @@
       </section>
 
       <section id="between" hidden>
-        <h1 tabindex="-1" id="betweenH">Batch done</h1>
+        <h2 class="h1" tabindex="-1" id="betweenH">Batch done</h2>
         <p id="betweenText"></p>
         <div class="actions">
           <button id="more" class="primary" type="button">Keep going</button>

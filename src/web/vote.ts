@@ -160,6 +160,10 @@ function showPair(i: number): void {
   show(between, false);
   shownAt = performance.now();
   window.scrollTo({ top: 0 });
+  // The control that was just used (Next, Skip) may now be hidden, which drops keyboard focus to the top of the
+  // document. Put it on the pair counter instead: neutral between A and B, and a screen reader reads the new place.
+  const active = document.activeElement as HTMLElement | null;
+  if (!active || active === document.body || active.closest("[hidden]")) $("#position").focus({ preventScroll: true });
 }
 
 let loading = false;
@@ -310,7 +314,8 @@ document.addEventListener("keydown", (e) => {
   const t = e.target as HTMLElement;
   const typing = t.tagName === "INPUT" && (t as HTMLInputElement).type === "text";
   // Enter sends the vote, from the Other box too. On a focused button, Enter already presses that button.
-  if (e.key === "Enter" && pick && t.tagName !== "BUTTON") return (e.preventDefault(), void answer("vote"));
+  // and on a focused link it follows the link.
+  if (e.key === "Enter" && pick && t.tagName !== "BUTTON" && t.tagName !== "A") return (e.preventDefault(), void answer("vote"));
   if (typing) return;
   if (e.key === "ArrowLeft") (e.preventDefault(), choose("L"));
   else if (e.key === "ArrowRight") (e.preventDefault(), choose("R"));
