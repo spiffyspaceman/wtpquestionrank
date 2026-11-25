@@ -1,5 +1,5 @@
 // Voter API. Question ids never leave the server: pairs go out as an opaque pair id with "L" and "R" sides.
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { QUALITY } from "../rating/config";
 import { pairKey, selectBatch, type PairingState } from "../rating/pairs";
 import { fitBTCounts, makeRng } from "../rating/rating";
@@ -25,7 +25,8 @@ import {
 } from "./data";
 import type { AppEnv, RoundRow, VoterRow } from "./env";
 import sourcesFile from "../../items/sources_v1.json";
-import { MAX_REASONS, parseOther, parseReasons } from "./reasons";
+import { poolsForRole } from "./pools";
+import { MAX_REASONS, parseOther, parseReasons, type ReasonCode } from "./reasons";
 import { verifyTurnstile } from "./turnstile";
 import { isUniqueViolation, nowIso, optInt, randomId, randomSeed, readJsonObject } from "./util";
 
@@ -208,12 +209,12 @@ voterApi.get("/batch", requireVoter(), async (c) => {
   const round = await openRound(db);
   if (!round) return c.json({ error: "no_open_round", message: "Voting is closed right now." }, 409);
 
-  let { size, pairs } = await unfinishedPairs(db, round, voter.id);
+  let { batchId, pairs } = await unfinishedPairs(db, round, voter.id);
   if (!pairs.length) {
     const seed = randomSeed();
     const issued = selectBatch(await pairingState(db, round, voter.id), makeRng(seed));
     if (!issued.length) return c.json({ done: true, pairs: [], size: 0 });
-    const batchId = randomId();
+    const newBatchId = randomId();
     const now = nowIso();
     const rows = issued.map((p) => ({ id: randomId(), left_q: p.left, right_q: p.right, p }));
     // Two requests at once (double tap, two devices) must not both create a batch. The insert happens only if the
@@ -224,27 +225,41 @@ voterApi.get("/batch", requireVoter(), async (c) => {
           `INSERT INTO batches (id, round_id, voter_id, seed, created_at)
            SELECT ?1, ?2, ?3, ?4, ?5 WHERE NOT EXISTS (${UNANSWERED_SQL})`,
         )
-        .bind(batchId, round.id, voter.id, seed, now),
+        .bind(newBatchId, round.id, voter.id, seed, now),
       ...rows.map((r, i) =>
         db
           .prepare(
             `INSERT INTO batch_pairs (id, batch_id, position, left_q, right_q, is_repeat, reason, issued_at)
              SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8 WHERE EXISTS (SELECT 1 FROM batches WHERE id = ?2)`,
           )
-          .bind(r.id, batchId, i, r.left_q, r.right_q, r.p.isRepeat ? 1 : 0, r.p.reason, now),
+          .bind(r.id, newBatchId, i, r.left_q, r.right_q, r.p.isRepeat ? 1 : 0, r.p.reason, now),
       ),
     ]);
-    if (res[0].meta.changes === 1) {
-      size = rows.length;
-      pairs = rows;
-    } else ({ size, pairs } = await unfinishedPairs(db, round, voter.id)); // another request won; serve its batch
+    if (res[0].meta.changes === 1) batchId = newBatchId;
+    else ({ batchId } = await unfinishedPairs(db, round, voter.id)); // another request won; serve its batch
   }
-  const text = await questionTexts(db, pairs.flatMap((p) => [p.left_q, p.right_q]));
-  return c.json({
-    done: false,
-    size,
-    pairs: pairs.map((p) => ({ pairId: p.id, left: text.get(p.left_q), right: text.get(p.right_q) })),
+  // The whole batch, answered pairs included, so the voter can go back and change an answer.
+  const all = await db
+    .prepare(
+      `SELECT bp.id, bp.left_q, bp.right_q, e.id AS vote_id, e.winner_q, e.close_call,
+              EXISTS (SELECT 1 FROM skips s WHERE s.batch_pair_id = bp.id) AS skipped
+         FROM batch_pairs bp LEFT JOIN votes_effective e ON e.batch_pair_id = bp.id
+        WHERE bp.batch_id = ? ORDER BY bp.position`,
+    )
+    .bind(batchId)
+    .all<{ id: string; left_q: string; right_q: string; vote_id: number | null; winner_q: string | null; close_call: number | null; skipped: number }>();
+  const text = await questionTexts(db, all.results.flatMap((p) => [p.left_q, p.right_q]));
+  const why = await currentReasons(db, all.results.flatMap((p) => (p.vote_id === null ? [] : [p.vote_id])));
+  const out = all.results.map((p) => {
+    let answer: Record<string, unknown> | null = null;
+    if (p.vote_id !== null) {
+      const w = why.get(p.vote_id);
+      answer = { pick: p.winner_q === p.left_q ? "L" : "R", closeCall: p.close_call === 1, reasons: w?.reasons ?? [], other: w?.other ?? null };
+    } else if (p.skipped) answer = { skipped: true };
+    return { pairId: p.id, left: text.get(p.left_q), right: text.get(p.right_q), answer };
   });
+  const start = out.findIndex((p) => p.answer === null);
+  return c.json({ done: false, size: out.length, start: start < 0 ? out.length : start, pairs: out });
 });
 
 interface PairContext {
@@ -326,24 +341,31 @@ async function afterAnswer(db: D1Database, voter: VoterRow, roundId: string, bat
   };
 }
 
-voterApi.post("/vote", requireVoter(), async (c) => {
-  const db = c.env.DB;
-  const voter = c.get("voter");
-  const body = await readJsonObject(c.req.raw);
-  if (!body || (body.pick !== "L" && body.pick !== "R")) return c.json({ error: "bad_request" }, 400);
-  const closeCall = body.closeCall === true ? 1 : 0;
+interface Answer {
+  pick: "L" | "R";
+  closeCall: 0 | 1;
+  reasons: ReasonCode[];
+  other: { chosen: boolean; note: string };
+  clientMs: number | null;
+}
+
+/** A vote or correction body, or null when it is malformed. At most MAX_REASONS reasons, "Other" included. */
+function parseAnswer(body: Record<string, unknown> | null): Answer | null {
+  if (!body || (body.pick !== "L" && body.pick !== "R")) return null;
   const reasons = parseReasons(body.reasons);
   const other = parseOther(body.other);
-  if (!reasons || !other) return c.json({ error: "bad_request" }, 400);
-  if (reasons.length + (other.chosen ? 1 : 0) > MAX_REASONS) return c.json({ error: "bad_request" }, 400);
-  const clientMs = optInt(body.clientMs, 0, MAX_CLIENT_MS);
-  const found = await pairFor(db, body.pairId, voter.id);
-  if ("error" in found) return c.json({ error: found.error }, PAIR_ERRORS[found.error!]);
-  const { pair: p, lo, hi } = found;
-  if (found.answered) return c.json({ ok: true, duplicate: true, ...(await afterAnswer(db, voter, p.round_id, p.batch_id)) });
+  if (!reasons || !other || reasons.length + (other.chosen ? 1 : 0) > MAX_REASONS) return null;
+  return { pick: body.pick, closeCall: body.closeCall === true ? 1 : 0, reasons, other, clientMs: optInt(body.clientMs, 0, MAX_CLIENT_MS) };
+}
 
+type Found = Extract<Awaited<ReturnType<typeof pairFor>>, { pair: PairContext }>;
+
+/** Write a first answer for a pair: the vote, its reasons and the cache, in one D1 batch. */
+async function insertVote(c: Context<AppEnv>, voter: VoterRow, found: Found, a: Answer): Promise<Response> {
+  const db = c.env.DB;
+  const { pair: p, lo, hi } = found;
   const nowMs = Date.now();
-  const winner = body.pick === "L" ? p.left_q : p.right_q;
+  const winner = a.pick === "L" ? p.left_q : p.right_q;
   const stmts = [
     db
       .prepare(
@@ -364,19 +386,19 @@ voterApi.post("/vote", requireVoter(), async (c) => {
         lo,
         hi,
         winner,
-        closeCall,
+        a.closeCall,
         p.is_repeat,
         voter.board_seen_at ? 1 : 0,
-        clientMs,
+        a.clientMs,
         await serverMs(db, p, nowMs),
         new Date(nowMs).toISOString(),
       ),
     // Optional reasons, written only if the vote above was.
-    ...reasons.map((r) =>
+    ...a.reasons.map((r) =>
       db.prepare("INSERT INTO vote_reasons (vote_id, reason) SELECT id, ?2 FROM votes WHERE batch_pair_id = ?1").bind(p.id, r),
     ),
-    ...(other.chosen
-      ? [db.prepare("INSERT INTO vote_other (vote_id, note) SELECT id, ?2 FROM votes WHERE batch_pair_id = ?1").bind(p.id, other.note)]
+    ...(a.other.chosen
+      ? [db.prepare("INSERT INTO vote_other (vote_id, note) SELECT id, ?2 FROM votes WHERE batch_pair_id = ?1").bind(p.id, a.other.note)]
       : []),
     // Repeats measure consistency only; they never feed the ratings.
     ...(p.is_repeat ? [] : pairCountUpserts(db, p.round_id, voter.role, p.left_q, p.right_q, winner === p.left_q, p.id)),
@@ -391,6 +413,122 @@ voterApi.post("/vote", requireVoter(), async (c) => {
     return c.json({ ok: true, duplicate: true, ...(await afterAnswer(db, voter, p.round_id, p.batch_id)) });
   }
   return c.json({ ok: true, ...(await afterAnswer(db, voter, p.round_id, p.batch_id)) });
+}
+
+voterApi.post("/vote", requireVoter(), async (c) => {
+  const db = c.env.DB;
+  const voter = c.get("voter");
+  const body = await readJsonObject(c.req.raw);
+  const a = parseAnswer(body);
+  if (!a) return c.json({ error: "bad_request" }, 400);
+  const found = await pairFor(db, body!.pairId, voter.id);
+  if ("error" in found) return c.json({ error: found.error }, PAIR_ERRORS[found.error!]);
+  if (found.answered) return c.json({ ok: true, duplicate: true, ...(await afterAnswer(db, voter, found.pair.round_id, found.pair.batch_id)) });
+  return insertVote(c, voter, found, a);
+});
+
+/** The voter's newest batch in the round: the only one whose answers can still be changed. */
+async function latestBatchId(db: D1Database, roundId: string, voterId: string): Promise<string | null> {
+  const b = await db
+    .prepare("SELECT id FROM batches WHERE round_id = ? AND voter_id = ? ORDER BY created_at DESC, rowid DESC LIMIT 1")
+    .bind(roundId, voterId)
+    .first<{ id: string }>();
+  return b?.id ?? null;
+}
+
+interface EffectiveVote {
+  id: number;
+  role: string;
+  left_q: string;
+  right_q: string;
+  winner_q: string;
+  close_call: number;
+  is_repeat: number;
+}
+
+/** A vote's current reasons (the newest correction's, or its own). */
+async function currentReasons(db: D1Database, voteIds: number[]) {
+  const out = new Map<number, { reasons: string[]; other: string | null }>();
+  if (!voteIds.length) return out;
+  const r = await db
+    .prepare(`SELECT vote_id, reason, note FROM vote_reasons_effective WHERE vote_id IN (${voteIds.map(() => "?").join(",")}) ORDER BY reason`)
+    .bind(...voteIds)
+    .all<{ vote_id: number; reason: string; note: string | null }>();
+  for (const x of r.results) {
+    const g = out.get(x.vote_id) ?? { reasons: [], other: null };
+    if (x.reason === "other") g.other = x.note ?? "";
+    else g.reasons.push(x.reason);
+    out.set(x.vote_id, g);
+  }
+  return out;
+}
+
+/**
+ * Change an answer in the voter's current batch (owner decision, 25 Nov 2026; DEVIATIONS.md). A voted pair gets a
+ * correction row, appended, never an edit; the cache moves by the change in the winner. A skipped or unanswered pair
+ * gets an ordinary first vote. Sending the answer the pair already has changes nothing.
+ */
+voterApi.post("/correct", requireVoter(), async (c) => {
+  const db = c.env.DB;
+  const voter = c.get("voter");
+  const body = await readJsonObject(c.req.raw);
+  const a = parseAnswer(body);
+  if (!a) return c.json({ error: "bad_request" }, 400);
+  const found = await pairFor(db, body!.pairId, voter.id);
+  if ("error" in found) return c.json({ error: found.error }, PAIR_ERRORS[found.error!]);
+  const p = found.pair;
+  if ((await latestBatchId(db, p.round_id, voter.id)) !== p.batch_id)
+    return c.json({ error: "batch_closed", message: "That batch is finished; its answers can no longer change." }, 409);
+
+  const v = await db
+    .prepare("SELECT id, role, left_q, right_q, winner_q, close_call, is_repeat FROM votes_effective WHERE batch_pair_id = ?")
+    .bind(p.id)
+    .first<EffectiveVote>();
+  if (!v) return insertVote(c, voter, found, a);
+
+  const winner = a.pick === "L" ? v.left_q : v.right_q;
+  const now = (await currentReasons(db, [v.id])).get(v.id) ?? { reasons: [], other: null };
+  const same =
+    winner === v.winner_q &&
+    a.closeCall === v.close_call &&
+    [...a.reasons].sort().join() === [...now.reasons].sort().join() &&
+    (a.other.chosen ? a.other.note : null) === now.other;
+  if (same) return c.json({ ok: true, unchanged: true, ...(await afterAnswer(db, voter, p.round_id, p.batch_id)) });
+
+  // Every statement carries the same condition, so in one transaction they all apply or none does.
+  const OPEN = `EXISTS (SELECT 1 FROM rounds WHERE id = ?2 AND state = 'open') AND EXISTS (SELECT 1 FROM voters WHERE id = ?3 AND revoked_at IS NULL)`;
+  const token = randomId();
+  const stmts: D1PreparedStatement[] = [];
+  // The cache moves first, by (new winner is left) - (current winner is left), read inside the transaction.
+  if (!v.is_repeat && winner !== v.winner_q)
+    for (const pool of poolsForRole(v.role))
+      stmts.push(
+        db
+          .prepare(
+            `UPDATE pair_counts
+                SET left_wins = left_wins + (?6 - (SELECT CASE WHEN winner_q = left_q THEN 1 ELSE 0 END FROM votes_effective WHERE id = ?1))
+              WHERE round_id = ?2 AND pool = ?4 AND left_q = ?5 AND right_q = ?7 AND ${OPEN}`,
+          )
+          .bind(v.id, p.round_id, voter.id, pool, v.left_q, winner === v.left_q ? 1 : 0, v.right_q),
+      );
+  const at = stmts.length;
+  stmts.push(
+    db
+      .prepare(
+        `INSERT INTO vote_corrections (token, vote_id, winner_q, close_call, client_ms, created_at)
+         SELECT ?4, ?1, ?5, ?6, ?7, ?8 WHERE ${OPEN}`,
+      )
+      .bind(v.id, p.round_id, voter.id, token, winner, a.closeCall, a.clientMs, nowIso()),
+    ...a.reasons.map((r) =>
+      db.prepare("INSERT INTO correction_reasons (correction_id, reason) SELECT id, ?2 FROM vote_corrections WHERE token = ?1").bind(token, r),
+    ),
+    ...(a.other.chosen
+      ? [db.prepare("INSERT INTO correction_other (correction_id, note) SELECT id, ?2 FROM vote_corrections WHERE token = ?1").bind(token, a.other.note)]
+      : []),
+  );
+  const res = await db.batch(stmts);
+  if (res[at].meta.changes === 0) return c.json({ error: "round_not_open" }, 409);
+  return c.json({ ok: true, corrected: true, ...(await afterAnswer(db, voter, p.round_id, p.batch_id)) });
 });
 
 voterApi.post("/skip", requireVoter(), async (c) => {

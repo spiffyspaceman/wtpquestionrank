@@ -37,11 +37,12 @@ describe("schema on local D1", () => {
     await d.prepare("INSERT INTO admin_audit (at,actor,action,detail_json) VALUES (?,?,?,?)").bind(now, "sub", "x", "{}").run();
   });
 
-  it("creates every table and all thirteen triggers (nine in 0001, two each in 0002 and 0003)", async () => {
-    const t = await db().prepare("SELECT type, count(*) AS n FROM sqlite_schema WHERE type IN ('table','trigger') AND name NOT LIKE '\\_%' ESCAPE '\\' AND name NOT LIKE 'sqlite%' AND name <> 'd1_migrations' GROUP BY type").all<{ type: string; n: number }>();
+  it("creates every table and all twenty triggers and both views (0001 to 0004)", async () => {
+    const t = await db().prepare("SELECT type, count(*) AS n FROM sqlite_schema WHERE type IN ('table','trigger','view') AND name NOT LIKE '\\_%' ESCAPE '\\' AND name NOT LIKE 'sqlite%' AND name <> 'd1_migrations' GROUP BY type").all<{ type: string; n: number }>();
     const by = Object.fromEntries(t.results.map((r) => [r.type, r.n]));
-    expect(by.trigger).toBe(13);
-    expect(by.table).toBe(16);
+    expect(by.trigger).toBe(20);
+    expect(by.table).toBe(19);
+    expect(by.view).toBe(2);
   });
 
   it("rejects UPDATE and DELETE on votes", async () => {

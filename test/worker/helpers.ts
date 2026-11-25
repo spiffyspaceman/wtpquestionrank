@@ -150,12 +150,24 @@ export interface ClientPair {
   pairId: string;
   left: { stem: string; bullets: string[] };
   right: { stem: string; bullets: string[] };
+  answer: null | { skipped: true } | { pick: "L" | "R"; closeCall: boolean; reasons: string[]; other: string | null };
 }
 
-export async function getBatch(cookie: string): Promise<{ done: boolean; size: number; pairs: ClientPair[] }> {
+export interface ClientBatch {
+  done: boolean;
+  size: number;
+  start: number;
+  /** The pairs not yet answered. */
+  pairs: ClientPair[];
+  /** The whole batch, answered pairs included, as the server sent it. */
+  all: ClientPair[];
+}
+
+export async function getBatch(cookie: string): Promise<ClientBatch> {
   const r = await call("/api/batch", { cookie });
   if (r.status !== 200) throw new Error("batch failed: " + r.status + " " + (await r.text()));
-  return r.json();
+  const b = (await r.json()) as Omit<ClientBatch, "all">;
+  return { ...b, all: b.pairs, pairs: b.pairs.filter((p) => p.answer === null) };
 }
 
 /** Vote through `n` pairs, fetching batches as needed. `pick` chooses L or R. */

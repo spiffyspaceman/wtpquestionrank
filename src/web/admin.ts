@@ -116,7 +116,7 @@ function roundActions(r: Round): Node {
         "Export",
         button("JSON", () => void pagedExport(r, "json")),
         button("votes CSV", () => void pagedExport(r, "votes")),
-        ...["skips", "reasons", "ratings", "voters"].map((k) => el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export/${k}.csv` }, `${k} CSV`)),
+        ...["skips", "reasons", "corrections", "ratings", "voters"].map((k) => el("a", { class: "button", href: `/admin/api/rounds/${r.id}/export/${k}.csv` }, `${k} CSV`)),
       ),
     );
   }
@@ -274,6 +274,7 @@ $("#voterSearch").addEventListener("input", renderVoters);
 // ---------- study health (report only) ----------
 
 interface Health {
+  corrections: { rows: number; winnerChanged: number };
   gate: {
     MIN_ADULT_RATERS: number;
     MIN_VOTES_PER_COUNTED_RATER: number;
@@ -346,6 +347,9 @@ async function loadHealth(): Promise<void> {
   );
 
   const r = h.reasons;
+  $("#correctionsLine").textContent = h.corrections.rows
+    ? `Answers changed by going back: ${h.corrections.rows}, of which ${h.corrections.winnerChanged} now have a different winner.`
+    : "No answers changed by going back.";
   $("#reasonsLine").textContent = r.votes
     ? `${r.votesWithReason} of ${r.votes} first-presentation votes (${pct(r.votesWithReason / r.votes)}) carry at least one reason.`
     : "No votes yet.";
@@ -429,7 +433,7 @@ async function loadVotes(): Promise<void> {
   $<HTMLButtonElement>("#next").disabled = (r.page + 1) * r.size >= r.total;
   table(
     $<HTMLTableElement>("#votes"),
-    ["#", "Time", "Voter", "Role", "Left", "Right", "Winner", "Close", "Repeat", "After board", "Client s", "Server s"],
+    ["#", "Time", "Voter", "Role", "Left", "Right", "Winner", "Close", "Repeat", "After board", "Changed", "Client s", "Server s"],
     r.votes.map((v) => [
       v.id,
       fmtDate(v.created_at),
@@ -441,10 +445,11 @@ async function loadVotes(): Promise<void> {
       v.close_call ? "yes" : "",
       v.is_repeat ? "yes" : "",
       v.after_board ? "yes" : "",
+      v.corrected ? "yes" : "",
       v.client_ms === null ? "" : (v.client_ms / 1000).toFixed(0),
       v.server_ms === null ? "" : (v.server_ms / 1000).toFixed(0),
     ]),
-    [0, 10, 11],
+    [0, 11, 12],
   );
 }
 

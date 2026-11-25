@@ -145,6 +145,7 @@ label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
   font-size: 0.95rem; line-height: 1.4;
 }
 .progress { display: flex; align-items: center; gap: 12px; margin: 6px 0 14px; font-size: 0.9rem; color: var(--muted); }
+.progress .nav { min-height: 40px; padding: 0 2px; font-size: 0.9rem; }
 .progress progress { flex: 1; height: 6px; appearance: none; border: 0; border-radius: 3px; background: var(--line); overflow: hidden; }
 .progress progress::-webkit-progress-bar { background: var(--line); border-radius: 3px; }
 .progress progress::-webkit-progress-value { background: var(--accent); border-radius: 3px; }

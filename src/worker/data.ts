@@ -67,13 +67,13 @@ export function pairCountUpserts(
 
 /**
  * Rebuild the round's pair_counts from the vote log, in one transaction: first presentations only,
- * revoked voters excluded, each vote counted under the role it was cast with.
+ * revoked voters excluded, each vote counted under the role it was cast with, with its current (corrected) winner.
  */
 /** Returns the rows written (D1 meta), so callers and tests can see the cost. */
 export async function rebuildPairCounts(db: D1Database, roundId: string): Promise<number> {
   // The true counts, grouped per pool. Written only where a row changed, so a rebuild with few differences (the
   // usual case: one revoked voter) costs few row writes on the D1 free tier.
-  const base = `FROM votes v JOIN voters u ON u.id = v.voter_id
+  const base = `FROM votes_effective v JOIN voters u ON u.id = v.voter_id
                 WHERE v.round_id = ?1 AND v.is_repeat = 0 AND u.revoked_at IS NULL`;
   const sums = "SUM(CASE WHEN v.winner_q = v.left_q THEN 1 ELSE 0 END) AS lw, COUNT(*) AS n";
   const adults = POOLED_ROLES.map((r) => `'${r}'`).join(",");

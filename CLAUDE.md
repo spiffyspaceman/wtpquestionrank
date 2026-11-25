@@ -50,13 +50,15 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov | After sign-in, voters land on `/start`: votes cast, unlock progress, start or continue a batch, hearing format, criterion, and judging guidance paraphrased from CCE's Toolkit without attribution (DEVIATIONS.md). |
 | 25 Nov | Optional reason pills, up to two of nine fixed codes per vote, in `vote_reasons` (migration 0002), exported as `reasons.csv` (DEVIATIONS.md). Tapping a question card or its button chooses it; the other side fades, reasons appear, and Next sends the vote. |
 | 25 Nov | "Other" pill (counts as one of the two reasons) with an optional explanation of at most 20 words, for every voter, in `vote_other` (migration 0003). The owner lifted the no-free-text rule for this field only. |
+| 25 Nov | Back and Forward within the current batch; a changed answer is appended to `vote_corrections` (migration 0004) and counts everywhere through the views `votes_effective` and `vote_reasons_effective`. Read votes through those views, never `votes` directly, wherever the winner, close call or reasons matter. |
+| 25 Nov | Reason pills are comparative ("Why is A better?"; "Forces a clearer position"); codes unchanged. |
 | 25 Nov | Admin "Study health": data gate, votes per day, reasons given, rater flags. Report only; no §7 measure (no repeat agreement) before the analysis. |
 
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 121 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 127 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # pages into dist/
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)

@@ -5,16 +5,26 @@ interface Side {
   stem: string;
   bullets: string[];
 }
+interface Given {
+  pick: "L" | "R";
+  closeCall: boolean;
+  reasons: ReasonCode[];
+  other: string | null;
+}
+type Answer = Given | { skipped: true } | null;
 interface Pair {
   pairId: string;
   left: Side;
   right: Side;
+  answer: Answer;
 }
 interface Batch {
   done: boolean;
   size: number;
+  start: number;
   pairs: Pair[];
 }
+const isGiven = (a: Answer): a is Given => a !== null && "pick" in a;
 interface Me {
   role: string;
   votes: number;
@@ -42,8 +52,10 @@ const after = $("#after");
 /** The side the voter has chosen for this pair; the vote is sent only with Next. */
 let pick: "L" | "R" | null = null;
 
-let queue: Pair[] = [];
-let size = 0;
+// The whole current batch, answered pairs included, and the pair on screen. A voter can go back to any pair of this
+// batch and change the answer, until the next batch starts (owner decision, 25 Nov 2026).
+let pairs: Pair[] = [];
+let idx = 0;
 let shownAt = 0;
 let busy = false;
 let me: Me;
@@ -115,22 +127,35 @@ function fill(prefix: "left" | "right", side: Side): void {
   ul.replaceChildren(...side.bullets.map((b) => el("li", {}, b)));
 }
 
-function showPair(): void {
-  const p = queue[0];
+function frontier(): number {
+  const i = pairs.findIndex((p) => p.answer === null);
+  return i < 0 ? pairs.length : i;
+}
+
+/** Show pair i, with the answer already given to it, if any, filled in so it can be changed. */
+function showPair(i: number): void {
+  idx = i;
+  const p = pairs[i];
   fill("left", p.left);
   fill("right", p.right);
-  closeBox.checked = false;
-  pick = null;
-  renderPick();
+  const a = p.answer;
+  pick = isGiven(a) ? a.pick : null;
+  closeBox.checked = isGiven(a) && a.closeCall;
   chosen.clear();
-  otherOn = false;
-  otherText.value = "";
+  if (isGiven(a)) a.reasons.forEach((r) => chosen.add(r));
+  otherOn = isGiven(a) && a.other !== null;
+  otherText.value = isGiven(a) ? (a.other ?? "") : "";
+  renderPick();
   renderPills();
-  const n = size - queue.length + 1;
-  $("#position").textContent = `Pair ${n} of ${size}`;
+  const state = a === null ? "" : isGiven(a) ? ", answered" : ", skipped";
+  $("#position").textContent = `Pair ${i + 1} of ${pairs.length}${state}`;
   const bar = $<HTMLProgressElement>("#bar");
-  bar.max = size;
-  bar.value = n - 1;
+  bar.max = pairs.length;
+  bar.value = pairs.filter((x) => x.answer !== null).length;
+  show($("#back"), i > 0);
+  show($("#fwd"), a !== null);
+  // A vote cannot become a skip; an unanswered or skipped pair can still be skipped past.
+  show(skipBtn, !isGiven(a));
   show(judge);
   show(between, false);
   shownAt = performance.now();
@@ -165,9 +190,9 @@ async function fetchBatch(): Promise<void> {
     show(judge, false);
     return say(msg, "You have judged every pair. Thank you.", "ok");
   }
-  queue = b.pairs;
-  size = b.size;
-  showPair();
+  pairs = b.pairs;
+  if (b.start >= pairs.length) batchDone();
+  else showPair(b.start);
 }
 
 function batchDone(): void {
@@ -181,7 +206,7 @@ function batchDone(): void {
 
 /** Choose a side, or change the choice. Nothing is sent yet: the reasons and Next appear below. */
 function choose(kind: "L" | "R"): void {
-  if (busy || !queue.length) return;
+  if (busy || !pairs.length) return;
   const first = pick === null;
   pick = kind;
   renderPick();
@@ -195,11 +220,21 @@ function renderPick(): void {
   $("#rightCard").classList.toggle("selected", pick === "R");
   pickL.setAttribute("aria-pressed", String(pick === "L"));
   pickR.setAttribute("aria-pressed", String(pick === "R"));
+  $("#whyText").textContent = pick === "R" ? "Why is B better?" : "Why is A better?";
   show(after, pick !== null);
 }
 
+/** After an answer: on to the first pair not yet answered, or the end of the batch. */
+function advance(): void {
+  const f = frontier();
+  if (f < pairs.length) showPair(f);
+  else batchDone();
+}
+
 async function answer(kind: "vote" | "skip"): Promise<void> {
-  if (busy || !queue.length) return;
+  if (busy || !pairs.length) return;
+  const p = pairs[idx];
+  if (kind === "skip" && p.answer !== null) return advance(); // already answered: skipping just moves on
   if (kind === "vote" && !pick) return;
   if (kind === "vote" && otherOn && wordCount(otherText.value) > OTHER_MAX_WORDS) {
     say(msg, `Keep the Other reason to ${OTHER_MAX_WORDS} words.`, "error");
@@ -210,31 +245,37 @@ async function answer(kind: "vote" | "skip"): Promise<void> {
   busy = true;
   [pickL, pickR, skipBtn, nextBtn].forEach((b) => (b.disabled = true));
   judge.classList.add("busy");
-  const p = queue[0];
   const clientMs = Math.round(performance.now() - shownAt);
+  const given: Given | null =
+    kind === "vote" && pick ? { pick, closeCall: closeBox.checked, reasons: [...chosen], other: otherOn ? otherText.value : null } : null;
   try {
-    const r =
-      kind === "skip"
-        ? await api<AfterAnswer>("/api/skip", { body: { pairId: p.pairId, clientMs } })
-        : await api<AfterAnswer>("/api/vote", {
-            body: {
-              pairId: p.pairId,
-              pick,
-              closeCall: closeBox.checked,
-              reasons: [...chosen],
-              ...(otherOn ? { other: otherText.value } : {}),
-              clientMs,
-            },
-          });
+    let r: AfterAnswer;
+    if (!given) r = await api<AfterAnswer>("/api/skip", { body: { pairId: p.pairId, clientMs } });
+    else {
+      // A first answer is a vote; changing an earlier answer (or voting on a skipped pair) is a correction.
+      const path = p.answer === null ? "/api/vote" : "/api/correct";
+      r = await api<AfterAnswer>(path, {
+        body: {
+          pairId: p.pairId,
+          pick: given.pick,
+          closeCall: given.closeCall,
+          reasons: given.reasons,
+          ...(given.other !== null ? { other: given.other } : {}),
+          clientMs,
+        },
+      });
+    }
+    p.answer = given ?? { skipped: true };
     me.votes = r.votes;
     me.unlocked = r.unlocked;
     renderMe();
-    queue.shift();
-    if (queue.length) showPair();
-    else batchDone();
+    advance();
   } catch (err) {
     if (err instanceof ApiError && err.status === 401) return location.replace("/");
-    if (err instanceof ApiError && err.status === 409) {
+    if (err instanceof ApiError && err.body.error === "batch_closed") {
+      say(msg, "That batch is finished, so its answers can no longer change.", "warn");
+      void loadBatch();
+    } else if (err instanceof ApiError && err.status === 409) {
       show(judge, false);
       say(msg, "Voting just closed. Your earlier votes are saved.", "warn");
     } else say(msg, "That vote did not go through. Try again.", "error");
@@ -250,6 +291,10 @@ pickR.addEventListener("click", () => choose("R"));
 nextBtn.addEventListener("click", () => void answer("vote"));
 skipBtn.addEventListener("click", () => void answer("skip"));
 $("#more").addEventListener("click", () => void loadBatch());
+// Back and Forward move within this batch without sending anything; an answer changes only with Next.
+$("#back").addEventListener("click", () => idx > 0 && showPair(idx - 1));
+$("#fwd").addEventListener("click", () => (idx + 1 < pairs.length && pairs[idx].answer !== null ? showPair(idx + 1) : advance()));
+$("#backFromDone").addEventListener("click", () => pairs.length && showPair(pairs.length - 1));
 
 // Tapping anywhere on a question card chooses it, like its button; the vote still waits for Next. Ignored while text
 // is selected (someone copying a line).

@@ -24,8 +24,10 @@
       <section id="judge" hidden aria-labelledby="criterion">
         <p class="criterion" id="criterion"></p>
         <div class="progress">
+          <button id="back" class="link nav" type="button" hidden>Back</button>
           <span id="position" aria-live="polite"></span>
           <progress id="bar" max="10" value="0" aria-hidden="true"></progress>
+          <button id="fwd" class="link nav" type="button" hidden>Forward</button>
         </div>
         <div class="pair" id="pair">
           <article class="card pickable" id="leftCard" aria-labelledby="leftH">
@@ -46,7 +48,7 @@
           </div>
           <div id="after" hidden>
             <div class="reasons" role="group" aria-labelledby="reasonsH">
-              <p id="reasonsH" class="reasons-h">Why, if you like <span class="muted">(up to two)</span></p>
+              <p id="reasonsH" class="reasons-h"><span id="whyText">Why is it better?</span> <span class="muted">If you like, up to two</span></p>
               <div id="pills" class="pills"></div>
               <div id="otherRow" class="other-row" hidden>
                 <label for="otherText" class="sr-only">Other reason</label>
@@ -66,6 +68,7 @@
         <p id="betweenText"></p>
         <div class="actions">
           <button id="more" class="primary" type="button">Keep going</button>
+          <button id="backFromDone" type="button">Back to this batch</button>
           <a id="stop" class="button" href="/start">Stop for now</a>
         </div>
       </section>

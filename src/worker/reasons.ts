@@ -2,16 +2,18 @@
 // optional explanation of at most OTHER_MAX_WORDS words. Owner decisions, 25 Nov 2026 (DEVIATIONS.md).
 // The CHECK in migrations/0002_vote_reasons.sql lists the same nine codes; "Other" lives in vote_other (0003).
 
+// Each label says what the chosen question does better than the other, since both may be weak or both strong.
+// Owner decision, 25 Nov 2026: the codes are unchanged; the labels became comparative.
 export const REASONS = [
-  { code: "position", label: "Forces a real position" },
-  { code: "substance", label: "Real constitutional substance" },
-  { code: "source", label: "Strong quote or source" },
+  { code: "position", label: "Forces a clearer position" },
+  { code: "substance", label: "More constitutional substance" },
+  { code: "source", label: "Better quote or source" },
   { code: "followup", label: "More room for follow-up" },
-  { code: "tradeoffs", label: "Hard trade-offs on every side" },
-  { code: "readings", label: "Competing ways to read the Constitution" },
-  { code: "decider", label: "Who should decide" },
-  { code: "connects", label: "Rewards connecting ideas" },
-  { code: "current", label: "Ties to current issues" },
+  { code: "tradeoffs", label: "Sharper trade-offs" },
+  { code: "readings", label: "More competing readings of the Constitution" },
+  { code: "decider", label: "Sharper question of who should decide" },
+  { code: "connects", label: "Better rewards connecting ideas" },
+  { code: "current", label: "Stronger tie to current issues" },
 ] as const;
 
 export type ReasonCode = (typeof REASONS)[number]["code"];

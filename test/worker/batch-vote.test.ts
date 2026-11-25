@@ -35,7 +35,8 @@ describe("batches", () => {
     const text = await res.text();
     const b = JSON.parse(text);
     expect(b.pairs).toHaveLength(10);
-    expect([...keysOf(b)].sort()).toEqual(["bullets", "done", "left", "pairId", "pairs", "right", "size", "stem"]);
+    expect([...keysOf(b)].sort()).toEqual(["answer", "bullets", "done", "left", "pairId", "pairs", "right", "size", "start", "stem"]);
+    expect(b.start).toBe(0);
     for (const it of items) {
       expect(text).not.toContain(it.id);
       expect(text).not.toContain(it.source);

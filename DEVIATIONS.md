@@ -60,3 +60,19 @@ optional step per pair. No frozen file, threshold, item or measure changes.
 any reasons, `client_ms` and `server_ms` include the time spent on reasons. That can only lengthen a voter's median
 time, so the pre-registered 20-second "too fast" flag (PREREG §4) becomes slightly less likely to fire. The threshold
 is unchanged.
+
+**25 November 2026: going back within a batch (owner decision).** A voter can move Back and Forward through the pairs
+of their current batch, until the next batch starts, and change an answer. The vote log stays append-only: a change is
+a new row in `vote_corrections` (with its own reasons in `correction_reasons` and `correction_other`; migration 0004),
+and the original vote is never edited. The newest correction is the vote's answer everywhere: the leaderboard cache,
+the JSON and votes CSV exports (so `analysis/analyze.ts` sees the corrected winner and close call), the reasons export
+and the study health panel, all through the views `votes_effective` and `vote_reasons_effective`. `corrections.csv`
+lists every change with the first and the corrected answer. A skipped pair can be voted on afterwards; the skip stays
+in the log. Timing fields keep the first answer's values. Effect: a vote may record a voter's second thought rather
+than the first; the corrections export shows how often. No frozen file, threshold, item or measure changes.
+
+**25 November 2026: comparative reason labels (owner decision).** The nine pills now say what the chosen question does
+better than the other (for example "Forces a clearer position" instead of "Forces a real position"), under a heading
+"Why is A better?" or "Why is B better?", because both questions may be weak or both strong. The stored codes are
+unchanged. Six reasons were recorded under the earlier wording, all from the owner's test code `Other 04`, which will
+be revoked before launch.

@@ -5,7 +5,7 @@ import { requireAdmin, adminSecretLogin } from "./access";
 import { codeHash, inviteCode } from "./auth";
 import { board, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems } from "./data";
 import type { AppEnv, RoundRow } from "./env";
-import { exportMeta, reasonsCsv, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
+import { correctionsCsv, exportMeta, reasonsCsv, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
 import { studyHealth } from "./health";
 import { isUniqueViolation, nowIso, optInt, randomId, readJsonObject, sha256Hex } from "./util";
 
@@ -240,7 +240,7 @@ adminApi.get("/rounds/:id/bootstrap-input", async (c) => {
   if (!round) return c.json({ error: "unknown_round" }, 404);
   const votes = await c.env.DB.prepare(
     `SELECT v.id, v.left_q AS l, v.right_q AS r, v.winner_q AS w, v.voter_id AS rater, v.role
-       FROM votes v JOIN voters u ON u.id = v.voter_id
+       FROM votes_effective v JOIN voters u ON u.id = v.voter_id
       WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL ORDER BY v.id`,
   )
     .bind(round.id)
@@ -398,8 +398,8 @@ adminApi.get("/votes", async (c) => {
   const sqlWhere = where.length ? "WHERE " + where.join(" AND ") : "";
   const rows = await c.env.DB.prepare(
     `SELECT v.id, v.created_at, u.label, v.role, v.left_q, v.right_q, v.winner_q, v.close_call, v.is_repeat,
-            v.after_board, v.client_ms, v.server_ms
-       FROM votes v JOIN voters u ON u.id = v.voter_id ${sqlWhere} ORDER BY v.id DESC LIMIT ? OFFSET ?`,
+            v.after_board, v.client_ms, v.server_ms, v.correction_id IS NOT NULL AS corrected
+       FROM votes_effective v JOIN voters u ON u.id = v.voter_id ${sqlWhere} ORDER BY v.id DESC LIMIT ? OFFSET ?`,
   )
     .bind(...args, size, page * size)
     .all();
@@ -446,7 +446,7 @@ adminApi.get("/rounds/:id/export.json", async (c) => {
 });
 
 adminApi.get("/rounds/:id/export/:file", async (c) => {
-  const m = /^(votes|skips|ratings|voters|reasons)\.csv$/.exec(c.req.param("file"));
+  const m = /^(votes|skips|ratings|voters|reasons|corrections)\.csv$/.exec(c.req.param("file"));
   if (!m) return c.json({ error: "not_found" }, 404);
   const round = await getRound(c);
   if (!round) return c.json({ error: "unknown_round" }, 404);
@@ -457,6 +457,7 @@ adminApi.get("/rounds/:id/export/:file", async (c) => {
     skips: skipsCsv,
     ratings: ratingsCsv,
     reasons: reasonsCsv,
+    corrections: correctionsCsv,
     voters: (d) => votersCsv(d),
   };
   const csv = await makers[kind](db, round);

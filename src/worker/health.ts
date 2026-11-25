@@ -22,7 +22,7 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
   const first = await db
     .prepare(
       `SELECT v.voter_id, u.label, v.role, v.server_ms, v.client_ms, v.close_call, (v.winner_q = v.left_q) AS left_win
-         FROM votes v JOIN voters u ON u.id = v.voter_id
+         FROM votes_effective v JOIN voters u ON u.id = v.voter_id
         WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL`,
     )
     .bind(round.id)
@@ -94,7 +94,7 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
     .bind(round.id)
     .all<{ day: string; votes: number; voters: number; adult_votes: number }>();
 
-  const ALL_REASONS = `(SELECT vote_id, reason FROM vote_reasons UNION ALL SELECT vote_id, 'other' FROM vote_other)`;
+  const ALL_REASONS = "vote_reasons_effective";
   const LIVE_FIRST = `JOIN votes v ON v.id = x.vote_id JOIN voters u ON u.id = v.voter_id
         WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL`;
   const reasons = await db
@@ -108,14 +108,23 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
   // The newest "Other" explanations, for the owner only.
   const notes = await db
     .prepare(
-      `SELECT v.created_at, u.label, u.role, x.note FROM vote_other x ${LIVE_FIRST} AND x.note <> ''
-        ORDER BY v.id DESC LIMIT 50`,
+      `SELECT v.created_at, u.label, u.role, x.note FROM vote_reasons_effective x ${LIVE_FIRST}
+          AND x.reason = 'other' AND x.note <> '' ORDER BY v.id DESC LIMIT 50`,
     )
     .bind(round.id)
     .all<{ created_at: string; label: string; role: string; note: string }>();
 
+  const corrected = await db
+    .prepare(
+      `SELECT count(*) AS votes, (SELECT count(*) FROM vote_corrections c JOIN votes w ON w.id = c.vote_id WHERE w.round_id = ?1) AS rows
+         FROM votes_effective v WHERE v.round_id = ?1 AND v.correction_id IS NOT NULL AND v.winner_q <> v.original_winner_q`,
+    )
+    .bind(round.id)
+    .first<{ votes: number; rows: number }>();
+
   return {
     round: { id: round.id, name: round.name, state: round.state },
+    corrections: { rows: corrected?.rows ?? 0, winnerChanged: corrected?.votes ?? 0 },
     gate: {
       ...GATE,
       countedAdultRaters,

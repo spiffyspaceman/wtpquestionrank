@@ -17,7 +17,10 @@ import {
 
 export { EXPORT_SKIP_KEYS, EXPORT_VOTE_KEYS, EXPORT_VOTER_KEYS };
 
-/** The full round: voters who voted or skipped in it, every vote (repeats and revoked voters included), every skip. */
+/**
+ * The full round: voters who voted or skipped in it, every vote (repeats and revoked voters included), every skip.
+ * Votes carry their current answer: a corrected vote's newest winner and close call (votes_effective).
+ */
 export async function roundExport(db: D1Database, round: RoundRow): Promise<RoundExport> {
   return roundExportParts(db, round, true);
 }
@@ -32,7 +35,7 @@ async function roundExportParts(db: D1Database, round: RoundRow, withVotes: bool
     .bind(round.id)
     .all<ExportVoter>();
   const votes = withVotes
-    ? (await db.prepare(`SELECT ${EXPORT_VOTE_KEYS.join(", ")} FROM votes WHERE round_id = ? ORDER BY id`).bind(round.id).all<ExportVote>()).results
+    ? (await db.prepare(`SELECT ${EXPORT_VOTE_KEYS.join(", ")} FROM votes_effective WHERE round_id = ? ORDER BY id`).bind(round.id).all<ExportVote>()).results
     : [];
   const skips = await db
     .prepare(`SELECT ${EXPORT_SKIP_KEYS.join(", ")} FROM skips WHERE round_id = ? ORDER BY id`)
@@ -48,7 +51,7 @@ async function roundExportParts(db: D1Database, round: RoundRow, withVotes: bool
 
 const VOTE_ROW_SQL = `SELECT v.id, v.round_id, v.voter_id, v.role, v.left_q, v.right_q, v.winner_q, v.close_call, v.is_repeat,
         v.after_board, v.client_ms, v.server_ms, v.created_at, u.label, v.batch_pair_id, v.item_set_id
-   FROM votes v JOIN voters u ON u.id = v.voter_id`;
+   FROM votes_effective v JOIN voters u ON u.id = v.voter_id`;
 
 export async function votesCsv(db: D1Database, round: RoundRow): Promise<string> {
   const r = await db.prepare(`${VOTE_ROW_SQL} WHERE v.round_id = ? ORDER BY v.id`).bind(round.id).all<ExportVoteRow>();
@@ -125,9 +128,8 @@ export async function reasonsCsv(db: D1Database, round: RoundRow): Promise<strin
     .prepare(
       `SELECT v.id AS vote_id, v.created_at, u.label, v.voter_id, v.role, v.is_repeat, v.left_q, v.right_q, v.winner_q,
               v.close_call, x.reason, x.note
-         FROM (SELECT vote_id, reason, NULL AS note FROM vote_reasons
-               UNION ALL SELECT vote_id, 'other' AS reason, note FROM vote_other) x
-         JOIN votes v ON v.id = x.vote_id JOIN voters u ON u.id = v.voter_id
+         FROM vote_reasons_effective x
+         JOIN votes_effective v ON v.id = x.vote_id JOIN voters u ON u.id = v.voter_id
         WHERE v.round_id = ? ORDER BY v.id, x.reason`,
     )
     .bind(round.id)
@@ -137,4 +139,24 @@ export async function reasonsCsv(db: D1Database, round: RoundRow): Promise<strin
     cols,
     r.results.map((x) => cols.map((k) => (k === "note" && typeof x.note === "string" ? sheetSafe(x.note) : x[k]))),
   );
+}
+
+/** Every correction, with the vote's first answer and the corrected one. The vote log itself is never changed. */
+export async function correctionsCsv(db: D1Database, round: RoundRow): Promise<string> {
+  const r = await db
+    .prepare(
+      `SELECT c.id AS correction_id, c.vote_id, c.created_at, u.label, v.voter_id, v.role, v.is_repeat, v.left_q, v.right_q,
+              v.winner_q AS first_winner_q, v.close_call AS first_close_call, c.winner_q, c.close_call, c.client_ms,
+              (SELECT group_concat(reason, ' ') FROM correction_reasons WHERE correction_id = c.id) AS reasons,
+              (SELECT note FROM correction_other WHERE correction_id = c.id) AS other_note
+         FROM vote_corrections c JOIN votes v ON v.id = c.vote_id JOIN voters u ON u.id = v.voter_id
+        WHERE v.round_id = ? ORDER BY c.id`,
+    )
+    .bind(round.id)
+    .all<Record<string, unknown>>();
+  const cols = [
+    "correction_id", "vote_id", "created_at", "label", "voter_id", "role", "is_repeat", "left_q", "right_q",
+    "first_winner_q", "first_close_call", "winner_q", "close_call", "client_ms", "reasons", "other_note",
+  ];
+  return toCsv(cols, r.results.map((x) => cols.map((k) => (k === "other_note" && typeof x[k] === "string" ? sheetSafe(x[k] as string) : x[k]))));
 }
