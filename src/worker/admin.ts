@@ -2,7 +2,7 @@
 import { Hono, type Context } from "hono";
 import { RATING, ROLES } from "../rating/config";
 import { requireAdmin, adminSecretLogin } from "./access";
-import { codeHash, generateCode } from "./auth";
+import { codeHash, inviteCode } from "./auth";
 import { board, POOLS, rebuildPairCounts, ROLE_NAMES, roundItems } from "./data";
 import type { AppEnv, RoundRow } from "./env";
 import { exportMeta, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
@@ -316,18 +316,39 @@ adminApi.post("/codes", async (c) => {
   const out: { label: string; role: string; code: string }[] = [];
   const stmts: D1PreparedStatement[] = [];
   for (let k = 0; k < count; k++) {
-    const code = generateCode();
+    const id = randomId();
+    const code = await inviteCode(c.env, id);
     const label = `${name} ${String(next++).padStart(2, "0")}`;
     out.push({ label, role, code });
     stmts.push(
       db
         .prepare("INSERT INTO voters (id, code_hash, role, label, is_owner, created_at) VALUES (?, ?, ?, ?, ?, ?)")
-        .bind(randomId(), await codeHash(c.env, code), role, label, owner ? 1 : 0, now),
+        .bind(id, await codeHash(c.env, code), role, label, owner ? 1 : 0, now),
     );
   }
   await db.batch(stmts);
   await audit(c, "create_codes", { role, count, owner, labels: out.map((o) => o.label) });
   return c.json({ ok: true, codes: out });
+});
+
+/**
+ * Show a voter's code again. The code is recomputed from CODE_PEPPER and the voter id, and checked against the stored
+ * hash; codes made before this feature were random and cannot be recovered. Each reveal is audited (label only).
+ */
+adminApi.get("/codes/reveal", async (c) => {
+  const label = c.req.query("label");
+  if (!label || label.length > 40) return c.json({ error: "bad_request" }, 400);
+  if (!c.env.CODE_PEPPER) return c.json({ error: "not_configured" }, 503);
+  const v = await c.env.DB.prepare("SELECT id, code_hash, revoked_at FROM voters WHERE label = ?")
+    .bind(label)
+    .first<{ id: string; code_hash: string; revoked_at: string | null }>();
+  if (!v) return c.json({ error: "unknown_label" }, 404);
+  if (v.revoked_at) return c.json({ error: "revoked", message: `${label} is revoked.` }, 409);
+  const code = await inviteCode(c.env, v.id);
+  if ((await codeHash(c.env, code)) !== v.code_hash)
+    return c.json({ error: "not_recoverable", message: `${label} was made before codes could be shown again. Revoke it and make a new one.` }, 409);
+  await audit(c, "reveal_code", { label });
+  return c.json({ label, code });
 });
 
 adminApi.post("/codes/revoke", async (c) => {

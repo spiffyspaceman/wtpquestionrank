@@ -12,12 +12,26 @@ export const MAX_WRONG_CODES_PER_DAY = 10;
 const CODE_ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 const CODE_LENGTH = 12; // 60 bits
 
-/** A new code, shown as XXXX-XXXX-XXXX. */
-export function generateCode(): string {
-  const bytes = crypto.getRandomValues(new Uint8Array(CODE_LENGTH));
+function formatCode(bytes: Uint8Array): string {
   let s = "";
-  for (const b of bytes) s += CODE_ALPHABET[b & 31];
+  for (const b of bytes.subarray(0, CODE_LENGTH)) s += CODE_ALPHABET[b & 31]; // 256 % 32 = 0: no bias
   return `${s.slice(0, 4)}-${s.slice(4, 8)}-${s.slice(8, 12)}`;
+}
+
+/** A random code, shown as XXXX-XXXX-XXXX. Used only by codes made before 25 Nov 2026; see inviteCode. */
+export function generateCode(): string {
+  return formatCode(crypto.getRandomValues(new Uint8Array(CODE_LENGTH)));
+}
+
+/**
+ * The invite code for a voter, computed from CODE_PEPPER and the voter's id: HMAC-SHA256(pepper, "invite:" + id).
+ * Nothing but code_hash is stored, yet the admin can show a code and link again at any time. Anyone without the
+ * pepper cannot derive a code from the database.
+ */
+export async function inviteCode(env: Env, voterId: string): Promise<string> {
+  const hex = await hmacHex(pepper(env), "invite:" + voterId);
+  const bytes = new Uint8Array(hex.match(/../g)!.map((h) => parseInt(h, 16)));
+  return formatCode(bytes);
 }
 
 /** Upper-case, drop spaces and dashes, read O as 0 and I or L as 1. */

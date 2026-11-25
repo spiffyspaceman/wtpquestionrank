@@ -214,11 +214,27 @@ function renderCodes(): void {
   );
 }
 
+/** "Show link" fetches the voter's code (recomputed server-side, audited) and shows it with a copy button. */
+function revealCell(label: string): HTMLElement {
+  const cell = el("div");
+  cell.append(
+    button("Show link", async () => {
+      try {
+        const r = await api<{ code: string }>(`/admin/api/codes/reveal?label=${encodeURIComponent(label)}`);
+        cell.replaceChildren(el("span", { class: "mono" }, r.code), el("br"), el("span", { class: "mono" }, inviteLink(r.code)), el("br"), copyButton(inviteLink(r.code)));
+      } catch (err) {
+        cell.replaceChildren(el("span", { class: "muted" }, err instanceof ApiError ? err.message : String(err)));
+      }
+    }),
+  );
+  return cell;
+}
+
 async function loadVoters(): Promise<void> {
   const r = await api<{ voters: Record<string, any>[] }>("/admin/api/codes");
   table(
     $<HTMLTableElement>("#voters"),
-    ["Label", "Role", "Owner", "Votes", "Board seen", "Revoked", ""],
+    ["Label", "Role", "Owner", "Votes", "Board seen", "Revoked", "Invite", ""],
     r.voters.map((v) => [
       v.label,
       v.role,
@@ -226,6 +242,7 @@ async function loadVoters(): Promise<void> {
       v.n_votes,
       v.board_seen_at ? fmtDate(v.board_seen_at) : "",
       v.revoked_at ? fmtDate(v.revoked_at) : "",
+      v.revoked_at ? null : revealCell(v.label),
       v.revoked_at
         ? null
         : button("Revoke", () => {

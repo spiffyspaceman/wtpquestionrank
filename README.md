@@ -80,7 +80,10 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
   - Each code also comes as a one-tap invite link, `https://PROD_HOST/#CODE`. The part after `#` never reaches the
     server; the home page reads it, clears it from the address bar before Turnstile loads, and signs in once the check
     passes (one automatic attempt only). The role is still set by the owner, and nothing new is stored.
-  - Each code is shown once, with a CSV download. The database stores only the HMAC.
+  - Codes are computed as `HMAC-SHA256(CODE_PEPPER, "invite:" + voter id)`, so the admin page can show any code and
+    link again (**Show link** in the Voters table, audited by label). The database still stores only
+    `HMAC(CODE_PEPPER, code)`; without the pepper, nothing in it yields a code. Codes made before 25 Nov 2026 were
+    random and cannot be shown again.
   - Revoke by label. Revoking ends the voter's sessions and rebuilds the caches at once.
 - **Raw votes.** Paged, filtered by role, label and repeat.
 - **Refresh intervals.** The admin's browser runs `bootstrapBT` (1,000 reps, seed 20261124, rater resampling) and

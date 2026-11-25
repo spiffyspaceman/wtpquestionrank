@@ -21,6 +21,9 @@ steps finish.*
   `8cb28a9e…53510d0` (Claude checked in D1).
 - `Round 1` created as a **draft** (not yet open, so the item set is not yet frozen).
 - Test codes `Other 01` and `Other 02` created; their links were shared with Claude. No votes yet.
+- From 25 Nov the admin Voters table has **Show link** for any active code (recomputed from `CODE_PEPPER`, audited;
+  only the hash is stored). `Other 01` and `Other 02` were made before that and cannot be shown again; their links
+  are in the chat with Claude, and they get revoked after the test anyway.
 - Cloudflare's zone-wide automatic Web Analytics injects its beacon script into this site's pages. The site's CSP
   blocks it, so browsers never load it and nothing is sent. Owner decision: leave the zone setting as is and rely on
   the CSP (no exclusion rule).
@@ -46,7 +49,7 @@ steps finish.*
    export from step 5.
 7. **Revoke** `Other 01` and `Other 02`. Their sessions end, the caches rebuild and saved intervals are dropped.
 8. Make the real codes by role, ticking **My own code** for the owner's. Download each CSV (label, role, code, link)
-   and keep it with the list of names. Send each person their link; they tap it and are in. The typed code still
+   and keep it with the list of names (any code can also be shown again later with **Show link**). Send each person their link; they tap it and are in. The typed code still
    works as a fallback.
 9. As votes come in, select **Refresh intervals** now and then, and export the JSON at least weekly. Time Travel keeps
     only 7 days on Free, and the admin banner reminds you.
