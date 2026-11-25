@@ -77,6 +77,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov (audit) | On a first visit `/start` puts the task and guidance before the Start button; returning voters see the count first. |
 | 25 Nov (audit) | State 2019-20 U1Q1 is held out of play (`HELD` in `staging.ts`): its second bullet was cut off in transcription. The corrected text goes in under a new id when the owner sends the PDF page. |
 | 25 Nov (audit) | Footnotes: the "sponsored by" line of a special question and its marker are not shown; one address loses its download stamp. Both gave away level or year. |
+| 25 Nov (audit) | The leaderboard leads with rank: "#1" is the large figure and the rating sits beside it in small type (top card, list and table). |
 
 ## Commands
 

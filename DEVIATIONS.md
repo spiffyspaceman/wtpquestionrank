@@ -273,3 +273,8 @@ address (National Finals 2024-25, Unit 3, Question 3), because it gives away the
 footnotes were also corrected (an address cut short at "&", three spacing slips, and stray punctuation left where an
 access date or a dead address was taken out). Each data change is listed in `items/corrections.json`. No stem or
 bullet changed.
+
+**25 November 2026: the leaderboard leads with rank, not rating (owner decision).** Each ranked question now shows
+its rank as the large figure ("#1") with its rating in small type beside it, in the top card, the list and the
+table; the "Top question" label over the first card is gone. The numbers themselves are unchanged. Effect on votes:
+none expected beyond what the leaderboard already has; recorded because voters see it.

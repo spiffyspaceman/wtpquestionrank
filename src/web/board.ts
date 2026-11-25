@@ -124,7 +124,8 @@ function renderTop(): void {
       el(
         "article",
         { class: "hero-card" },
-        el("div", { class: "score big" }, el("span", { class: "rank" }, "#1"), el("strong", {}, String(rating(t))), el("span", {}, statLine(t))),
+        // The rank leads; the rating is the small figure under it (owner decision, 25 Nov 2026).
+        el("div", { class: "score big" }, el("strong", {}, `#${t.rank}`), el("span", { class: "rating" }, `rating ${rating(t)}`), el("span", {}, statLine(t))),
         el("div", { class: "body" }, el("p", { class: "tag" }, tag(t)), el("p", { class: "stem" }, ...marked(t.stem, 0, t.marks)), detail(t)),
       ),
     );
@@ -138,8 +139,8 @@ function renderTop(): void {
         el(
           "div",
           { class: "score" },
-          el("span", { class: "rank" }, `#${r.rank}`),
-          el("strong", {}, String(rating(r))),
+          el("strong", {}, `#${r.rank}`),
+          el("span", { class: "rating" }, `rating ${rating(r)}`),
           r.games && r.wins !== null ? el("span", { class: "won" }, `won ${pct(r.wins / r.games)}`) : null,
         ),
         el(
@@ -699,9 +700,9 @@ function renderAll(): void {
       el(
         "tr",
         { class: isOpen ? "open" : "" },
-        el("td", { class: "num" }, r.rank === null ? "" : String(r.rank)),
+        el("td", { class: "num rankcell" }, r.rank === null ? "" : `#${r.rank}`),
         // An unranked question shows how far it is from a rank, not a rating.
-        r.rating === null ? el("td", { class: "num muted" }, `${r.games} of ${RANK_AT}`) : el("td", { class: "num" }, String(r.rating)),
+        el("td", { class: "num muted" }, r.rating === null ? `${r.games} of ${RANK_AT}` : String(r.rating)),
         el("td", { class: "q" }, toggle),
         el("td", { class: "num wide" }, String(r.games)),
         el("td", { class: "num wide" }, r.games && r.wins !== null ? pct(r.wins / r.games) : ""),
