@@ -85,3 +85,33 @@ matrix; and charts the viewer can adjust in the browser. Effect: a voter who kee
 has seen the crowd's ratings and reasons, which may shape later picks and reason choices. Those votes are already
 marked `after_board = 1`, and the §8 sensitivity analysis restricted to pre-board votes reports the result without
 them. No frozen file, threshold, item or measure changes.
+
+**25 November 2026: an answer from before the leaderboard is fixed once the voter opens it (owner decision, after the
+audit).** Going back within a batch (above) let a voter change a vote cast before the leaderboard after opening it,
+while the vote stayed marked `after_board = 0`. From this deploy the Worker refuses such a change (`/api/correct`
+answers 409 `board_seen`); votes cast after the leaderboard can still be changed within their batch. Effect: the
+"before the leaderboard" votes of PREREG §8 now hold only answers given before it. Any change made before this deploy
+shows in `corrections.csv` with `vote_after_board = 0` and `correction_after_board = 1`; when D1 was last checked on
+25 November (`docs/NEXT_STEPS.md`) the only votes in Round 1 were the owner's 20 test votes (`Other 04`). No frozen file, threshold, item or measure changes.
+
+**25 November 2026: the unchosen question stays readable (owner decision, after the audit).** After a pick, the other
+question no longer fades to 45% opacity (its text measured about 2:1 against the card). It now sits flat on a dashed
+outline with its text at full ink, and the chosen question has a solid burgundy outline. Effect: a voter can re-read
+the other question before pressing Next, which may make changing the first tap more likely. No frozen file,
+threshold, item or measure changes.
+
+**25 November 2026: key switch, Sign out and four short lines (owner decision, after the audit).** The home page has
+a "Letter and number keys" checkbox that turns the single-key shortcuts (S, C, 0 to 9) off in that browser; arrows
+and Enter stay. The home page has a Sign out link (it ends the session on that device). The voting page says "Loading
+the next pairs" before the first pair, "Two chosen" when the reason limit is reached, and "Next saves the change" on
+a pair already answered; the leaderboard says "Loading the leaderboard". Effect: none expected on votes; recorded
+because voters see them. No frozen file, threshold, item or measure changes.
+
+## Clarifications added 25 November 2026 (audit)
+
+- **Which votes steer the pairing.** `src/worker/voter.ts` fits the `all` pool (every live voter, students included)
+  to choose pairs. PREREG §4 fixes the pairing rule but not the pool that feeds it. Student votes therefore help
+  decide which pairs adults see; they do not enter the adult ratings.
+- **Trials after a skipped pair is voted on.** A pair that is skipped and later voted on (by going back) counts as
+  two trials toward the 20-trial gap before a swapped repeat, so that repeat can come one real trial early.
+  Unchanged for now; the audit lists it as open.

@@ -34,6 +34,7 @@ A change needs the owner's agreement and an entry in `DEVIATIONS.md` first.
 | `npm run typecheck` | TypeScript for the Node code, the Worker, the pages and the Worker tests. |
 | `npm run build` | Build the pages into `dist/`. |
 | `npm run dev` | Build, then `wrangler dev` with a local D1. |
+| `npm run test:ui` | Browser smoke test of the voting flow against a local copy (needs Playwright and a built `dist/`). Not part of `npm test`. |
 | `node scripts/dev-local.mjs` | Like `wrangler dev`, but the Worker's outbound fetches go through Node (for sandboxes where only Node can reach the internet). |
 
 Local development reads secrets from `.dev.vars` (never committed). Example:
@@ -62,7 +63,11 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
   session cookie.
   - The throttle is 10 a day per SHA-256 of a daily salt and the client IP.
   - The cookie is `__Host-wtpqr`: HttpOnly, Secure, SameSite=Lax, 90 days.
-- `GET /api/me`, `GET /api/batch`, `POST /api/vote`, `POST /api/skip`, `GET /api/leaderboard?pool=`.
+- `GET /api/me`, `GET /api/batch`, `POST /api/vote`, `POST /api/correct`, `POST /api/skip`, `POST /api/signout`,
+  `GET /api/leaderboard?pool=`.
+  - `/api/correct` changes an answer in the voter's newest batch. It refuses a vote cast before the voter first
+    opened the leaderboard once they have opened it.
+  - `/api/signout` ends the session on that device only.
 - Pairs go to the browser as an opaque pair id with "L" and "R" sides. Question ids, cycle, unit and source never
   leave the server.
 
@@ -94,10 +99,17 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
     of at most 2,000 votes and joins them in the browser, so no request's work grows with the round (Workers Free:
     10 ms CPU per request). A test checks that the stitched files equal the one-shot routes byte for byte.
   - CSV of votes, skips, ratings and voters (voters: label, role and revoked date only).
-  - A banner appears when no export is newer than 7 days.
+  - **Download full backup:** every table except the caches (`pair_counts`, `rating_snapshots`), `sessions`,
+    `attempts` and `voters.code_hash`, read in pages of 1,000 rows and saved as one JSON file. It is the only export
+    that holds `batches` and `batch_pairs` (seed, position, pairing reason, issue time).
+  - A banner appears when no JSON export, votes CSV or backup is newer than 7 days.
+- **Voters table.** For each code: signed in yet, first-showing votes in the current round, votes to 20, last vote.
+- **Study health.** The data gate, a forecast (adult votes still needed and the pace), votes per day, reasons, rater
+  flags. Counts only.
 
 **Guards:**
 - **Host guard.** `/api` and `/admin` return 404 on any host but `PROD_HOST`.
+- **https only.** GET and HEAD over plain http redirect to https; any other method gets 400.
 - **Branch previews.** The `previews` block in `wrangler.jsonc` is empty, so previews get no D1 and no secrets.
 - **No other URLs.** `workers_dev` and `preview_urls` are off.
 - **Headers.** Every response carries a CSP limited to self plus `challenges.cloudflare.com`, plus `X-Robots-Tag:

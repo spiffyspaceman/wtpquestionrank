@@ -54,14 +54,21 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov | Reason pills are comparative ("Why is A better?"; "Forces a clearer position"); codes unchanged. |
 | 25 Nov | Leaderboard: top question in full, #2–#10 beside an Explore panel (groups, any two variables, distribution, head-to-head), then a searchable, sortable, paged list. Tags read "2024-25 U4Q1". Per-question reason counts are shown to voters; Other notes never are. |
 | 25 Nov | Admin "Study health": data gate, votes per day, reasons given, rater flags. Report only; no §7 measure (no repeat agreement) before the analysis. |
+| 25 Nov | After the audit (`docs/AUDIT_2026-11-25.md`): a vote cast before the leaderboard cannot be changed once the voter has opened it (DEVIATIONS.md). |
+| 25 Nov | Voters get a Sign out link on `/start`; sessions stay 90 days. |
+| 25 Nov | The unchosen question keeps full-ink text after a pick; letter and number keys can be switched off on `/start`; four short status lines on the voting page and leaderboard (DEVIATIONS.md). |
+| 25 Nov | Round 2 runs as six rounds, one per unit (about 70 questions each), with one linked fit offline. A single 420-question round needs far more CPU per batch than the Free plan allows. |
+| 25 Nov | Admin gets a full backup (every table but caches, sessions, attempts and code hashes), an invitation tracker in the Voters table, and a gate forecast in Study health (counts only). |
+| 25 Nov | Method A2: re-run the LLM judges with the human arm's guidance and reasons, as a registered addendum. Draft in `PREREG_Addendum_A2_DRAFT.md`; nothing runs until the owner approves it. |
 
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 135 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 139 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # pages into dist/
+npm run test:ui        # browser smoke test of the voting flow (needs Playwright; not part of npm test or the deploy)
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)
 ```
 
@@ -86,3 +93,7 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
 - Local D1 state is keyed by the database id; after an id change, re-run
   `npx wrangler d1 migrations apply wtpquestionrank --local`.
 - Turnstile does not pass a headless browser on the live site; live test votes are the owner's to cast.
+- D1 allows 100 bound parameters per query and local D1 does not enforce it: send id lists through `chunks()` in
+  `src/worker/util.ts`.
+- Always Use HTTPS is a zone-wide setting, so it also changes `reader.spiffyspaceman.com`. It is the owner's to flip;
+  the Worker redirects http itself.

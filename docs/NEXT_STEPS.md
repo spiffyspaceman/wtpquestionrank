@@ -68,30 +68,43 @@ steps finish.*
 8. At freeze: export the JSON and run the analysis command in BUILD_STEPS §10 step 5.
 9. After launch, delete the Cloudflare API token "wtpquestionrank D1 setup" (expires 2 December 2026 anyway).
 
-## Open from the audit of 25 Nov 2026 (`docs/AUDIT_2026-11-25.md`)
+## After the audit of 25 Nov 2026 (`docs/AUDIT_2026-11-25.md`)
 
-Seven fixes are on branch `claude/busy-franklin-ct2lna` (not on `main`): chunked question lookups, the correction
-cache race, https-only, long caching for hashed files, two new `corrections.csv` columns, keyboard fixes on the
-voting page, and the export order. Merging deploys them.
+**Live on `main` (merged 25 Nov at the owner's word):** chunked question lookups, the correction cache fix, https
+only, long caching for hashed files, two new `corrections.csv` columns, keyboard fixes on the voting page, the export
+order.
 
-Owner decisions needed (each is a proposal in the audit; none is built):
+**Built on branch `claude/busy-franklin-ct2lna`, waiting for the owner's word to merge (owner decisions, 25 Nov):**
+- a vote from before the leaderboard cannot be changed once the voter has opened it (DEVIATIONS.md);
+- Sign out on `/start`; the unchosen question stays readable; a switch for letter and number keys; four short
+  status lines (DEVIATIONS.md);
+- admin: **Download full backup**, the invitation tracker in the Voters table, the gate forecast in Study health;
+- `npm run test:ui`, a browser smoke test of the voting flow (not part of the deploy).
 
-A. **Merge the audit branch** to `main`, or say which commits to drop.
-B. **Post-board corrections (finding 1):** refuse a change to a pre-leaderboard vote once the voter has opened the
-   leaderboard? It narrows Back, so it is a logged deviation. Until then, use `correction_after_board` in
-   `corrections.csv` to find such votes.
-C. **Round 2 (finding 2):** 420 questions in one round needs about 380 ms of CPU per batch against 10 ms on Free.
-   Choose: Workers Paid, six rounds by unit (recommended), or a cheaper pairing module for Round 2.
-D. **Sign out (finding 7):** add a Sign out link on `/start`?
-E. **Unchosen card and shortcuts (findings 9, 10):** keep the unchosen question readable after a pick; add a switch
-   for single-key shortcuts?
-F. **Cloudflare settings (yours):** turn on Always Use HTTPS for the zone; change the Workers Builds command to
-   `npm ci && npm run typecheck && npm test && npm run build`.
-G. **Full backup export (feature 1)** and the **invitation tracker (feature 4):** build them?
-H. **Like-for-like LLM run:** re-run method A with the human arm's guidance and reasons as a registered addendum?
+### Owner: now
 
-Claude, once decided: per-round `after_board` (migration 0005) before Round 2; a Playwright smoke test of the voting
-flow; record in DEVIATIONS.md, as a clarification, that pairing uses the `all` pool (students included).
+A. **Say "merge"** and Claude puts the branch above on `main` (it deploys). Nothing in it adds a migration.
+B. **Cloudflare, two settings.** The saved API token cannot read or change either (it holds D1 Edit and Workers
+   Scripts Read only), so these are yours:
+   1. Workers & Pages > `wtpquestionrank` > Settings > Build > Build command: set it to
+      `npm ci && npm run typecheck && npm test && npm run build`.
+   2. Always Use HTTPS (zone `spiffyspaceman.com` > SSL/TLS > Edge Certificates). It is zone-wide, so it also changes
+      `reader.spiffyspaceman.com`. Optional: the Worker now redirects http to https by itself.
+C. **Read `PREREG_Addendum_A2_DRAFT.md`** and one packet, for example `llm-arm/packets-a2/b0j0.md`. Answer its three
+   open points (the 0.10 margin, close calls, model and effort). On your yes Claude removes DRAFT, hashes the file,
+   logs it in DEVIATIONS.md and runs the 30 judges. Nothing has run.
+D. After the merge, add to the weekly routine in step 7: **Download full backup** (it holds the batches and pairing
+   trail that no other export has).
+
+### Claude: later
+
+- **Round 2 as six rounds by unit** (owner decision, 25 Nov), after Round 1 freezes. Before it opens: migration 0005
+  so `after_board` is kept per round, not per voter (audit finding 6); the item sets per unit; the offline linked
+  fit.
+- Audit items still open, none urgent: a skipped pair later voted on counts as two trials (finding 17); the
+  leaderboard's reasons query reads every vote on each view (finding 20); the page ignores `duplicate` from another
+  device (finding 21); `/start` says "No round yet" after the last round closes (finding 22); the leaderboard layout
+  notes in the design review.
 
 ## Later (owner decisions, 25 Nov 2026)
 
