@@ -148,7 +148,7 @@ button.primary:hover { filter: brightness(1.08); }
 button:disabled { opacity: 0.55; cursor: not-allowed; }
 button.link { min-height: 48px; padding: 0 4px; border: 0; background: none; color: var(--accent); text-decoration: underline; text-underline-offset: 0.15em; }
 
-input[type="text"], input[type="search"], input[type="number"], input[type="password"], select {
+input[type="text"], input[type="email"], input[type="search"], input[type="number"], input[type="password"], select {
   font: inherit; font-size: 1rem; min-height: 48px; padding: 8px 12px; border-radius: var(--radius);
   border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); width: 100%;
 }
@@ -175,6 +175,12 @@ label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
 }
 .signin button.primary { width: 100%; margin-top: 8px; }
 .turnstile { margin-top: 14px; min-height: 65px; }
+/* Sign-up: the role choice, one to a line. A code is short and centred; an email in the same box is not. */
+fieldset.roles { border: 0; padding: 0; margin: 14px 0 0; display: grid; }
+fieldset.roles legend { padding: 0; margin-bottom: 2px; }
+fieldset.roles label.check { min-height: 44px; }
+fieldset.roles input { width: 22px; height: 22px; accent-color: var(--accent); }
+input.code.email { font-size: 1.05rem; letter-spacing: 0; }
 .fineprint { font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 24px; }
 
 /* ---------- voting ---------- */
@@ -446,6 +452,7 @@ th { font-style: italic; color: var(--muted); }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82em; word-break: break-all; }
 td button, td .button { min-height: 36px; padding: 4px 10px; font-size: 0.85rem; }
+td select { min-height: 36px; padding: 4px 8px; font-size: 0.85rem; width: auto; }
 .btn-group { display: grid; grid-template-columns: 4.5rem 1fr; gap: 6px; align-items: center; }
 .btn-group + .btn-group { margin-top: 6px; }
 .btn-group .btns { display: flex; flex-wrap: wrap; gap: 6px; }

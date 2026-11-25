@@ -109,6 +109,45 @@ try {
   check(stacked && (await linkPage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)), "on a phone the questions stack and the page fits the width");
   await linkCtx.close();
 
+  // Sign-up by email: the owner's sign-up link opens a form (email, optional name, role); afterwards the address
+  // typed in the sign-in box is the way back in.
+  const joinLink = (await post("/admin/api/join-links", {}, adm)).json;
+  const joinCtx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await joinCtx.route("https://challenges.cloudflare.com/**", (route) =>
+    route.fulfill({ contentType: "text/javascript", body: "window.turnstile={render:function(el,o){setTimeout(function(){o.callback('smoke-token')},0);return 'w'},reset:function(){}};" }),
+  );
+  const joinPage = await joinCtx.newPage();
+  joinPage.on("pageerror", (e) => failures.push("join page: " + e.message));
+  await joinPage.goto(B + "/join");
+  await joinPage.waitForFunction(() => !document.querySelector("#msg").hidden);
+  check(!(await joinPage.isVisible("#join")) && (await joinPage.textContent("#msg")).includes("sign-up link"), "the sign-up page without its link shows no form");
+  await joinPage.goto(`${B}/join#${joinLink.word}`);
+  await joinPage.waitForSelector("#join");
+  check(!joinPage.url().includes(joinLink.word), "the sign-up link's word is not left in the address bar");
+  await joinPage.fill("#email", "Smoke.Tester@Example.org");
+  await joinPage.click("#go");
+  check((await joinPage.textContent("#msg")).includes("Choose the role"), "sign-up asks for a role before it sends anything");
+  await joinPage.fill("#name", "Smoke Tester");
+  await joinPage.check('input[name="role"][value="teacher"]');
+  if (SHOTS) (fs.mkdirSync(SHOTS, { recursive: true }), await joinPage.screenshot({ path: `${SHOTS}/join.png`, fullPage: true }));
+  check((await joinPage.locator('input[name="role"]').count()) === 5 && (await joinPage.locator('input[name="role"][value="student"]').count()) === 0, "the roles offered are the five adult roles");
+  await joinPage.click("#go");
+  await joinPage.waitForURL(B + "/start");
+  await joinPage.waitForSelector("#startBtn:not([hidden])");
+  check((await joinPage.textContent("#who")) === "Teacher", "signing up by email lands on the home page in the chosen role");
+  check(!(await joinPage.content()).toLowerCase().includes("smoke.tester"), "the address is not shown on the voter's page");
+  await joinPage.click("#signOut");
+  await joinPage.waitForURL(B + "/");
+  await joinPage.waitForFunction(() => window.turnstile);
+  await joinPage.fill("#code", "smoke.tester@example.org");
+  await joinPage.waitForTimeout(100);
+  await joinPage.click("#go");
+  await joinPage.waitForURL(B + "/start");
+  check(true, "the address typed in the sign-in box signs back in");
+  const listed = (await get("/admin/api/codes", adm)).voters.find((v) => v.email === "smoke.tester@example.org");
+  check(Boolean(listed) && listed.name === "Smoke Tester" && listed.role === "teacher", "the owner's list shows the address, the name and the role");
+  await joinCtx.close();
+
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, extraHTTPHeaders: { cookie: session } });
   const page = await ctx.newPage();
   const errors = [];
@@ -311,6 +350,8 @@ try {
   await adminPage.goto(B + "/admin");
   await adminPage.waitForSelector("#rounds tbody tr");
   check(new RegExp(`${inPlay} of \\d+ in play`).test(await adminPage.textContent("#rounds tbody tr")), "the admin page lists the round with its questions in play");
+  await adminPage.waitForSelector("#joinLinks tbody tr");
+  check((await adminPage.textContent("#joinLinks tbody tr")).includes("open") && (await adminPage.textContent("#voters")).includes("smoke.tester@example.org"), "the admin page lists the sign-up link and the address that signed up");
   await adminCtx.close();
 
   // Sign out

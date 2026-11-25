@@ -1,5 +1,5 @@
-// Migration 0008 against a database shaped like production's on 25 Nov 2026: migrations 0001 to 0007 applied, a
-// closed round on the launch set, an open round, and a draft round on the open-ended full set. The route tests only
+// Migrations against a database that already holds rows, shaped like production's on 25 Nov 2026 (a closed round on
+// the launch set, an open round, a draft round on the open-ended full set, voters with codes). The route tests only
 // ever apply migrations to an empty database.
 import fs from "node:fs";
 import path from "node:path";
@@ -41,6 +41,29 @@ describe.skipIf(!sqlite)("migration 0008 on a populated database", () => {
     db.exec("INSERT INTO round_in_play (round_id, question_id, joined_at) VALUES ('open', 'q1', 't')");
     expect(() => db.exec("DELETE FROM round_in_play")).toThrow(/append-only/);
     expect(() => db.exec("UPDATE round_in_play SET joined_at = 'x'")).toThrow(/append-only/);
+    db.close();
+  });
+});
+
+describe.skipIf(!sqlite)("migration 0009 on a populated database", () => {
+  it("leaves voters who were given codes without an address, and allows one voter per address", () => {
+    const db = new sqlite!.DatabaseSync(":memory:");
+    const files = fs.readdirSync(dir).filter((f) => f.endsWith(".sql")).sort();
+    expect(files).toContain("0009_email_signup.sql");
+    for (const f of files.filter((f) => f < "0009")) db.exec(fs.readFileSync(path.join(dir, f), "utf8"));
+    db.exec(`INSERT INTO voters (id, code_hash, role, label, is_owner, created_at) VALUES
+      ('v1', 'h1', 'judge', 'Judge 01', 0, 't'), ('v2', 'h2', 'student', 'Student 01', 0, 't');`);
+    db.exec(fs.readFileSync(path.join(dir, "0009_email_signup.sql"), "utf8"));
+    const rows = db.prepare("SELECT id, email, name, join_link_id FROM voters ORDER BY id").all() as Record<string, unknown>[];
+    expect(rows.map((r) => ({ ...r }))).toEqual([
+      { id: "v1", email: null, name: null, join_link_id: null },
+      { id: "v2", email: null, name: null, join_link_id: null },
+    ]);
+    // Many voters without an address; one voter per address.
+    db.exec("INSERT INTO voters (id, code_hash, role, label, is_owner, created_at, email, name) VALUES ('v3', 'h3', 'coach', 'Coach 01', 0, 't', 'a@example.org', 'A')");
+    expect(() => db.exec("INSERT INTO voters (id, code_hash, role, label, is_owner, created_at, email) VALUES ('v4', 'h4', 'coach', 'Coach 02', 0, 't', 'a@example.org')")).toThrow(/UNIQUE/);
+    db.exec("INSERT INTO join_links (id, word_hash, created_at) VALUES ('l1', 'w1', 't')");
+    expect(() => db.exec("INSERT INTO join_links (id, word_hash, created_at) VALUES ('l2', 'w1', 't')")).toThrow(/UNIQUE/);
     db.close();
   });
 });

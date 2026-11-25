@@ -32,7 +32,7 @@ let autoTried = false;
 async function redeem(): Promise<void> {
   const code = codeInput.value.trim();
   if (!code) {
-    say(msg, "Enter your invite code.", "error");
+    say(msg, "Enter your invite code or email.", "error");
     codeInput.focus();
     return;
   }
@@ -101,9 +101,16 @@ async function start(): Promise<void> {
   document.head.append(s);
 }
 
+// An email reads badly in the wide-spaced type a code is set in.
+codeInput.addEventListener("input", () => codeInput.classList.toggle("email", codeInput.value.includes("@")));
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   void redeem();
 });
+
+// A link pasted into this same tab changes only the part after "#", which does not reload the page: reload, so the
+// link is read like any other.
+window.addEventListener("hashchange", () => location.reload());
 
 void start();

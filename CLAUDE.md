@@ -22,9 +22,13 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
   published footnotes with access dates removed. Never send question ids, cycle, unit, level, number or the CCE
   source line to the voting page. Votes are append-only; "reset" means a new round. A change to what
   voters see or when (unlock threshold, items, pairing) is a deviation: ask first, then log it.
-- **Privacy:** store no names, emails, phone numbers or free text about voters (some are students). Names stay on the
-  owner's own list, keyed by label ("Judge 07"). The owner reconfirmed this on 25 Nov 2026. **One exception (owner,
-  25 Nov 2026):** the "Other" reason may carry the voter's own explanation of a pick, at most 20 words, for every
+- **Privacy (changed by the owner on 25 Nov 2026):** an adult may sign up by email. For those voters the site stores
+  the address, an optional name and the role they chose (`voters.email`, `voters.name`; migration 0009). Those two
+  fields go to `/admin`, the voters CSV and the full backup, and nowhere else: never to a voter's browser, the round
+  JSON, the votes CSV or the audit log (which names labels). **Students never sign up by email:** store no name,
+  email or free text about a student, and never offer Student on the sign-up form. No phone numbers for anyone. The
+  address is not verified and the site sends no email; do not add sending without the owner's yes. **One more
+  exception (owner, 25 Nov 2026):** the "Other" reason may carry the voter's own explanation of a pick, at most 20 words, for every
   voter, students included. It lives only in `vote_other`, is shown only in admin and `reasons.csv`, and never on
   another voter's page (a voter sees their own note when they go Back within their current batch; owner, 25 Nov
   2026). No other free-text field without the owner's yes.
@@ -81,15 +85,16 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov (audit) | A skipped pair later voted on is one trial toward the 20-trial repeat gap. One swapped repeat per batch stays. |
 | 25 Nov (audit) | The adults board, like a role board, waits for three voters in the round; a voter with no open board is told so and nothing is marked seen. |
 | 25 Nov (audit) | Leaderboard layout: the list of #2 to #10 has the full width and the Explore charts follow it. Head-to-head counts go to the page added up by group, never per pair of questions. |
+| 25 Nov (evening) | **Supersedes "No email or phone accounts" and owner-assigned roles, for adults.** Sign-up by email through a sign-up link the owner makes in admin (`/join#WORD`; `src/worker/signup.ts`, migration 0009): address, optional name, and a self-chosen role (Judge, Coach, Teacher, Alumni, Other). No verification: the address is a username and the sign-in box takes a code or an email. The role is fixed once chosen; the owner can change it in admin. Students keep codes. Addresses appear in admin, the voters CSV and the backup only (DEVIATIONS.md). |
 
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 196 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 206 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # typecheck, then pages into dist/ (so the deploy cannot ship a type error)
-npm run test:ui        # browser smoke test, 54 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
+npm run test:ui        # browser smoke test, 63 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
 npm run premerge       # all of the above in order; run it before merging anything that touches src/web
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)
 ```
@@ -99,8 +104,8 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
 - `src/worker/`: the Hono Worker. `voter.ts` (voting API), `admin.ts` (admin API), `data.ts` (rounds, caches,
   board), `access.ts`, `auth.ts`, `guards.ts`, `exports.ts` and `export-shape.ts` (must match `RoundExport`),
   `pools.ts`, `reasons.ts` (pill codes), `health.ts` and `gate.ts` (study health), `staging.ts` (which questions
-  are in play in a staged round, and which are held back).
-- `src/web/`: the pages (sign-in `index`, voter home `start`, vote, board, admin) and `styles.css`. Fonts in `src/web/public/fonts/`.
+  are in play in a staged round, and which are held back), `signup.ts` (email sign-up and sign-up links).
+- `src/web/`: the pages (sign-in `index`, sign-up `join`, voter home `start`, vote, board, admin) and `styles.css`. Fonts in `src/web/public/fonts/`.
 - `items/`: the frozen launch item file, `sources_v1.json` (confirmed quoted sources), `corpus.csv` (scores only),
   `transcribe.py` and `transcribed.json` (every question transcribed from CCE's PDFs; the PDFs themselves are not in
   the repo), `build_round_sets.py` and `rounds/all.json` (every question in one item file, bundled by
@@ -141,6 +146,11 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
 - Tests in one file share a database (rounds and sets made by an earlier test are still there). Close other rounds
   first, and never assume a set's round is new.
 - `.dev.vars` is read by `npm run test:ui` as it stands: a `PROD_HOST` on another port makes that script fail.
+- A string written through a shell heredoc loses `\u0000`-style escapes (they arrive as raw control characters and
+  the file no longer compiles). Reuse `cleanNote()` from `reasons.ts` for cleaning typed text; do not retype its
+  pattern.
+- A link pasted into a tab already on that page changes only the part after `#`, which does not reload it; the
+  sign-in and sign-up pages reload on `hashchange` for that reason.
 - No test may assert on wall-clock time with a tight bound: a 50 ms bound in `src/rating/rating.test.ts` failed about
   one run in five on a busy machine and would have blocked a deploy. Pipe test output through `grep` or `tail` only
   with `set -o pipefail`, or a failing run looks like a passing one.

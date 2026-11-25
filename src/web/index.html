@@ -17,14 +17,14 @@
       <p class="intro">Compare two published We the People hearing questions at a time and pick the better one.</p>
 
       <form id="redeem" class="signin" novalidate>
-        <label for="code">Your invite code</label>
-        <input id="code" class="code" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40" required />
+        <label for="code">Your invite code or email</label>
+        <input id="code" class="code" type="text" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="254" required />
         <div id="turnstile" class="turnstile"></div>
         <p id="msg" class="notice" role="alert" hidden></p>
         <button id="go" class="primary" type="submit">Start</button>
       </form>
 
-      <p class="fineprint">Your code is your login on any device. The site stores no names or email addresses.</p>
+      <p class="fineprint">Your code or email is your login on any device. For those who signed up by email, the site keeps the address, the name if one was given, and the role chosen; only the organizer sees them.</p>
     </main>
     <script type="module" src="./home.ts"></script>
   </body>

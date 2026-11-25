@@ -207,7 +207,7 @@ describe("raw votes and exports", () => {
     for (const x of ex.skips) expect(Object.keys(x)).toEqual([...EXPORT_SKIP_KEYS]);
 
     const voters = await (await admin(`/admin/api/rounds/${id}/export/voters.csv`)).text();
-    expect(voters.split("\r\n")[0]).toBe("label,role,revoked_at");
+    expect(voters.split("\r\n")[0]).toBe("label,role,revoked_at,email,name");
     const votes = await (await admin(`/admin/api/rounds/${id}/export/votes.csv`)).text();
     expect(votes.trim().split("\r\n")).toHaveLength(13);
     const skips = await (await admin(`/admin/api/rounds/${id}/export/skips.csv`)).text();

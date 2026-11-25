@@ -9,6 +9,7 @@ import type { AppEnv, RoundRow } from "./env";
 import { correctionsCsv, exportMeta, reasonsCsv, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
 import { studyHealth } from "./health";
 import { storedNotes } from "./notes";
+import { joinWord, joinWordHash } from "./signup";
 import { HELD, STAGE } from "./staging";
 import { chunks, isUniqueViolation, nowIso, optInt, randomId, readJsonObject, sha256Hex } from "./util";
 
@@ -490,7 +491,7 @@ adminApi.get("/codes", async (c) => {
   // round (the leaderboard opens at 20 of them), and the last vote. Nothing new is stored: signed_in_at is the oldest
   // session still on file (sessions lapse after 90 days and end on sign-out, so it can be later than the first use).
   const r = await c.env.DB.prepare(
-    `SELECT u.label, u.role, u.is_owner, u.created_at, u.revoked_at, u.board_seen_at, COALESCE(c.n, 0) AS n_votes,
+    `SELECT u.label, u.role, u.is_owner, u.created_at, u.revoked_at, u.board_seen_at, u.email, u.name, COALESCE(c.n, 0) AS n_votes,
             COALESCE(c.first_votes, 0) AS round_votes, c.last_vote_at,
             (SELECT MIN(s.created_at) FROM sessions s WHERE s.voter_id = u.id) AS signed_in_at
        FROM voters u
@@ -559,6 +560,67 @@ adminApi.get("/codes/reveal", async (c) => {
     return c.json({ error: "not_recoverable", message: `${label} was made before codes could be shown again. Revoke it and make a new one.` }, 409);
   await audit(c, "reveal_code", { label });
   return c.json({ label, code });
+});
+
+/**
+ * Change a voter's role (for someone who chose the wrong one at sign-up). Votes already cast keep the role they were
+ * cast under; later votes take the new one. Audited by label.
+ */
+adminApi.post("/voters/role", async (c) => {
+  const body = await readJsonObject(c.req.raw);
+  const label = body?.label;
+  const role = body?.role;
+  if (typeof label !== "string" || label.length > 40 || typeof role !== "string" || !(ROLES as readonly string[]).includes(role)) return c.json({ error: "bad_request" }, 400);
+  const v = await c.env.DB.prepare("SELECT id, role FROM voters WHERE label = ?").bind(label).first<{ id: string; role: string }>();
+  if (!v) return c.json({ error: "unknown_label" }, 404);
+  if (v.role === role) return c.json({ ok: true, unchanged: true });
+  await c.env.DB.prepare("UPDATE voters SET role = ? WHERE id = ?").bind(role, v.id).run();
+  await audit(c, "change_role", { label, was: v.role, role });
+  return c.json({ ok: true, role });
+});
+
+// ---------- sign-up links (email sign-up; migration 0009) ----------
+
+/** The links, newest first, with how many voters signed up through each. Words are shown only on request. */
+adminApi.get("/join-links", async (c) => {
+  const r = await c.env.DB.prepare(
+    `SELECT l.id, l.created_at, l.closed_at, (SELECT count(*) FROM voters u WHERE u.join_link_id = l.id) AS n_signed_up
+       FROM join_links l ORDER BY l.created_at DESC, l.id`,
+  ).all();
+  return c.json({ links: r.results });
+});
+
+const joinUrl = (c: Context<AppEnv>, word: string) => `https://${c.env.PROD_HOST}/join#${word}`;
+
+/** Make a sign-up link. Anyone who opens it can sign up with an email address until it is closed. */
+adminApi.post("/join-links", async (c) => {
+  if (!c.env.CODE_PEPPER) return c.json({ error: "not_configured", message: "CODE_PEPPER is not set." }, 503);
+  const id = randomId(9);
+  const word = await joinWord(c.env, id);
+  await c.env.DB.prepare("INSERT INTO join_links (id, word_hash, created_at) VALUES (?, ?, ?)").bind(id, await joinWordHash(c.env, word), nowIso()).run();
+  await audit(c, "create_join_link", { id });
+  return c.json({ ok: true, id, word, link: joinUrl(c, word) });
+});
+
+/** Show a sign-up link again (recomputed from CODE_PEPPER and the link's id, and checked against the stored hash). */
+adminApi.get("/join-links/:id/reveal", async (c) => {
+  if (!c.env.CODE_PEPPER) return c.json({ error: "not_configured" }, 503);
+  const l = await c.env.DB.prepare("SELECT id, word_hash FROM join_links WHERE id = ?").bind(c.req.param("id")).first<{ id: string; word_hash: string }>();
+  if (!l) return c.json({ error: "not_found" }, 404);
+  const word = await joinWord(c.env, l.id);
+  if ((await joinWordHash(c.env, word)) !== l.word_hash) return c.json({ error: "not_recoverable" }, 409);
+  await audit(c, "reveal_join_link", { id: l.id });
+  return c.json({ id: l.id, word, link: joinUrl(c, word) });
+});
+
+/** Close a sign-up link: it takes no new sign-ups. Addresses already signed up keep working. */
+adminApi.post("/join-links/:id/close", async (c) => {
+  const l = await c.env.DB.prepare("SELECT id, closed_at FROM join_links WHERE id = ?").bind(c.req.param("id")).first<{ id: string; closed_at: string | null }>();
+  if (!l) return c.json({ error: "not_found" }, 404);
+  if (l.closed_at) return c.json({ ok: true, already: true });
+  await c.env.DB.prepare("UPDATE join_links SET closed_at = ? WHERE id = ? AND closed_at IS NULL").bind(nowIso(), l.id).run();
+  await audit(c, "close_join_link", { id: l.id });
+  return c.json({ ok: true });
 });
 
 adminApi.post("/codes/revoke", async (c) => {
@@ -657,7 +719,7 @@ export const BACKUP_TABLES: Record<string, string> = {
   questions: "*",
   item_set_items: "*",
   rounds: "*",
-  voters: "id, role, label, is_owner, created_at, revoked_at, board_seen_at",
+  voters: "id, role, label, is_owner, created_at, revoked_at, board_seen_at, email, name, join_link_id",
   batches: "*",
   batch_pairs: "*",
   votes: "*",
@@ -670,6 +732,8 @@ export const BACKUP_TABLES: Record<string, string> = {
   admin_audit: "*",
   round_board_seen: "*",
   round_in_play: "*",
+  // Without word_hash: like a code's hash, it is a credential. A link's word is recomputed from CODE_PEPPER.
+  join_links: "id, created_at, closed_at",
 };
 export const BACKUP_PAGE_MAX = 1000;
 

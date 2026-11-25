@@ -8,6 +8,7 @@ import {
   codeHash,
   createSession,
   endSession,
+  inviteCode,
   MAX_WRONG_CODES_PER_DAY,
   recordWrongCode,
   requireVoter,
@@ -33,6 +34,7 @@ import {
 import type { AppEnv, RoundRow, VoterRow } from "./env";
 import sourcesFile from "../../items/sources_v1.json";
 import { poolsForRole } from "./pools";
+import { cleanEmail, cleanName, EMAIL_MAX, joinWordHash, looksLikeEmail, nextLabel, SIGNUP_ROLES } from "./signup";
 import { HELD } from "./staging";
 import { shownNotes, type ShownNote } from "./notes";
 import { MAX_REASONS, parseOther, parseReasons, type ReasonCode } from "./reasons";
@@ -85,8 +87,10 @@ voterApi.post("/redeem", async (c) => {
   const body = await readJsonObject(c.req.raw);
   const code = body?.code;
   const token = body?.turnstileToken;
-  if (typeof code !== "string" || code.length > 40 || typeof token !== "string")
-    return c.json({ error: "bad_request" }, 400);
+  if (typeof code !== "string" || code.length > EMAIL_MAX || typeof token !== "string") return c.json({ error: "bad_request" }, 400);
+  // The sign-in box takes an invite code or, for someone who signed up by email, that address (migration 0009).
+  const byEmail = looksLikeEmail(code);
+  if (!byEmail && code.length > 40) return c.json({ error: "bad_request" }, 400);
   if (!c.env.CODE_PEPPER || !c.env.TURNSTILE_SECRET) return c.json({ error: "not_configured" }, 503);
 
   const ip = c.req.header("cf-connecting-ip") ?? "unknown";
@@ -97,16 +101,80 @@ voterApi.post("/redeem", async (c) => {
   if (!(await verifyTurnstile(c.env, token, ip === "unknown" ? undefined : ip)))
     return c.json({ error: "turnstile_failed", message: "The check did not pass. Reload the page and try again." }, 403);
 
-  const voter = await c.env.DB.prepare("SELECT id, revoked_at FROM voters WHERE code_hash = ?")
-    .bind(await codeHash(c.env, code))
-    .first<{ id: string; revoked_at: string | null }>();
+  const email = byEmail ? cleanEmail(code) : null;
+  const voter = byEmail
+    ? email
+      ? await c.env.DB.prepare("SELECT id, revoked_at FROM voters WHERE email = ?").bind(email).first<{ id: string; revoked_at: string | null }>()
+      : null
+    : await c.env.DB.prepare("SELECT id, revoked_at FROM voters WHERE code_hash = ?")
+        .bind(await codeHash(c.env, code))
+        .first<{ id: string; revoked_at: string | null }>();
   if (!voter) {
+    // A wrong address counts like a wrong code, so addresses cannot be tried one after another.
     await recordWrongCode(c.env.DB, key);
-    return c.json({ error: "wrong_code", message: "That code was not recognized." }, 403);
+    return byEmail
+      ? c.json({ error: "unknown_email", message: "That email has not signed up. Open the sign-up link you were sent." }, 403)
+      : c.json({ error: "wrong_code", message: "That code was not recognized." }, 403);
   }
-  if (voter.revoked_at) return c.json({ error: "revoked", message: "This code is no longer active." }, 403);
+  if (voter.revoked_at) return c.json({ error: "revoked", message: byEmail ? "This email is no longer active." : "This code is no longer active." }, 403);
   await createSession(c, voter.id);
   return c.json({ ok: true });
+});
+
+/**
+ * Sign up through the owner's sign-up link: an email address, an optional name and a role (owner decision,
+ * 25 Nov 2026; migration 0009). An address that has already signed up is simply signed in; its role does not change.
+ */
+voterApi.post("/join", async (c) => {
+  const body = await readJsonObject(c.req.raw);
+  const word = body?.word;
+  const token = body?.turnstileToken;
+  if (typeof word !== "string" || word.length > 40 || typeof token !== "string") return c.json({ error: "bad_request" }, 400);
+  const email = cleanEmail(body?.email);
+  if (!email) return c.json({ error: "bad_email", message: "Enter your email address." }, 400);
+  const name = cleanName(body?.name);
+  if (name === false) return c.json({ error: "bad_name", message: "Keep the name to 60 characters." }, 400);
+  const role = body?.role;
+  if (typeof role !== "string" || !(SIGNUP_ROLES as readonly string[]).includes(role))
+    return c.json({ error: "bad_role", message: "Choose the role that fits you best." }, 400);
+  if (!c.env.CODE_PEPPER || !c.env.TURNSTILE_SECRET) return c.json({ error: "not_configured" }, 503);
+
+  const db = c.env.DB;
+  const ip = c.req.header("cf-connecting-ip") ?? "unknown";
+  const key = await attemptKey(c.env, ip);
+  if ((await wrongCodeCount(db, key)) >= MAX_WRONG_CODES_PER_DAY)
+    return c.json({ error: "too_many_attempts", message: "Too many attempts today. Try again tomorrow." }, 429);
+  if (!(await verifyTurnstile(c.env, token, ip === "unknown" ? undefined : ip)))
+    return c.json({ error: "turnstile_failed", message: "The check did not pass. Reload the page and try again." }, 403);
+
+  const link = await db.prepare("SELECT id, closed_at FROM join_links WHERE word_hash = ?").bind(await joinWordHash(c.env, word)).first<{ id: string; closed_at: string | null }>();
+  if (!link) {
+    await recordWrongCode(db, key);
+    return c.json({ error: "wrong_link", message: "This sign-up link was not recognized. Ask for the link again." }, 403);
+  }
+  const known = async () => db.prepare("SELECT id, revoked_at FROM voters WHERE email = ?").bind(email).first<{ id: string; revoked_at: string | null }>();
+  let voter = await known();
+  // A closed link takes no new sign-ups; someone who signed up before it closed still gets in.
+  if (!voter && link.closed_at) return c.json({ error: "link_closed", message: "This sign-up link is closed. Ask for a new one." }, 403);
+  let created = false;
+  for (let attempt = 0; !voter; attempt++) {
+    const id = randomId();
+    try {
+      await db
+        .prepare("INSERT INTO voters (id, code_hash, role, label, is_owner, created_at, email, name, join_link_id) VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?)")
+        .bind(id, await codeHash(c.env, await inviteCode(c.env, id)), role, await nextLabel(db, role), nowIso(), email, name, link.id)
+        .run();
+      voter = { id, revoked_at: null };
+      created = true;
+    } catch (e) {
+      // Two sign-ups at once took the same label, or this address signed up a moment ago in another tab.
+      if (!isUniqueViolation(e) || attempt >= 3) throw e;
+      voter = await known();
+    }
+  }
+  if (voter.revoked_at) return c.json({ error: "revoked", message: "This email is no longer active." }, 403);
+  await createSession(c, voter.id);
+  return c.json({ ok: true, created });
 });
 
 // Sign out on this device: the session row goes and the cookie is cleared. Other devices stay signed in.

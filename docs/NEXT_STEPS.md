@@ -13,8 +13,11 @@ the next steps", answer from this file and update it as steps finish.*
   (id `ZF_IZnsCUnZU`), is a **draft**: no batch, no vote.
 - Four codes exist, all revoked. No live code.
 
-**Merged to `main` on 25 Nov 2026 at the owner's word ("build, merge, and ship"); 196 tests pass, the typecheck
-passes, and the browser smoke test passes 54 checks.** What went live with it:
+**Merged to `main` on 25 Nov 2026 at the owner's word ("build, merge, and ship", and later "build and ship that"
+for email sign-up); 206 tests pass, the typecheck passes, and the browser smoke test passes 63 checks.** What went
+live:
+- **Sign-up by email** (migration 0009, evening of 25 Nov): a sign-up link from admin, an address, an optional name
+  and a self-chosen adult role; the address is then the login. Not verified; students keep codes.
 - **Staged opening** (migration 0008): the round opens with the 36 launch questions in play and adds 24 at a time
   whenever every question in play has 12 adult comparisons. The deploy marks the draft round as staged.
 - **Leaderboard:** rank leads; no rating for an unranked question; the list has the full width with the charts
@@ -38,7 +41,13 @@ passes, and the browser smoke test passes 54 checks.** What went live with it:
 3. Under **Rounds**, "All questions" should read "437; opens with 36, 24 more join by themselves at 12 adult
    comparisons each" (437 because one question is held out of play; see step 6). Press **Open**. The item set
    freezes then.
-4. **Make the codes by role**, ticking **My own code** for yours. Download each CSV (label, role, code, link) and keep
+4. **Invite people, either way or both.**
+   - **By email sign-up (new, 25 Nov evening):** under **Email sign-up** in `/admin`, press **Make a sign-up link**,
+     then **Show link**, and share that link with the adults you trust. Each gives an email, optionally a name, and
+     picks a role; their address is then their login. The address is not verified, so treat the link like a key:
+     **Close** it when you are done inviting, and make a new one later if you need to. Students do not use it.
+   - **By code:** for students, and for anyone you would rather hand a personal link.
+   **Make the codes by role**, ticking **My own code** for yours. Download each CSV (label, role, code, link) and keep
    it with your list of names. Send each person their link.
 5. **Cast a few votes yourself first** with a throwaway code, on a phone and on a computer, then revoke that code
    (the analysis and the board exclude revoked codes). Things to try: a pick, two reasons, Other with a few words,

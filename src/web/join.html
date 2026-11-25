@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Sign up - WTP Question Rank</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/wtpqr-schola-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="narrow">
+      <header class="top"><a class="brand" href="/">WTP Question Rank</a><nav><button id="themeToggle" class="switch" type="button" role="switch" aria-checked="false"><span class="switch-label">Night</span><span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span></button></nav></header>
+      <h1>Which hearing question is better?</h1>
+      <p class="intro">Compare two published We the People hearing questions at a time and pick the better one. Sign up once; after that your email is your login on any device.</p>
+
+      <p id="msg" class="notice" role="alert" hidden></p>
+
+      <form id="join" class="signin" novalidate>
+        <label for="email">Your email</label>
+        <input id="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" required />
+
+        <label for="name">Your name <span class="muted">(optional)</span></label>
+        <input id="name" type="text" autocomplete="name" maxlength="60" />
+
+        <fieldset class="roles">
+          <legend>Which describes you best?</legend>
+          <label class="check"><input type="radio" name="role" value="judge" /> Judge</label>
+          <label class="check"><input type="radio" name="role" value="coach" /> Coach</label>
+          <label class="check"><input type="radio" name="role" value="teacher" /> Teacher</label>
+          <label class="check"><input type="radio" name="role" value="alumni" /> Alumni</label>
+          <label class="check"><input type="radio" name="role" value="other" /> Other</label>
+        </fieldset>
+
+        <div id="turnstile" class="turnstile"></div>
+        <button id="go" class="primary" type="submit">Sign up and start</button>
+      </form>
+
+      <p class="fineprint">The site keeps your email, your name if you give one, and the role you choose. Only the organizer sees them; other voters never do. No email is sent to you. If you were given a code, <a href="/">sign in with it</a>.</p>
+    </main>
+    <script type="module" src="./join.ts"></script>
+  </body>
+</html>

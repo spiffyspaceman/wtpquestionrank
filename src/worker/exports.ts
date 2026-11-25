@@ -109,10 +109,17 @@ export async function ratingsCsv(db: D1Database, round: RoundRow): Promise<strin
   return toCsv(["pool", "question_id", "rank", "rating", "ci_lo", "ci_hi", "games", "wins", "intervals_as_of"], rows);
 }
 
-/** Voters: label, role and revoked date only. */
+/**
+ * Voters: label, role and revoked date, and for those who signed up by email their address and optional name (owner
+ * decision, 25 Nov 2026). This file and the full backup are the only exports that hold an address; the round's JSON
+ * and votes CSV never do.
+ */
 export async function votersCsv(db: D1Database): Promise<string> {
-  const r = await db.prepare("SELECT label, role, revoked_at FROM voters ORDER BY label").all<Record<string, unknown>>();
-  return toCsv(["label", "role", "revoked_at"], r.results.map((x) => [x.label, x.role, x.revoked_at]));
+  const r = await db.prepare("SELECT label, role, revoked_at, email, name FROM voters ORDER BY label").all<Record<string, unknown>>();
+  return toCsv(
+    ["label", "role", "revoked_at", "email", "name"],
+    r.results.map((x) => [x.label, x.role, x.revoked_at, typeof x.email === "string" ? sheetSafe(x.email) : "", typeof x.name === "string" ? sheetSafe(x.name) : ""]),
+  );
 }
 
 /** A note opens as text in a spreadsheet, never as a formula. */

@@ -61,7 +61,12 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
 **Voter API** (`/api`, JSON, production host only, POST bodies under 2 KB, POST needs `Origin: https://PROD_HOST`):
 
 - `POST /api/redeem`. Checks Turnstile (success, and that the token was solved on `PROD_HOST`), throttles wrong codes, looks up `HMAC-SHA256(CODE_PEPPER, code)` and sets the
-  session cookie.
+  session cookie. What is typed may also be the email address of someone who signed up by email (below); a wrong
+  address counts like a wrong code.
+- `POST /api/join`. Sign-up by email (owner decision, 25 Nov 2026; migration 0009): the word of an open sign-up link,
+  an email address, an optional name and one of the adult roles. Turnstile and the same throttle apply. It creates a
+  voter (with a label and a personal code like any other) and signs them in; an address that has already signed up is
+  signed in and keeps its role. The address is not verified and no email is sent: it works as a username.
   - The throttle is 10 a day per SHA-256 of a daily salt and the client IP.
   - The cookie is `__Host-wtpqr`: HttpOnly, Secure, SameSite=Lax, 90 days.
 - `GET /api/me`, `GET /api/batch`, `POST /api/vote`, `POST /api/correct`, `POST /api/skip`, `POST /api/signout`,
@@ -100,6 +105,10 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
   rebuilt file that holds everything loaded plus more adds the new questions to the same set and its running round,
   each dated; nothing is ever removed and loaded text never changes. The launch set is fixed. A round this size needs the Workers Paid plan: issuing a
   batch refits the ratings and scores every pair, about 0.2 s of CPU at 324 questions and 0.65 s at 540.
+- **Sign-up links.** **Make a sign-up link** gives `https://PROD_HOST/join#WORD`. The word is derived from
+  `CODE_PEPPER` and the link's id, so it can be shown again; only its keyed hash is stored. Closing a link stops new
+  sign-ups; addresses already signed up keep working. The Voters table shows each address and name, and lets the
+  owner change a voter's role (later votes take the new role; earlier ones keep theirs).
 - **Codes.**
   - Create codes by role, with labels like "Judge 01" and an owner flag.
   - Each code also comes as a one-tap invite link, `https://PROD_HOST/#CODE`. The part after `#` never reaches the
@@ -118,7 +127,8 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
   - JSON in exactly the `RoundExport` shape of `analysis/analyze.ts`. The admin page fetches JSON and votes CSV in pages
     of at most 2,000 votes and joins them in the browser, so no request's work grows with the round (Workers Free:
     10 ms CPU per request). A test checks that the stitched files equal the one-shot routes byte for byte.
-  - CSV of votes, skips, ratings and voters (voters: label, role and revoked date only).
+  - CSV of votes, skips, ratings and voters (voters: label, role, revoked date, and the email address and name of
+    those who signed up by email). The voters CSV and the full backup are the only files that hold an address.
   - **Download full backup:** every table except the caches (`pair_counts`, `rating_snapshots`), `sessions`,
     `attempts` and `voters.code_hash`, read in pages of 1,000 rows and saved as one JSON file. It is the only export
     that holds `batches` and `batch_pairs` (seed, position, pairing reason, issue time).

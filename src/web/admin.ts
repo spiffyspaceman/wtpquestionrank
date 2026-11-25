@@ -384,6 +384,69 @@ function revealCell(label: string): HTMLElement {
   return cell;
 }
 
+// ---------- sign-up links (email sign-up) ----------
+
+interface JoinLink {
+  id: string;
+  created_at: string;
+  closed_at: string | null;
+  n_signed_up: number;
+}
+
+function joinLinkCell(l: JoinLink): HTMLElement {
+  const cell = el("div");
+  cell.append(
+    button("Show link", async () => {
+      try {
+        const r = await api<{ link: string }>(`/admin/api/join-links/${l.id}/reveal`);
+        cell.replaceChildren(el("span", { class: "mono" }, r.link), el("br"), copyButton(r.link));
+      } catch (err) {
+        cell.replaceChildren(el("span", { class: "muted" }, err instanceof ApiError ? err.message : String(err)));
+      }
+    }),
+  );
+  return cell;
+}
+
+async function loadJoinLinks(): Promise<void> {
+  const links = (await api<{ links: JoinLink[] }>("/admin/api/join-links")).links;
+  const t = $<HTMLTableElement>("#joinLinks");
+  show(t, links.length > 0);
+  table(
+    t,
+    ["Made", "State", "Signed up", "Link", "Close"],
+    links.map((l) => [
+      fmtDate(l.created_at),
+      l.closed_at ? `closed ${fmtDate(l.closed_at)}` : "open",
+      l.n_signed_up,
+      l.closed_at ? null : joinLinkCell(l),
+      l.closed_at
+        ? null
+        : button("Close", () => {
+            if (confirm("Close this sign-up link? Nobody new can sign up with it. People who already signed up keep their access."))
+              void act(() => api(`/admin/api/join-links/${l.id}/close`, { body: {} }), "Sign-up link closed.");
+          }),
+    ]),
+    [2],
+  );
+}
+
+$("#newJoinLink").addEventListener("click", () => void act(() => api("/admin/api/join-links", { body: {} }), "Sign-up link made. Press Show link to copy it."));
+
+/** A voter's role, with a way to change it: for someone who chose the wrong one at sign-up. */
+function roleCell(v: Record<string, any>): HTMLElement | string {
+  if (v.revoked_at) return v.role;
+  const s = el("select", { "aria-label": `Role of ${v.label}` }, ...status.roles.map((r) => el("option", { value: r.id }, r.name)));
+  s.value = v.role;
+  s.addEventListener("change", () => {
+    const to = s.value;
+    if (confirm(`Change ${v.label} from ${v.role} to ${to}? Votes already cast keep the old role; later votes take the new one.`))
+      void act(() => api("/admin/api/voters/role", { body: { label: v.label, role: to } }), `${v.label} is now ${to}.`);
+    else s.value = v.role;
+  });
+  return s;
+}
+
 let voters: Record<string, any>[] = [];
 let tracker = { unlockAt: 20 };
 
@@ -401,9 +464,9 @@ function renderVoters(): void {
   const q = $<HTMLInputElement>("#voterSearch").value.trim().toLowerCase();
   const status = (v: Record<string, any>) => (v.revoked_at ? "revoked" : "active") + (v.is_owner ? " owner" : "");
   const shown = q
-    ? voters.filter((v) => [v.label, v.role, status(v), fmtDate(v.created_at)].join(" ").toLowerCase().includes(q))
+    ? voters.filter((v) => [v.label, v.role, v.email ?? "", v.name ?? "", status(v), fmtDate(v.created_at)].join(" ").toLowerCase().includes(q))
     : voters;
-  $("#voterCount").textContent = q ? `${shown.length} of ${voters.length}` : `${voters.length} codes`;
+  $("#voterCount").textContent = q ? `${shown.length} of ${voters.length}` : `${voters.length} voters`;
   // Who still needs a nudge: codes not used yet, and voters short of the leaderboard (and data gate) threshold.
   const live = voters.filter((v) => !v.revoked_at);
   const used = live.filter((v) => v.signed_in_at || v.n_votes > 0).length;
@@ -413,10 +476,12 @@ function renderVoters(): void {
   const toGo = (v: Record<string, any>) => (v.revoked_at ? "" : Math.max(0, tracker.unlockAt - v.round_votes));
   table(
     $<HTMLTableElement>("#voters"),
-    ["Label", "Role", "Issued", "Owner", "Signed in", "Votes", `To ${tracker.unlockAt}`, "Last vote", "Board seen", "Revoked", "Invite", "Revoke"],
+    ["Label", "Role", "Email", "Name", "Issued", "Owner", "Signed in", "Votes", `To ${tracker.unlockAt}`, "Last vote", "Board seen", "Revoked", "Invite", "Revoke"],
     shown.map((v) => [
       v.label,
-      v.role,
+      roleCell(v),
+      v.email ?? "",
+      v.name ?? "",
       fmtDate(v.created_at),
       v.is_owner ? "yes" : "",
       v.signed_in_at ? dayOf(v.signed_in_at) : v.n_votes > 0 ? "yes" : "not yet",
@@ -433,7 +498,7 @@ function renderVoters(): void {
               void act(() => api("/admin/api/codes/revoke", { body: { label: v.label } }), `${v.label} revoked; caches rebuilt.`);
           }),
     ]),
-    [5, 6],
+    [7, 8],
   );
 }
 
@@ -699,6 +764,7 @@ async function refresh(): Promise<void> {
     [1],
   );
   await loadVoters();
+  await loadJoinLinks();
   await loadVotes();
   await loadHealth();
 }

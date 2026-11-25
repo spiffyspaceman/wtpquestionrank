@@ -297,3 +297,23 @@ none expected beyond what the leaderboard already has; recorded because voters s
   so when another device answered a pair first (that first answer stands, as before).
 Effect on votes: none expected from the last four; the first changes when a repeat can appear, by one trial, for a
 voter who skipped a pair and went back to it. No frozen file, threshold, item or measure changes.
+
+**25 November 2026: sign-up by email, with a role the voter chooses (owner decision; built and merged the same day).**
+The pre-registration's owner decisions were "invite-only personal codes" with roles the owner assigns, and the site
+stored no names or email addresses. From this change an adult can also join through a sign-up link the owner shares
+(`/join#WORD`): they give an email address, optionally a name, and pick Judge, Coach, Teacher, Alumni or Other. The
+address then works in the sign-in box on any device. Codes and invite links work as before, and students still join
+only by a code from the owner, so no student address is stored (migration 0009; `src/worker/signup.ts`).
+What this changes for anyone reading the data:
+- **Identity is not verified.** The address is a username. The site sends no mail, so it never proves the address
+  belongs to the person typing it. Anyone who knows a voter's address and the site can vote as them, and one person
+  can sign up under several addresses. The owner accepted this for a round shared only with people he trusts. A wrong
+  address counts toward the same ten-a-day limit as a wrong code.
+- **Roles are self-declared** for these voters. The role boards and the pooled adults board rest on what people said
+  they are. The owner can change a voter's role in `/admin`; votes already cast keep the role they were cast under.
+- **Who can join** is whoever holds an open sign-up link. The owner can close a link; addresses already signed up
+  keep working.
+- **What is stored and where it goes:** the address and optional name are in `voters`, shown in `/admin`, the voters
+  CSV and the full backup. They are not in the round's JSON export, the votes CSV, the audit log, or anything a
+  voter's browser receives. `analysis/analyze.ts` sees the same fields as before.
+No frozen file, threshold, item or measure changes.

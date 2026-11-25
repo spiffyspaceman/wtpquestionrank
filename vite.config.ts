@@ -16,6 +16,7 @@ export default defineConfig({
       input: {
         index: path.join(web, "index.html"),
         start: path.join(web, "start.html"),
+        join: path.join(web, "join.html"),
         vote: path.join(web, "vote.html"),
         board: path.join(web, "board.html"),
         admin: path.join(web, "admin.html"),
