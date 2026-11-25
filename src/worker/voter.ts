@@ -27,11 +27,13 @@ import {
   ROLE_NAMES,
   roundItems,
   roundsByNeed,
+  tieKey,
   visiblePools,
 } from "./data";
 import type { AppEnv, RoundRow, VoterRow } from "./env";
 import sourcesFile from "../../items/sources_v1.json";
 import { poolsForRole } from "./pools";
+import { HELD } from "./staging";
 import { shownNotes, type ShownNote } from "./notes";
 import { MAX_REASONS, parseOther, parseReasons, type ReasonCode } from "./reasons";
 import { verifyTurnstile } from "./turnstile";
@@ -687,7 +689,13 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
     db.prepare("UPDATE voters SET board_seen_at = ? WHERE id = ? AND board_seen_at IS NULL").bind(seenAt, voter.id),
   ]);
 
-  const { fit, rows, snapshot } = await (await board(db, round))(pool);
+  const { fit, rows: byRating, snapshot } = await (await board(db, round))(pool);
+  // Ranked questions in rank order, then the unranked ones by comparisons so far. An unranked question's rating is
+  // not sent, so its place in the list must not follow that rating either.
+  const rows = [
+    ...byRating.filter((r) => r.rank !== null),
+    ...byRating.filter((r) => r.rank === null).sort((a, b) => b.games - a.games || tieKey(a.id) - tieKey(b.id)),
+  ];
   const index = new Map(rows.map((r, i) => [r.id, i]));
 
   // Head-to-head counts for the browser's charts, by row position (never by question id), unordered (i < j).
@@ -746,7 +754,7 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
     roleBoard: roleBoardOpen ? null : { name: ROLE_NAMES[voter.role] ?? voter.role, need: MIN_ROLE_BOARD_VOTERS },
     round: { id: round.id, name: round.name, state: round.state },
     // A staged round: how many of its questions are in play so far (the rows), out of how many in all.
-    staged: round.staged ? { inPlay: rows.length, total: (await roundItems(db, round.item_set_id)).length } : null,
+    staged: round.staged ? { inPlay: rows.length, total: (await roundItems(db, round.item_set_id)).filter((id) => !HELD.has(id) || index.has(id)).length } : null,
     rounds: rounds.map((r) => ({ id: r.id, name: r.name })),
     votes: fit.nVotes,
     intervalsAsOf: snapshot?.computed_at ?? null,

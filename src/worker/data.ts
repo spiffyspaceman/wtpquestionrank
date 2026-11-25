@@ -2,7 +2,7 @@
 import { POOLED_ROLES, RATING } from "../rating/config";
 import { fitBTCounts, ranksOf, type BTFit, type PairCount } from "../rating/rating";
 import type { RoundRow } from "./env";
-import { firstGroup, nextGroup, STAGE, type StageItem } from "./staging";
+import { firstGroup, HELD, nextGroup, STAGE, type StageItem } from "./staging";
 import { nowIso } from "./util";
 
 export { isAdultRole, MIN_ROLE_BOARD_VOTERS, POOLS, poolsForRole, ROLE_NAMES, visiblePools, type Pool } from "./pools";
@@ -51,7 +51,8 @@ export async function roundItems(db: D1Database, itemSetId: string): Promise<str
  * or, in a staged round (migration 0008), the questions that have come into play so far.
  */
 export async function playItems(db: D1Database, round: RoundRow): Promise<string[]> {
-  if (!round.staged) return roundItems(db, round.item_set_id);
+  // A question held back for a defect in its loaded text (HELD in staging.ts) is in play in no round.
+  if (!round.staged) return (await roundItems(db, round.item_set_id)).filter((id) => !HELD.has(id));
   const r = await db.prepare("SELECT question_id FROM round_in_play WHERE round_id = ? ORDER BY question_id").bind(round.id).all<{ question_id: string }>();
   return r.results.map((x) => x.question_id);
 }
@@ -90,8 +91,9 @@ export async function firstGroupStatements(db: D1Database, round: RoundRow, at: 
 
 /** How a staged round stands: questions in play, questions in its set, and the fewest adult comparisons in play. */
 export async function stageState(db: D1Database, round: RoundRow) {
-  const all = await stageItems(db, round.item_set_id);
   const inPlay = new Set(await playItems(db, round));
+  // Held questions never join, so they do not count toward the total a round can reach.
+  const all = (await stageItems(db, round.item_set_id)).filter((i) => !HELD.has(i.id) || inPlay.has(i.id));
   const games = new Map([...inPlay].map((id) => [id, 0]));
   for (const pc of await pairCounts(db, round.id, "adults")) {
     if (games.has(pc.left)) games.set(pc.left, games.get(pc.left)! + pc.n);
@@ -235,7 +237,7 @@ export async function latestSnapshot(db: D1Database, roundId: string, pool: stri
 }
 
 /** FNV-1a of a salted id: a stable order with no relation to the id's own sort order. */
-function tieKey(id: string): number {
+export function tieKey(id: string): number {
   let h = 0x811c9dc5;
   for (const ch of "wtpqr-tie:" + id) h = Math.imul(h ^ ch.charCodeAt(0), 0x01000193) >>> 0;
   return h;

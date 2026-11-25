@@ -9,6 +9,8 @@ import { admin, call, getBatch, json, mockOutbound, voteN, voter } from "./helpe
 const SET = BUILTIN_SETS[0];
 const ALL = (SET.file.items as { id: string; level: string; unit: number }[]).map((i) => ({ id: i.id, level: i.level, unit: i.unit }));
 const LAUNCH = new Set((launch as { items: { id: string }[] }).items.map((i) => i.id));
+/** Every question of the set but those held back for a defect in their loaded text: what a round can reach. */
+const REACHABLE = SET.questions - HELD.size;
 const inPlay = async (round: string) =>
   (await env.DB.prepare("SELECT question_id FROM round_in_play WHERE round_id = ? ORDER BY 1").bind(round).all<{ question_id: string }>()).results.map((r) => r.question_id);
 
@@ -110,12 +112,15 @@ describe("staged rounds", () => {
 
     const board = await json(call("/api/leaderboard", { cookie: v.cookie }));
     expect(board.rows).toHaveLength(36);
-    expect(board.staged).toEqual({ inPlay: 36, total: SET.questions });
+    expect(board.staged).toEqual({ inPlay: 36, total: REACHABLE });
     // No question has ten comparisons after twenty votes: none has a rank, a rating, a range or a win count.
     for (const row of board.rows) expect(row).toMatchObject({ rank: null, rating: null, wins: null, lo: null, hi: null });
+    // With no rating sent, the order must not follow the rating either: most comparisons first.
+    const games = board.rows.map((r: { games: number }) => r.games);
+    expect(games).toEqual([...games].sort((x: number, y: number) => y - x));
 
     const status = await json(admin("/admin/api/status"));
-    expect(status.rounds.find((x: { id: string }) => x.id === round)).toMatchObject({ staged: 1, auto_grow: 1, n_in_play: 36, n_items: SET.questions });
+    expect(status.rounds.find((x: { id: string }) => x.id === round)).toMatchObject({ staged: 1, auto_grow: 1, n_in_play: 36, n_items: REACHABLE });
     const health = await json(admin(`/admin/api/rounds/${round}/health`));
     expect(health.gate.items).toBe(36);
     expect((await json(admin(`/admin/api/rounds/${round}/bootstrap-input`))).items).toHaveLength(36);
@@ -148,7 +153,7 @@ describe("staged rounds", () => {
     await voteN(v.cookie, 10);
     await getBatch(v.cookie);
     expect(await inPlay(round)).toHaveLength(36 + STAGE.STEP);
-    expect((await json(call("/api/leaderboard", { cookie: v.cookie }))).staged).toEqual({ inPlay: 36 + STAGE.STEP, total: SET.questions });
+    expect((await json(call("/api/leaderboard", { cookie: v.cookie }))).staged).toEqual({ inPlay: 36 + STAGE.STEP, total: REACHABLE });
   });
 
   it("the owner can stop it growing by itself, add a group by hand, and cannot change staging once it is open", async () => {
@@ -160,7 +165,7 @@ describe("staged rounds", () => {
     expect(await inPlay(round)).toHaveLength(36);
 
     const grown = await json(admin(`/admin/api/rounds/${round}/grow`, { body: {} }));
-    expect(grown).toMatchObject({ ok: true, added: STAGE.STEP, inPlay: 36 + STAGE.STEP, total: SET.questions });
+    expect(grown).toMatchObject({ ok: true, added: STAGE.STEP, inPlay: 36 + STAGE.STEP, total: REACHABLE });
     expect(await json(admin(`/admin/api/rounds/${round}/staging`))).toMatchObject({ staged: true, autoGrow: false, inPlay: 60, fewestAdultGames: 0 });
     const off = await admin(`/admin/api/rounds/${round}/staging`, { body: { staged: false } });
     expect(off.status).toBe(409);
@@ -181,8 +186,11 @@ describe("staged rounds", () => {
     const v = await voter("judge");
     await voteN(v.cookie, 20);
     const board = await json(call("/api/leaderboard", { cookie: v.cookie }));
-    expect(board.rows).toHaveLength(SET.questions);
+    // Every question but the held one, which is in play in no round, staged or not.
+    expect(board.rows).toHaveLength(REACHABLE);
     expect(board.staged).toBeNull();
+    const held = await env.DB.prepare("SELECT stem FROM questions WHERE id = ?").bind([...HELD][0]).first<{ stem: string }>();
+    expect(board.rows.some((r: { stem: string }) => r.stem === held!.stem)).toBe(false);
     expect((await admin(`/admin/api/rounds/${round}/grow`, { body: {} })).status).toBe(409);
   });
 

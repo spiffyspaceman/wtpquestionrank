@@ -9,7 +9,7 @@ import type { AppEnv, RoundRow } from "./env";
 import { correctionsCsv, exportMeta, reasonsCsv, roundExport, ratingsCsv, skipsCsv, votePage, votersCsv, votesCsv } from "./exports";
 import { studyHealth } from "./health";
 import { storedNotes } from "./notes";
-import { STAGE } from "./staging";
+import { HELD, STAGE } from "./staging";
 import { chunks, isUniqueViolation, nowIso, optInt, randomId, readJsonObject, sha256Hex } from "./util";
 
 export const adminApi = new Hono<AppEnv>();
@@ -60,6 +60,9 @@ adminApi.get("/status", async (c) => {
     .first<{ at: string | null }>();
   const anyVotes = await db.prepare("SELECT count(*) AS n FROM votes").first<{ n: number }>();
   const ageDays = lastExport?.at ? (Date.now() - Date.parse(lastExport.at)) / 86_400_000 : Infinity;
+  // A staged round can reach every question of its set except those held back; count them as the round's total.
+  for (const r of rounds.results as unknown as (RoundRow & { n_items: number })[])
+    if (r.staged) r.n_items = (await stageState(db, r)).total;
   return c.json({
     actor: c.get("actor"),
     rounds: rounds.results,
@@ -221,7 +224,7 @@ async function loadItemFile(c: Context<AppEnv>, bytes: ArrayBuffer | Uint8Array)
     // 25 Nov 2026: later questions join the running round and are paired first until they catch up).
     if (!fresh)
       await inChunks(
-        added.map((i) =>
+        added.filter((i) => !HELD.has(i.id)).map((i) =>
           db
             .prepare(
               `INSERT OR IGNORE INTO round_in_play (round_id, question_id, joined_at)

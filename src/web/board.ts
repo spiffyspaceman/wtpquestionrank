@@ -753,6 +753,8 @@ async function load(p?: string, round?: string): Promise<void> {
     b = await api<Board>("/api/leaderboard" + (q.size ? `?${q}` : ""));
   } catch (err) {
     if (err instanceof ApiError && err.status === 404) return location.replace("/");
+    // The viewer's own role board is not open in this round (fewer than three voters in the role): show the adults board.
+    if (err instanceof ApiError && err.body.error === "pool_too_small" && p !== "adults") return load("adults", round);
     if (err instanceof ApiError && err.body.error === "locked")
       return say(msg, `The leaderboard opens after ${err.body.unlockAt} votes. You have ${err.body.votes} so far.`, "warn");
     return say(msg, "Could not load the leaderboard. Try again.", "error");

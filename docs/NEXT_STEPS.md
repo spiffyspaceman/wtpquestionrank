@@ -27,12 +27,17 @@ test passes 50 checks):**
 
 ## Owner: to go live
 
+0. **Confirm the Worker is on Workers Paid** (Cloudflare dashboard > Workers & Pages > Plans). The notes say you
+   upgraded on 25 November; the saved API token cannot read the plan, so Claude could not check. It matters from the
+   start: choosing a batch took about 8 ms in Node with 36 to 60 questions in play, 11 ms at 84, 25 ms at 108 and
+   39 ms at 132, against the Free plan's 10 ms per request. On Free, voting would begin to fail as the round grows.
 1. **Say "merge".** A push to `main` deploys: the tests run, migration 0008 is applied, then the Worker goes live.
    Nothing changes for voters until a round is open.
 2. In `/admin`, a notice at the top says the full question set has corrected footnotes to load. Press **Load it now**.
    No question is added and no question text changes.
-3. Under **Rounds**, "All questions" should read "438; opens with 36, 24 more join by themselves at 12 adult
-   comparisons each". Press **Open**. The item set freezes then.
+3. Under **Rounds**, "All questions" should read "437; opens with 36, 24 more join by themselves at 12 adult
+   comparisons each" (437 because one question is held out of play; see step 6). Press **Open**. The item set
+   freezes then.
 4. **Make the codes by role**, ticking **My own code** for yours. Download each CSV (label, role, code, link) and keep
    it with your list of names. Send each person their link.
 5. **Cast a few votes yourself first** with a throwaway code, on a phone and on a computer, then revoke that code

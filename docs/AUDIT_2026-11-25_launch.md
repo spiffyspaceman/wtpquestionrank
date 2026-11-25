@@ -117,7 +117,20 @@ leaderboard view is refused inside the transaction; no voter response carries an
 footnote links can only be http or https and are built as text nodes, never markup; the Access token checks, host
 and origin guards and sign-out read without fault.
 
-## Efficiency is no longer a constraint once the round is staged
+## A second review, of this branch's own diff, found no blocker
+
+A fresh subagent read `git diff origin/main...HEAD` after the work above and ran its own probes: migration 0008 on
+a production-like database, four batch requests at once on a settled round (one group joins), two `/grow` calls at
+once (one group joins), a double open (36 once), and an unfinished batch across a join (it can be finished). It
+raised seven points. Fixed: the leaderboard page now falls back to the adults board when a role board is refused;
+unranked rows are ordered by comparisons, not by the rating that is no longer sent; the held question no longer
+counts toward the total a round can reach, and it is out of play in a round opened all at once too. Left: the
+head-to-head counts sent for the charts still let a determined reader work out an unranked question's wins; with two
+open rounds, a batch refused by a round that just closed is not retried in the other; two requests to make codes at
+the same instant collide on a label and one fails (admin only). And one point for the owner: **the round needs
+Workers Paid** (next section).
+
+## Efficiency is no longer a constraint once the round is staged, provided the Worker is on Workers Paid
 
 Local timings on a busy machine, so read them as ratios:
 
@@ -127,8 +140,12 @@ Local timings on a busy machine, so read them as ratios:
 | Leaderboard response | 426 KB | 37 KB |
 | Loading the full set | 0.3 s | the same |
 
-The cost of a batch grows with the square of the questions in play, because the pairing rule scores every pair. At
-132 questions in play it is about a tenth of the full-size cost. "Refresh intervals" (1,000 refits per pool in the
+The cost of a batch grows with the square of the questions in play, because the pairing rule scores every pair.
+The second reviewer timed the fit and pairing alone in Node: about 8 ms with 36 to 60 questions in play, 11 ms at
+84, 25 ms at 108, 39 ms at 132 and 590 ms at 437. The Free plan allows 10 ms of CPU per request (the figure this
+project recorded on 25 November; I did not reopen Cloudflare's page). `docs/NEXT_STEPS.md` says the owner moved to
+Workers Paid that day; the saved API token cannot read the plan, so I could not confirm it. On Free, voting would
+start to fail as the round grows. "Refresh intervals" (1,000 refits per pool in the
 admin's browser) shrinks the same way, since it now fits only the questions in play.
 
 ## The pages are sound; four things changed and a few are left for the owner's eye

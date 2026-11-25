@@ -67,7 +67,7 @@ describe("built-in question set", () => {
     expect(board.round.name).toBe("All questions");
     // The round is staged (migration 0008): the board lists the questions in play, the 36 launch questions first.
     expect(board.rows).toHaveLength(36);
-    expect(board.staged).toEqual({ inPlay: 36, total: SET.questions });
+    expect(board.staged).toEqual({ inPlay: 36, total: SET.questions - 1 }); // one question is held out of play
     expect(board.votes).toBe(20);
     const ex = await json(admin(`/admin/api/rounds/${first.roundCreated}/export.json`));
     expect(ex.votes).toHaveLength(20);
