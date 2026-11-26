@@ -54,6 +54,8 @@ export const VOTES_CSV_COLUMNS = [
   "item_set_id",
   // The units and level the voter had chosen when the batch was made (migration 0010); empty for all questions.
   "batch_slice",
+  // 1 for a bridge pair: one question from the chosen units, one from outside them (migration 0012).
+  "bridge_pair",
 ] as const;
 
 /** One vote row as the paged export sends it: the RoundExport fields plus the CSV-only ones. */

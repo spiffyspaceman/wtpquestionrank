@@ -288,6 +288,10 @@ kbd { font: 0.8em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; bord
 .slice-panel h2 { margin: 0.6em 0 0.3em; font-size: 1.15rem; }
 .slice-panel #sliceStatus { margin: 4px 0 0; }
 .slice-boxwrap { margin-top: 2px; }
+/* The bridge-pair box: set apart inside the picker so a judge who narrows the set sees it. */
+.bridge-box { margin: 10px 0 6px; padding: 8px 12px 10px; border: 1px solid var(--rule); border-radius: var(--radius); }
+.bridge-box .check { font-size: 1rem; }
+.bridge-box p { margin: 2px 0 0 30px; color: var(--muted); }
 /* The set on the voting page: one line, and the same picker to narrow it. */
 .set-bar { margin: 8px 0 0; }
 .set-line { margin: 0; font-size: 0.95rem; color: var(--muted); }

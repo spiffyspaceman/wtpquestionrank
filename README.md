@@ -84,6 +84,10 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
     how many pairs were set aside (`changed`, `ended`); the next `/api/batch` draws a fresh batch under the new set.
     Ended pairs are not skips, may be offered again, and leave the repeat gap alone. A vote, skip or correction
     sent for one of them (from a page still showing the old batch) is refused with `batch_ended` (409).
+    A slice may carry `bridge: true` (migration 0012): each batch then holds nine pairs from the slice and one bridge
+    pair, a question of the slice beside one in play outside it (`src/worker/bridge.ts`), marked
+    `batch_pairs.bridge = 1` and `bridge_pair` in `votes.csv`. Without a bridge pair to give, the batch is ten from
+    the slice.
   - `/api/leaderboard` sends a rating, range and win count only for ranked questions (5 comparisons since 26 Nov;
     `DISPLAY.RANK_SHOWN_AT` in `src/worker/display.ts`). The board opens to a voter at 10 first votes
     (`DISPLAY.BOARD_UNLOCK_VOTES`). The frozen config keeps the pre-registered 20 and 10, which the analysis uses.

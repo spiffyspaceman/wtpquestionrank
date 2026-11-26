@@ -405,3 +405,23 @@ Effects to keep in mind:
 - **Early ranks move more.** A rank on 5 comparisons is less settled than one on 10; the range shown beside it
   (from the latest snapshot) says how much.
 No frozen file, measure or analysis threshold changes.
+
+**26 November 2026: a bridge pair for judges who narrow the set (owner decision).** Earlier the same day the owner
+chose no bridging pair for a judge who keeps to some units. He now wants one, as the judge's option: under the unit
+boxes a box reads "Include one pair from outside my units", ticked by default, with a line saying such pairs let
+units be ranked against one another. When it is ticked, the frozen pairing code draws nine pairs from the set
+(`selectBatch` with `size: 9`, an option it already had), and `src/worker/bridge.ts` adds a tenth: one question of
+the set and one question in play outside it, chosen with the pairing code's own information weight
+p(1 - p)(se_a^2 + se_b^2), at a random place in the batch. If no such pair is left for the judge, the batch is drawn
+whole from the set. The pair is not marked on the voting page; the set line reads "plus one pair from outside it".
+Each bridge pair is marked `batch_pairs.bridge = 1` (migration 0012) and `bridge_pair` in `votes.csv`, and Study
+health counts the votes on them. A set saved before the box existed keeps no bridge pair.
+Effects to keep in mind:
+- **This is new pairing logic outside the frozen code.** The bridge pair is chosen by `bridge.ts`, not by
+  `pairs.ts`; it uses the same weight but a narrower pool (only mixed pairs). The analysis can set these pairs
+  apart by `bridge_pair`.
+- **A judge meets one question a batch from outside their units,** which may be one they chose to avoid; they can
+  skip it like any pair, and a skipped bridge pair adds nothing.
+- **It is the main source of cross-unit comparisons from narrowed judges.** The weakness logged for the units choice
+  (the single scale rests on mixed pairs) is eased, not removed.
+No frozen file, threshold or measure changes.

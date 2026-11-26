@@ -382,7 +382,7 @@ async function applyNarrow(): Promise<void> {
   busy = true;
   applyBtn.disabled = true;
   try {
-    r = await api("/api/slice", { body: s ? { units: s.units, levels: s.levels } : { all: true } });
+    r = await api("/api/slice", { body: s ? { units: s.units, levels: s.levels, bridge: Boolean(s.bridge) } : { all: true } });
   } catch (err) {
     $("#narrowNote").textContent = err instanceof ApiError ? err.message : "That did not save. Try again.";
     return;

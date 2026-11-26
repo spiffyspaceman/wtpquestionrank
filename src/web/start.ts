@@ -130,7 +130,7 @@ function setUpSlice(me: Me): void {
     const s = picker.read();
     if (s === false) return void (status.textContent = "Tick at least one unit and one level.");
     try {
-      const r = await api<{ slice: Slice | null; ended: number }>("/api/slice", { body: s ? { units: s.units, levels: s.levels } : { all: true } });
+      const r = await api<{ slice: Slice | null; ended: number }>("/api/slice", { body: s ? { units: s.units, levels: s.levels, bridge: Boolean(s.bridge) } : { all: true } });
       saved = r.slice;
       let note = `Your set: ${setName(saved)}.`;
       if (r.ended) {

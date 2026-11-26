@@ -19,6 +19,9 @@ live:
 - **Sign-up by email** (migration 0009, evening of 25 Nov): a sign-up link from admin, an address, an optional name
   and a self-chosen adult role; the address is then the login. Not verified; students keep codes. Since late on 25 Nov the
   page asks for the email alone and for the rest only when the address is new.
+- **Bridge pair** (26 Nov, migration 0012): a judge who narrows the set keeps, unless they untick it, one pair per
+  batch that sets a question of their units beside one from outside them. Study health counts these votes; they
+  are what tie a narrow set to the one scale.
 - **Narrow your set** (26 Nov, migration 0011): the unit choice sits right above Start, and Start names the set. The
   voting page names it too, with a Narrow link; a new set ends the rest of the waiting batch and loads a fresh one.
   Admin's Study health counts batches ended this way.

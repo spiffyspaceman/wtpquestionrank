@@ -2,6 +2,7 @@
 import { env } from "cloudflare:test";
 import { beforeEach, describe, expect, it } from "vitest";
 import { BUILTIN_SETS } from "../../src/worker/builtin-sets";
+import { bridgePair } from "../../src/worker/bridge";
 import { SLICE_PLAY } from "../../src/worker/slice";
 import { HELD } from "../../src/worker/staging";
 import { admin, call, getBatch, json, mockOutbound, openNewRound, voteN, voter } from "./helpers";
@@ -176,6 +177,72 @@ describe("what a judge judges", () => {
     expect((await env.DB.prepare("SELECT count(*) AS n FROM round_in_play WHERE round_id = ?").bind(round).first<{ n: number }>())!.n).toBe(0);
   });
 
+  it("a bridge pair, when chosen, sets one question of the set beside one in play outside it, once a batch", async () => {
+    const round = await openFullRound();
+    const v = await voter("judge");
+    const want = { units: [4, 5], levels: ["NF"], bridge: true };
+    expect(await json(setSlice(v.cookie, want))).toMatchObject({ slice: want });
+    expect((await json(call("/api/me", { cookie: v.cookie }))).slice).toEqual(want);
+    await voteN(v.cookie, 30);
+    const rows = await env.DB.prepare(
+      `SELECT bp.batch_id, bp.left_q, bp.right_q, bp.bridge, bp.is_repeat FROM batch_pairs bp JOIN batches b ON b.id = bp.batch_id
+        JOIN voters u ON u.id = b.voter_id WHERE u.label = ? ORDER BY b.created_at, bp.position`,
+    ).bind(v.label).all<{ batch_id: string; left_q: string; right_q: string; bridge: number; is_repeat: number }>();
+    const mine = (id: string) => META.get(id)!.level === "NF" && [4, 5].includes(META.get(id)!.unit);
+    const play = await inPlay(round);
+    const batches = [...new Set(rows.results.map((r) => r.batch_id))];
+    expect(batches).toHaveLength(3);
+    for (const b of batches) {
+      const pairs = rows.results.filter((r) => r.batch_id === b);
+      expect(pairs).toHaveLength(10);
+      const bridges = pairs.filter((r) => r.bridge === 1);
+      expect(bridges).toHaveLength(1);
+      const [x] = bridges;
+      expect(x.is_repeat).toBe(0);
+      expect(mine(x.left_q) !== mine(x.right_q)).toBe(true);
+      expect(play.has(x.left_q) && play.has(x.right_q)).toBe(true);
+      for (const r of pairs.filter((r) => r.bridge === 0)) expect(mine(r.left_q) && mine(r.right_q)).toBe(true);
+    }
+    // The export marks them, and Study health counts them.
+    const csv = await (await admin(`/admin/api/rounds/${round}/export/votes.csv`)).text();
+    const lines = csv.trim().split(/\r?\n/).slice(1).filter((l) => l.includes(v.label));
+    expect(lines.filter((l) => l.endsWith(",1"))).toHaveLength(3);
+    // Study health counts first presentations: the third batch may hold one swapped repeat.
+    const repeats = rows.results.filter((r) => r.is_repeat === 1).length;
+    expect((await json(admin(`/admin/api/rounds/${round}/health`))).scale).toMatchObject({ bridgeVotes: 3, sliceVotes: 30 - repeats });
+    // Turning the box off is a change of set; the same units without it draw no bridge pair.
+    expect(await json(setSlice(v.cookie, { units: [4, 5], levels: ["NF"], bridge: false }))).toMatchObject({ changed: true, slice: { units: [4, 5], levels: ["NF"] } });
+    await voteN(v.cookie, 10);
+    const last = await env.DB.prepare(
+      `SELECT sum(bp.bridge) AS n FROM batch_pairs bp WHERE bp.batch_id = (SELECT b.id FROM batches b JOIN voters u ON u.id = b.voter_id WHERE u.label = ? ORDER BY b.created_at DESC, b.rowid DESC LIMIT 1)`,
+    ).bind(v.label).first<{ n: number }>();
+    expect(last!.n).toBe(0);
+  });
+
+  it("a set saved before the bridge box existed keeps no bridge pair; with nothing outside the set, there is none to give", async () => {
+    // A stored choice without the field is read as no bridge.
+    await openNewRound();
+    const v = await voter("judge");
+    await env.DB.prepare("UPDATE voters SET slice_json = ? WHERE label = ?").bind(JSON.stringify({ units: [1], levels: ["State"] }), v.label).run();
+    expect((await json(call("/api/me", { cookie: v.cookie }))).slice).toEqual({ units: [1], levels: ["State"] });
+    const state = (items: string[], all: string[], done: string[] = []) => ({
+      items,
+      beta: new Map(all.map((id) => [id, 0])),
+      se: new Map(all.map((id) => [id, 1])),
+      games: new Map(all.map((id) => [id, 0])),
+      done: new Set(done),
+      history: [],
+      repeated: new Set<string>(),
+      trials: 0,
+    });
+    const rng = () => 0.5;
+    expect(bridgePair(state(["a", "b"], ["a", "b"]), [], rng)).toBeNull();
+    expect(bridgePair(state(["a"], ["a", "x"], ["a|x"]), [], rng)).toBeNull();
+    const p = bridgePair(state(["a"], ["a", "x"]), [], rng)!;
+    expect([p.left, p.right].sort()).toEqual(["a", "x"]);
+    expect(p).toMatchObject({ isRepeat: false, reason: "info" });
+  });
+
   it("the votes CSV carries each vote's slice, the owner sees each voter's choice, and Study health counts cross-unit comparisons", async () => {
     const round = await openFullRound();
     const v = await voter("judge");
@@ -185,9 +252,10 @@ describe("what a judge judges", () => {
     await voteN(g.cookie, 10);
     const csv = await (await admin(`/admin/api/rounds/${round}/export/votes.csv`)).text();
     const [head, ...lines] = csv.trim().split(/\r?\n/);
-    expect(head.split(",").pop()).toBe("batch_slice");
+    expect(head.split(",").slice(-2)).toEqual(["batch_slice", "bridge_pair"]);
     expect(lines.filter((l) => l.includes(`""units"":[4,5]`))).toHaveLength(10);
-    expect(lines.filter((l) => l.endsWith(","))).toHaveLength(10);
+    // The coach judged all questions: no slice, and no bridge pair.
+    expect(lines.filter((l) => l.endsWith(",,0"))).toHaveLength(10);
     const list = await json(admin("/admin/api/codes"));
     expect(JSON.parse(list.voters.find((x: { label: string }) => x.label === v.label).slice_json)).toEqual({ units: [4, 5], levels: ["NF"] });
     const h = await json(admin(`/admin/api/rounds/${round}/health`));

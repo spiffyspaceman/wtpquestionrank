@@ -52,7 +52,8 @@ async function roundExportParts(db: D1Database, round: RoundRow, withVotes: bool
 
 const VOTE_ROW_SQL = `SELECT v.id, v.round_id, v.voter_id, v.role, v.left_q, v.right_q, v.winner_q, v.close_call, v.is_repeat,
         v.after_board, v.client_ms, v.server_ms, v.created_at, u.label, v.batch_pair_id, v.item_set_id,
-        (SELECT b.slice_json FROM batch_pairs bp JOIN batches b ON b.id = bp.batch_id WHERE bp.id = v.batch_pair_id) AS batch_slice
+        (SELECT b.slice_json FROM batch_pairs bp JOIN batches b ON b.id = bp.batch_id WHERE bp.id = v.batch_pair_id) AS batch_slice,
+        (SELECT bp.bridge FROM batch_pairs bp WHERE bp.id = v.batch_pair_id) AS bridge_pair
    FROM votes_effective v JOIN voters u ON u.id = v.voter_id`;
 
 export async function votesCsv(db: D1Database, round: RoundRow): Promise<string> {

@@ -162,12 +162,12 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
     .all<{ unit: number; games: number }>();
   const sliceVotes = await db
     .prepare(
-      `SELECT count(*) AS votes, count(DISTINCT v.voter_id) AS voters FROM votes v JOIN batch_pairs bp ON bp.id = v.batch_pair_id
+      `SELECT count(*) AS votes, count(DISTINCT v.voter_id) AS voters, coalesce(sum(bp.bridge), 0) AS bridge FROM votes v JOIN batch_pairs bp ON bp.id = v.batch_pair_id
          JOIN batches b ON b.id = bp.batch_id JOIN voters u ON u.id = v.voter_id
         WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL AND b.slice_json IS NOT NULL`,
     )
     .bind(round.id)
-    .first<{ votes: number; voters: number }>();
+    .first<{ votes: number; voters: number; bridge: number }>();
   // Batches a judge ended by changing their set, and the pairs left unanswered in them.
   const ended = await db
     .prepare(
@@ -187,6 +187,7 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
       perUnit: unitRows.results,
       sliceVotes: sliceVotes?.votes ?? 0,
       sliceVoters: sliceVotes?.voters ?? 0,
+      bridgeVotes: sliceVotes?.bridge ?? 0,
       endedBatches: ended?.batches ?? 0,
       endedPairs: ended?.pairs ?? 0,
     },

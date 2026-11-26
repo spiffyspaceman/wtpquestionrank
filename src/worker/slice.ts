@@ -9,6 +9,8 @@ export const LEVEL_NAMES: Record<SliceLevel, string> = { State: "State", NF: "Na
 export interface Slice {
   units: number[];
   levels: SliceLevel[];
+  /** One pair per batch sets a question of the set beside one from outside it (owner decision, 26 Nov 2026). */
+  bridge?: true;
 }
 
 /**
@@ -18,10 +20,11 @@ export interface Slice {
 export const SLICE_PLAY = { MIN_IN_PLAY: 12, MIN_FRESH: 10, STEP: 6 } as const;
 
 /** A whole choice: every unit and both levels is the same as no choice. */
-function normal(units: number[], levels: SliceLevel[]): Slice | null {
+function normal(units: number[], levels: SliceLevel[], bridge: boolean): Slice | null {
   const u = [...new Set(units)].sort((a, b) => a - b);
   const l = SLICE_LEVELS.filter((x) => levels.includes(x));
-  return u.length === SLICE_UNITS.length && l.length === SLICE_LEVELS.length ? null : { units: u, levels: l };
+  if (u.length === SLICE_UNITS.length && l.length === SLICE_LEVELS.length) return null;
+  return bridge ? { units: u, levels: l, bridge: true } : { units: u, levels: l };
 }
 
 /** A choice sent by a page: null for all questions, false when it is malformed or empty. */
@@ -34,7 +37,8 @@ export function parseSlice(v: unknown): Slice | null | false {
   if (!units.every((x) => typeof x === "number" && (SLICE_UNITS as readonly number[]).includes(x))) return false;
   if (!levels.every((x) => typeof x === "string" && (SLICE_LEVELS as readonly string[]).includes(x))) return false;
   if (!units.length || !levels.length) return false;
-  return normal(units as number[], levels as SliceLevel[]);
+  // A choice saved before the bridge box existed has no `bridge` and so keeps no bridge pair: its judge never chose one.
+  return normal(units as number[], levels as SliceLevel[], o.bridge === true);
 }
 
 /** A stored choice; anything unreadable counts as all questions. */
@@ -48,7 +52,11 @@ export function storedSlice(json: string | null | undefined): Slice | null {
   }
 }
 
-export const sliceJson = (s: Slice | null): string | null => (s ? JSON.stringify({ units: s.units, levels: s.levels }) : null);
+export const sliceJson = (s: Slice | null): string | null =>
+  s ? JSON.stringify(s.bridge ? { units: s.units, levels: s.levels, bridge: true } : { units: s.units, levels: s.levels }) : null;
+
+/** The words for a bridge pair, after a set's name: "Units 5 and 6, Nationals only, plus one pair from outside it". */
+export const BRIDGE_TAIL = ", plus one pair from outside it";
 
 /** True when a question of this unit and level is in the slice (every question is in "all questions"). */
 export function inSlice(s: Slice | null, q: { unit: number; level: string }): boolean {

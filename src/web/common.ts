@@ -1,5 +1,5 @@
 // Shared browser helpers. No third-party code.
-import { LEVEL_NAMES, parseSlice, SLICE_LEVELS, SLICE_UNITS, sliceLabel, type Slice } from "../worker/slice";
+import { BRIDGE_TAIL, LEVEL_NAMES, parseSlice, SLICE_LEVELS, SLICE_UNITS, sliceLabel, type Slice } from "../worker/slice";
 
 export class ApiError extends Error {
   constructor(
@@ -197,24 +197,39 @@ export function slicePicker(prefix: string, onChange: (part: "mode" | "box") => 
   };
   const modes = el("div", { class: "slice-mode", role: "radiogroup", "aria-label": "Which questions" }, radio("all", "All questions"), radio("some", "Only some units"));
   const boxes = sliceBoxes(prefix, () => onChange("box"));
-  const boxWrap = el("div", { class: "slice-boxwrap" }, boxes.el);
+  // The bridge pair (owner decision, 26 Nov 2026): ticked by default, and set apart so it is not missed.
+  const bridge = el("input", { type: "checkbox", id: `${prefix}-bridge` }) as HTMLInputElement;
+  bridge.checked = true;
+  bridge.addEventListener("change", () => onChange("box"));
+  const bridgeBox = el(
+    "div",
+    { class: "bridge-box" },
+    el("label", { class: "check", for: `${prefix}-bridge` }, bridge, " Include one pair from outside my units"),
+    el("p", { class: "small", id: `${prefix}-bridge-why` }, "Each batch then sets one question from your units beside one from the others. Those pairs are what let units be ranked against one another, so keeping this on helps the whole ranking."),
+  );
+  bridge.setAttribute("aria-describedby", `${prefix}-bridge-why`);
+  const boxWrap = el("div", { class: "slice-boxwrap" }, boxes.el, bridgeBox);
   const mode = () => (modes.querySelector<HTMLInputElement>("input:checked")?.value === "some" ? "some" : "all");
   return {
     el: el("div", { class: "slice-picker" }, modes, boxWrap),
     mode,
     /** null for all questions, false when "some" has an empty row. */
     read(): Slice | null | false {
-      return mode() === "some" ? boxes.read() : null;
+      if (mode() !== "some") return null;
+      const s = boxes.read();
+      return s && bridge.checked ? { ...s, bridge: true } : s;
     },
     /** Show a saved set: "some" with its boxes, or "all". `some` forces the boxes open with everything ticked. */
     set(s: Slice | null, some = false) {
       const on = Boolean(s) || some;
       for (const r of modes.querySelectorAll<HTMLInputElement>("input")) r.checked = r.value === (on ? "some" : "all");
       boxes.set(s);
+      // A saved set keeps its own choice; a set being opened from all questions starts with the box ticked.
+      bridge.checked = s ? Boolean(s.bridge) : true;
       boxWrap.hidden = !on;
     },
   };
 }
 
 /** The name of a set as the pages show it: "all questions" or "Units 4 and 5, Nationals only". */
-export const setName = (s: Slice | null): string => (s ? sliceLabel(s) : "all questions");
+export const setName = (s: Slice | null): string => (s ? sliceLabel(s) + (s.bridge ? BRIDGE_TAIL : "") : "all questions");

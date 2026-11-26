@@ -24,7 +24,7 @@ describe("schema on local D1", () => {
     await d.prepare("INSERT INTO rounds (id, name, item_set_id, state, created_at, opened_at, frozen_at, closed_at) VALUES ('r1','R1','s1','open',?,?,NULL,NULL)").bind(now, now).run();
     await d.prepare("INSERT INTO voters (id, code_hash, role, label, is_owner, created_at, revoked_at, board_seen_at) VALUES ('v1','h1','judge','Judge 01',0,?,NULL,NULL)").bind(now).run();
     await d.prepare("INSERT INTO batches (id, round_id, voter_id, seed, created_at) VALUES ('b1','r1','v1',7,?)").bind(now).run();
-    await d.prepare("INSERT INTO batch_pairs VALUES ('p0','b1',0,'a','b',0,'info',?)").bind(now).run();
+    await d.prepare("INSERT INTO batch_pairs (id, batch_id, position, left_q, right_q, is_repeat, reason, issued_at) VALUES ('p0','b1',0,'a','b',0,'info',?)").bind(now).run();
     await d
       .prepare(
         `INSERT INTO votes (batch_pair_id,round_id,item_set_id,voter_id,role,left_q,right_q,item_lo,item_hi,winner_q,
@@ -107,8 +107,8 @@ describe("schema on local D1", () => {
 
   it("one first vote and at most one repeat per pair per voter", async () => {
     const d = db();
-    await d.prepare("INSERT INTO batch_pairs VALUES ('p1','b1',1,'b','a',1,'repeat',?)").bind(now).run();
-    await d.prepare("INSERT INTO batch_pairs VALUES ('p2','b1',2,'a','b',0,'info',?)").bind(now).run();
+    await d.prepare("INSERT INTO batch_pairs (id, batch_id, position, left_q, right_q, is_repeat, reason, issued_at) VALUES ('p1','b1',1,'b','a',1,'repeat',?)").bind(now).run();
+    await d.prepare("INSERT INTO batch_pairs (id, batch_id, position, left_q, right_q, is_repeat, reason, issued_at) VALUES ('p2','b1',2,'a','b',0,'info',?)").bind(now).run();
     const ins = `INSERT INTO votes (batch_pair_id,round_id,item_set_id,voter_id,role,left_q,right_q,item_lo,item_hi,winner_q,
                    close_call,is_repeat,after_board,client_ms,server_ms,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
     expect(await fails(ins, "p1", "r1", "s1", "v1", "judge", "b", "a", "a", "b", "b", 1, 1, 0, 1, 1, now)).toBe(false);

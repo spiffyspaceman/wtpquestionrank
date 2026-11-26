@@ -1,7 +1,8 @@
 // Voter API. Question ids never leave the server: pairs go out as an opaque pair id with "L" and "R" sides.
 import { Hono, type Context } from "hono";
-import { POOLED_ROLES } from "../rating/config";
-import { pairKey, selectBatch, type PairingState } from "../rating/pairs";
+import { PAIRING, POOLED_ROLES } from "../rating/config";
+import { pairKey, selectBatch, type IssuedPair, type PairingState } from "../rating/pairs";
+import { bridgePair } from "./bridge";
 import { fitBTCounts, makeRng } from "../rating/rating";
 import {
   attemptKey,
@@ -352,6 +353,24 @@ async function pairingState(db: D1Database, round: RoundRow, voterId: string, sl
   };
 }
 
+/**
+ * A new batch. With a bridge pair chosen (migration 0012), the pairing code draws one pair fewer from the set and the
+ * bridge pair takes a random place among them; if there is no bridge pair to give, the batch is drawn whole from the
+ * set, as without one. Either way the seed alone fixes the batch.
+ */
+function pickBatch(state: PairingState, slice: Slice | null, seed: number): (IssuedPair & { bridge?: true })[] {
+  if (slice?.bridge) {
+    const rng = makeRng(seed);
+    const issued: (IssuedPair & { bridge?: true })[] = selectBatch(state, rng, { size: PAIRING.BATCH_SIZE - 1 });
+    const bridge = issued.length ? bridgePair(state, issued, rng) : null;
+    if (bridge) {
+      issued.splice(Math.floor(rng() * (issued.length + 1)), 0, { ...bridge, bridge: true });
+      return issued;
+    }
+  }
+  return selectBatch(state, makeRng(seed));
+}
+
 voterApi.get("/batch", requireVoter(), async (c) => {
   const db = c.env.DB;
   const voter = c.get("voter");
@@ -365,7 +384,8 @@ voterApi.get("/batch", requireVoter(), async (c) => {
       await growIfSettled(db, round);
       const seed = randomSeed();
       const slice = storedSlice(voter.slice_json);
-      const issued = selectBatch(await pairingState(db, round, voter.id, slice), makeRng(seed));
+      const state = await pairingState(db, round, voter.id, slice);
+      const issued = pickBatch(state, slice, seed);
       if (!issued.length) continue;
       const newBatchId = randomId();
       const now = nowIso();
@@ -383,10 +403,10 @@ voterApi.get("/batch", requireVoter(), async (c) => {
         ...rows.map((r, i) =>
           db
             .prepare(
-              `INSERT INTO batch_pairs (id, batch_id, position, left_q, right_q, is_repeat, reason, issued_at)
-               SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8 WHERE EXISTS (SELECT 1 FROM batches WHERE id = ?2)`,
+              `INSERT INTO batch_pairs (id, batch_id, position, left_q, right_q, is_repeat, reason, issued_at, bridge)
+               SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9 WHERE EXISTS (SELECT 1 FROM batches WHERE id = ?2)`,
             )
-            .bind(r.id, newBatchId, i, r.left_q, r.right_q, r.p.isRepeat ? 1 : 0, r.p.reason, now),
+            .bind(r.id, newBatchId, i, r.left_q, r.right_q, r.p.isRepeat ? 1 : 0, r.p.reason, now, r.p.bridge ? 1 : 0),
         ),
       ]);
       if (res[0].meta.changes === 1) batchId = newBatchId;
