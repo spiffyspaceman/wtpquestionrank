@@ -355,3 +355,23 @@ Effect: with one or two voters behind a board, each can work out the other's pic
 among people he trusts; and the first voters see a board built from very few votes, though no question shows a rank
 or rating before it has 10 comparisons. Votes cast after a voter opens a board are marked `after_board = 1` as
 before. The owner's own first 20 votes were cast while the wait was on, so none of them is marked.
+
+**26 November 2026: a judge may judge only some units (owner decision).** On the home page a voter can keep "All
+questions" (the default) or choose "Only some units": any of Units 1 to 6, at State, Nationals or both. The choice
+applies from the voter's next batch, and every batch records the choice it was drawn under (`batches.slice_json`,
+migration 0010; also in `votes.csv` as `batch_slice`). In the staged round, a slice with fewer than 12 of its
+questions in play, or with fewer than 10 new pairs left for that judge, brings the next questions of the slice into
+play, six at a time, in the same balanced order as any group; they join for every voter. The leaderboard keeps the
+round's ranks across all questions and offers a filter with the same boxes. Students may choose too.
+Effects to keep in mind:
+- **The single scale across units rests on mixed pairs.** A judge who keeps to some units adds nothing to where those
+  units sit against the others. Study health now reports how many adult comparisons cross units and levels, and how
+  many votes came from slices. The owner chose not to add a bridging pair to slice batches.
+- **Recognition may rise.** Judges are likely to choose units they have coached or judged, and so to meet questions
+  they know (PREREG §12).
+- **The round grows unevenly.** A popular slice brings its questions into play ahead of the general order, and those
+  questions start with few comparisons, so the automatic growth rule (every question in play at 12 adult comparisons)
+  waits longer.
+- The pairing and rating code is unchanged: it is handed the slice's questions, and the ratings are fitted on every
+  question in play.
+No frozen file, threshold or measure changes.

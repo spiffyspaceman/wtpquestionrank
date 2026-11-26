@@ -108,7 +108,7 @@ export async function sessionVoter(c: Context<AppEnv>): Promise<VoterRow | null>
   const token = getCookie(c, SESSION_COOKIE);
   if (!token || token.length > 100) return null;
   return c.env.DB.prepare(
-    `SELECT v.id, v.role, v.label, v.is_owner, v.revoked_at, v.board_seen_at
+    `SELECT v.id, v.role, v.label, v.is_owner, v.revoked_at, v.board_seen_at, v.slice_json
        FROM sessions s JOIN voters v ON v.id = s.voter_id
       WHERE s.token_hash = ? AND s.expires_at > ? AND v.revoked_at IS NULL`,
   )

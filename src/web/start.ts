@@ -1,4 +1,5 @@
-import { $, api, CRITERION, FORMAT, setShortcuts, shortcutsOn, show } from "./common";
+import { sliceLabel, type Slice } from "../worker/slice";
+import { $, api, ApiError, CRITERION, FORMAT, setShortcuts, shortcutsOn, show, sliceBoxes } from "./common";
 
 interface Me {
   role: string;
@@ -6,6 +7,8 @@ interface Me {
   unlockAt: number;
   unlocked: boolean;
   open: boolean;
+  /** What this judge chose to judge; null for all questions. */
+  slice: Slice | null;
   /** No round is open and none is waiting to open. */
   ended: boolean;
   batch: { size: number; remaining: number } | null;
@@ -70,6 +73,7 @@ async function init(): Promise<void> {
     $("#page").classList.add("first-visit");
   }
   show($("#page"));
+  if (open) setUpSlice(me);
   if (!open) {
     show(unlock, me.unlocked);
     return;
@@ -82,6 +86,57 @@ async function init(): Promise<void> {
     start.textContent = "Continue your batch";
   }
   show(start);
+}
+
+/** The "What you judge" panel: all questions, or some units and levels. Saved at once; it applies from the next batch. */
+function setUpSlice(me: Me): void {
+  const panel = $("#slicePanel");
+  // On a first visit the count and Start button follow the task; the choice goes with them.
+  $("#tally").after(panel);
+  const radios = [...document.querySelectorAll<HTMLInputElement>('input[name="sliceMode"]')];
+  const boxes = sliceBoxes("judge", () => void save());
+  $("#sliceBoxes").replaceChildren(boxes.el);
+  const status = $("#sliceStatus");
+  const mode = () => radios.find((r) => r.checked)?.value ?? "all";
+  const pending = me.batch && me.batch.remaining < me.batch.size ? " Your current batch finishes as it was." : "";
+  const describe = (s: Slice | null) =>
+    s ? `You judge ${sliceLabel(s)}, from your next batch.${pending}` : `You judge all questions.${me.slice ? pending : ""}`;
+  let saved = me.slice;
+  const paint = () => {
+    radios.forEach((r) => (r.checked = r.value === (saved ? "some" : "all")));
+    boxes.set(saved);
+    show($("#sliceBoxes"), Boolean(saved));
+  };
+  async function save(): Promise<void> {
+    const some = mode() === "some";
+    show($("#sliceBoxes"), some);
+    const s = some ? boxes.read() : null;
+    if (s === false) return void (status.textContent = "Tick at least one unit and one level.");
+    try {
+      const r = await api<{ slice: Slice | null }>("/api/slice", { body: s ? { units: s.units, levels: s.levels } : { all: true } });
+      saved = r.slice;
+      status.textContent = describe(saved);
+      // Everything ticked is the same as all questions.
+      if (!saved && some) paint();
+    } catch (err) {
+      status.textContent = err instanceof ApiError ? err.message : "That did not save. Try again.";
+    }
+  }
+  radios.forEach((r) =>
+    r.addEventListener("change", () => {
+      // Moving to "Only some units" starts from everything ticked, so nothing changes until a box is cleared.
+      if (mode() === "some" && !saved) {
+        boxes.set(null);
+        show($("#sliceBoxes"));
+        status.textContent = "Clear the units or level you would rather not judge.";
+        return;
+      }
+      void save();
+    }),
+  );
+  paint();
+  status.textContent = saved ? describe(saved).replace(", from your next batch", "") : "";
+  show(panel);
 }
 
 void init();

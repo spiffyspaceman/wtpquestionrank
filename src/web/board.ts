@@ -2,7 +2,8 @@
 // Everything after the one fetch runs in this browser; nothing the viewer does is sent back.
 import { RATING } from "../rating/config";
 import { OTHER_LABEL, REASONS } from "../worker/reasons";
-import { $, api, ApiError, el, fmtDate, footnotes, marked, say, show, type Marks, type ShownNote } from "./common";
+import { inSlice, sliceLabel, type Slice } from "../worker/slice";
+import { $, api, ApiError, el, fmtDate, footnotes, marked, say, show, sliceBoxes, type Marks, type ShownNote } from "./common";
 
 interface Row {
   rank: number | null;
@@ -25,6 +26,8 @@ interface Board {
   round: { id: string; name: string; state: string };
   /** A round that opens its questions in groups: how many are in play (the rows) out of how many in all. */
   staged: { inPlay: number; total: number } | null;
+  /** What the viewer chose to judge on the home page, offered as a filter here. */
+  slice: Slice | null;
   /** Boards the viewer may see that still wait for enough voters behind them. */
   waiting: { name: string; need: number }[];
   /** Every round with a board, when there is more than one. */
@@ -47,7 +50,10 @@ function tag(r: Row): string {
   return `${r.about.cycle}${r.about.level === "State" ? "" : " " + r.about.level} U${r.about.unit}Q${r.about.question}`;
 }
 
+/** Every question on the board, and `rows`, the ones the filter shows. Ranks are always the round's ranks. */
+let allRows: Row[] = [];
 let rows: Row[] = [];
+let filter: Slice | null = null;
 let board: Board | null = null;
 
 // ---------- per-viewer settings (a convenience only; the page works without storage) ----------
@@ -535,7 +541,12 @@ function renderH2H(): void {
   const chart = $("#chart");
   const head = el("tr", {}, el("th", { scope: "col" }, `${G.label} (row) beat`), ...gs.map((g) => el("th", { scope: "col", class: "num" }, g.label)), el("th", { scope: "col", class: "num" }, "All others"));
   const body = gs.map((g, a) => {
-    const tw = wins[a].reduce((s, x) => s + x, 0), tg = games[a].reduce((s, x) => s + x, 0);
+    // "All others" is every other group in the round, shown or not, so it still means something under a filter.
+    let tw = 0, tg = 0;
+    for (const cell of board?.h2h[GROUPS[by] ? by : "unit"] ?? []) {
+      if (cell.a === g.label) (tw += cell.aw), (tg += cell.n);
+      else if (cell.b === g.label) (tw += cell.n - cell.aw), (tg += cell.n);
+    }
     return el(
       "tr",
       {},
@@ -549,7 +560,8 @@ function renderH2H(): void {
   });
   chart.replaceChildren(el("div", { class: "table-wrap" }, el("table", { class: "heat" }, el("thead", {}, head), el("tbody", {}, ...body))));
   $("#chartNote").textContent =
-    "Each cell: how often a question from the row's group beat one from the column's group, with the number of comparisons. Blue: the row won more; gold: it lost more.";
+    "Each cell: how often a question from the row's group beat one from the column's group, with the number of comparisons. Blue: the row won more; gold: it lost more." +
+    (filter ? " The groups shown follow the filter; each cell counts every question in its two groups, and All others counts every group in the round." : "");
   show($("#chartTableWrap"), false);
 }
 
@@ -765,7 +777,8 @@ async function load(p?: string, round?: string): Promise<void> {
   }
   say(msg, "");
   board = b;
-  rows = b.rows;
+  allRows = b.rows;
+  applyFilter();
   open.clear();
   show($("#content"));
   $("#intervals").textContent = b.intervalsAsOf ? `Ranges are 95% intervals from ${fmtDate(b.intervalsAsOf)}.` : "";
@@ -787,16 +800,59 @@ async function load(p?: string, round?: string): Promise<void> {
   sel.replaceChildren(...b.rounds.map((x) => el("option", { value: x.id }, x.name)));
   sel.value = b.round.id;
   show($("#roundPick"), b.rounds.length > 1);
-  const ranked = rows.filter((r) => r.rank !== null).length;
-  $("#summary").textContent = b.staged && b.staged.inPlay < b.staged.total
-    ? `${count(b.votes, "vote", "votes")}. ${b.staged.inPlay} of ${b.staged.total} questions are in play and ${ranked} ${ranked === 1 ? "is" : "are"} ranked. More join as these settle.`
-    : `${count(b.votes, "vote", "votes")}. ${count(rows.length, "question", "questions")}, ${ranked} ranked.`;
+  show($("#filterMine"), Boolean(b.slice));
+  lastW = chartWidth();
+  renderBoard();
+}
+
+function renderBoard(): void {
+  const b = board!;
+  const ranked = allRows.filter((r) => r.rank !== null).length;
+  const shown = filter ? ` Showing ${count(rows.length, "question", "questions")} in ${sliceLabel(filter)}; ranks are across all questions.` : "";
+  $("#summary").textContent =
+    (b.staged && b.staged.inPlay < b.staged.total
+      ? `${count(b.votes, "vote", "votes")}. ${b.staged.inPlay} of ${b.staged.total} questions are in play and ${ranked} ${ranked === 1 ? "is" : "are"} ranked. More join as these settle.`
+      : `${count(b.votes, "vote", "votes")}. ${count(allRows.length, "question", "questions")}, ${ranked} ranked.`) + shown;
+  $("#filterSummary").textContent = filter ? `Showing ${sliceLabel(filter)}` : "Show only some units";
   renderTop();
   fillFilters();
   renderAll();
-  lastW = chartWidth();
   renderChart();
 }
+
+// ---------- the unit and level filter: the same boxes as the home page ----------
+
+const filterBoxes = sliceBoxes("show", () => {
+  const f = filterBoxes.read();
+  // An empty row would show nothing; keep the last choice until a box is ticked again.
+  if (f === false) return;
+  setFilter(f);
+});
+$("#filterBoxes").replaceChildren(filterBoxes.el);
+
+function applyFilter(): void {
+  rows = filter ? allRows.filter((r) => inSlice(filter, { unit: r.about.unit, level: r.about.level })) : allRows;
+}
+function setFilter(f: Slice | null): void {
+  filter = f;
+  filterBoxes.set(f);
+  save("filter", f ? JSON.stringify(f) : "");
+  page = 0;
+  open.clear();
+  applyFilter();
+  if (board) renderBoard();
+}
+$("#filterAll").addEventListener("click", () => setFilter(null));
+$("#filterMine").addEventListener("click", () => board?.slice && setFilter(board.slice));
+// The filter last used in this browser, if any.
+try {
+  const f = settings.filter ? (JSON.parse(settings.filter) as Slice) : null;
+  filter = f && Array.isArray(f.units) && Array.isArray(f.levels) ? f : null;
+} catch {
+  filter = null;
+}
+filterBoxes.set(filter);
+if (filter) ($("#filterBox") as HTMLDetailsElement).open = true;
 
 $("#roundSel").addEventListener("change", () => void load(board?.pool, $<HTMLSelectElement>("#roundSel").value));
 

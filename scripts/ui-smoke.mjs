@@ -190,6 +190,21 @@ try {
   check(order.taskFirst && order.countHidden, "first visit: the task comes first, then Start, then the guidance, without the zero count");
   await shot("start");
 
+  // What you judge: all questions by default; choosing some units saves at once and applies from the next batch.
+  check(await page.isVisible("#slicePanel") && (await page.isChecked('input[name="sliceMode"][value="all"]')), "the home page offers a choice of what to judge, all questions by default");
+  await page.check('input[name="sliceMode"][value="some"]');
+  check(await page.isVisible("#sliceBoxes") && (await page.locator("#sliceBoxes input:checked").count()) === 8, "choosing some units starts from every box ticked");
+  for (const u of [1, 2, 3, 6]) await page.uncheck(`#judge-unit-${u}`);
+  await page.uncheck("#judge-level-State");
+  await page.waitForFunction(() => document.querySelector("#sliceStatus").textContent.includes("Units 4 and 5, Nationals only"));
+  await shot("start-slice");
+  check((await get("/api/me", session)).slice?.units?.join() === "4,5", "the choice is saved on the server");
+  await page.uncheck("#judge-level-NF");
+  check((await text("#sliceStatus")).includes("at least one"), "an empty level row is refused, not saved");
+  await page.check('input[name="sliceMode"][value="all"]');
+  await page.waitForFunction(() => document.querySelector("#sliceStatus").textContent.includes("all questions"));
+  check((await get("/api/me", session)).slice === null && !(await page.isVisible("#sliceBoxes")), "and All questions puts it back");
+
   // Day and night: the toggle switches the colours, names the scheme it leads to, and the choice follows the reader.
   const paper = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   const day = await paper();
@@ -348,6 +363,15 @@ try {
   check((await page.locator("#chart table.heat").count()) === 1, "each chart tab draws, the head-to-head table last");
   check((await page.locator("#tabs button").count()) === 2 && !(await page.isVisible("#roleNote")), "both boards are still offered once more judges have voted");
   check((await text("#all tbody tr >> nth=0 >> td >> nth=0")) === "#1", "the table lists ranks first");
+  // The filter: the same boxes as the home page; ranks stay the round's ranks.
+  await page.click("#filterSummary");
+  for (const u of [2, 3, 4, 5, 6]) await page.uncheck(`#show-unit-${u}`);
+  await page.waitForFunction(() => document.querySelector("#summary").textContent.includes("Showing"));
+  const tags = await page.$$eval("#all tbody tr td.q .tag", (els) => els.map((e) => e.textContent));
+  check(tags.length > 0 && tags.every((t) => /U1Q/.test(t)) && /U1Q/.test(await text("#top .hero-card .tag")), "the filter shows only the units ticked, top question included");
+  await shot("board-filtered");
+  await page.click("#filterAll");
+  check(!(await text("#summary")).includes("Showing"), "Show all clears it");
   // Whether the first 36 have all settled by now depends on the pairs drawn, so the round may or may not have taken
   // its next group; either way the page and the admin table must agree on the number in play.
   const inPlay = Number((/(\d+) of \d+ questions are in play/.exec(await text("#summary")) ?? [])[1]);

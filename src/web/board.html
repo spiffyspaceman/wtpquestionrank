@@ -27,6 +27,12 @@
         </div>
         <p id="summary" class="scale-note" aria-live="polite"></p>
         <p id="roleNote" class="scale-note" hidden></p>
+        <!-- Show only some units or a level (owner decision, 26 Nov 2026). Ranks stay the round's ranks. -->
+        <details id="filterBox" class="board-filter">
+          <summary id="filterSummary">Show only some units</summary>
+          <div id="filterBoxes"></div>
+          <div class="filter-actions"><button id="filterAll" type="button">Show all</button><button id="filterMine" type="button" hidden>Use the units I judge</button></div>
+        </details>
 
         <section id="topSection" class="hero" aria-labelledby="topH" hidden>
           <h2 id="topH" class="sr-only">Top question</h2>

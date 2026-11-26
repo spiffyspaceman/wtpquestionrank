@@ -91,15 +91,16 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov (late) | Sign-up asks for the email alone; a known address is signed in at once, and only a new one is asked for a role and an optional name (`needProfile` from `/api/join`). |
 | 25 Nov (late) | **Colour: supersedes burgundy.** The navy, white, grey-blue and gold of the Nevada Center for Civic Engagement's mark (`#142954`, `#ffffff`, `#d0d9e2`, `#e49f33`), from the logo the owner supplied. By day navy is the working colour and gold is the masthead rule; at night the page is navy and gold does the work. Type and layout are unchanged. The Center's logo and name are not on the site; do not add them without the owner's yes. Tokens are at the top of `src/web/styles.css`; any change must pass the contrast scan. |
 | 25 Nov (late) | **Supersedes the two "waits for three voters" rows above.** Every board a voter may see (All adults and their own role) shows as soon as they have 20 votes; no wait for other voters. The wait is still in the code, off unless the Worker is given `BOARD_MIN_VOTERS` (the tests set it). |
+| 26 Nov | **Judges may choose units** (migration 0010, `src/worker/slice.ts`, `slicePlay` in `data.ts`): All questions (default) or some of Units 1 to 6 at State, Nationals or both, chosen on `/start`, from the next batch. In the staged round a slice is kept supplied (at least 12 of its questions in play and 10 new pairs for the judge; 6 join at a time, for everyone). No bridging pair. Every batch records its slice; `votes.csv` has `batch_slice`. The leaderboard keeps overall ranks and has a filter with the same boxes. Admin shows each voter's choice (read only) and cross-unit counts in Study health. |
 
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 212 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 218 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # typecheck, then pages into dist/ (so the deploy cannot ship a type error)
-npm run test:ui        # browser smoke test, 65 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
+npm run test:ui        # browser smoke test, 72 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
 npm run premerge       # all of the above in order; run it before merging anything that touches src/web
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)
 ```
@@ -109,7 +110,8 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
 - `src/worker/`: the Hono Worker. `voter.ts` (voting API), `admin.ts` (admin API), `data.ts` (rounds, caches,
   board), `access.ts`, `auth.ts`, `guards.ts`, `exports.ts` and `export-shape.ts` (must match `RoundExport`),
   `pools.ts`, `reasons.ts` (pill codes), `health.ts` and `gate.ts` (study health), `staging.ts` (which questions
-  are in play in a staged round, and which are held back), `signup.ts` (email sign-up and sign-up links).
+  are in play in a staged round, and which are held back), `signup.ts` (email sign-up and sign-up links), `slice.ts`
+  (the units and level a judge chose; no Workers types, so the pages import it too).
 - `src/web/`: the pages (sign-in `index`, sign-up `join`, voter home `start`, vote, board, admin) and `styles.css`. Fonts in `src/web/public/fonts/`.
 - `items/`: the frozen launch item file, `sources_v1.json` (confirmed quoted sources), `corpus.csv` (scores only),
   `transcribe.py` and `transcribed.json` (every question transcribed from CCE's PDFs; the PDFs themselves are not in

@@ -37,6 +37,17 @@
         <div id="unlockMeter" class="meter" hidden><progress id="unlockBar" max="20" value="0" aria-hidden="true"></progress></div>
       </section>
 
+      <!-- What this judge judges (owner decision, 26 Nov 2026): all questions, or only some units and levels. -->
+      <section id="slicePanel" class="slice-panel" aria-labelledby="sliceH" hidden>
+        <h2 id="sliceH">What you judge</h2>
+        <div class="slice-mode" role="radiogroup" aria-labelledby="sliceH">
+          <label class="check"><input type="radio" name="sliceMode" value="all" /> All questions</label>
+          <label class="check"><input type="radio" name="sliceMode" value="some" /> Only some units</label>
+        </div>
+        <div id="sliceBoxes" hidden></div>
+        <p id="sliceStatus" class="muted small" aria-live="polite"></p>
+      </section>
+
       <section class="guide" id="task" aria-labelledby="taskH">
         <h2 id="taskH">The task</h2>
         <p id="format"></p>

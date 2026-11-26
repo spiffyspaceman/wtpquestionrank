@@ -9,5 +9,5 @@
     "skipLibCheck": true,
     "types": []
   },
-  "include": ["./**/*.ts", "../rating/config.ts", "../rating/rating.ts", "../worker/pools.ts", "../worker/export-shape.ts", "../worker/reasons.ts"]
+  "include": ["./**/*.ts", "../rating/config.ts", "../rating/rating.ts", "../worker/pools.ts", "../worker/export-shape.ts", "../worker/reasons.ts", "../worker/slice.ts"]
 }

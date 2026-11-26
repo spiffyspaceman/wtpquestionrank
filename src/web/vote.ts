@@ -33,6 +33,8 @@ interface Me {
   unlockAt: number;
   unlocked: boolean;
   open: boolean;
+  /** The units and level this judge chose; null for all questions. */
+  slice: unknown;
 }
 interface AfterAnswer {
   votes: number;
@@ -202,7 +204,13 @@ async function fetchBatch(): Promise<void> {
   say(msg, "");
   if (b.done || !b.pairs.length) {
     show(judge, false);
-    return say(msg, "You have judged every pair. Thank you.", "ok");
+    return say(
+      msg,
+      me.slice
+        ? "You have judged every pair in the units you chose. Thank you. To judge more, choose more units on the home page."
+        : "You have judged every pair. Thank you.",
+      "ok",
+    );
   }
   pairs = b.pairs;
   if (b.start >= pairs.length) batchDone();

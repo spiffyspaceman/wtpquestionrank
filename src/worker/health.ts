@@ -136,7 +136,49 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
   const ratersShort = Math.max(0, GATE.MIN_ADULT_RATERS - countedAdultRaters);
   const adultsUnder = raters.filter((r) => adult.has(r.role) && r.votes < GATE.MIN_VOTES_PER_COUNTED_RATER);
 
+  // One scale across units (owner decision, 26 Nov 2026): a judge who chose some units adds nothing to how units
+  // compare with each other, so the owner watches how many adult comparisons cross units, and how many votes came
+  // from judges with a slice. Counts only.
+  const crossRows = await db
+    .prepare(
+      `SELECT (ql.unit <> qr.unit) AS cross_unit, (ql.level <> qr.level) AS cross_level, SUM(c.n) AS n
+         FROM pair_counts c JOIN questions ql ON ql.id = c.left_q JOIN questions qr ON qr.id = c.right_q
+        WHERE c.round_id = ? AND c.pool = 'adults' GROUP BY cross_unit, cross_level`,
+    )
+    .bind(round.id)
+    .all<{ cross_unit: number; cross_level: number; n: number }>();
+  const unitRows = await db
+    .prepare(
+      // Comparisons that involve at least one question of each unit: a pair within one unit counts once for it.
+      `SELECT unit, SUM(n) AS games FROM (
+         SELECT c.left_q, c.right_q, ql.unit AS unit, c.n FROM pair_counts c JOIN questions ql ON ql.id = c.left_q
+          WHERE c.round_id = ?1 AND c.pool = 'adults'
+         UNION
+         SELECT c.left_q, c.right_q, qr.unit AS unit, c.n FROM pair_counts c JOIN questions qr ON qr.id = c.right_q
+          WHERE c.round_id = ?1 AND c.pool = 'adults')
+        GROUP BY unit ORDER BY unit`,
+    )
+    .bind(round.id)
+    .all<{ unit: number; games: number }>();
+  const sliceVotes = await db
+    .prepare(
+      `SELECT count(*) AS votes, count(DISTINCT v.voter_id) AS voters FROM votes v JOIN batch_pairs bp ON bp.id = v.batch_pair_id
+         JOIN batches b ON b.id = bp.batch_id JOIN voters u ON u.id = v.voter_id
+        WHERE v.round_id = ? AND v.is_repeat = 0 AND u.revoked_at IS NULL AND b.slice_json IS NOT NULL`,
+    )
+    .bind(round.id)
+    .first<{ votes: number; voters: number }>();
+  const sum = (f: (r: { cross_unit: number; cross_level: number }) => boolean) => crossRows.results.filter(f).reduce((s, r) => s + r.n, 0);
+
   return {
+    scale: {
+      adultComparisons: sum(() => true),
+      crossUnit: sum((r) => r.cross_unit === 1),
+      crossLevel: sum((r) => r.cross_level === 1),
+      perUnit: unitRows.results,
+      sliceVotes: sliceVotes?.votes ?? 0,
+      sliceVoters: sliceVotes?.voters ?? 0,
+    },
     forecast: {
       // Counts only (PREREG §9 allows watching data-quality numbers): how far the gate is, and how fast votes come.
       itemsShort: short.slice(0, 12).map(([id, n]) => ({ id, games: n })),

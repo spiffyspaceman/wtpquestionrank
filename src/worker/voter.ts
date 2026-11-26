@@ -26,6 +26,7 @@ import {
   pairCountUpserts,
   playItems,
   ROLE_NAMES,
+  slicePlay,
   roundItems,
   roundsByNeed,
   tieKey,
@@ -36,6 +37,7 @@ import sourcesFile from "../../items/sources_v1.json";
 import { poolsForRole } from "./pools";
 import { cleanEmail, cleanName, EMAIL_MAX, joinWordHash, looksLikeEmail, nextLabel, SIGNUP_ROLES } from "./signup";
 import { HELD } from "./staging";
+import { parseSlice, sliceJson, storedSlice, type Slice } from "./slice";
 import { shownNotes, type ShownNote } from "./notes";
 import { MAX_REASONS, parseOther, parseReasons, type ReasonCode } from "./reasons";
 import { verifyTurnstile } from "./turnstile";
@@ -181,6 +183,17 @@ voterApi.post("/join", async (c) => {
   return c.json({ ok: true, created });
 });
 
+/**
+ * What this voter judges: {all: true}, or {units: [...], levels: ["State" | "NF", ...]} (owner decision, 26 Nov 2026;
+ * migration 0010). It applies from the voter's next batch; a batch already started finishes as it was.
+ */
+voterApi.post("/slice", requireVoter(), async (c) => {
+  const slice = parseSlice(await readJsonObject(c.req.raw));
+  if (slice === false) return c.json({ error: "bad_slice", message: "Choose at least one unit and one level." }, 400);
+  await c.env.DB.prepare("UPDATE voters SET slice_json = ? WHERE id = ?").bind(sliceJson(slice), c.get("voter").id).run();
+  return c.json({ ok: true, slice });
+});
+
 // Sign out on this device: the session row goes and the cookie is cleared. Other devices stay signed in.
 voterApi.post("/signout", async (c) => {
   await endSession(c);
@@ -204,6 +217,8 @@ async function meState(db: D1Database, voter: VoterRow) {
     // No round names here: the site chooses the round for each batch, and a name would tell a voter the unit.
     open: isOpen,
     ended: !isOpen && !waiting,
+    // What this voter chose to judge (migration 0010): null for all questions.
+    slice: storedSlice(voter.slice_json),
     batch: open && open.pairs.length ? { size: open.size, remaining: open.pairs.length } : null,
   };
 }
@@ -256,10 +271,7 @@ interface BatchPair {
 }
 
 /** Everything selectBatch needs about the pool and this voter. */
-async function pairingState(db: D1Database, round: RoundRow, voterId: string): Promise<PairingState> {
-  // In a staged round, pairs come only from the questions in play (migration 0008).
-  const items = await playItems(db, round);
-  const fit = fitBTCounts(items, await pairCounts(db, round.id, "all"));
+async function pairingState(db: D1Database, round: RoundRow, voterId: string, slice: Slice | null): Promise<PairingState> {
   const votes = await db
     .prepare("SELECT left_q, right_q, is_repeat, created_at, id FROM votes WHERE round_id = ? AND voter_id = ?")
     .bind(round.id, voterId)
@@ -295,6 +307,19 @@ async function pairingState(db: D1Database, round: RoundRow, voterId: string): P
     ...skips.results.map((s) => ({ at: s.created_at, kind: 1 as const, id: s.id, repeat: false, key: pairKey(s.item_lo, s.item_hi) })),
   ].sort((a, b) => (a.at < b.at ? -1 : a.at > b.at ? 1 : a.kind - b.kind || a.id - b.id));
 
+  const done = new Set(trials.map((t) => t.key));
+  // In a staged round, pairs come only from the questions in play (migration 0008), and for a judge who chose some
+  // units, only from those (migration 0010; the slice is kept supplied). The ratings are fitted on every question in
+  // play, so a slice is placed on the round's one scale.
+  const fresh = (ids: string[]) => {
+    let n = 0;
+    for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) if (!done.has(pairKey(ids[i], ids[j]))) n++;
+    return n;
+  };
+  const items = await slicePlay(db, round, slice, fresh);
+  const all = slice ? await playItems(db, round) : items;
+  const fit = fitBTCounts(all, await pairCounts(db, round.id, "all"));
+
   const history: PairingState["history"] = [];
   trials.forEach((t, i) => {
     // Only voted first presentations can be repeated: a repeat needs a first answer to compare with.
@@ -302,10 +327,10 @@ async function pairingState(db: D1Database, round: RoundRow, voterId: string): P
   });
   return {
     items,
-    beta: new Map(items.map((id, i) => [id, fit.beta[i]])),
-    se: new Map(items.map((id, i) => [id, fit.se[i]])),
-    games: new Map(items.map((id, i) => [id, fit.games[i]])),
-    done: new Set(trials.map((t) => t.key)),
+    beta: new Map(all.map((id, i) => [id, fit.beta[i]])),
+    se: new Map(all.map((id, i) => [id, fit.se[i]])),
+    games: new Map(all.map((id, i) => [id, fit.games[i]])),
+    done,
     history,
     repeated: new Set(repeatsIssued.results.map((r) => pairKey(r.left_q, r.right_q))),
     trials: trials.length,
@@ -324,7 +349,8 @@ voterApi.get("/batch", requireVoter(), async (c) => {
     for (const round of await roundsByNeed(db)) {
       await growIfSettled(db, round);
       const seed = randomSeed();
-      const issued = selectBatch(await pairingState(db, round, voter.id), makeRng(seed));
+      const slice = storedSlice(voter.slice_json);
+      const issued = selectBatch(await pairingState(db, round, voter.id, slice), makeRng(seed));
       if (!issued.length) continue;
       const newBatchId = randomId();
       const now = nowIso();
@@ -334,11 +360,11 @@ voterApi.get("/batch", requireVoter(), async (c) => {
       const res = await db.batch([
         db
           .prepare(
-            `INSERT INTO batches (id, round_id, voter_id, seed, created_at)
-             SELECT ?1, ?2, ?3, ?4, ?5 WHERE NOT EXISTS (${UNANSWERED_SQL})
+            `INSERT INTO batches (id, round_id, voter_id, seed, created_at, slice_json)
+             SELECT ?1, ?2, ?3, ?4, ?5, ?6 WHERE NOT EXISTS (${UNANSWERED_SQL})
                 AND EXISTS (SELECT 1 FROM rounds WHERE id = ?2 AND state = 'open')`,
           )
-          .bind(newBatchId, round.id, voter.id, seed, now),
+          .bind(newBatchId, round.id, voter.id, seed, now, sliceJson(slice)),
         ...rows.map((r, i) =>
           db
             .prepare(
@@ -883,6 +909,8 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
     pools: openPools.map((p) => ({ id: p, name: poolName(p) })),
     // Boards this voter may see that are still waiting for voters.
     waiting: waitingFor,
+    // The viewer's own choice of units and level, offered as a filter on the page (never applied by the server).
+    slice: storedSlice(voter.slice_json),
     round: { id: round.id, name: round.name, state: round.state },
     // A staged round: how many of its questions are in play so far (the rows), out of how many in all.
     staged: round.staged ? { inPlay: rows.length, total: (await roundItems(db, round.item_set_id)).filter((id) => !HELD.has(id) || index.has(id)).length } : null,

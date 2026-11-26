@@ -2,6 +2,7 @@
 import { POOLED_ROLES, RATING } from "../rating/config";
 import { fitBTCounts, ranksOf, type BTFit, type PairCount } from "../rating/rating";
 import type { RoundRow } from "./env";
+import { inSlice, SLICE_PLAY, type Slice } from "./slice";
 import { firstGroup, HELD, nextGroup, STAGE, type StageItem } from "./staging";
 import { nowIso } from "./util";
 
@@ -57,7 +58,7 @@ export async function playItems(db: D1Database, round: RoundRow): Promise<string
   return r.results.map((x) => x.question_id);
 }
 
-async function stageItems(db: D1Database, itemSetId: string): Promise<StageItem[]> {
+export async function stageItems(db: D1Database, itemSetId: string): Promise<StageItem[]> {
   const r = await db
     .prepare("SELECT q.id, q.level, q.unit FROM item_set_items i JOIN questions q ON q.id = i.question_id WHERE i.item_set_id = ? ORDER BY q.id")
     .bind(itemSetId)
@@ -81,6 +82,43 @@ function joinStatements(db: D1Database, roundId: string, ids: string[], expected
       )
       .bind(roundId, at, JSON.stringify(ids), expected),
   ];
+}
+
+/**
+ * The questions of a judge's slice that the judge can be shown in this round (owner decision, 26 Nov 2026; migration
+ * 0010). In a staged round that is open, the slice is kept supplied: when fewer than SLICE_PLAY.MIN_IN_PLAY of its
+ * questions are in play, or the judge has fewer than SLICE_PLAY.MIN_FRESH new pairs left among them, the next
+ * questions of the slice join the round, in the same balanced order as any group, for every voter. `fresh` counts
+ * the judge's new pairs among a list of questions. With no slice, this is the round's questions in play.
+ */
+export async function slicePlay(db: D1Database, round: RoundRow, slice: Slice | null, fresh: (ids: string[]) => number): Promise<string[]> {
+  const play = await playItems(db, round);
+  if (!slice) return play;
+  const all = await stageItems(db, round.item_set_id);
+  const ofSlice = all.filter((i) => inSlice(slice, i));
+  const want = new Set(ofSlice.map((i) => i.id));
+  const inPlay = new Set(play);
+  let mine = play.filter((id) => want.has(id));
+  if (!round.staged || round.state !== "open") return mine;
+  // At most 20 steps of 6 in one request: more than any one unit and level holds.
+  for (let step = 0; step < 20; step++) {
+    if (mine.length >= SLICE_PLAY.MIN_IN_PLAY && fresh(mine) >= SLICE_PLAY.MIN_FRESH) break;
+    const add = nextGroup(ofSlice, inPlay, SLICE_PLAY.STEP);
+    if (!add.length) break;
+    // No count guard here, unlike a whole group: two requests for the same slice choose the same questions (the
+    // order is fixed), and INSERT OR IGNORE keeps each once.
+    await db
+      .prepare(
+        `INSERT OR IGNORE INTO round_in_play (round_id, question_id, joined_at)
+         SELECT ?1, j.value, ?2 FROM json_each(?3) j
+          WHERE EXISTS (SELECT 1 FROM rounds WHERE id = ?1 AND state = 'open' AND staged = 1)`,
+      )
+      .bind(round.id, nowIso(), JSON.stringify(add))
+      .run();
+    for (const id of add) inPlay.add(id);
+    mine = [...mine, ...add];
+  }
+  return mine.sort();
 }
 
 /** The statements that put a staged round's first group in play; none for a round that is not staged. */

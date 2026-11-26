@@ -5,6 +5,7 @@ import { POOLS, poolsForRole } from "../worker/pools";
 import { REASONS } from "../worker/reasons";
 import { bootstrapBT, fitBT, type Vote } from "../rating/rating";
 import { $, api, ApiError, el, fmtDate, say, show } from "./common";
+import { sliceLabel, storedSlice } from "../worker/slice";
 
 const BOOT_SEED = 20261124; // PREREG_Human_vs_LLM.md §6
 const PREREG_ITEM_SHA = "8cb28a9e4f2ef1f5a4f687e6e25d78b1f7d95faf431ef04d240efb2fb53510d0";
@@ -466,7 +467,7 @@ function renderVoters(): void {
   const q = $<HTMLInputElement>("#voterSearch").value.trim().toLowerCase();
   const status = (v: Record<string, any>) => (v.revoked_at ? "revoked" : "active") + (v.is_owner ? " owner" : "");
   const shown = q
-    ? voters.filter((v) => [v.label, v.role, v.email ?? "", v.name ?? "", status(v), fmtDate(v.created_at)].join(" ").toLowerCase().includes(q))
+    ? voters.filter((v) => [v.label, v.role, sliceLabel(storedSlice(v.slice_json)), v.email ?? "", v.name ?? "", status(v), fmtDate(v.created_at)].join(" ").toLowerCase().includes(q))
     : voters;
   $("#voterCount").textContent = q ? `${shown.length} of ${voters.length}` : `${voters.length} voters`;
   // Who still needs a nudge: codes not used yet, and voters short of the leaderboard (and data gate) threshold.
@@ -478,10 +479,11 @@ function renderVoters(): void {
   const toGo = (v: Record<string, any>) => (v.revoked_at ? "" : Math.max(0, tracker.unlockAt - v.round_votes));
   table(
     $<HTMLTableElement>("#voters"),
-    ["Label", "Role", "Email", "Name", "Issued", "Owner", "Signed in", "Votes", `To ${tracker.unlockAt}`, "Last vote", "Board seen", "Revoked", "Invite", "Revoke"],
+    ["Label", "Role", "Judges", "Email", "Name", "Issued", "Owner", "Signed in", "Votes", `To ${tracker.unlockAt}`, "Last vote", "Board seen", "Revoked", "Invite", "Revoke"],
     shown.map((v) => [
       v.label,
       roleCell(v),
+      sliceLabel(storedSlice(v.slice_json)),
       v.email ?? "",
       v.name ?? "",
       fmtDate(v.created_at),
@@ -500,7 +502,7 @@ function renderVoters(): void {
               void act(() => api("/admin/api/codes/revoke", { body: { label: v.label } }), `${v.label} revoked; caches rebuilt.`);
           }),
     ]),
-    [7, 8],
+    [8, 9],
   );
 }
 
@@ -520,6 +522,7 @@ interface Health {
     adultVotesToThreshold: number;
   };
   corrections: { rows: number; winnerChanged: number };
+  scale: { adultComparisons: number; crossUnit: number; crossLevel: number; perUnit: { unit: number; games: number }[]; sliceVotes: number; sliceVoters: number };
   gate: {
     MIN_ADULT_RATERS: number;
     MIN_VOTES_PER_COUNTED_RATER: number;
@@ -618,6 +621,14 @@ async function loadHealth(): Promise<void> {
   $("#correctionsLine").textContent = h.corrections.rows
     ? `Answers changed by going back: ${h.corrections.rows}, of which ${h.corrections.winnerChanged} now have a different winner.`
     : "No answers changed by going back.";
+  // How well the units are tied to one another on the one scale (owner decision, 26 Nov 2026): judges who chose some
+  // units add comparisons within them, and only mixed pairs place one unit against another.
+  const sc = h.scale;
+  const share = (n: number) => (sc.adultComparisons ? `${Math.round((100 * n) / sc.adultComparisons)}%` : "none");
+  $("#scaleLine").textContent =
+    `Adult comparisons: ${sc.adultComparisons}. Between different units: ${sc.crossUnit} (${share(sc.crossUnit)}). Between State and Nationals: ${sc.crossLevel} (${share(sc.crossLevel)}). ` +
+    `Votes from judges who chose some units: ${sc.sliceVotes}, from ${sc.sliceVoters} ${sc.sliceVoters === 1 ? "voter" : "voters"}.`;
+  table($<HTMLTableElement>("#perUnit"), ["Unit", "Adult comparisons involving it"], sc.perUnit.map((u) => [`Unit ${u.unit}`, u.games]), [1]);
   $("#reasonsLine").textContent = r.votes
     ? `${r.votesWithReason} of ${r.votes} first-presentation votes (${pct(r.votesWithReason / r.votes)}) carry at least one reason.`
     : "No votes yet.";

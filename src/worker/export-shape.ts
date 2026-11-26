@@ -52,6 +52,8 @@ export const VOTES_CSV_COLUMNS = [
   "server_ms",
   "batch_pair_id",
   "item_set_id",
+  // The units and level the voter had chosen when the batch was made (migration 0010); empty for all questions.
+  "batch_slice",
 ] as const;
 
 /** One vote row as the paged export sends it: the RoundExport fields plus the CSV-only ones. */

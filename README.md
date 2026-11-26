@@ -76,6 +76,10 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
   - `/api/correct` changes an answer in the voter's newest batch. It refuses a vote cast before the voter first
     opened the leaderboard once they have opened it.
   - `/api/signout` ends the session on that device only.
+  - `/api/slice` sets what the voter judges: `{all: true}` or `{units: [4, 5], levels: ["NF"]}` (migration 0010).
+    It applies from the next batch. In a staged round the slice is kept supplied: when fewer than 12 of its
+    questions are in play, or the voter has fewer than 10 new pairs left among them, the next six of the slice join
+    the round for everyone. Pairs come only from the slice; the ratings are fitted on every question in play.
   - `/api/leaderboard` sends a rating, range and win count only for ranked questions (10 comparisons). A board (the
     pooled adults board, or a voter's own role board) is offered once three voters stand behind it in the round.
     Head-to-head counts are sent added up by group, never per pair of questions.

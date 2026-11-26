@@ -14,11 +14,14 @@ the next steps", answer from this file and update it as steps finish.*
 - Four codes exist, all revoked. No live code.
 
 **Merged to `main` on 25 Nov 2026 at the owner's word ("build, merge, and ship", and later "build and ship that"
-for email sign-up); 212 tests pass, the typecheck passes, and the browser smoke test passes 65 checks.** What went
+for email sign-up); 218 tests pass, the typecheck passes, and the browser smoke test passes 72 checks.** What went
 live:
 - **Sign-up by email** (migration 0009, evening of 25 Nov): a sign-up link from admin, an address, an optional name
   and a self-chosen adult role; the address is then the login. Not verified; students keep codes. Since late on 25 Nov the
   page asks for the email alone and for the rest only when the address is new.
+- **Judges may choose units** (26 Nov, migration 0010): "What you judge" on the home page, All questions or some
+  units at State, Nationals or both; the leaderboard has a matching filter; Study health counts cross-unit
+  comparisons. Watch that number: if it stays low, the single ranking across units is thin.
 - **Home page** (late on 25 Nov): the Start button follows the task on a first visit and sits under the count after that.
 - **Staged opening** (migration 0008): the round opens with the 36 launch questions in play and adds 24 at a time
   whenever every question in play has 12 adult comparisons. The deploy marks the draft round as staged.

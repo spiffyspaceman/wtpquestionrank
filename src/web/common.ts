@@ -1,4 +1,5 @@
 // Shared browser helpers. No third-party code.
+import { LEVEL_NAMES, parseSlice, SLICE_LEVELS, SLICE_UNITS, type Slice } from "../worker/slice";
 
 export class ApiError extends Error {
   constructor(
@@ -153,3 +154,30 @@ export const CRITERION =
 /** The hearing format, as the LLM judges were given it (llm-arm packet). */
 export const FORMAT =
   "In a We the People simulated congressional hearing, a unit of high school students answers one published hearing question. They give a prepared opening statement of about 4 minutes. A panel of judges then asks follow-up questions for 6 to 10 minutes and scores the team. Each question has a main prompt (the stem) and two follow-up bullets.";
+
+// ---------- choosing units and level (owner decision, 26 Nov 2026) ----------
+
+/**
+ * Two rows of checkboxes, Units 1 to 6 and State or Nationals, used by the home page (what a judge judges) and the
+ * leaderboard (what it shows). `read()` gives the choice: null for everything ticked, false when a row is empty.
+ */
+export function sliceBoxes(prefix: string, onChange: () => void): { el: HTMLElement; read(): Slice | null | false; set(s: Slice | null): void } {
+  const box = (name: string, value: string, text: string) => {
+    const input = el("input", { type: "checkbox", id: `${prefix}-${name}-${value}`, value });
+    input.addEventListener("change", onChange);
+    return el("label", { class: "check", for: `${prefix}-${name}-${value}` }, input, " " + text);
+  };
+  const units = el("fieldset", { class: "boxes" }, el("legend", {}, "Units"), ...SLICE_UNITS.map((u) => box("unit", String(u), `Unit ${u}`)));
+  const levels = el("fieldset", { class: "boxes" }, el("legend", {}, "Level"), ...SLICE_LEVELS.map((l) => box("level", l, LEVEL_NAMES[l])));
+  const ticked = (f: HTMLElement) => [...f.querySelectorAll<HTMLInputElement>("input:checked")].map((i) => i.value);
+  return {
+    el: el("div", { class: "slice-boxes" }, units, levels),
+    read() {
+      return parseSlice({ units: ticked(units).map(Number), levels: ticked(levels) });
+    },
+    set(s) {
+      for (const i of units.querySelectorAll<HTMLInputElement>("input")) i.checked = !s || s.units.includes(Number(i.value));
+      for (const i of levels.querySelectorAll<HTMLInputElement>("input")) i.checked = !s || (s.levels as string[]).includes(i.value);
+    },
+  };
+}

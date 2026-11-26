@@ -282,6 +282,19 @@ kbd { font: 0.8em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; bord
 .first-visit .tally { margin: 4px 0 18px; }
 .first-visit .tally .actions { margin: 10px 0 8px; }
 .tally .actions { margin: 14px 0 12px; }
+/* What a judge judges (home page) and the leaderboard's filter: two rows of checkboxes. */
+.slice-panel { border-top: 1px solid var(--line); padding-top: 4px; margin-bottom: 8px; }
+.slice-panel h2 { margin-top: 0.8em; }
+.slice-mode { display: flex; flex-wrap: wrap; gap: 0 22px; }
+.slice-boxes { display: grid; gap: 4px; margin: 4px 0 2px; }
+fieldset.boxes { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0 18px; align-items: center; }
+fieldset.boxes legend { float: left; width: 4.2rem; padding: 0; margin: 0; color: var(--muted); font-style: italic; font-size: 0.95rem; line-height: 44px; }
+fieldset.boxes label.check { min-height: 44px; }
+.board-filter { margin: 6px 0 4px; }
+.board-filter summary { cursor: pointer; color: var(--accent); min-height: 40px; display: flex; align-items: center; font-size: 0.95rem; }
+.board-filter[open] { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 2px 14px 12px; }
+.filter-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.filter-actions button { min-height: 40px; padding: 6px 14px; font-size: 0.95rem; }
 ul.plain { padding-left: 1.15em; }
 ul.plain li { margin: 0.35em 0; }
 dl.keys { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 8px 0; }

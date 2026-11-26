@@ -491,7 +491,7 @@ adminApi.get("/codes", async (c) => {
   // round (the leaderboard opens at 20 of them), and the last vote. Nothing new is stored: signed_in_at is the oldest
   // session still on file (sessions lapse after 90 days and end on sign-out, so it can be later than the first use).
   const r = await c.env.DB.prepare(
-    `SELECT u.label, u.role, u.is_owner, u.created_at, u.revoked_at, u.board_seen_at, u.email, u.name, COALESCE(c.n, 0) AS n_votes,
+    `SELECT u.label, u.role, u.is_owner, u.created_at, u.revoked_at, u.board_seen_at, u.email, u.name, u.slice_json, COALESCE(c.n, 0) AS n_votes,
             COALESCE(c.first_votes, 0) AS round_votes, c.last_vote_at,
             (SELECT MIN(s.created_at) FROM sessions s WHERE s.voter_id = u.id) AS signed_in_at
        FROM voters u
@@ -723,7 +723,7 @@ export const BACKUP_TABLES: Record<string, string> = {
   questions: "*",
   item_set_items: "*",
   rounds: "*",
-  voters: "id, role, label, is_owner, created_at, revoked_at, board_seen_at, email, name, join_link_id",
+  voters: "id, role, label, is_owner, created_at, revoked_at, board_seen_at, email, name, join_link_id, slice_json",
   batches: "*",
   batch_pairs: "*",
   votes: "*",

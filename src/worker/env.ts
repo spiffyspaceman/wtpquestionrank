@@ -30,6 +30,8 @@ export interface VoterRow {
   is_owner: number;
   revoked_at: string | null;
   board_seen_at: string | null;
+  /** What the voter chose to judge (migration 0010); NULL for all questions. */
+  slice_json: string | null;
 }
 
 export interface RoundRow {
