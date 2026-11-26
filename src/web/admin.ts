@@ -147,7 +147,7 @@ function roundActions(r: Round): Node {
   if (r.staged && (r.state === "draft" || r.state === "open"))
     stage.push(
       r.auto_grow
-        ? button("Stop adding by itself", staging({ autoGrow: false }, "Questions now join only when you add them."))
+        ? button("Stop adding by itself", staging({ autoGrow: false }, "Questions now join only when you add them, including those a judge's chosen units would bring in."))
         : button("Add by itself", staging({ autoGrow: true }, `${g.STEP} questions join whenever every question in play has ${g.SETTLED_ADULT_GAMES} adult comparisons.`)),
     );
   if (r.staged && r.state === "open" && r.n_in_play < r.n_items)

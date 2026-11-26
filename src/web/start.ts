@@ -98,7 +98,7 @@ function setUpSlice(me: Me): void {
   $("#sliceBoxes").replaceChildren(boxes.el);
   const status = $("#sliceStatus");
   const mode = () => radios.find((r) => r.checked)?.value ?? "all";
-  const pending = me.batch && me.batch.remaining < me.batch.size ? " Your current batch finishes as it was." : "";
+  const pending = me.batch ? " The batch already waiting for you finishes as it was." : "";
   const describe = (s: Slice | null) =>
     s ? `You judge ${sliceLabel(s)}, from your next batch.${pending}` : `You judge all questions.${me.slice ? pending : ""}`;
   let saved = me.slice;
@@ -107,7 +107,22 @@ function setUpSlice(me: Me): void {
     boxes.set(saved);
     show($("#sliceBoxes"), Boolean(saved));
   };
+  // One save at a time, the latest choice last: quick changes on a slow connection must not land out of order.
+  let saving = false;
+  let again = false;
   async function save(): Promise<void> {
+    if (saving) return void (again = true);
+    saving = true;
+    try {
+      do {
+        again = false;
+        await saveOnce();
+      } while (again);
+    } finally {
+      saving = false;
+    }
+  }
+  async function saveOnce(): Promise<void> {
     const some = mode() === "some";
     show($("#sliceBoxes"), some);
     const s = some ? boxes.read() : null;

@@ -2,7 +2,7 @@
 // Everything after the one fetch runs in this browser; nothing the viewer does is sent back.
 import { RATING } from "../rating/config";
 import { OTHER_LABEL, REASONS } from "../worker/reasons";
-import { inSlice, sliceLabel, type Slice } from "../worker/slice";
+import { inSlice, parseSlice, sliceLabel, type Slice } from "../worker/slice";
 import { $, api, ApiError, el, fmtDate, footnotes, marked, say, show, sliceBoxes, type Marks, type ShownNote } from "./common";
 
 interface Row {
@@ -166,10 +166,16 @@ function renderTop(): void {
   );
   // Nothing ranked yet: say how far along the questions are, and leave the charts out until there is something to chart.
   const furthest = rows.reduce((m, r) => Math.max(m, r.games), 0);
-  $("#noneRanked").textContent = `No question is ranked yet. A question is ranked after ${RANK_AT} comparisons; the furthest along has ${furthest}.`;
+  const anyRanked = allRows.some((r) => r.rank !== null);
+  $("#noneRanked").textContent = !rows.length
+    ? "No question in play matches the filter yet."
+    : filter && anyRanked
+      ? `No question in ${sliceLabel(filter)} is ranked yet. A question is ranked after ${RANK_AT} comparisons; the furthest along has ${furthest}.`
+      : `No question is ranked yet. A question is ranked after ${RANK_AT} comparisons; the furthest along has ${furthest}.`;
   show($("#noneRanked"), ranked.length === 0);
   show($("#top10H"), ranked.length !== 1);
-  show($("#explore"), ranked.length > 0);
+  // The charts follow the filter; they are left out only while nothing at all is ranked.
+  show($("#explore"), anyRanked);
 }
 
 // ---------- variables and groupings for the charts ----------
@@ -846,8 +852,8 @@ $("#filterAll").addEventListener("click", () => setFilter(null));
 $("#filterMine").addEventListener("click", () => board?.slice && setFilter(board.slice));
 // The filter last used in this browser, if any.
 try {
-  const f = settings.filter ? (JSON.parse(settings.filter) as Slice) : null;
-  filter = f && Array.isArray(f.units) && Array.isArray(f.levels) ? f : null;
+  const f = settings.filter ? parseSlice(JSON.parse(settings.filter)) : null;
+  filter = f || null;
 } catch {
   filter = null;
 }

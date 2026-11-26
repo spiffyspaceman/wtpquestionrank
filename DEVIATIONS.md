@@ -361,7 +361,8 @@ questions" (the default) or choose "Only some units": any of Units 1 to 6, at St
 applies from the voter's next batch, and every batch records the choice it was drawn under (`batches.slice_json`,
 migration 0010; also in `votes.csv` as `batch_slice`). In the staged round, a slice with fewer than 12 of its
 questions in play, or with fewer than 10 new pairs left for that judge, brings the next questions of the slice into
-play, six at a time, in the same balanced order as any group; they join for every voter. The leaderboard keeps the
+play, six at a time, in the same balanced order as any group; they join for every voter. When the owner has
+switched the round's growth off, nothing joins this way either; the judge gets what of the slice is in play. The leaderboard keeps the
 round's ranks across all questions and offers a filter with the same boxes. Students may choose too.
 Effects to keep in mind:
 - **The single scale across units rests on mixed pairs.** A judge who keeps to some units adds nothing to where those

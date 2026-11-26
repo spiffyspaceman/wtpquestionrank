@@ -14,7 +14,7 @@ the next steps", answer from this file and update it as steps finish.*
 - Four codes exist, all revoked. No live code.
 
 **Merged to `main` on 25 Nov 2026 at the owner's word ("build, merge, and ship", and later "build and ship that"
-for email sign-up); 218 tests pass, the typecheck passes, and the browser smoke test passes 72 checks.** What went
+for email sign-up); 219 tests pass, the typecheck passes, and the browser smoke test passes 72 checks.** What went
 live:
 - **Sign-up by email** (migration 0009, evening of 25 Nov): a sign-up link from admin, an address, an optional name
   and a self-chosen adult role; the address is then the login. Not verified; students keep codes. Since late on 25 Nov the

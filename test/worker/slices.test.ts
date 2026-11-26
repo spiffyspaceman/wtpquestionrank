@@ -102,6 +102,24 @@ describe("what a judge judges", () => {
     for (const id of HELD) expect((await inPlay(round)).has(id)).toBe(false);
   });
 
+  it("with the round's growth switched off, a slice brings nothing in: the judge gets what of it is in play", async () => {
+    const round = await openFullRound();
+    await admin(`/admin/api/rounds/${round}/staging`, { body: { autoGrow: false } });
+    const before = await inPlay(round);
+    const v = await voter("judge");
+    await setSlice(v.cookie, { units: [3], levels: ["NF"] });
+    expect(await json(call("/api/batch", { cookie: v.cookie }))).toMatchObject({ done: true, pairs: [] });
+    const w = await voter("judge");
+    await setSlice(w.cookie, { units: [3], levels: ["State"] });
+    await voteN(w.cookie, 10);
+    for (const q of await shown(round, w.label)) expect(q.unit === 3 && q.level === "State", q.id).toBe(true);
+    expect(await inPlay(round)).toEqual(before);
+    // Switched back on, the slice is supplied again.
+    await admin(`/admin/api/rounds/${round}/staging`, { body: { autoGrow: true } });
+    await getBatch(v.cookie);
+    expect((await inPlay(round)).size).toBeGreaterThan(before.size);
+  });
+
   it("a choice changed mid-batch takes effect with the next batch; the batch in hand finishes as it was", async () => {
     const round = await openFullRound();
     const v = await voter("judge");

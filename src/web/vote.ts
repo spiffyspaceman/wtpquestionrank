@@ -207,7 +207,7 @@ async function fetchBatch(): Promise<void> {
     return say(
       msg,
       me.slice
-        ? "You have judged every pair in the units you chose. Thank you. To judge more, choose more units on the home page."
+        ? "There are no pairs for you right now in the units you chose. Choose more units, or all questions, on the home page."
         : "You have judged every pair. Thank you.",
       "ok",
     );

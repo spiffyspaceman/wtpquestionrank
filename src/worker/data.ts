@@ -88,7 +88,8 @@ function joinStatements(db: D1Database, roundId: string, ids: string[], expected
  * The questions of a judge's slice that the judge can be shown in this round (owner decision, 26 Nov 2026; migration
  * 0010). In a staged round that is open, the slice is kept supplied: when fewer than SLICE_PLAY.MIN_IN_PLAY of its
  * questions are in play, or the judge has fewer than SLICE_PLAY.MIN_FRESH new pairs left among them, the next
- * questions of the slice join the round, in the same balanced order as any group, for every voter. `fresh` counts
+ * questions of the slice join the round, in the same balanced order as any group, for every voter, unless the owner
+ * has switched the round's growth off. `fresh` counts
  * the judge's new pairs among a list of questions. With no slice, this is the round's questions in play.
  */
 export async function slicePlay(db: D1Database, round: RoundRow, slice: Slice | null, fresh: (ids: string[]) => number): Promise<string[]> {
@@ -99,7 +100,9 @@ export async function slicePlay(db: D1Database, round: RoundRow, slice: Slice | 
   const want = new Set(ofSlice.map((i) => i.id));
   const inPlay = new Set(play);
   let mine = play.filter((id) => want.has(id));
-  if (!round.staged || round.state !== "open") return mine;
+  // With "adds by itself" switched off, questions join only by the owner's hand, slices included (owner decision,
+  // 26 Nov 2026): the judge then gets what of the slice is already in play.
+  if (!round.staged || round.state !== "open" || !round.auto_grow) return mine;
   // At most 20 steps of 6 in one request: more than any one unit and level holds.
   for (let step = 0; step < 20; step++) {
     if (mine.length >= SLICE_PLAY.MIN_IN_PLAY && fresh(mine) >= SLICE_PLAY.MIN_FRESH) break;
@@ -111,7 +114,7 @@ export async function slicePlay(db: D1Database, round: RoundRow, slice: Slice | 
       .prepare(
         `INSERT OR IGNORE INTO round_in_play (round_id, question_id, joined_at)
          SELECT ?1, j.value, ?2 FROM json_each(?3) j
-          WHERE EXISTS (SELECT 1 FROM rounds WHERE id = ?1 AND state = 'open' AND staged = 1)`,
+          WHERE EXISTS (SELECT 1 FROM rounds WHERE id = ?1 AND state = 'open' AND staged = 1 AND auto_grow = 1)`,
       )
       .bind(round.id, nowIso(), JSON.stringify(add))
       .run();
