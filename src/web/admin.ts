@@ -519,7 +519,7 @@ $("#voterSearch").addEventListener("input", renderVoters);
 interface Health {
   round: { id: string; name: string; state: string; itemSetId: string; staged: boolean };
   forecast: {
-    itemsShort: { id: string; games: number }[];
+    itemsShort: { id: string; summary: string | null; games: number }[];
     adultVotesNeeded: number;
     adultVotesPerDay: number;
     daysAtThisPace: number | null;
@@ -612,7 +612,7 @@ async function loadHealth(): Promise<void> {
         `${fc.adultVotesToThreshold} votes short between them.`,
     );
   $("#forecastLine").textContent = parts.join(" ");
-  table($<HTMLTableElement>("#shortItems"), ["Question", "Adult comparisons"], fc.itemsShort.map((x) => [el("span", { class: "mono" }, x.id), x.games]), [1]);
+  table($<HTMLTableElement>("#shortItems"), ["Question", "Topic", "Adult comparisons"], fc.itemsShort.map((x) => [el("span", { class: "mono" }, x.id), x.summary ?? "", x.games]), [2]);
   show($("#shortWrap"), fc.itemsShort.length > 0);
 
   const peak = Math.max(1, ...h.perDay.map((d) => d.votes));
@@ -696,9 +696,9 @@ async function loadBoard(): Promise<void> {
     (b.intervalsAsOf ? `Intervals as of ${fmtDate(b.intervalsAsOf)}.` : "No intervals yet: use Refresh intervals.");
   table(
     $<HTMLTableElement>("#board"),
-    ["Rank", "Question", "Rating", "Low", "High", "Games", "Wins"],
-    b.rows.map((r) => [r.rank ?? "", el("span", { class: "mono" }, r.id), r.rating.toFixed(0), r.lo?.toFixed(0) ?? "", r.hi?.toFixed(0) ?? "", r.games, r.wins]),
-    [0, 2, 3, 4, 5, 6],
+    ["Rank", "Question", "Topic", "Rating", "Low", "High", "Games", "Wins"],
+    b.rows.map((r) => [r.rank ?? "", el("span", { class: "mono" }, r.id), r.summary ?? "", r.rating.toFixed(0), r.lo?.toFixed(0) ?? "", r.hi?.toFixed(0) ?? "", r.games, r.wins]),
+    [0, 3, 4, 5, 6, 7],
   );
 }
 

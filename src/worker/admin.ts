@@ -2,6 +2,7 @@
 import { Hono, type Context } from "hono";
 import { RATING, ROLES } from "../rating/config";
 import { DISPLAY } from "./display";
+import { summaryOf } from "./summaries";
 import { requireAdmin, adminSecretLogin } from "./access";
 import { BUILTIN_SETS } from "./builtin-sets";
 import { codeHash, inviteCode } from "./auth";
@@ -425,7 +426,7 @@ adminApi.get("/rounds/:id/board", async (c) => {
   const pool = c.req.query("pool") ?? "adults";
   if (!(POOLS as readonly string[]).includes(pool)) return c.json({ error: "bad_pool" }, 400);
   const { fit, rows, snapshot } = await (await board(c.env.DB, round))(pool);
-  return c.json({ pool, votes: fit.nVotes, left: fit.left, intervalsAsOf: snapshot?.computed_at ?? null, rows });
+  return c.json({ pool, votes: fit.nVotes, left: fit.left, intervalsAsOf: snapshot?.computed_at ?? null, rows: rows.map((r) => ({ ...r, summary: summaryOf(r.id) })) });
 });
 
 /** First-presentation votes of voters not revoked, for the in-browser bootstrap. */

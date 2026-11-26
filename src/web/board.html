@@ -34,17 +34,7 @@
           <div class="filter-actions"><button id="filterAll" type="button">Show all</button><button id="filterMine" type="button" hidden>Use the units I judge</button></div>
         </details>
 
-        <section id="topSection" class="hero" aria-labelledby="topH" hidden>
-          <h2 id="topH" class="sr-only">Top question</h2>
-          <div id="top"></div>
-        </section>
-
-        <section aria-labelledby="top10H">
-          <h2 id="top10H">Top 10</h2>
-          <ol class="ranklist" id="top10"></ol>
-          <p id="noneRanked" class="muted" hidden></p>
-        </section>
-
+        <!-- The chart comes first, then the top question and the top 5, which can open to 10 (owner decision, 26 Nov 2026). -->
         <section id="explore" class="explore" aria-labelledby="exploreH">
           <h2 id="exploreH">Explore</h2>
           <div class="tabs charttabs" role="tablist" aria-label="Chart">
@@ -61,6 +51,19 @@
           </div>
           <div id="tip" class="tip" role="status" hidden></div>
         </section>
+
+        <section id="topSection" class="hero" aria-labelledby="topH" hidden>
+          <h2 id="topH" class="sr-only">Top question</h2>
+          <div id="top"></div>
+        </section>
+
+        <section aria-labelledby="top10H">
+          <h2 id="top10H">Top 5</h2>
+          <ol class="ranklist" id="top10"></ol>
+          <p class="more-top"><button id="moreTop" type="button" aria-controls="top10" aria-expanded="false" hidden>Show the top 10</button></p>
+          <p id="noneRanked" class="muted" hidden></p>
+        </section>
+
 
         <section aria-labelledby="allH">
           <h2 id="allH">All questions</h2>

@@ -6,6 +6,7 @@ import { POOLED_ROLES, QUALITY } from "../rating/config";
 import { playItems } from "./data";
 import type { RoundRow } from "./env";
 import { GATE } from "./gate";
+import { summaryOf } from "./summaries";
 
 
 function median(xs: number[]): number | null {
@@ -193,7 +194,7 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
     },
     forecast: {
       // Counts only (PREREG §9 allows watching data-quality numbers): how far the gate is, and how fast votes come.
-      itemsShort: short.slice(0, 12).map(([id, n]) => ({ id, games: n })),
+      itemsShort: short.slice(0, 12).map(([id, n]) => ({ id, summary: summaryOf(id), games: n })),
       adultVotesNeeded: votesNeeded,
       adultVotesPerDay: Math.round(adultPerDay * 10) / 10,
       daysAtThisPace: votesNeeded === 0 ? 0 : adultPerDay > 0 ? Math.ceil(votesNeeded / adultPerDay) : null,

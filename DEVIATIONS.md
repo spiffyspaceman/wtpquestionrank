@@ -425,3 +425,11 @@ Effects to keep in mind:
 - **It is the main source of cross-unit comparisons from narrowed judges.** The weakness logged for the units choice
   (the single scale rests on mixed pairs) is eased, not removed.
 No frozen file, threshold or measure changes.
+
+**26 November 2026: leaderboard order and topic labels (owner decision).** The leaderboard now opens with the
+Explore chart, then the top question in full and the rest of the top 5 (a button opens it to 10). Each question
+carries a topic label of at most five words, drafted with AI from its stem and bullets and shipped without a review
+pass at the owner's choice (`items/summaries.json`). Labels appear on the leaderboard and in admin only, never on the
+voting page. Effect to keep in mind: a voter who has opened the board may now recognize a question on the voting page
+by its subject more readily than before, which adds to the leaderboard exposure already noted (PREREG §12); votes
+cast after opening the board remain marked `after_board = 1`. No frozen file, threshold or measure changes.

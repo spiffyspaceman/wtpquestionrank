@@ -385,12 +385,17 @@ try {
   await page.goto(B + "/board");
   await page.waitForSelector("#top .hero-card");
   check((await text("#top .hero-card .score strong")) === "#1" && /^rating \d+$/.test(await text("#top .hero-card .score .rating")), "the top card leads with the rank, the rating beside it");
-  check((await page.locator("#top10 > li").count()) === 9 && (await text("#top10 > li >> nth=0 >> .score strong")) === "#2", "the list carries on from #2 to #10");
+  check((await page.locator("#top10 > li").count()) === 4 && (await text("#top10 > li >> nth=0 >> .score strong")) === "#2" && (await text("#top10H")) === "Top 5", "the list carries on from #2 to #5");
+  check(Boolean(await text("#top .hero-card .summ")) && (await page.locator("#top10 > li .summ").count()) === 4, "each top question shows its topic label");
+  await page.click("#moreTop");
+  check((await page.locator("#top10 > li").count()) === 9 && (await text("#top10H")) === "Top 10" && (await page.getAttribute("#moreTop", "aria-expanded")) === "true", "Show the top 10 opens the list to #10");
+  await page.click("#moreTop");
+  check((await page.locator("#top10 > li").count()) === 4, "and closes it again");
   const wide = await page.evaluate(() => {
-    const list = document.querySelector("#top10").getBoundingClientRect(), main = document.querySelector("main").getBoundingClientRect(), ex = document.querySelector("#explore").getBoundingClientRect();
-    return list.width > main.width * 0.8 && ex.top >= list.bottom;
+    const list = document.querySelector("#top10").getBoundingClientRect(), main = document.querySelector("main").getBoundingClientRect(), ex = document.querySelector("#explore").getBoundingClientRect(), top = document.querySelector("#topSection").getBoundingClientRect();
+    return list.width > main.width * 0.8 && ex.bottom <= top.top;
   });
-  check(wide, "the list has the full width and the charts come after it");
+  check(wide, "the chart comes first, then the top question and the list at full width");
   check(await page.isVisible("#explore") && (await page.locator("#chart svg").count()) === 1, "the charts appear once questions are ranked");
   for (const t of ["scatter", "dist", "h2h"]) await page.click(`#tab-${t}`);
   check((await page.locator("#chart table.heat").count()) === 1, "each chart tab draws, the head-to-head table last");

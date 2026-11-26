@@ -19,6 +19,9 @@ live:
 - **Sign-up by email** (migration 0009, evening of 25 Nov): a sign-up link from admin, an address, an optional name
   and a self-chosen adult role; the address is then the login. Not verified; students keep codes. Since late on 25 Nov the
   page asks for the email alone and for the rest only when the address is new.
+- **Leaderboard** (26 Nov): chart first, then #1 in full and #2 to #5 (opens to 10); every question has a topic
+  label of five words or fewer, drafted with AI, in `items/summaries.json`. Read them over when you can; send
+  corrections and they ship like any other change.
 - **Bridge pair** (26 Nov, migration 0012): a judge who narrows the set keeps, unless they untick it, one pair per
   batch that sets a question of their units beside one from outside them. Study health counts these votes; they
   are what tie a narrow set to the one scale.

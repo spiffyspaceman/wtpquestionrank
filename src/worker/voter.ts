@@ -3,6 +3,7 @@ import { Hono, type Context } from "hono";
 import { PAIRING, POOLED_ROLES } from "../rating/config";
 import { pairKey, selectBatch, type IssuedPair, type PairingState } from "../rating/pairs";
 import { bridgePair } from "./bridge";
+import { summaryOf } from "./summaries";
 import { fitBTCounts, makeRng } from "../rating/rating";
 import {
   attemptKey,
@@ -942,6 +943,7 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
       reasons: (reasonsBy.get(r.id) ?? []).sort((a, b) => b.n - a.n || (a.code < b.code ? -1 : 1)),
       stem: q.stem,
       bullets: JSON.parse(q.bullets_json) as string[],
+      summary: summaryOf(r.id),
       ...shownNotes(q.notes_json),
       about: { level: q.level, cycle: q.cycle, unit: q.unit, question: q.qnum, sources: SOURCES[r.id] ?? [] },
     };

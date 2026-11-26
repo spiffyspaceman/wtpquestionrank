@@ -17,6 +17,8 @@ interface Row {
   reasons: { code: string; n: number }[];
   stem: string;
   bullets: string[];
+  /** A short topic label (src/worker/summaries.ts); null for a question that has none yet. */
+  summary: string | null;
   marks?: Marks;
   notes?: ShownNote[];
   about: { level: string; cycle: string; unit: number; question: number; sources: { label: string; url: string }[] };
@@ -122,6 +124,16 @@ function detail(r: Row): HTMLElement {
   );
 }
 
+/** The question's topic label, when it has one. */
+const summ = (r: Row) => (r.summary ? el("p", { class: "summ" }, r.summary) : null);
+
+/** The top list shows #1 to #5 until the reader opens it to #10. */
+let topTen = false;
+$("#moreTop").addEventListener("click", () => {
+  topTen = !topTen;
+  renderTop();
+});
+
 function renderTop(): void {
   const ranked = rows.filter((r) => r.rank !== null);
   const t = ranked[0];
@@ -133,13 +145,19 @@ function renderTop(): void {
         { class: "hero-card" },
         // The rank leads; the rating is the small figure under it (owner decision, 25 Nov 2026).
         el("div", { class: "score big" }, el("strong", {}, `#${t.rank}`), el("span", { class: "rating" }, `rating ${rating(t)}`), el("span", {}, statLine(t))),
-        el("div", { class: "body" }, el("p", { class: "tag" }, tag(t)), el("p", { class: "stem" }, ...marked(t.stem, 0, t.marks)), detail(t)),
+        el("div", { class: "body" }, el("p", { class: "tag" }, tag(t)), summ(t), el("p", { class: "stem" }, ...marked(t.stem, 0, t.marks)), detail(t)),
       ),
     );
   }
-  // #1 is the card above; the list carries on from #2 to #10.
+  // #1 is the card above; the list carries on to #5, or to #10 once opened.
+  const topN = topTen ? 10 : 5;
+  $("#top10H").textContent = `Top ${topN}`;
+  const more = $<HTMLButtonElement>("#moreTop");
+  more.textContent = topTen ? "Show the top 5 only" : "Show the top 10";
+  more.setAttribute("aria-expanded", String(topTen));
+  show(more, ranked.length > 5);
   $("#top10").replaceChildren(
-    ...ranked.slice(1, 10).map((r) =>
+    ...ranked.slice(1, topN).map((r) =>
       el(
         "li",
         {},
@@ -154,6 +172,7 @@ function renderTop(): void {
           "div",
           { class: "body" },
           el("p", { class: "tag" }, tag(r)),
+          summ(r),
           el(
             "details",
             {},
@@ -434,7 +453,7 @@ function renderScatter(): void {
   for (const p of ordered) {
     const cx = sx(p.x) + (X.discrete ? jitter(p.r, 1) * Math.min(28, xStep * 0.5) : 0);
     const cy = sy(p.y) - (Y.discrete ? jitter(p.r, 2) * Math.min(28, yStep * 0.5) : 0);
-    const tip = `${tag(p.r)}: ${X.label} ${X.fmt ? X.fmt(p.x) : p.x}, ${Y.label} ${Y.fmt ? Y.fmt(p.y) : p.y}. ${p.r.stem.slice(0, 110)}${p.r.stem.length > 110 ? "…" : ""}`;
+    const tip = `${tag(p.r)}: ${X.label} ${X.fmt ? X.fmt(p.x) : p.x}, ${Y.label} ${Y.fmt ? Y.fmt(p.y) : p.y}. ${p.r.summary ?? p.r.stem.slice(0, 110) + (p.r.stem.length > 110 ? "…" : "")}`;
     plot.append(svg("circle", { cx, cy, r: p.on ? 6 : 5, class: p.on ? "pt" : "pt off", "data-tip": tip, tabindex: 0 }));
   }
   chart.replaceChildren(plot);
@@ -671,7 +690,7 @@ function filtered(): Row[] {
     if (year && r.about.cycle !== year) return false;
     if (rankedOnly && r.rank === null) return false;
     if (!terms.length) return true;
-    const hay = [tag(r), r.stem, ...r.bullets, ...r.about.sources.map((s) => s.label)].join(" ").toLowerCase();
+    const hay = [tag(r), r.summary ?? "", r.stem, ...r.bullets, ...r.about.sources.map((s) => s.label)].join(" ").toLowerCase();
     return terms.every((t) => hay.includes(t));
   });
   const col = COLS.find((c) => c.key === sortKey) ?? COLS[0];
@@ -709,7 +728,7 @@ function renderAll(): void {
   const body: HTMLElement[] = [];
   for (const r of shown) {
     const isOpen = open.has(r);
-    const toggle = el("button", { type: "button", class: "rowtoggle", "aria-expanded": String(isOpen) }, el("span", { class: "tag" }, tag(r)), el("span", { class: "stem1" }, r.stem));
+    const toggle = el("button", { type: "button", class: "rowtoggle", "aria-expanded": String(isOpen) }, el("span", { class: "tag" }, tag(r)), r.summary ? el("span", { class: "summ1" }, r.summary) : null, el("span", { class: "stem1" }, r.stem));
     toggle.addEventListener("click", () => {
       if (open.has(r)) open.delete(r);
       else open.add(r);

@@ -43,6 +43,9 @@ describe("leaderboard", () => {
     expect(b.pools.map((p: { id: string }) => p.id)).toEqual(["adults", "coach"]);
     expect(b.rows).toHaveLength(36);
     for (const id of ids) expect(text).not.toContain(id);
+    // Every row carries its topic label; the voting page never gets one.
+    for (const row of b.rows) expect(typeof row.summary).toBe("string");
+    expect(await (await call("/api/batch", { cookie: v.cookie })).text()).not.toContain("summary");
     for (const row of b.rows) {
       if (row.games < 10) expect(row.rank).toBeNull();
       else expect(row.rank).toBeGreaterThan(0);

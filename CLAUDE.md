@@ -95,15 +95,16 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 26 Nov | The choice is called **"Narrow your set"** and sits right above Start, which names the set ("Start a batch: Units 4 and 5, Nationals only"). The voting page names the set with a Narrow link; applying a new set there, or changing it on `/start`, ends the rest of the waiting batch (`batches.ended_at`, migration 0011) and loads a fresh one. Ended pairs are neither votes nor skips and may be offered again; answers already given stay. A batch ends only when the set changes. |
 | 26 Nov | **Supersedes the 20-vote unlock and the 10-comparison rank, for the site only.** The leaderboard opens to a voter at 10 first votes, and a question shows a rank, rating, range and win count at 5 comparisons (`src/worker/display.ts`, `DISPLAY`). The frozen `src/rating/config.ts` keeps 20 and 10, and the analysis still ranks at 10 (DEVIATIONS.md). |
 | 26 Nov | **Supersedes "No bridging pair" in the 26 Nov units row.** A judge who narrows the set gets a box, ticked by default and set apart in the picker, "Include one pair from outside my units", with a line saying it helps rank units against one another. When ticked, each batch has nine pairs from the set (frozen pairing code, `size: 9`) and one bridge pair, one question from the set and one in play outside it, picked in `src/worker/bridge.ts` with the pairing code's information weight and put at a random place. The pair is not marked on the voting page; the set line says "plus one pair from outside it". Stored as `bridge: true` in the slice, `batch_pairs.bridge` (migration 0012), `bridge_pair` in `votes.csv`, and counted in Study health. A set saved before this has no bridge pair. |
+| 26 Nov | **Leaderboard order and topic labels.** The Explore chart comes first, then the #1 question in full, then #2 to #5 with a "Show the top 10" button, then all questions. Every question has a topic label of at most five words (`items/summaries.json`, drafted with AI, sent by `src/worker/summaries.ts`), shown on the leaderboard (top card, list, table, search, chart tips) and in admin (board and Study health), never on the voting page. A label may be corrected at any time; it is not the question's text. |
 
 ## Commands
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 222 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 224 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # typecheck, then pages into dist/ (so the deploy cannot ship a type error)
-npm run test:ui        # browser smoke test, 81 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
+npm run test:ui        # browser smoke test, 84 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
 npm run premerge       # all of the above in order; run it before merging anything that touches src/web
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)
 ```
@@ -149,7 +150,8 @@ NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .
   `items/check_links.py` marks a link "unchecked" when the host is refused; never read that as "dead". A plain-http
   request to a refused host can come back 403 or 404 from the proxy itself.
 - Adding questions: put the new PDF (or text extract) with the others, run `items/transcribe.py` on all of them,
-  then `items/build_round_sets.py` and `items/check_links.py`, run the tests, merge; the owner then presses **Load or
+  then `items/build_round_sets.py` and `items/check_links.py`, add a topic label for each new question to
+  `items/summaries.json` (a test fails without one), run the tests, merge; the owner then presses **Load or
   update the full question set** in admin. The uploaded PDFs live outside the repo and are gone when a session ends,
   so the owner sends them again or `transcribed.json` is extended from the new file alone.
 - A footnote correction changes `items/rounds/all.json` but adds no question, so admin shows "corrected footnotes to
