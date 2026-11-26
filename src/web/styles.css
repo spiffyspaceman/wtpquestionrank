@@ -283,8 +283,17 @@ kbd { font: 0.8em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; bord
 .first-visit .tally .actions { margin: 10px 0 8px; }
 .tally .actions { margin: 14px 0 12px; }
 /* What a judge judges (home page) and the leaderboard's filter: two rows of checkboxes. */
-.slice-panel { border-top: 1px solid var(--line); padding-top: 4px; margin-bottom: 8px; }
-.slice-panel h2 { margin-top: 0.8em; }
+/* "Narrow your set" sits directly above the Start button, set off so it is not missed. */
+.slice-panel { background: var(--surface); border: 1px solid var(--line-strong); border-left: 4px solid var(--rule); border-radius: var(--radius); padding: 2px 16px 10px; margin: 14px 0 4px; }
+.slice-panel h2 { margin: 0.6em 0 0.3em; font-size: 1.15rem; }
+.slice-panel #sliceStatus { margin: 4px 0 0; }
+.slice-boxwrap { margin-top: 2px; }
+/* The set on the voting page: one line, and the same picker to narrow it. */
+.set-bar { margin: 8px 0 0; }
+.set-line { margin: 0; font-size: 0.95rem; color: var(--muted); }
+.set-line button.link { min-height: 40px; padding: 0 4px; font-size: 0.95rem; }
+.narrow-panel { background: var(--surface); border: 1px solid var(--line-strong); border-left: 4px solid var(--rule); border-radius: var(--radius); padding: 6px 16px 4px; margin: 6px 0 4px; }
+.narrow-panel .actions { margin: 8px 0 10px; }
 .slice-mode { display: flex; flex-wrap: wrap; gap: 0 22px; }
 .slice-boxes { display: grid; gap: 4px; margin: 4px 0 2px; }
 fieldset.boxes { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0 18px; align-items: center; }

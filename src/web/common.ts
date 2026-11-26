@@ -1,5 +1,5 @@
 // Shared browser helpers. No third-party code.
-import { LEVEL_NAMES, parseSlice, SLICE_LEVELS, SLICE_UNITS, type Slice } from "../worker/slice";
+import { LEVEL_NAMES, parseSlice, SLICE_LEVELS, SLICE_UNITS, sliceLabel, type Slice } from "../worker/slice";
 
 export class ApiError extends Error {
   constructor(
@@ -181,3 +181,40 @@ export function sliceBoxes(prefix: string, onChange: () => void): { el: HTMLElem
     },
   };
 }
+
+/**
+ * "All questions" or "Only some units", with the unit and level boxes under the second: the judge's set, on the home
+ * page and on the voting page (owner decision, 26 Nov 2026). `onChange` hears which part changed.
+ */
+export function slicePicker(prefix: string, onChange: (part: "mode" | "box") => void) {
+  const radio = (value: "all" | "some", text: string) => {
+    const input = el("input", { type: "radio", name: `${prefix}-mode`, id: `${prefix}-mode-${value}`, value });
+    input.addEventListener("change", () => {
+      boxWrap.hidden = value !== "some";
+      onChange("mode");
+    });
+    return el("label", { class: "check", for: `${prefix}-mode-${value}` }, input, " " + text);
+  };
+  const modes = el("div", { class: "slice-mode", role: "radiogroup", "aria-label": "Which questions" }, radio("all", "All questions"), radio("some", "Only some units"));
+  const boxes = sliceBoxes(prefix, () => onChange("box"));
+  const boxWrap = el("div", { class: "slice-boxwrap" }, boxes.el);
+  const mode = () => (modes.querySelector<HTMLInputElement>("input:checked")?.value === "some" ? "some" : "all");
+  return {
+    el: el("div", { class: "slice-picker" }, modes, boxWrap),
+    mode,
+    /** null for all questions, false when "some" has an empty row. */
+    read(): Slice | null | false {
+      return mode() === "some" ? boxes.read() : null;
+    },
+    /** Show a saved set: "some" with its boxes, or "all". `some` forces the boxes open with everything ticked. */
+    set(s: Slice | null, some = false) {
+      const on = Boolean(s) || some;
+      for (const r of modes.querySelectorAll<HTMLInputElement>("input")) r.checked = r.value === (on ? "some" : "all");
+      boxes.set(s);
+      boxWrap.hidden = !on;
+    },
+  };
+}
+
+/** The name of a set as the pages show it: "all questions" or "Units 4 and 5, Nationals only". */
+export const setName = (s: Slice | null): string => (s ? sliceLabel(s) : "all questions");

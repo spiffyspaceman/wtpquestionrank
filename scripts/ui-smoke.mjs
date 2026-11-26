@@ -191,19 +191,25 @@ try {
   await shot("start");
 
   // What you judge: all questions by default; choosing some units saves at once and applies from the next batch.
-  check(await page.isVisible("#slicePanel") && (await page.isChecked('input[name="sliceMode"][value="all"]')), "the home page offers a choice of what to judge, all questions by default");
-  await page.check('input[name="sliceMode"][value="some"]');
-  check(await page.isVisible("#sliceBoxes") && (await page.locator("#sliceBoxes input:checked").count()) === 8, "choosing some units starts from every box ticked");
+  const nearStart = await page.evaluate(() => {
+    const p = document.querySelector("#slicePanel").getBoundingClientRect(), b = document.querySelector("#startBtn").getBoundingClientRect();
+    return b.top >= p.bottom && b.top - p.bottom < 40;
+  });
+  check((await text("#sliceH")) === "Narrow your set" && nearStart && (await page.isChecked("#judge-mode-all")), "Narrow your set sits right above Start, all questions by default");
+  check((await text("#startBtn")) === "Start a batch: all questions", "the Start button names the set it starts");
+  await page.check("#judge-mode-some");
+  check(await page.isVisible("#judge-unit-1") && (await page.locator(".slice-boxwrap input:checked").count()) === 8, "choosing some units starts from every box ticked");
   for (const u of [1, 2, 3, 6]) await page.uncheck(`#judge-unit-${u}`);
   await page.uncheck("#judge-level-State");
   await page.waitForFunction(() => document.querySelector("#sliceStatus").textContent.includes("Units 4 and 5, Nationals only"));
+  check((await text("#startBtn")) === "Start a batch: Units 4 and 5, Nationals only", "and the button follows the set");
   await shot("start-slice");
   check((await get("/api/me", session)).slice?.units?.join() === "4,5", "the choice is saved on the server");
   await page.uncheck("#judge-level-NF");
   check((await text("#sliceStatus")).includes("at least one"), "an empty level row is refused, not saved");
-  await page.check('input[name="sliceMode"][value="all"]');
+  await page.check("#judge-mode-all");
   await page.waitForFunction(() => document.querySelector("#sliceStatus").textContent.includes("all questions"));
-  check((await get("/api/me", session)).slice === null && !(await page.isVisible("#sliceBoxes")), "and All questions puts it back");
+  check((await get("/api/me", session)).slice === null && !(await page.isVisible("#judge-unit-1")), "and All questions puts it back");
 
   // Day and night: the toggle switches the colours, names the scheme it leads to, and the choice follows the reader.
   const paper = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
@@ -223,6 +229,27 @@ try {
   await page.click("#themeToggle");
   check((await paper()) === day, "and the switch turns it off again");
   check(!(await page.isVisible("#after")), "reasons and Next are hidden before a pick");
+  // Narrow mid-batch: the set is named on the voting page; a new set starts a new batch at once.
+  check((await text("#setText")) === "Your set: all questions." && (await text("#narrowBtn")) === "Narrow", "the voting page names the judge's set");
+  {
+    const before = (await get("/api/batch", session)).pairs.map((p) => p.pairId);
+    await page.click("#narrowBtn");
+    check(await page.isVisible("#narrowPanel") && (await page.isChecked("#narrow-mode-some")), "Narrow opens the boxes, everything ticked");
+    for (const u of [2, 3, 4, 5, 6]) await page.uncheck(`#narrow-unit-${u}`);
+    await page.click("#narrowApply");
+    await page.waitForFunction(() => document.querySelector("#msg").textContent.includes("New batch"));
+    const after = (await get("/api/batch", session)).pairs.map((p) => p.pairId);
+    check(after.length > 0 && !after.some((id) => before.includes(id)), "applying a new set starts a new batch at once");
+    check((await text("#setText")).includes("Unit 1") && (await text("#position")).startsWith("Pair 1 of"), "and the page shows it from its first pair");
+    // Back to all questions, the same way, for the checks that follow.
+    await page.click("#narrowBtn");
+    await page.check("#narrow-mode-all");
+    await page.click("#narrowApply");
+    await page.waitForFunction(() => document.querySelector("#msg").textContent.startsWith("New batch: all questions"));
+    await page.waitForSelector("#judge:not([hidden])");
+    check((await text("#position")).startsWith("Pair 1 of 10"), "and back to all questions the same way");
+  }
+
   await page.keyboard.press("ArrowRight");
   check((await page.getAttribute("#pickR", "aria-pressed")) === "true", "Right arrow chooses B");
   check((await text("#whyText")) === "Why is B better?", "the reasons heading names the chosen side");
@@ -373,9 +400,10 @@ try {
   await page.click("#filterAll");
   check(!(await text("#summary")).includes("Showing"), "Show all clears it");
   // Whether the first 36 have all settled by now depends on the pairs drawn, so the round may or may not have taken
-  // its next group; either way the page and the admin table must agree on the number in play.
+  // its next group of 24; the Unit 1 set chosen above may also have brought in Unit 1 questions, 6 at a time. Either
+  // way the page and the admin table must agree on the number in play.
   const inPlay = Number((/(\d+) of \d+ questions are in play/.exec(await text("#summary")) ?? [])[1]);
-  check(inPlay === 36 || inPlay === 60, "the summary says how many questions are in play");
+  check(inPlay >= 36 && inPlay % 6 === 0, "the summary says how many questions are in play");
   await shot("board-ranked");
   await page.setViewportSize({ width: 390, height: 844 });
   check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "the ranked leaderboard fits a phone's width");

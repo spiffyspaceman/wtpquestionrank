@@ -376,3 +376,17 @@ Effects to keep in mind:
 - The pairing and rating code is unchanged: it is handed the slice's questions, and the ratings are fitted on every
   question in play.
 No frozen file, threshold or measure changes.
+
+**26 November 2026: a judge can change the set mid-batch (owner decision).** The unit choice is renamed "Narrow your
+set" and moved directly above the Start button, which now names the set. The voting page names the set with a Narrow
+link. Applying a new set there, or changing it on the home page while a batch waits, ends the rest of that batch and
+the next batch is drawn under the new set. The ended batch is marked `batches.ended_at` (migration 0011). Its
+unanswered pairs are recorded as ended, not skipped: they count as neither votes nor skips, they may be offered to the
+judge again, and an unanswered repeat in an ended batch does not count as issued. Answers already given stay and count
+as before. A batch ends only through a change of set; there is no other way to drop the rest of a batch.
+Effects to keep in mind:
+- **Batches can be shorter than ten pairs.** The pairing code still issues ten; a judge may answer fewer before
+  changing the set. Study health reports how many batches ended this way and how many pairs they left unanswered.
+- **A judge can steer away from pairs.** Ending a batch after seeing a pair is a way to avoid it, as a skip is. Because
+  the only exit is a change of set, the cost of this is small; the counts above show whether it happens often.
+No frozen file, threshold or measure changes.

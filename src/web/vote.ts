@@ -1,5 +1,6 @@
 import { MAX_REASONS, OTHER_LABEL, OTHER_MAX_WORDS, REASONS, wordCount, type ReasonCode } from "../worker/reasons";
-import { $, api, ApiError, CRITERION, el, footnotes, marked, say, shortcutsOn, show, type Marks, type ShownNote } from "./common";
+import { parseSlice, type Slice } from "../worker/slice";
+import { $, api, ApiError, CRITERION, el, footnotes, marked, say, setName, shortcutsOn, show, slicePicker, type Marks, type ShownNote } from "./common";
 
 interface Side {
   stem: string;
@@ -341,8 +342,60 @@ for (const [id, kind] of [["#leftCard", "L"], ["#rightCard", "R"]] as const) {
   });
 }
 
+// ---------- the judge's set, and narrowing it mid-batch ----------
+
+const narrowPanel = $("#narrowPanel");
+const narrowBtn = $<HTMLButtonElement>("#narrowBtn");
+const picker = slicePicker("narrow", () => ($("#narrowNote").textContent = "A new set starts a new batch now. Answers you have given stay."));
+$("#narrowPicker").replaceChildren(picker.el);
+const mySlice = (): Slice | null => (me?.slice ? parseSlice(me.slice) || null : null);
+
+function renderSet(): void {
+  $("#setText").textContent = `Your set: ${setName(mySlice())}.`;
+  narrowBtn.textContent = mySlice() ? "Change" : "Narrow";
+  show($("#setBar"));
+}
+function openNarrow(on: boolean, refocus = true): void {
+  show(narrowPanel, on);
+  narrowBtn.setAttribute("aria-expanded", String(on));
+  if (on) {
+    // Narrowing from all questions starts with every box ticked, ready to clear.
+    picker.set(mySlice(), true);
+    narrowPanel.querySelector<HTMLInputElement>("input:checked")?.focus();
+  } else if (refocus) narrowBtn.focus();
+}
+narrowBtn.addEventListener("click", () => openNarrow(narrowPanel.hidden));
+$("#narrowCancel").addEventListener("click", () => openNarrow(false));
+$("#narrowApply").addEventListener("click", () => void applyNarrow());
+
+async function applyNarrow(): Promise<void> {
+  const s = picker.read();
+  if (s === false) return void ($("#narrowNote").textContent = "Tick at least one unit and one level.");
+  let r: { slice: Slice | null; changed: boolean };
+  try {
+    r = await api("/api/slice", { body: s ? { units: s.units, levels: s.levels } : { all: true } });
+  } catch (err) {
+    $("#narrowNote").textContent = err instanceof ApiError ? err.message : "That did not save. Try again.";
+    return;
+  }
+  me.slice = r.slice;
+  renderSet();
+  openNarrow(false, !r.changed);
+  if (!r.changed) return say(msg, `Your set is still ${setName(r.slice)}.`);
+  // The rest of this batch was set aside on the server; fetch the batch for the new set.
+  pairs = [];
+  show(judge, false);
+  show(between, false);
+  await loadBatch();
+  if (pairs.length) say(msg, `New batch: ${setName(r.slice)}. The answers you gave stay.`, "ok");
+  // Keyboard focus goes back to the pairs, as after any answer, so the arrow keys choose again.
+  $("#position").focus({ preventScroll: true });
+}
+
 document.addEventListener("keydown", (e) => {
   if (judge.hidden || e.altKey || e.ctrlKey || e.metaKey) return;
+  // Keys inside the set panel belong to its boxes and buttons.
+  if (e.target instanceof Element && e.target.closest("#setBar")) return;
   const t = e.target as HTMLElement;
   const typing = t.tagName === "INPUT" && (t as HTMLInputElement).type === "text";
   // Enter sends the vote, from the Other box too. On a focused button, Enter already presses that button.
@@ -368,6 +421,7 @@ async function init(): Promise<void> {
   }
   renderMe();
   if (!me.open) return say(msg, "Voting is closed right now.", "warn");
+  renderSet();
   await loadBatch();
 }
 

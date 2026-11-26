@@ -19,7 +19,10 @@ live:
 - **Sign-up by email** (migration 0009, evening of 25 Nov): a sign-up link from admin, an address, an optional name
   and a self-chosen adult role; the address is then the login. Not verified; students keep codes. Since late on 25 Nov the
   page asks for the email alone and for the rest only when the address is new.
-- **Judges may choose units** (26 Nov, migration 0010): "What you judge" on the home page, All questions or some
+- **Narrow your set** (26 Nov, migration 0011): the unit choice sits right above Start, and Start names the set. The
+  voting page names it too, with a Narrow link; a new set ends the rest of the waiting batch and loads a fresh one.
+  Admin's Study health counts batches ended this way.
+- **Judges may choose units** (26 Nov, migration 0010): now "Narrow your set" on the home page, All questions or some
   units at State, Nationals or both; the leaderboard has a matching filter; Study health counts cross-unit
   comparisons. Watch that number: if it stays low, the single ranking across units is thin.
 - **Home page** (late on 25 Nov): the Start button follows the task on a first visit and sits under the count after that.

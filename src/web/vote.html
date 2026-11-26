@@ -24,6 +24,15 @@
       <p id="msg" class="notice" role="alert" hidden></p>
 
       <h1 class="sr-only">Vote</h1>
+      <!-- The judge's set, and a way to narrow it mid-batch (owner decisions, 26 Nov 2026). -->
+      <div id="setBar" class="set-bar" hidden>
+        <p class="set-line"><span id="setText"></span> <button id="narrowBtn" class="link" type="button" aria-expanded="false" aria-controls="narrowPanel">Narrow</button></p>
+        <div id="narrowPanel" class="narrow-panel" hidden>
+          <div id="narrowPicker"></div>
+          <p id="narrowNote" class="muted small" aria-live="polite">A new set starts a new batch now. Answers you have given stay.</p>
+          <div class="actions"><button id="narrowApply" class="primary" type="button">Start a new batch with this set</button><button id="narrowCancel" type="button">Cancel</button></div>
+        </div>
+      </div>
       <section id="judge" hidden aria-labelledby="criterion">
         <p class="criterion" id="criterion"></p>
         <div class="progress">

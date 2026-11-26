@@ -190,8 +190,19 @@ voterApi.post("/join", async (c) => {
 voterApi.post("/slice", requireVoter(), async (c) => {
   const slice = parseSlice(await readJsonObject(c.req.raw));
   if (slice === false) return c.json({ error: "bad_slice", message: "Choose at least one unit and one level." }, 400);
-  await c.env.DB.prepare("UPDATE voters SET slice_json = ? WHERE id = ?").bind(sliceJson(slice), c.get("voter").id).run();
-  return c.json({ ok: true, slice });
+  const db = c.env.DB;
+  const voter = c.get("voter");
+  const changed = sliceJson(slice) !== sliceJson(storedSlice(voter.slice_json));
+  // A new set ends the rest of a batch that is waiting, so the next batch follows the new set at once (owner
+  // decision, 26 Nov 2026; migration 0011). Answers already given stay; the unanswered pairs are neither votes nor
+  // skips. An unchanged set ends nothing: a judge cannot discard pairs without narrowing.
+  const waiting = changed ? await unfinishedPairs(db, voter.id) : null;
+  const end = waiting?.batchId && waiting.pairs.length ? waiting.batchId : null;
+  await db.batch([
+    db.prepare("UPDATE voters SET slice_json = ? WHERE id = ?").bind(sliceJson(slice), voter.id),
+    ...(end ? [db.prepare("UPDATE batches SET ended_at = ? WHERE id = ? AND ended_at IS NULL").bind(nowIso(), end)] : []),
+  ]);
+  return c.json({ ok: true, slice, changed, ended: end ? waiting!.pairs.length : 0 });
 });
 
 // Sign out on this device: the session row goes and the cookie is cleared. Other devices stay signed in.
@@ -230,7 +241,7 @@ voterApi.get("/me", requireVoter(), async (c) => {
 /** True when the voter (?3) has an issued pair, in any open round, with neither a vote nor a skip. */
 const UNANSWERED_SQL = `SELECT 1 FROM batch_pairs bp JOIN batches b ON b.id = bp.batch_id
     JOIN rounds r ON r.id = b.round_id AND r.state = 'open'
-  WHERE b.voter_id = ?3
+  WHERE b.voter_id = ?3 AND b.ended_at IS NULL
     AND NOT EXISTS (SELECT 1 FROM votes v WHERE v.round_id = b.round_id AND v.voter_id = ?3
                     AND v.item_lo = MIN(bp.left_q, bp.right_q) AND v.item_hi = MAX(bp.left_q, bp.right_q) AND v.is_repeat = bp.is_repeat)
     AND NOT EXISTS (SELECT 1 FROM skips s WHERE s.round_id = b.round_id AND s.voter_id = ?3
@@ -241,7 +252,7 @@ async function unfinishedPairs(db: D1Database, voterId: string) {
   const batch = await db
     .prepare(
       `SELECT b.id, b.round_id FROM batches b JOIN rounds r ON r.id = b.round_id AND r.state = 'open'
-        WHERE b.voter_id = ? ORDER BY b.created_at DESC, b.rowid DESC LIMIT 1`,
+        WHERE b.voter_id = ? AND b.ended_at IS NULL ORDER BY b.created_at DESC, b.rowid DESC LIMIT 1`,
     )
     .bind(voterId)
     .first<{ id: string; round_id: string }>();
@@ -286,8 +297,11 @@ async function pairingState(db: D1Database, round: RoundRow, voterId: string, sl
   const skips = { results: skipped.results.filter((s) => s.is_repeat === 1 || !votedFirst.has(pairKey(s.item_lo, s.item_hi))) };
   const repeatsIssued = await db
     .prepare(
+      // A repeat left unanswered in a batch the voter ended was never shown as a repeat: it may come again.
       `SELECT bp.left_q, bp.right_q FROM batch_pairs bp JOIN batches b ON b.id = bp.batch_id
-        WHERE b.round_id = ? AND b.voter_id = ? AND bp.is_repeat = 1`,
+        WHERE b.round_id = ? AND b.voter_id = ? AND bp.is_repeat = 1
+          AND (b.ended_at IS NULL OR EXISTS (SELECT 1 FROM votes v WHERE v.batch_pair_id = bp.id)
+               OR EXISTS (SELECT 1 FROM skips s WHERE s.batch_pair_id = bp.id))`,
     )
     .bind(round.id, voterId)
     .all<{ left_q: string; right_q: string }>();

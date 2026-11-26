@@ -522,7 +522,7 @@ interface Health {
     adultVotesToThreshold: number;
   };
   corrections: { rows: number; winnerChanged: number };
-  scale: { adultComparisons: number; crossUnit: number; crossLevel: number; perUnit: { unit: number; games: number }[]; sliceVotes: number; sliceVoters: number };
+  scale: { adultComparisons: number; crossUnit: number; crossLevel: number; perUnit: { unit: number; games: number }[]; sliceVotes: number; sliceVoters: number; endedBatches: number; endedPairs: number };
   gate: {
     MIN_ADULT_RATERS: number;
     MIN_VOTES_PER_COUNTED_RATER: number;
@@ -627,7 +627,8 @@ async function loadHealth(): Promise<void> {
   const share = (n: number) => (sc.adultComparisons ? `${Math.round((100 * n) / sc.adultComparisons)}%` : "none");
   $("#scaleLine").textContent =
     `Adult comparisons: ${sc.adultComparisons}. Between different units: ${sc.crossUnit} (${share(sc.crossUnit)}). Between State and Nationals: ${sc.crossLevel} (${share(sc.crossLevel)}). ` +
-    `Votes from judges who chose some units: ${sc.sliceVotes}, from ${sc.sliceVoters} ${sc.sliceVoters === 1 ? "voter" : "voters"}.`;
+    `Votes from judges who chose some units: ${sc.sliceVotes}, from ${sc.sliceVoters} ${sc.sliceVoters === 1 ? "voter" : "voters"}. ` +
+    `Batches ended early by a change of set: ${sc.endedBatches}, leaving ${sc.endedPairs} ${sc.endedPairs === 1 ? "pair" : "pairs"} unanswered.`;
   table($<HTMLTableElement>("#perUnit"), ["Unit", "Adult comparisons involving it"], sc.perUnit.map((u) => [`Unit ${u.unit}`, u.games]), [1]);
   $("#reasonsLine").textContent = r.votes
     ? `${r.votesWithReason} of ${r.votes} first-presentation votes (${pct(r.votesWithReason / r.votes)}) carry at least one reason.`

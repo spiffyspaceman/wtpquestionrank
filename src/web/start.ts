@@ -1,5 +1,5 @@
-import { sliceLabel, type Slice } from "../worker/slice";
-import { $, api, ApiError, CRITERION, FORMAT, setShortcuts, shortcutsOn, show, sliceBoxes } from "./common";
+import type { Slice } from "../worker/slice";
+import { $, api, ApiError, CRITERION, FORMAT, setName, setShortcuts, shortcutsOn, show, slicePicker } from "./common";
 
 interface Me {
   role: string;
@@ -88,25 +88,29 @@ async function init(): Promise<void> {
   show(start);
 }
 
-/** The "What you judge" panel: all questions, or some units and levels. Saved at once; it applies from the next batch. */
+/**
+ * "Narrow your set": all questions, or some units and levels (owner decisions, 26 Nov 2026). It sits directly above
+ * the Start button, and the button names the set it starts. A change saves at once; if a batch is waiting, the rest
+ * of it is set aside so the next batch follows the new set (the answers already given stay).
+ */
 function setUpSlice(me: Me): void {
   const panel = $("#slicePanel");
-  // On a first visit the count and Start button follow the task; the choice goes with them.
-  $("#tally").after(panel);
-  const radios = [...document.querySelectorAll<HTMLInputElement>('input[name="sliceMode"]')];
-  const boxes = sliceBoxes("judge", () => void save());
-  $("#sliceBoxes").replaceChildren(boxes.el);
+  $("#tally .actions").before(panel);
+  const start = $<HTMLAnchorElement>("#startBtn");
   const status = $("#sliceStatus");
-  const mode = () => radios.find((r) => r.checked)?.value ?? "all";
-  const pending = me.batch ? " The batch already waiting for you finishes as it was." : "";
-  const describe = (s: Slice | null) =>
-    s ? `You judge ${sliceLabel(s)}, from your next batch.${pending}` : `You judge all questions.${me.slice ? pending : ""}`;
   let saved = me.slice;
-  const paint = () => {
-    radios.forEach((r) => (r.checked = r.value === (saved ? "some" : "all")));
-    boxes.set(saved);
-    show($("#sliceBoxes"), Boolean(saved));
-  };
+  let waiting = Boolean(me.batch && me.batch.remaining < me.batch.size);
+  const label = () => (waiting ? "Continue your batch" : `Start a batch: ${setName(saved)}`);
+  const picker = slicePicker("judge", (part) => {
+    // Moving to "Only some units" opens the boxes with everything ticked; nothing changes until one is cleared.
+    if (part === "mode" && picker.mode() === "some" && !saved) {
+      picker.set(null, true);
+      status.textContent = "Clear the units or level you would rather not judge.";
+      return;
+    }
+    void save();
+  });
+  $("#slicePicker").replaceChildren(picker.el);
   // One save at a time, the latest choice last: quick changes on a slow connection must not land out of order.
   let saving = false;
   let again = false;
@@ -123,34 +127,27 @@ function setUpSlice(me: Me): void {
     }
   }
   async function saveOnce(): Promise<void> {
-    const some = mode() === "some";
-    show($("#sliceBoxes"), some);
-    const s = some ? boxes.read() : null;
+    const s = picker.read();
     if (s === false) return void (status.textContent = "Tick at least one unit and one level.");
     try {
-      const r = await api<{ slice: Slice | null }>("/api/slice", { body: s ? { units: s.units, levels: s.levels } : { all: true } });
+      const r = await api<{ slice: Slice | null; ended: number }>("/api/slice", { body: s ? { units: s.units, levels: s.levels } : { all: true } });
       saved = r.slice;
-      status.textContent = describe(saved);
+      let note = `Your set: ${setName(saved)}.`;
+      if (r.ended) {
+        waiting = false;
+        show($("#resumeLine"), false);
+        note += " The rest of your waiting batch was set aside; the answers you gave stay.";
+      }
+      status.textContent = note;
+      start.textContent = label();
       // Everything ticked is the same as all questions.
-      if (!saved && some) paint();
+      if (!saved && picker.mode() === "some") picker.set(null);
     } catch (err) {
       status.textContent = err instanceof ApiError ? err.message : "That did not save. Try again.";
     }
   }
-  radios.forEach((r) =>
-    r.addEventListener("change", () => {
-      // Moving to "Only some units" starts from everything ticked, so nothing changes until a box is cleared.
-      if (mode() === "some" && !saved) {
-        boxes.set(null);
-        show($("#sliceBoxes"));
-        status.textContent = "Clear the units or level you would rather not judge.";
-        return;
-      }
-      void save();
-    }),
-  );
-  paint();
-  status.textContent = saved ? describe(saved).replace(", from your next batch", "") : "";
+  picker.set(saved);
+  start.textContent = label();
   show(panel);
 }
 

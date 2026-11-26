@@ -168,6 +168,15 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
     )
     .bind(round.id)
     .first<{ votes: number; voters: number }>();
+  // Batches a judge ended by changing their set, and the pairs left unanswered in them.
+  const ended = await db
+    .prepare(
+      `SELECT count(DISTINCT b.id) AS batches, count(bp.id) AS pairs FROM batches b JOIN batch_pairs bp ON bp.batch_id = b.id
+        WHERE b.round_id = ? AND b.ended_at IS NOT NULL
+          AND NOT EXISTS (SELECT 1 FROM votes v WHERE v.batch_pair_id = bp.id) AND NOT EXISTS (SELECT 1 FROM skips s WHERE s.batch_pair_id = bp.id)`,
+    )
+    .bind(round.id)
+    .first<{ batches: number; pairs: number }>();
   const sum = (f: (r: { cross_unit: number; cross_level: number }) => boolean) => crossRows.results.filter(f).reduce((s, r) => s + r.n, 0);
 
   return {
@@ -178,6 +187,8 @@ export async function studyHealth(db: D1Database, round: RoundRow) {
       perUnit: unitRows.results,
       sliceVotes: sliceVotes?.votes ?? 0,
       sliceVoters: sliceVotes?.voters ?? 0,
+      endedBatches: ended?.batches ?? 0,
+      endedPairs: ended?.pairs ?? 0,
     },
     forecast: {
       // Counts only (PREREG §9 allows watching data-quality numbers): how far the gate is, and how fast votes come.

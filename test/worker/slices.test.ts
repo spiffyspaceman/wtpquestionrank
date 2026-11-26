@@ -40,12 +40,12 @@ describe("what a judge judges", () => {
     await openNewRound();
     const v = await voter("judge");
     expect(await json(call("/api/me", { cookie: v.cookie }))).toMatchObject({ slice: null });
-    expect(await json(setSlice(v.cookie, { units: [5, 4, 4], levels: ["NF"] }))).toEqual({ ok: true, slice: { units: [4, 5], levels: ["NF"] } });
+    expect(await json(setSlice(v.cookie, { units: [5, 4, 4], levels: ["NF"] }))).toMatchObject({ ok: true, slice: { units: [4, 5], levels: ["NF"] } });
     expect(await json(call("/api/me", { cookie: v.cookie }))).toMatchObject({ slice: { units: [4, 5], levels: ["NF"] } });
     // Every unit and both levels is the same as all questions.
-    expect(await json(setSlice(v.cookie, { units: [1, 2, 3, 4, 5, 6], levels: ["NF", "State"] }))).toEqual({ ok: true, slice: null });
+    expect(await json(setSlice(v.cookie, { units: [1, 2, 3, 4, 5, 6], levels: ["NF", "State"] }))).toMatchObject({ ok: true, slice: null });
     expect(await json(setSlice(v.cookie, { units: [2], levels: ["State", "NF"] }))).toMatchObject({ slice: { units: [2], levels: ["State", "NF"] } });
-    expect(await json(setSlice(v.cookie, { all: true }))).toEqual({ ok: true, slice: null });
+    expect(await json(setSlice(v.cookie, { all: true }))).toMatchObject({ ok: true, slice: null });
     for (const bad of [{}, { units: [], levels: ["NF"] }, { units: [4], levels: [] }, { units: [7], levels: ["NF"] }, { units: ["4"], levels: ["NF"] }, { units: [4], levels: ["Nationals"] }, { units: 4, levels: "NF" }, []])
       expect((await setSlice(v.cookie, bad)).status, JSON.stringify(bad)).toBe(400);
     expect((await call("/api/slice", { body: { all: true } })).status).toBe(401);
@@ -120,19 +120,42 @@ describe("what a judge judges", () => {
     expect((await inPlay(round)).size).toBeGreaterThan(before.size);
   });
 
-  it("a choice changed mid-batch takes effect with the next batch; the batch in hand finishes as it was", async () => {
+  it("a new set mid-batch ends the rest of that batch: the next batch follows the new set, and answers given stay", async () => {
     const round = await openFullRound();
     const v = await voter("judge");
     const b1 = await getBatch(v.cookie);
     await call("/api/vote", { cookie: v.cookie, body: { pairId: b1.pairs[0].pairId, pick: "L" } });
-    await setSlice(v.cookie, { units: [6], levels: ["State"] });
-    const again = await getBatch(v.cookie);
-    expect(again.all.map((p) => p.pairId)).toEqual(b1.all.map((p) => p.pairId));
-    await voteN(v.cookie, again.pairs.length);
-    await getBatch(v.cookie);
-    const rows = await env.DB.prepare("SELECT b.slice_json FROM batches b JOIN voters u ON u.id = b.voter_id WHERE u.label = ? ORDER BY b.created_at, b.rowid").bind(v.label).all<{ slice_json: string | null }>();
+    await call("/api/skip", { cookie: v.cookie, body: { pairId: b1.pairs[1].pairId } });
+    expect(await json(setSlice(v.cookie, { units: [6], levels: ["State"] }))).toMatchObject({ changed: true, ended: 8 });
+    expect((await json(call("/api/me", { cookie: v.cookie }))).batch).toBeNull();
+    const b2 = await getBatch(v.cookie);
+    expect(b2.all.some((p) => b1.all.some((q) => q.pairId === p.pairId))).toBe(false);
+    const rows = await env.DB.prepare("SELECT b.slice_json, b.ended_at FROM batches b JOIN voters u ON u.id = b.voter_id WHERE u.label = ? ORDER BY b.created_at, b.rowid").bind(v.label).all<{ slice_json: string | null; ended_at: string | null }>();
     expect(rows.results.map((r) => r.slice_json)).toEqual([null, JSON.stringify({ units: [6], levels: ["State"] })]);
-    void round;
+    expect(rows.results[0].ended_at).toBeTruthy();
+    expect(rows.results[1].ended_at).toBeNull();
+    // The vote and the skip stand; the eight unanswered pairs are neither.
+    const counts = await env.DB.prepare(
+      `SELECT (SELECT count(*) FROM votes WHERE batch_pair_id IN (SELECT id FROM batch_pairs WHERE batch_id = ?1)) AS votes,
+              (SELECT count(*) FROM skips WHERE batch_pair_id IN (SELECT id FROM batch_pairs WHERE batch_id = ?1)) AS skips`,
+    ).bind((await env.DB.prepare("SELECT batch_id FROM batch_pairs WHERE id = ?").bind(b1.pairs[0].pairId).first<{ batch_id: string }>())!.batch_id).first();
+    expect(counts).toEqual({ votes: 1, skips: 1 });
+    // A page left open on the old batch can still answer one of its pairs: that is a real judgment, and it counts.
+    expect((await call("/api/vote", { cookie: v.cookie, body: { pairId: b1.pairs[2].pairId, pick: "L" } })).status).toBe(200);
+    const h = await json(admin(`/admin/api/rounds/${round}/health`));
+    expect(h.scale).toMatchObject({ endedBatches: 1 });
+  });
+
+  it("the same set again ends nothing: a judge cannot discard pairs without narrowing", async () => {
+    await openFullRound();
+    const v = await voter("judge");
+    await setSlice(v.cookie, { units: [2], levels: ["State"] });
+    const b1 = await getBatch(v.cookie);
+    expect(await json(setSlice(v.cookie, { units: [2], levels: ["State"] }))).toMatchObject({ changed: false, ended: 0 });
+    expect((await getBatch(v.cookie)).all.map((p) => p.pairId)).toEqual(b1.all.map((p) => p.pairId));
+    // A batch whose pairs are all answered has nothing to end.
+    await voteN(v.cookie, b1.pairs.length);
+    expect(await json(setSlice(v.cookie, { all: true }))).toMatchObject({ changed: true, ended: 0 });
   });
 
   it("in a round that is not staged, a slice only filters; a slice with nothing in the round says so", async () => {
