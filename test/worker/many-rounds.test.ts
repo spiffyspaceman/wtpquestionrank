@@ -51,16 +51,24 @@ describe("several open rounds", () => {
     expect(batch).not.toMatch(/Unit \d, State|"(round|round_id|cycle|unit|level|qnum)"/);
   });
 
-  it("the leaderboard opens at 20 votes over all rounds, and after_board is kept round by round", async () => {
+  it("the leaderboard opens at 10 votes over all rounds, and after_board is kept round by round", async () => {
     const rounds = await openRounds(2);
     await quorum("other", 4); // two more adults in each round: a board is shown once three stand behind it
     const v = await voter("judge");
-    await voteN(v.cookie, 19);
+    const vote = (pairId: string) => call("/api/vote", { cookie: v.cookie, body: { pairId, pick: "L" } });
+    // Each new batch goes to the round with fewer batches, so the first two batches fall in different rounds.
+    // Batch 1: five votes and five skips. Batch 2: four votes, so nine over both rounds, and the board stays shut.
+    for (const [k, p] of (await getBatch(v.cookie)).pairs.entries())
+      await (k < 5 ? vote(p.pairId) : call("/api/skip", { cookie: v.cookie, body: { pairId: p.pairId } }));
+    const second = (await getBatch(v.cookie)).pairs;
+    for (const p of second.slice(0, 4)) await vote(p.pairId);
     expect((await call("/api/leaderboard", { cookie: v.cookie })).status).toBe(403);
-    await voteN(v.cookie, 1); // 10 in each round
+    // The tenth, in the second round, opens it; the batch is then finished without opening the board.
+    expect(await json(vote(second[4].pairId))).toMatchObject({ votes: 10, unlocked: true });
+    for (const p of second.slice(5)) await vote(p.pairId);
     const count = async (r: string) =>
       (await env.DB.prepare("SELECT count(*) AS n, sum(after_board) AS ab FROM votes WHERE round_id = ? AND voter_id = (SELECT id FROM voters WHERE label = ?)").bind(r, v.label).first<{ n: number; ab: number }>())!;
-    expect([(await count(rounds[0])).n, (await count(rounds[1])).n]).toEqual([10, 10]);
+    expect([(await count(rounds[0])).n, (await count(rounds[1])).n].sort((a, b) => a - b)).toEqual([5, 10]);
 
     // Open the board of the second round only.
     const b = await json(call(`/api/leaderboard?round=${rounds[1]}`, { cookie: v.cookie }));

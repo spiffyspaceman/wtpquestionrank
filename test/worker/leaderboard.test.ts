@@ -19,13 +19,13 @@ describe("leaderboard", () => {
     expect(r.headers.get("x-robots-tag")).toMatch(/noindex/);
   });
 
-  it("is locked under 20 first-presentation votes", async () => {
+  it("is locked under 10 first-presentation votes", async () => {
     await openNewRound();
     const v = await voter("judge");
-    await voteN(v.cookie, 19);
+    await voteN(v.cookie, 9);
     const r = await call("/api/leaderboard", { cookie: v.cookie });
     expect(r.status).toBe(403);
-    expect(await r.json()).toMatchObject({ error: "locked", votes: 19, unlockAt: 20 });
+    expect(await r.json()).toMatchObject({ error: "locked", votes: 9, unlockAt: 10 });
     expect((await json(call("/api/me", { cookie: v.cookie }))).unlocked).toBe(false);
   });
 

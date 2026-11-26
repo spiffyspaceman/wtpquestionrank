@@ -348,20 +348,20 @@ try {
   check((await focused()) === "betweenH", "Batch done takes focus");
   await shot("batch-done");
 
-  // Leaderboard: ten more votes through the API unlock it. Twenty votes rank nothing, and the page says so plainly.
-  // (One pair above was skipped, so a second batch alone leaves the count at nineteen.)
+  // Leaderboard: more votes through the API until it unlocks (ten votes; one pair above was skipped, and the change
+  // of set left pairs unanswered). One voter's handful of votes ranks nothing, and the page says so plainly.
   for (let k = 0; k < 3 && !(await get("/api/me", session)).unlocked; k++) {
     const more = await get("/api/batch", session);
     for (const p of more.pairs.filter((x) => x.answer === null)) await post("/api/vote", { pairId: p.pairId, pick: "L", closeCall: false, clientMs: 30000 }, session);
   }
-  // One voter's twenty votes open the board at once: there is no wait for other voters.
+  // One voter's ten votes open the board at once: there is no wait for other voters.
   await page.goto(B + "/board");
   await page.waitForSelector("#content:not([hidden])");
-  check(/\d+ votes\./.test(await text("#summary")), "the leaderboard opens after twenty votes and says how many votes it rests on");
+  check(/\d+ votes\./.test(await text("#summary")), "the leaderboard opens after ten votes and says how many votes it rests on");
   check((await text("#noneRanked")).includes("furthest along"), "with nothing ranked, it says how far along the questions are");
   check(!(await page.isVisible("#explore")), "with nothing ranked, the charts are left out");
   const cells = await page.$$eval("#all tbody tr td:nth-child(2)", (tds) => tds.map((td) => td.textContent));
-  check(cells.length > 0 && cells.every((c) => /^\d+ of 10$/.test(c)), "an unranked question shows its comparison count, not a rating");
+  check(cells.length > 0 && cells.every((c) => /^\d+ of 5$/.test(c)), "an unranked question shows its comparison count, not a rating");
   check(!(await page.isVisible("#roleNote")) && (await page.locator("#tabs button").count()) === 2, "the voter's own role board is offered beside All adults, with no wait for other voters");
   await page.setViewportSize({ width: 390, height: 844 });
   check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "the leaderboard fits a phone's width");

@@ -67,7 +67,7 @@ Since late on 25 Nov no board waits for other voters, so the owner can open the 
    it with your list of names. Send each person their link.
 5. **Cast a few votes yourself first** with a throwaway code, on a phone and on a computer, then revoke that code
    (the analysis and the board exclude revoked codes). Things to try: a pick, two reasons, Other with a few words,
-   Close call, Skip, Back and a changed answer, and Batch done. The leaderboard opens at 20 votes; since late on
+   Close call, Skip, Back and a changed answer, and Batch done. The leaderboard opens at 10 votes (20 until 26 Nov); since late on
    25 Nov it no longer waits for other voters.
 6. **Send Claude page 1 of CCE's 2019-20 State questions PDF** (Unit 1). Question 1's second bullet was cut off in
    transcription ("...taught us about"), so that question is held out of play until its full text is added.
@@ -193,4 +193,5 @@ Run the second command again with `--llm-out llm-arm/out-a2` and `llm-arm/out-a2
 - Two quoted sources found but not confirmed, so not linked: John Adams to Richard Price, 19 April 1790 (Founders
   Online, Adams/06-20-02-0188), and Paul Howe, "Eroding Norms and Democratic Deconsolidation," *Journal of Democracy*
   28:4 (2017). If the owner opens them and sees the quoted words, add them to `items/sources_v1.json`.
-- Leaderboard unlock stays at 20 votes.
+- Leaderboard unlock: 10 votes since 26 Nov (was 20); a question shows a rank at 5 comparisons (was 10). Display
+  only: the pre-registered analysis still ranks at 10 (`src/worker/display.ts`, DEVIATIONS.md).

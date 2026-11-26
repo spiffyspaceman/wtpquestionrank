@@ -1,6 +1,7 @@
 // Admin API, mounted at /admin/api. Every route but /login requires the Access token (or the fallback cookie).
 import { Hono, type Context } from "hono";
-import { QUALITY, RATING, ROLES } from "../rating/config";
+import { RATING, ROLES } from "../rating/config";
+import { DISPLAY } from "./display";
 import { requireAdmin, adminSecretLogin } from "./access";
 import { BUILTIN_SETS } from "./builtin-sets";
 import { codeHash, inviteCode } from "./auth";
@@ -499,7 +500,7 @@ adminApi.get("/codes", async (c) => {
                     FROM votes GROUP BY voter_id) c ON c.voter_id = u.id
       ORDER BY u.created_at DESC, CAST(substr(u.label, instr(u.label, ' ') + 1) AS INTEGER), u.label`,
   ).all();
-  return c.json({ voters: r.results, openRounds: (await openRounds(c.env.DB)).length, unlockAt: QUALITY.LEADERBOARD_UNLOCK_VOTES });
+  return c.json({ voters: r.results, openRounds: (await openRounds(c.env.DB)).length, unlockAt: DISPLAY.BOARD_UNLOCK_VOTES });
 });
 
 adminApi.post("/codes", async (c) => {

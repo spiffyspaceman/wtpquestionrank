@@ -2,6 +2,7 @@
 // Everything after the one fetch runs in this browser; nothing the viewer does is sent back.
 import { RATING } from "../rating/config";
 import { OTHER_LABEL, REASONS } from "../worker/reasons";
+import { DISPLAY } from "../worker/display";
 import { inSlice, parseSlice, sliceLabel, type Slice } from "../worker/slice";
 import { $, api, ApiError, el, fmtDate, footnotes, marked, say, show, sliceBoxes, type Marks, type ShownNote } from "./common";
 
@@ -97,7 +98,7 @@ function reasonsLine(r: Row): HTMLElement | null {
   );
 }
 
-const RANK_AT = RATING.MIN_GAMES_RANKED;
+const RANK_AT = DISPLAY.RANK_SHOWN_AT;
 /** A ranked question's rating; charts and averages only ever see ranked questions. */
 const rating = (r: Row) => r.rating ?? RATING.ELO_BASE;
 

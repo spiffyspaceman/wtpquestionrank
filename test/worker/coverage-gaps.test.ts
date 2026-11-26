@@ -11,7 +11,7 @@ const items: { id: string; stem: string }[] = JSON.parse(itemsRaw).items;
 describe("coverage gaps closed after the launch audit", () => {
   beforeEach(() => mockOutbound());
 
-  it("ranks questions by rating once they have ten comparisons, strongest first", async () => {
+  it("ranks questions by rating once they have five comparisons, strongest first", async () => {
     const round = await openNewRound();
     // A known order: of any two questions, the one whose stem comes first in the alphabet wins.
     const place = new Map([...items].sort((x, y) => (x.stem < y.stem ? -1 : 1)).map((i, k) => [i.stem, k]));
@@ -25,7 +25,7 @@ describe("coverage gaps closed after the launch audit", () => {
     expect(b.rows.slice(0, ranked.length)).toEqual(ranked);
     ranked.forEach((r: { rank: number; rating: number; games: number; wins: number }, k: number) => {
       expect(r.rank).toBe(k + 1);
-      expect(r.games).toBeGreaterThanOrEqual(10);
+      expect(r.games).toBeGreaterThanOrEqual(5);
       expect(Number.isInteger(r.rating) && Number.isInteger(r.wins)).toBe(true);
       if (k) expect(r.rating).toBeLessThanOrEqual(ranked[k - 1].rating);
     });
@@ -71,29 +71,31 @@ describe("coverage gaps closed after the launch audit", () => {
     expect(full.votes[0]).toMatchObject({ winner_q: row!.right_q, close_call: 1 });
   });
 
-  it("a swapped repeat does not count toward the twenty votes that open the leaderboard", async () => {
+  it("a swapped repeat does not count toward the ten votes that open the leaderboard", async () => {
     await openNewRound();
     await quorum("other");
     const v = await voter("judge");
     const key = (p: ClientPair) => [p.left.stem, p.right.stem].sort().join("|");
     const seen = new Set<string>();
     const vote = (p: ClientPair) => call("/api/vote", { cookie: v.cookie, body: { pairId: p.pairId, pick: "L" } });
-    // Batch 1: ten votes. Batch 2: ten skips, so the first pairs are now twenty trials old and a repeat is due.
-    for (const p of (await getBatch(v.cookie)).pairs) (seen.add(key(p)), await vote(p));
-    for (const p of (await getBatch(v.cookie)).pairs) await call("/api/skip", { cookie: v.cookie, body: { pairId: p.pairId } });
+    const skip = (p: ClientPair) => call("/api/skip", { cookie: v.cookie, body: { pairId: p.pairId } });
+    // Batch 1: five votes and five skips. Batch 2: ten skips, so the first pairs are now twenty trials old and a
+    // repeat is due.
+    for (const [k, p] of (await getBatch(v.cookie)).pairs.entries()) await (k < 5 ? (seen.add(key(p)), vote(p)) : skip(p));
+    for (const p of (await getBatch(v.cookie)).pairs) await skip(p);
     const third = (await getBatch(v.cookie)).pairs;
     const repeat = third.find((p) => seen.has(key(p)));
     expect(repeat).toBeTruthy();
     await vote(repeat!);
-    // Nine first votes in this batch: 19 first votes and one repeat, 20 votes in all.
-    for (const p of third.filter((x) => x !== repeat)) await vote(p);
+    // Four first votes in this batch: 9 first votes and one repeat, 10 votes in all.
+    const rest = third.filter((x) => x !== repeat);
+    for (const p of rest.slice(0, 4)) await vote(p);
     const counted = await env.DB.prepare("SELECT count(*) AS n, SUM(is_repeat) AS repeats FROM votes v JOIN voters u ON u.id = v.voter_id WHERE u.label = ?").bind(v.label).first<{ n: number; repeats: number }>();
-    expect(counted).toEqual({ n: 20, repeats: 1 });
-    expect(await json(call("/api/me", { cookie: v.cookie }))).toMatchObject({ votes: 19, unlocked: false });
+    expect(counted).toEqual({ n: 10, repeats: 1 });
+    expect(await json(call("/api/me", { cookie: v.cookie }))).toMatchObject({ votes: 9, unlocked: false });
     expect((await call("/api/leaderboard", { cookie: v.cookie })).status).toBe(403);
-    // The twentieth first vote opens it, and the vote's own answer says so.
-    const next = (await getBatch(v.cookie)).pairs[0];
-    expect(await json(vote(next))).toMatchObject({ votes: 20, unlocked: true });
+    // The tenth first vote opens it, and the vote's own answer says so.
+    expect(await json(vote(rest[4]))).toMatchObject({ votes: 10, unlocked: true });
     expect((await call("/api/leaderboard", { cookie: v.cookie })).status).toBe(200);
   });
 

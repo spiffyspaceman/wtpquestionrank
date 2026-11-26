@@ -52,7 +52,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov | Codes are derived from `CODE_PEPPER` and the voter id so admin can show them again; only the hash is stored. |
 | 25 Nov | Cloudflare's zone-wide Web Analytics beacon is left in place; the site's CSP blocks it. |
 | 25 Nov | Leaderboard (only) shows year, unit, number and confirmed sources, plus unit and year averages (DEVIATIONS.md). |
-| 25 Nov | Leaderboard unlock stays at 20 votes. |
+| 25 Nov | Leaderboard unlock stays at 20 votes. (Superseded 26 Nov: 10 votes.) |
 | 25 Nov | Every published WTP question becomes Round 2, after Round 1; Round 1 stays the pre-registered 36. |
 | 25 Nov | After sign-in, voters land on `/start`: votes cast, unlock progress, start or continue a batch, hearing format, criterion, and judging guidance paraphrased from CCE's Toolkit without attribution (DEVIATIONS.md). |
 | 25 Nov | Optional reason pills, up to two of nine fixed codes per vote, in `vote_reasons` (migration 0002), exported as `reasons.csv` (DEVIATIONS.md). Tapping a question card or its button chooses it; the other side fades, reasons appear, and Next sends the vote. |
@@ -77,7 +77,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov | Method A2: re-run the LLM judges with the human arm's guidance and reasons, as a registered addendum. `PREREG_Addendum_A2.md`, approved and hashed 25 Nov (DEVIATIONS.md); A2 is secondary and never enters the verdict. It ran 25 Nov (`llm-arm/out-a2/`); all 30 judges stay, with a 26-judge fit (`out-a2-without4/`) reported beside it. |
 
 | 25 Nov (audit) | **The full round opens in stages** (migration 0008, `src/worker/staging.ts`), because the owner expects fewer than 25 voters: the 36 launch questions first, then 24 at a time in a balanced shuffled order, whenever every question in play has 12 adult comparisons. One round, one scale; the frozen pairing code is handed the questions in play. The owner can stop the automatic growth or add a group by hand in admin; a question in play never leaves. The leaderboard lists only questions in play. |
-| 25 Nov (audit) | An unranked question (under 10 comparisons) shows its comparison count only; the Worker sends no rating, range or win count for it. |
+| 25 Nov (audit) | An unranked question (under 10 comparisons; 5 since 26 Nov) shows its comparison count only; the Worker sends no rating, range or win count for it. |
 | 25 Nov (audit) | A role's own board appears once three voters in that role have voted in the round; the adults board always shows. |
 | 25 Nov (audit) | On a first visit `/start` puts the task and guidance before the Start button; returning voters see the count first. |
 | 25 Nov (audit) | State 2019-20 U1Q1 is held out of play (`HELD` in `staging.ts`): its second bullet was cut off in transcription. The corrected text goes in under a new id when the owner sends the PDF page. |
@@ -93,6 +93,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 25 Nov (late) | **Supersedes the two "waits for three voters" rows above.** Every board a voter may see (All adults and their own role) shows as soon as they have 20 votes; no wait for other voters. The wait is still in the code, off unless the Worker is given `BOARD_MIN_VOTERS` (the tests set it). |
 | 26 Nov | **Judges may choose units** (migration 0010, `src/worker/slice.ts`, `slicePlay` in `data.ts`): All questions (default) or some of Units 1 to 6 at State, Nationals or both, chosen on `/start`, from the next batch. In the staged round a slice is kept supplied (at least 12 of its questions in play and 10 new pairs for the judge; 6 join at a time, for everyone), unless the owner has switched growth off: then nothing joins but by his hand. No bridging pair. Every batch records its slice; `votes.csv` has `batch_slice`. The leaderboard keeps overall ranks and has a filter with the same boxes. Admin shows each voter's choice (read only) and cross-unit counts in Study health. |
 | 26 Nov | The choice is called **"Narrow your set"** and sits right above Start, which names the set ("Start a batch: Units 4 and 5, Nationals only"). The voting page names the set with a Narrow link; applying a new set there, or changing it on `/start`, ends the rest of the waiting batch (`batches.ended_at`, migration 0011) and loads a fresh one. Ended pairs are neither votes nor skips and may be offered again; answers already given stay. A batch ends only when the set changes. |
+| 26 Nov | **Supersedes the 20-vote unlock and the 10-comparison rank, for the site only.** The leaderboard opens to a voter at 10 first votes, and a question shows a rank, rating, range and win count at 5 comparisons (`src/worker/display.ts`, `DISPLAY`). The frozen `src/rating/config.ts` keeps 20 and 10, and the analysis still ranks at 10 (DEVIATIONS.md). |
 
 ## Commands
 

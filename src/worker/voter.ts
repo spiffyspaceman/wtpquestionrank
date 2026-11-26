@@ -1,6 +1,6 @@
 // Voter API. Question ids never leave the server: pairs go out as an opaque pair id with "L" and "R" sides.
 import { Hono, type Context } from "hono";
-import { POOLED_ROLES, QUALITY } from "../rating/config";
+import { POOLED_ROLES } from "../rating/config";
 import { pairKey, selectBatch, type PairingState } from "../rating/pairs";
 import { fitBTCounts, makeRng } from "../rating/rating";
 import {
@@ -38,6 +38,7 @@ import { poolsForRole } from "./pools";
 import { cleanEmail, cleanName, EMAIL_MAX, joinWordHash, looksLikeEmail, nextLabel, SIGNUP_ROLES } from "./signup";
 import { HELD } from "./staging";
 import { parseSlice, sliceJson, storedSlice, type Slice } from "./slice";
+import { DISPLAY } from "./display";
 import { shownNotes, type ShownNote } from "./notes";
 import { MAX_REASONS, parseOther, parseReasons, type ReasonCode } from "./reasons";
 import { verifyTurnstile } from "./turnstile";
@@ -223,8 +224,8 @@ async function meState(db: D1Database, voter: VoterRow) {
   return {
     role: ROLE_NAMES[voter.role] ?? voter.role,
     votes,
-    unlockAt: QUALITY.LEADERBOARD_UNLOCK_VOTES,
-    unlocked: votes >= QUALITY.LEADERBOARD_UNLOCK_VOTES,
+    unlockAt: DISPLAY.BOARD_UNLOCK_VOTES,
+    unlocked: votes >= DISPLAY.BOARD_UNLOCK_VOTES,
     // No round names here: the site chooses the round for each batch, and a name would tell a voter the unit.
     open: isOpen,
     ended: !isOpen && !waiting,
@@ -523,8 +524,8 @@ async function afterAnswer(db: D1Database, voter: VoterRow, _roundId: string, ba
     .first<{ n: number }>();
   return {
     votes,
-    unlockAt: QUALITY.LEADERBOARD_UNLOCK_VOTES,
-    unlocked: votes >= QUALITY.LEADERBOARD_UNLOCK_VOTES,
+    unlockAt: DISPLAY.BOARD_UNLOCK_VOTES,
+    unlocked: votes >= DISPLAY.BOARD_UNLOCK_VOTES,
     remaining: left?.n ?? 0,
   };
 }
@@ -809,8 +810,8 @@ voterApi.get("/leaderboard", requireVoter(404), async (c) => {
   const rounds = await boardRounds(db);
   if (!rounds.length) return c.json({ error: "no_round" }, 404);
   const votes = await firstVoteCount(db, voter.id);
-  if (votes < QUALITY.LEADERBOARD_UNLOCK_VOTES)
-    return c.json({ error: "locked", votes, unlockAt: QUALITY.LEADERBOARD_UNLOCK_VOTES }, 403);
+  if (votes < DISPLAY.BOARD_UNLOCK_VOTES)
+    return c.json({ error: "locked", votes, unlockAt: DISPLAY.BOARD_UNLOCK_VOTES }, 403);
   const pools = visiblePools(voter.role);
   const asked = c.req.query("pool");
   if (asked !== undefined && !(pools as string[]).includes(asked)) return c.json({ error: "pool_not_allowed" }, 403);

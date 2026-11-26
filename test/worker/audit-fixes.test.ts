@@ -175,13 +175,13 @@ describe("admin: backup, invitation tracker, gate forecast", () => {
     expect((await json(admin("/admin/api/status"))).exportOverdue).toBe(false);
   });
 
-  it("the voter list says who has signed in and how far each is from 20", async () => {
+  it("the voter list says who has signed in and how far each is from the unlock", async () => {
     await openNewRound();
     const v = await voter("judge");
     const [unused] = await makeCodes("coach");
     await voteN(v.cookie, 7);
     const r = await json(admin("/admin/api/codes"));
-    expect(r.unlockAt).toBe(20);
+    expect(r.unlockAt).toBe(10);
     const row = (label: string) => r.voters.find((x: { label: string }) => x.label === label);
     expect(row(v.label).round_votes).toBe(7);
     expect(row(v.label).signed_in_at).toBeTruthy();

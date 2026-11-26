@@ -3,6 +3,7 @@ import { POOLED_ROLES, RATING } from "../rating/config";
 import { fitBTCounts, ranksOf, type BTFit, type PairCount } from "../rating/rating";
 import type { RoundRow } from "./env";
 import { inSlice, SLICE_PLAY, type Slice } from "./slice";
+import { DISPLAY } from "./display";
 import { firstGroup, HELD, nextGroup, STAGE, type StageItem } from "./staging";
 import { nowIso } from "./util";
 
@@ -294,7 +295,7 @@ export interface BoardRow {
   hi: number | null;
 }
 
-/** Live point ratings for a pool plus the latest snapshot's intervals. Ranks only at MIN_GAMES_RANKED games. */
+/** Live point ratings for a pool plus the latest snapshot's intervals. Ranks only at DISPLAY.RANK_SHOWN_AT games. */
 export async function board(
   db: D1Database,
   round: RoundRow,
@@ -306,7 +307,7 @@ export async function board(
     const snapshot = await latestSnapshot(db, round.id, pool);
     const snap = snapshot ? (JSON.parse(snapshot.payload_json) as SnapshotPayload) : null;
     const snapIx = new Map((snap?.ids ?? []).map((id, i) => [id, i]));
-    const ranked = fit.ids.map((_, i) => fit.games[i] >= RATING.MIN_GAMES_RANKED);
+    const ranked = fit.ids.map((_, i) => fit.games[i] >= DISPLAY.RANK_SHOWN_AT);
     const rankable = fit.ids.map((_, i) => (ranked[i] ? fit.beta[i] : -Infinity));
     const ranks = ranksOf(rankable);
     const rows: BoardRow[] = fit.ids.map((id, i) => {

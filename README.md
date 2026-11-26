@@ -84,8 +84,9 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
     how many pairs were set aside (`changed`, `ended`); the next `/api/batch` draws a fresh batch under the new set.
     Ended pairs are not skips, may be offered again, and leave the repeat gap alone. A vote, skip or correction
     sent for one of them (from a page still showing the old batch) is refused with `batch_ended` (409).
-  - `/api/leaderboard` sends a rating, range and win count only for ranked questions (10 comparisons). A board (the
-    pooled adults board, or a voter's own role board) is offered once three voters stand behind it in the round.
+  - `/api/leaderboard` sends a rating, range and win count only for ranked questions (5 comparisons since 26 Nov;
+    `DISPLAY.RANK_SHOWN_AT` in `src/worker/display.ts`). The board opens to a voter at 10 first votes
+    (`DISPLAY.BOARD_UNLOCK_VOTES`). The frozen config keeps the pre-registered 20 and 10, which the analysis uses.
     Head-to-head counts are sent added up by group, never per pair of questions.
 - Pairs go to the browser as an opaque pair id with "L" and "R" sides. Question ids, cycle, unit and source never
   leave the server.

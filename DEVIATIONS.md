@@ -391,3 +391,17 @@ Effects to keep in mind:
 - **A judge can steer away from pairs.** Ending a batch after seeing a pair is a way to avoid it, as a skip is. Because
   the only exit is a change of set, the cost of this is small; the counts above show whether it happens often.
 No frozen file, threshold or measure changes.
+
+**26 November 2026: the leaderboard opens at 10 votes, and a question shows a rank at 5 comparisons (owner
+decision).** The pre-registration says a voter sees the board "after 20 votes" (PREREG line 7), and the site has
+ranked a question only at 10 comparisons. Both are lowered for the site only: a voter may open the board after 10
+first votes, and a question on it shows its rank, rating, range and win count once it has 5 comparisons in that
+pool. The new numbers live in `src/worker/display.ts`; the frozen `src/rating/config.ts` is unchanged
+(`LEADERBOARD_UNLOCK_VOTES` 20, `MIN_GAMES_RANKED` 10), and `analysis/analyze.ts` still ranks at 10.
+Effects to keep in mind:
+- **Fewer votes before a voter sees the board.** Each voter now casts at least 10 votes, not 20, before the board
+  can sway them. Votes cast after a voter opens the board are still marked `after_board = 1`, so the analysis can
+  set them apart as before. A voter who already had 10 to 19 votes may open the board at once.
+- **Early ranks move more.** A rank on 5 comparisons is less settled than one on 10; the range shown beside it
+  (from the latest snapshot) says how much.
+No frozen file, measure or analysis threshold changes.
