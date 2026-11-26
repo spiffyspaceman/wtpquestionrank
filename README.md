@@ -82,7 +82,8 @@ The two Turnstile values are Cloudflare's always-pass test keys. Apply migration
     the round for everyone. Pairs come only from the slice; the ratings are fitted on every question in play.
     A changed set ends the rest of the voter's waiting batch (`batches.ended_at`, migration 0011) and the reply says
     how many pairs were set aside (`changed`, `ended`); the next `/api/batch` draws a fresh batch under the new set.
-    Ended pairs are not skips, may be offered again, and leave the repeat gap alone.
+    Ended pairs are not skips, may be offered again, and leave the repeat gap alone. A vote, skip or correction
+    sent for one of them (from a page still showing the old batch) is refused with `batch_ended` (409).
   - `/api/leaderboard` sends a rating, range and win count only for ranked questions (10 comparisons). A board (the
     pooled adults board, or a voter's own role board) is offered once three voters stand behind it in the round.
     Head-to-head counts are sent added up by group, never per pair of questions.

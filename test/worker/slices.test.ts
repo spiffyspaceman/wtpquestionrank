@@ -140,8 +140,14 @@ describe("what a judge judges", () => {
               (SELECT count(*) FROM skips WHERE batch_pair_id IN (SELECT id FROM batch_pairs WHERE batch_id = ?1)) AS skips`,
     ).bind((await env.DB.prepare("SELECT batch_id FROM batch_pairs WHERE id = ?").bind(b1.pairs[0].pairId).first<{ batch_id: string }>())!.batch_id).first();
     expect(counts).toEqual({ votes: 1, skips: 1 });
-    // A page left open on the old batch can still answer one of its pairs: that is a real judgment, and it counts.
-    expect((await call("/api/vote", { cookie: v.cookie, body: { pairId: b1.pairs[2].pairId, pick: "L" } })).status).toBe(200);
+    // A page left open on the old batch cannot answer its set-aside pairs: one may come back in a later batch, and
+    // the answer would then count for both copies. Vote, skip and correct all refuse; the given answers are untouched.
+    for (const [path, body] of [["/api/vote", { pick: "L" }], ["/api/skip", {}], ["/api/correct", { pick: "R" }]] as const) {
+      const r = await call(path, { cookie: v.cookie, body: { pairId: b1.pairs[2].pairId, ...body } });
+      expect(r.status).toBe(409);
+      expect((await r.json<{ error: string }>()).error).toBe("batch_ended");
+    }
+    expect((await call("/api/skip", { cookie: v.cookie, body: { pairId: b1.pairs[1].pairId } })).status).toBe(200);
     const h = await json(admin(`/admin/api/rounds/${round}/health`));
     expect(h.scale).toMatchObject({ endedBatches: 1 });
   });

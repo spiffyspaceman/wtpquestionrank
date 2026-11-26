@@ -382,7 +382,8 @@ set" and moved directly above the Start button, which now names the set. The vot
 link. Applying a new set there, or changing it on the home page while a batch waits, ends the rest of that batch and
 the next batch is drawn under the new set. The ended batch is marked `batches.ended_at` (migration 0011). Its
 unanswered pairs are recorded as ended, not skipped: they count as neither votes nor skips, they may be offered to the
-judge again, and an unanswered repeat in an ended batch does not count as issued. Answers already given stay and count
+judge again, and an unanswered repeat in an ended batch does not count as issued. An answer sent later for one of
+them, from a page still showing the old batch, is refused, so a pair offered again cannot be answered twice. Answers already given stay and count
 as before. A batch ends only through a change of set; there is no other way to drop the rest of a batch.
 Effects to keep in mind:
 - **Batches can be shorter than ten pairs.** The pairing code still issues ten; a judge may answer fewer before

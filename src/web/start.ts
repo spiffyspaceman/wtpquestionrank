@@ -136,7 +136,7 @@ function setUpSlice(me: Me): void {
       if (r.ended) {
         waiting = false;
         show($("#resumeLine"), false);
-        note += " The rest of your waiting batch was set aside; the answers you gave stay.";
+        note += " Your waiting batch was set aside; any answers you gave in it stay.";
       }
       status.textContent = note;
       start.textContent = label();

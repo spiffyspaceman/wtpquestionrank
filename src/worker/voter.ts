@@ -454,6 +454,7 @@ interface PairContext {
   round_id: string;
   item_set_id: string;
   state: string;
+  set_aside: number;
 }
 
 /** Look up a pair for this voter. Returns an error response tag when it may not be answered. */
@@ -462,7 +463,10 @@ async function pairFor(db: D1Database, pairId: unknown, voterId: string) {
   const p = await db
     .prepare(
       `SELECT bp.id, bp.batch_id, bp.left_q, bp.right_q, bp.is_repeat, bp.issued_at,
-              b.voter_id, b.round_id, r.item_set_id, r.state
+              b.voter_id, b.round_id, r.item_set_id, r.state,
+              b.ended_at IS NOT NULL
+                AND NOT EXISTS (SELECT 1 FROM votes v WHERE v.batch_pair_id = bp.id)
+                AND NOT EXISTS (SELECT 1 FROM skips s WHERE s.batch_pair_id = bp.id) AS set_aside
          FROM batch_pairs bp JOIN batches b ON b.id = bp.batch_id JOIN rounds r ON r.id = b.round_id
         WHERE bp.id = ?`,
     )
@@ -470,6 +474,9 @@ async function pairFor(db: D1Database, pairId: unknown, voterId: string) {
     .first<PairContext>();
   if (!p || p.voter_id !== voterId) return { error: "unknown_pair" as const };
   if (p.state !== "open") return { error: "round_not_open" as const };
+  // A pair left unanswered when a change of set ended its batch is closed: it may come back in a later batch, and an
+  // answer sent from a page still showing the old batch would otherwise count for both copies.
+  if (p.set_aside) return { error: "batch_ended" as const };
   const lo = p.left_q < p.right_q ? p.left_q : p.right_q;
   const hi = p.left_q < p.right_q ? p.right_q : p.left_q;
   const answered = await db
@@ -484,7 +491,7 @@ async function pairFor(db: D1Database, pairId: unknown, voterId: string) {
   return { pair: p, lo, hi, answered: Boolean(answered) };
 }
 
-const PAIR_ERRORS = { bad_request: 400, unknown_pair: 404, round_not_open: 409 } as const;
+const PAIR_ERRORS = { bad_request: 400, unknown_pair: 404, round_not_open: 409, batch_ended: 409 } as const;
 
 /**
  * Time on pair as the server sees it: from the later of the batch's issue time and this voter's last answer

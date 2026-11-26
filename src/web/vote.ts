@@ -307,6 +307,10 @@ async function answer(kind: "vote" | "skip"): Promise<void> {
       // The answer stays as it was (see /api/correct); put the saved answer back on screen.
       showPair(idx);
       say(msg, err.message, "warn");
+    } else if (err instanceof ApiError && err.body.error === "batch_ended") {
+      // The set was changed in another tab, which ended this batch; fetch the batch for the new set.
+      say(msg, "Your set was changed, so this batch ended. Your earlier answers stay.", "warn");
+      void loadBatch();
     } else if (err instanceof ApiError && err.body.error === "batch_closed") {
       say(msg, "That batch is finished, so its answers can no longer change.", "warn");
       void loadBatch();
@@ -366,17 +370,25 @@ function openNarrow(on: boolean, refocus = true): void {
 }
 narrowBtn.addEventListener("click", () => openNarrow(narrowPanel.hidden));
 $("#narrowCancel").addEventListener("click", () => openNarrow(false));
-$("#narrowApply").addEventListener("click", () => void applyNarrow());
+const applyBtn = $<HTMLButtonElement>("#narrowApply");
+applyBtn.addEventListener("click", () => void applyNarrow());
 
 async function applyNarrow(): Promise<void> {
+  // Wait for an answer on its way, so it lands in the batch it was given in.
+  if (busy) return;
   const s = picker.read();
   if (s === false) return void ($("#narrowNote").textContent = "Tick at least one unit and one level.");
   let r: { slice: Slice | null; changed: boolean };
+  busy = true;
+  applyBtn.disabled = true;
   try {
     r = await api("/api/slice", { body: s ? { units: s.units, levels: s.levels } : { all: true } });
   } catch (err) {
     $("#narrowNote").textContent = err instanceof ApiError ? err.message : "That did not save. Try again.";
     return;
+  } finally {
+    busy = false;
+    applyBtn.disabled = false;
   }
   me.slice = r.slice;
   renderSet();
