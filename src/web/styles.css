@@ -205,7 +205,8 @@ input.code.email { font-size: 1.05rem; letter-spacing: 0; }
 .card h2 {
   margin: 0 0 8px; font-size: 1rem; font-style: italic; color: var(--muted);
 }
-.card .stem { margin: 0 0 10px; }
+/* Room between the stem and each bullet, so the parts of a question read as parts (owner, 26 Nov 2026). */
+.card .stem { margin: 0 0 1.1em; }
 .card ul { margin: 0; padding-left: 1.15em; }
 /* Published footnotes: small, under the bullets, set off by a short rule as on the printed page. */
 .fnmark { font-size: 0.8em; line-height: 0; color: var(--muted); }
@@ -216,7 +217,8 @@ sup.fnmark { vertical-align: super; padding-left: 1px; }
 .fnotes a { color: inherit; }
 .card .fnotes { margin-top: auto; padding-top: 10px; }
 .card ul + div:has(.fnotes) { margin-top: 14px; }
-.card li { margin: 0.45em 0; }
+.card li { margin: 0.8em 0; }
+.card li:first-child { margin-top: 0; }
 
 /* A whole card chooses it, like its button. The chosen side is outlined; the other side recedes (flat, on the page
    colour) but its text stays at full ink, so it can still be read while the voter decides. */
@@ -235,14 +237,25 @@ button.pick[aria-pressed="true"] { background: var(--accent); color: var(--accen
 .next-row button { width: 100%; max-width: 420px; min-height: 56px; font-size: 1.05rem; }
 
 .reasons { margin: 4px 0 10px; }
-.reasons-h { margin: 0 0 6px; font-size: 0.9rem; text-align: center; }
-.pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.reasons-h { margin: 0 0 8px; font-size: 0.9rem; text-align: center; }
+/* The reasons as an even grid of tiles, each with a small box that fills when chosen (owner, 26 Nov 2026): two
+   columns, so the ten fill five even rows on a computer and on a phone. Same labels, same order. */
+.pills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; max-width: 720px; margin: 0 auto; }
 button.pill {
-  min-height: 40px; padding: 6px 14px; border-radius: 999px; font-size: 0.88rem; line-height: 1.25;
-  background: var(--surface); border-color: var(--line-strong);
+  position: relative; min-height: 48px; padding: 8px 10px 8px 36px; border-radius: var(--radius); font-size: 0.88rem;
+  line-height: 1.25; text-align: left; justify-content: flex-start; background: var(--surface); border-color: var(--line-strong); color: var(--ink);
 }
-button.pill[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); box-shadow: inset 0 0 0 1px var(--accent); }
-button.pill:disabled { opacity: 0.45; }
+button.pill::before {
+  content: ""; position: absolute; left: 11px; top: 50%; width: 15px; height: 15px; margin-top: -8.5px;
+  border: 1px solid var(--line-strong); border-radius: 3px; background: var(--surface);
+}
+button.pill[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+button.pill[aria-pressed="true"]::before { background: var(--accent); border-color: var(--accent); }
+button.pill[aria-pressed="true"]::after {
+  content: ""; position: absolute; left: 16px; top: 50%; width: 4px; height: 8px; margin-top: -6.5px;
+  border: solid var(--accent-ink); border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+button.pill:disabled { opacity: 0.5; cursor: default; }
 .other-row { max-width: 560px; margin: 10px auto 0; }
 .other-meta { display: flex; justify-content: space-between; gap: 12px; margin: 4px 2px 0; font-size: 0.82rem; color: var(--muted); }
 .other-meta .over { color: var(--error); }
@@ -260,6 +273,10 @@ kbd { font: 0.8em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; bord
   body { font-size: 18px; }
   .pair { grid-template-columns: 1fr; gap: 12px; }
   .picks { gap: 10px; }
+  .pills { gap: 6px; }
+  button.pill { font-size: 0.84rem; padding: 7px 8px 7px 32px; }
+  button.pill::before { left: 9px; }
+  button.pill[aria-pressed="true"]::after { left: 14px; }
 }
 
 /* ---------- voter home ---------- */

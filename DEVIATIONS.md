@@ -433,3 +433,10 @@ pass at the owner's choice (`items/summaries.json`). Labels appear on the leader
 voting page. Effect to keep in mind: a voter who has opened the board may now recognize a question on the voting page
 by its subject more readily than before, which adds to the leaderboard exposure already noted (PREREG §12); votes
 cast after opening the board remain marked `after_board = 1`. No frozen file, threshold or measure changes.
+
+**26 November 2026: the reasons are laid out as a grid (owner decision; presentation only).** The optional reasons on
+the voting page were a centred cloud of rounded pills. They are now an even two-column grid of tiles, each with a
+small box that fills when chosen, on computers and phones alike, and each question has a little more space after its
+stem and between its bullets. The labels, their order, the limit of two, "Other" and the keys are unchanged. Effect
+to keep in mind: reasons given after this date were chosen from a list read row by row rather than a cloud, which may
+shift which reasons are picked; `reasons.csv` carries each vote's time, so the two layouts can be compared.

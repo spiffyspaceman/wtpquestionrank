@@ -266,6 +266,10 @@ try {
   check((await text("#reasonsHint")) === "Two chosen", "two reasons: the hint says Two chosen");
   check(await page.isDisabled(".pill >> nth=2"), "two reasons: the other pills are off");
   await shot("vote-picked");
+  await page.setViewportSize({ width: 390, height: 844 });
+  check(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "the voting page, with reasons open, fits a phone's width");
+  await shot("vote-picked-phone");
+  await page.setViewportSize({ width: 1280, height: 900 });
   await page.focus("#next");
   await page.keyboard.press("Enter");
   await page.waitForFunction(() => document.querySelector("#position").textContent.startsWith("Pair 2"));

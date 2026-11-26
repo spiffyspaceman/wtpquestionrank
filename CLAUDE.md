@@ -96,6 +96,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 | 26 Nov | **Supersedes the 20-vote unlock and the 10-comparison rank, for the site only.** The leaderboard opens to a voter at 10 first votes, and a question shows a rank, rating, range and win count at 5 comparisons (`src/worker/display.ts`, `DISPLAY`). The frozen `src/rating/config.ts` keeps 20 and 10, and the analysis still ranks at 10 (DEVIATIONS.md). |
 | 26 Nov | **Supersedes "No bridging pair" in the 26 Nov units row.** A judge who narrows the set gets a box, ticked by default and set apart in the picker, "Include one pair from outside my units", with a line saying it helps rank units against one another. When ticked, each batch has nine pairs from the set (frozen pairing code, `size: 9`) and one bridge pair, one question from the set and one in play outside it, picked in `src/worker/bridge.ts` with the pairing code's information weight and put at a random place. The pair is not marked on the voting page; the set line says "plus one pair from outside it". Stored as `bridge: true` in the slice, `batch_pairs.bridge` (migration 0012), `bridge_pair` in `votes.csv`, and counted in Study health. A set saved before this has no bridge pair. |
 | 26 Nov | **Leaderboard order and topic labels.** The Explore chart comes first, then the #1 question in full, then #2 to #5 with a "Show the top 10" button, then all questions. Every question has a topic label of at most five words (`items/summaries.json`, drafted with AI, sent by `src/worker/summaries.ts`), shown on the leaderboard (top card, list, table, search, chart tips) and in admin (board and Study health), never on the voting page. A label may be corrected at any time; it is not the question's text. |
+| 26 Nov | Voting page: more room after the stem and between bullets (`.card .stem`, `.card li`), and the reason pills become an even two-column grid of left-aligned tiles, each with a small box that fills when chosen, on computer and phone. Same labels, order, limit of two and keys. |
 
 ## Commands
 
@@ -104,7 +105,7 @@ npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
 npm test               # 224 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # typecheck, then pages into dist/ (so the deploy cannot ship a type error)
-npm run test:ui        # browser smoke test, 84 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
+npm run test:ui        # browser smoke test, 85 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
 npm run premerge       # all of the above in order; run it before merging anything that touches src/web
 NODE_USE_ENV_PROXY=1 node scripts/dev-local.mjs   # local site on :8787 (needs .dev.vars; see README)
 ```
