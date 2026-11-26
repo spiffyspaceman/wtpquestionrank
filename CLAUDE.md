@@ -98,7 +98,7 @@ pre-registered study in `PREREG_Human_vs_LLM.md`. Owner: Sean. Write to him plai
 
 ```
 npm ci                 # install (.npmrc sets legacy-peer-deps; npm 10 needs it)
-npm test               # 221 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
+npm test               # 220 tests: rating, analysis, hashes, Worker routes on local D1, end-to-end export
 npm run typecheck
 npm run build          # typecheck, then pages into dist/ (so the deploy cannot ship a type error)
 npm run test:ui        # browser smoke test, 79 checks on a throwaway database (needs Playwright; not part of npm test or the deploy)
